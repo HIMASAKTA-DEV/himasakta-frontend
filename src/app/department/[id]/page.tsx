@@ -1,0 +1,45 @@
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+import { DeptHero } from "@/components/department/DeptHero";
+import { DeptProgenda } from "@/components/department/DeptProgenda";
+import { DeptGallery } from "@/components/department/DeptGallery";
+import { getDepartmentById, getProgendaByDepartment, getDepartments, getGalleryByDepartment } from "@/services/api";
+
+type Props = {
+    params: { id: string };
+};
+
+// Generate static params for all departments
+export async function generateStaticParams() {
+    const departments = await getDepartments();
+    return departments.map((dept) => ({
+        id: dept.id,
+    }));
+}
+
+export default async function DepartmentPage({ params }: Props) {
+    // Parallel Fetching
+    const [department, progendas, gallery] = await Promise.all([
+        getDepartmentById(params.id),
+        getProgendaByDepartment(params.id),
+        getGalleryByDepartment(params.id),
+    ]);
+
+    if (!department) {
+        return <div>Department not found</div>;
+    }
+
+    return (
+        <>
+            <Navbar />
+            <main className="min-h-screen bg-slate-50">
+                <DeptHero department={department} />
+                {/* Structure specific to dept would go here */}
+                <DeptProgenda progendas={progendas} />
+
+                <DeptGallery gallery={gallery} />
+            </main>
+            <Footer />
+        </>
+    );
+}
