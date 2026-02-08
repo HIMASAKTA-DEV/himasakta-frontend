@@ -1,17 +1,17 @@
-import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { Hero } from "@/components/landing/Hero";
-import { Quote } from "@/components/landing/Quote";
-import { Profile } from "@/components/landing/Profile";
+import { Navbar } from "@/components/Navbar";
 import { DepartmentList } from "@/components/landing/DepartmentList";
 import { EventList } from "@/components/landing/EventList";
+import { Hero } from "@/components/landing/Hero";
 import { NewsSlider } from "@/components/landing/NewsSlider";
+import { Profile } from "@/components/landing/Profile";
+import { Quote } from "@/components/landing/Quote";
 
 import {
   getCabinetInfo,
   getDepartments,
   getLatestNews,
-  getMonthlyEvents
+  getMonthlyEvents,
 } from "@/services/api";
 
 // Revalidate data every hour
@@ -23,7 +23,7 @@ export default async function Home() {
     getCabinetInfo(),
     getDepartments(),
     getLatestNews(6),
-    getMonthlyEvents()
+    getMonthlyEvents(),
   ]);
 
   return (
