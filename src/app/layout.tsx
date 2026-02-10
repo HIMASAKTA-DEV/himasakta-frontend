@@ -1,11 +1,13 @@
 import "./globals.css";
-
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-
 import Providers from "@/app/providers";
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+import {
+  inter,
+  lora,
+  poppins,
+  averiaSerifLibre,
+  linuxLibertine,
+} from "@/styles/global-fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -22,7 +24,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={`
+          ${inter.variable}
+          ${lora.variable}
+          ${poppins.variable}
+          ${averiaSerifLibre.variable}
+          ${linuxLibertine.variable}
+        `}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>

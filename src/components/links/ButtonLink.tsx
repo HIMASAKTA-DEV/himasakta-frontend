@@ -107,7 +107,7 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
             variant === "ghost" && [
               "text-neutral-500",
               "shadow-none",
-              "hover:bg-neutral-50 focus-visible:ring-neutral-400 active:bg-neutral-100 disabled:bg-neutral-100",
+              "hover:bg-neutral-300 focus-visible:ring-neutral-400 active:bg-neutral-100 disabled:bg-neutral-100",
             ],
           ],
           //#endregion  //*======== Variants ===========
