@@ -1,0 +1,58 @@
+[
+  {
+    "idx": "ev-0001",
+    "title": "Acara Meetup JavaScript",
+    "image": "/_dummy_images/no1.jpg",
+    "description": "Belajar dan berbagi pengalaman tentang JavaScript modern.",
+    "date": "2026-02-05"
+  },
+  {
+    "idx": "ev-0002",
+    "title": "Workshop Tailwind CSS",
+    "image": "/_dummy_images/no2.jpg",
+    "description": "Hands-on workshop membuat UI responsive dengan Tailwind CSS.",
+    "date": "2026-02-10"
+  },
+  {
+    "idx": "ev-0003",
+    "title": "Sesi Networking Bulanan",
+    "image": "/_dummy_images/no3.jpg",
+    "description": "Kenalan dengan anggota komunitas baru dan tukar kartu nama.",
+    "date": "2026-02-18"
+  },
+  {
+    "idx": "ev-0004",
+    "title": "Acara Tahun Baru",
+    "image": "/_dummy_images/no4.jpg",
+    "description": "Merayakan pergantian tahun bersama komunitas.",
+    "date": "2026-01-02"
+  },
+  {
+    "idx": "ev-0005",
+    "title": "Workshop React Advanced",
+    "image": "/_dummy_images/no5.jpg",
+    "description": "Pendalaman hook, context, dan performance optimization.",
+    "date": "2026-01-15"
+  },
+  {
+    "idx": "ev-0006",
+    "title": "Mini Hackathon Maret",
+    "image": "/_dummy_images/no6.jpg",
+    "description": "Challenge coding seru selama akhir pekan.",
+    "date": "2026-03-05"
+  },
+  {
+    "idx": "ev-0007",
+    "title": "Sesi Diskusi Web3",
+    "image": "/_dummy_images/no7.jpg",
+    "description": "Membahas blockchain, NFT, dan teknologi desentralisasi.",
+    "date": "2026-03-12"
+  },
+  {
+    "idx": "ev-0008",
+    "title": "Meetup DevOps",
+    "image": "/_dummy_images/no8.jpg",
+    "description": "Berbagi pengalaman CI/CD dan cloud deployment.",
+    "date": "2026-03-20"
+  }
+]

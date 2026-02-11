@@ -1,0 +1,470 @@
+[
+  {
+    "id": "news-001",
+    "title": "Transformasi Digital Organisasi Mahasiswa di Era Modern",
+    "tagline": "Adaptasi teknologi sebagai kunci keberlanjutan organisasi",
+    "date": "2024-09-12",
+    "image": "/_dummy_images/no1.jpg",
+    "hashtags": [
+      "#Digitalisasi",
+      "#TransformasiDigital",
+      "#Teknologi",
+      "#Organisasi",
+      "#Mahasiswa",
+      "#Inovasi",
+      "#EraModern"
+    ],
+    "content": "Transformasi digital telah menjadi kebutuhan utama bagi organisasi mahasiswa di era modern..."
+  },
+  {
+    "id": "news-002",
+    "title": "Peran Kepemimpinan dalam Menjaga Soliditas Tim",
+    "tagline": "Pemimpin bukan sekadar jabatan, tapi tanggung jawab",
+    "date": "2024-10-03",
+    "image": "/_dummy_images/no2.jpg",
+    "hashtags": [
+      "#Leadership",
+      "#Kepemimpinan",
+      "#Manajemen",
+      "#TimSolid",
+      "#Organisasi",
+      "#SoftSkill"
+    ],
+    "content": "Kepemimpinan memiliki peran sentral dalam menjaga soliditas tim..."
+  },
+  {
+    "id": "news-003",
+    "title": "Manajemen Waktu Efektif bagi Aktivis Kampus",
+    "tagline": "Antara akademik dan organisasi",
+    "date": "2024-08-21",
+    "image": "/_dummy_images/no3.jpg",
+    "hashtags": [
+      "#ManajemenWaktu",
+      "#Produktivitas",
+      "#AktivisKampus",
+      "#Mahasiswa",
+      "#SelfDevelopment",
+      "#TimeManagement"
+    ],
+    "content": "Aktivis kampus sering dihadapkan pada tantangan dalam membagi waktu..."
+  },
+  {
+    "id": "news-004",
+    "title": "Pentingnya Budaya Diskusi Sehat dalam Organisasi",
+    "tagline": "Perbedaan pendapat sebagai kekuatan",
+    "date": "2024-11-15",
+    "image": "/_dummy_images/no4.jpg",
+    "hashtags": [
+      "#Diskusi",
+      "#BudayaOrganisasi",
+      "#Kolaborasi",
+      "#Komunikasi",
+      "#CriticalThinking",
+      "#Organisasi"
+    ],
+    "content": "Budaya diskusi sehat merupakan fondasi penting dalam organisasi..."
+  },
+  {
+    "id": "news-005",
+    "title": "Strategi Regenerasi Kepengurusan yang Berkelanjutan",
+    "tagline": "Menyiapkan pemimpin masa depan",
+    "date": "2024-07-09",
+    "image": "/_dummy_images/no5.jpg",
+    "hashtags": [
+      "#Regenerasi",
+      "#Kaderisasi",
+      "#OrganisasiMahasiswa",
+      "#Kepemimpinan",
+      "#Sustainability",
+      "#Manajemen"
+    ],
+    "content": "Regenerasi kepengurusan menjadi tantangan klasik dalam organisasi mahasiswa..."
+  },
+  {
+    "id": "news-006",
+    "title": "Optimalisasi Media Sosial sebagai Sarana Informasi",
+    "tagline": "Mendekatkan organisasi dengan audiens",
+    "date": "2024-12-01",
+    "image": "/_dummy_images/no6.jpg",
+    "hashtags": [
+      "#MediaSosial",
+      "#Branding",
+      "#DigitalMarketing",
+      "#Informasi",
+      "#Organisasi",
+      "#Engagement"
+    ],
+    "content": "Media sosial kini menjadi sarana utama dalam menyampaikan informasi organisasi..."
+  },
+  {
+    "id": "news-007",
+    "title": "Evaluasi Program Kerja sebagai Bentuk Akuntabilitas",
+    "tagline": "Belajar dari proses, bukan hanya hasil",
+    "date": "2024-06-18",
+    "image": "/_dummy_images/no7.jpg",
+    "hashtags": [
+      "#Evaluasi",
+      "#ProgramKerja",
+      "#Akuntabilitas",
+      "#Organisasi",
+      "#Improvement",
+      "#Manajemen"
+    ],
+    "content": "Evaluasi program kerja merupakan bentuk akuntabilitas organisasi..."
+  },
+  {
+    "id": "news-008",
+    "title": "Kolaborasi Antar Departemen untuk Efektivitas Kerja",
+    "tagline": "Bersama lebih kuat",
+    "date": "2024-09-27",
+    "image": "/_dummy_images/no8.jpg",
+    "hashtags": [
+      "#Kolaborasi",
+      "#Departemen",
+      "#KerjaTim",
+      "#Organisasi",
+      "#Sinergi",
+      "#Produktivitas"
+    ],
+    "content": "Kolaborasi antar departemen menjadi faktor penting dalam meningkatkan efektivitas kerja..."
+  },
+  {
+    "id": "news-009",
+    "title": "Membangun Lingkungan Organisasi yang Inklusif",
+    "tagline": "Setiap suara berharga",
+    "date": "2024-10-19",
+    "image": "/_dummy_images/no9.jpg",
+    "hashtags": [
+      "#Inklusif",
+      "#LingkunganSehat",
+      "#Organisasi",
+      "#Diversity",
+      "#Respect",
+      "#Equality"
+    ],
+    "content": "Lingkungan organisasi yang inklusif memberikan ruang bagi setiap individu..."
+  },
+  {
+    "id": "news-010",
+    "title": "Pengaruh Motivasi terhadap Kinerja Anggota",
+    "tagline": "Semangat sebagai penggerak utama",
+    "date": "2024-08-05",
+    "image": "/_dummy_images/no10.jpg",
+    "hashtags": [
+      "#Motivasi",
+      "#Kinerja",
+      "#SDM",
+      "#Produktivitas",
+      "#Organisasi",
+      "#SelfGrowth"
+    ],
+    "content": "Motivasi memiliki pengaruh besar terhadap kinerja anggota organisasi..."
+  },
+
+  {
+    "id": "news-011",
+    "title": "Tantangan Organisasi Mahasiswa di Era Globalisasi",
+    "tagline": "Bergerak lokal, berpikir global",
+    "date": "2024-11-28",
+    "image": "/_dummy_images/no11.jpg",
+    "hashtags": [
+      "#Globalisasi",
+      "#OrganisasiMahasiswa",
+      "#Tantangan",
+      "#Adaptasi",
+      "#Strategi",
+      "#Inovasi"
+    ],
+    "content": "Globalisasi membawa berbagai tantangan baru bagi organisasi mahasiswa..."
+  },
+  {
+    "id": "news-012",
+    "title": "Pentingnya Dokumentasi dalam Setiap Kegiatan",
+    "tagline": "Jejak sejarah organisasi",
+    "date": "2024-07-30",
+    "image": "/_dummy_images/no12.jpg",
+    "hashtags": [
+      "#Dokumentasi",
+      "#Arsip",
+      "#Organisasi",
+      "#Sejarah",
+      "#ManajemenData"
+    ],
+    "content": "Dokumentasi kegiatan sering dianggap sepele..."
+  },
+  {
+    "id": "news-013",
+    "title": "Membangun Personal Branding Melalui Organisasi",
+    "tagline": "Organisasi sebagai ruang tumbuh",
+    "date": "2024-10-07",
+    "image": "/_dummy_images/no13.jpg",
+    "hashtags": [
+      "#PersonalBranding",
+      "#SoftSkill",
+      "#Mahasiswa",
+      "#SelfDevelopment",
+      "#Leadership"
+    ],
+    "content": "Keikutsertaan dalam organisasi memberikan peluang besar bagi mahasiswa..."
+  },
+  {
+    "id": "news-014",
+    "title": "Etika Berkomunikasi dalam Lingkungan Organisasi",
+    "tagline": "Komunikasi yang membangun",
+    "date": "2024-06-25",
+    "image": "/_dummy_images/no14.jpg",
+    "hashtags": [
+      "#Etika",
+      "#Komunikasi",
+      "#Organisasi",
+      "#Profesionalisme",
+      "#Respect"
+    ],
+    "content": "Etika berkomunikasi menjadi aspek penting dalam menjaga keharmonisan organisasi..."
+  },
+  {
+    "id": "news-015",
+    "title": "Manfaat Kegiatan Sosial bagi Citra Organisasi",
+    "tagline": "Memberi dampak nyata bagi masyarakat",
+    "date": "2024-12-10",
+    "image": "/_dummy_images/no15.jpg",
+    "hashtags": [
+      "#KegiatanSosial",
+      "#Pengabdian",
+      "#CitraOrganisasi",
+      "#SocialImpact",
+      "#Community"
+    ],
+    "content": "Kegiatan sosial tidak hanya memberikan manfaat bagi masyarakat..."
+  },
+
+  {
+    "id": "news-016",
+    "title": "Strategi Pengambilan Keputusan yang Efektif",
+    "tagline": "Cepat, tepat, dan bertanggung jawab",
+    "date": "2024-09-04",
+    "image": "/_dummy_images/no16.jpg",
+    "hashtags": [
+      "#Keputusan",
+      "#Strategi",
+      "#Manajemen",
+      "#Leadership",
+      "#DecisionMaking"
+    ],
+    "content": "Pengambilan keputusan yang efektif memerlukan analisis yang matang..."
+  },
+  {
+    "id": "news-017",
+    "title": "Meningkatkan Loyalitas Anggota Organisasi",
+    "tagline": "Rasa memiliki sebagai fondasi",
+    "date": "2024-08-14",
+    "image": "/_dummy_images/no17.jpg",
+    "hashtags": [
+      "#Loyalitas",
+      "#Anggota",
+      "#Organisasi",
+      "#Engagement",
+      "#Commitment"
+    ],
+    "content": "Loyalitas anggota tidak terbentuk secara instan..."
+  },
+  {
+    "id": "news-018",
+    "title": "Peran Teknologi dalam Efisiensi Administrasi",
+    "tagline": "Kerja cepat, data akurat",
+    "date": "2024-11-02",
+    "image": "/_dummy_images/no18.jpg",
+    "hashtags": [
+      "#Teknologi",
+      "#Administrasi",
+      "#Efisiensi",
+      "#DigitalTools",
+      "#Manajemen"
+    ],
+    "content": "Pemanfaatan teknologi dalam administrasi organisasi mampu meningkatkan efisiensi..."
+  },
+  {
+    "id": "news-019",
+    "title": "Mengelola Konflik Internal Secara Profesional",
+    "tagline": "Konflik sebagai proses pendewasaan",
+    "date": "2024-07-17",
+    "image": "/_dummy_images/no19.jpg",
+    "hashtags": [
+      "#Konflik",
+      "#ManajemenEmosi",
+      "#Organisasi",
+      "#Komunikasi",
+      "#ProblemSolving"
+    ],
+    "content": "Konflik internal merupakan hal yang tidak terhindarkan..."
+  },
+  {
+    "id": "news-020",
+    "title": "Pentingnya Transparansi Keuangan Organisasi",
+    "tagline": "Kepercayaan dimulai dari keterbukaan",
+    "date": "2024-10-25",
+    "image": "/_dummy_images/no20.jpg",
+    "hashtags": [
+      "#Keuangan",
+      "#Transparansi",
+      "#Akuntabilitas",
+      "#Organisasi",
+      "#Trust"
+    ],
+    "content": "Transparansi keuangan menjadi faktor utama dalam membangun kepercayaan..."
+  },
+
+  {
+    "id": "news-021",
+    "title": "Pengembangan Soft Skill Melalui Kepanitiaan",
+    "tagline": "Belajar dari pengalaman langsung",
+    "date": "2024-06-11",
+    "image": "/_dummy_images/no21.jpg",
+    "hashtags": [
+      "#SoftSkill",
+      "#Kepanitiaan",
+      "#PengembanganDiri",
+      "#Mahasiswa",
+      "#Leadership"
+    ],
+    "content": "Keterlibatan dalam kepanitiaan memberikan kesempatan bagi mahasiswa..."
+  },
+  {
+    "id": "news-022",
+    "title": "Membangun Kepercayaan Antar Anggota Organisasi",
+    "tagline": "Fondasi kerja sama yang solid",
+    "date": "2024-09-19",
+    "image": "/_dummy_images/no22.jpg",
+    "hashtags": [
+      "#Kepercayaan",
+      "#KerjaSama",
+      "#Organisasi",
+      "#TeamWork",
+      "#Integrity"
+    ],
+    "content": "Kepercayaan antar anggota merupakan fondasi utama..."
+  },
+  {
+    "id": "news-023",
+    "title": "Inovasi Program Kerja untuk Menjawab Kebutuhan Zaman",
+    "tagline": "Kreatif dan relevan",
+    "date": "2024-12-18",
+    "image": "/_dummy_images/no23.jpg",
+    "hashtags": [
+      "#Inovasi",
+      "#ProgramKerja",
+      "#Kreativitas",
+      "#Organisasi",
+      "#FutureReady"
+    ],
+    "content": "Inovasi program kerja menjadi keharusan agar organisasi tetap relevan..."
+  },
+  {
+    "id": "news-024",
+    "title": "Manajemen Risiko dalam Setiap Kegiatan Organisasi",
+    "tagline": "Siap menghadapi kemungkinan terburuk",
+    "date": "2024-08-29",
+    "image": "/_dummy_images/no24.jpg",
+    "hashtags": [
+      "#ManajemenRisiko",
+      "#Organisasi",
+      "#Perencanaan",
+      "#Mitigasi",
+      "#Safety"
+    ],
+    "content": "Manajemen risiko penting untuk mengantisipasi berbagai kemungkinan..."
+  },
+  {
+    "id": "news-025",
+    "title": "Menciptakan Lingkungan Kerja yang Positif",
+    "tagline": "Nyaman, aman, dan produktif",
+    "date": "2024-11-21",
+    "image": "/_dummy_images/no25.jpg",
+    "hashtags": [
+      "#LingkunganKerja",
+      "#Produktivitas",
+      "#Organisasi",
+      "#Wellbeing",
+      "#Culture"
+    ],
+    "content": "Lingkungan kerja yang positif berkontribusi besar terhadap produktivitas..."
+  },
+
+  {
+    "id": "news-026",
+    "title": "Optimalisasi Rapat sebagai Media Pengambilan Keputusan",
+    "tagline": "Rapat efektif, hasil maksimal",
+    "date": "2024-07-04",
+    "image": "/_dummy_images/no26.jpg",
+    "hashtags": [
+      "#Rapat",
+      "#Efektivitas",
+      "#Manajemen",
+      "#DecisionMaking",
+      "#Produktivitas"
+    ],
+    "content": "Rapat sering dianggap membuang waktu..."
+  },
+  {
+    "id": "news-027",
+    "title": "Membangun Mental Tangguh dalam Berorganisasi",
+    "tagline": "Siap menghadapi tekanan dan tantangan",
+    "date": "2024-10-13",
+    "image": "/_dummy_images/no27.jpg",
+    "hashtags": [
+      "#MentalTangguh",
+      "#Resiliensi",
+      "#Organisasi",
+      "#SelfGrowth",
+      "#MentalHealth"
+    ],
+    "content": "Berorganisasi tidak lepas dari tekanan dan tantangan..."
+  },
+  {
+    "id": "news-028",
+    "title": "Peran Mentor dalam Proses Kaderisasi",
+    "tagline": "Membimbing dengan keteladanan",
+    "date": "2024-06-02",
+    "image": "/_dummy_images/no28.jpg",
+    "hashtags": [
+      "#Mentor",
+      "#Kaderisasi",
+      "#Pembinaan",
+      "#Leadership",
+      "#Organisasi"
+    ],
+    "content": "Mentor memiliki peran penting dalam proses kaderisasi organisasi..."
+  },
+  {
+    "id": "news-029",
+    "title": "Menghadapi Burnout dalam Aktivitas Organisasi",
+    "tagline": "Menjaga kesehatan mental anggota",
+    "date": "2024-12-05",
+    "image": "/_dummy_images/no29.jpg",
+    "hashtags": [
+      "#Burnout",
+      "#KesehatanMental",
+      "#MentalHealth",
+      "#SelfCare",
+      "#Mahasiswa",
+      "#Organisasi"
+    ],
+    "content": "Burnout dapat terjadi akibat tekanan dan beban kerja..."
+  },
+  {
+    "id": "news-030",
+    "title": "Refleksi Akhir Tahun sebagai Evaluasi Organisasi",
+    "tagline": "Menutup tahun dengan pembelajaran",
+    "date": "2024-12-29",
+    "image": "/_dummy_images/no30.jpg",
+    "hashtags": [
+      "#Refleksi",
+      "#Evaluasi",
+      "#AkhirTahun",
+      "#Organisasi",
+      "#Planning",
+      "#Improvement"
+    ],
+    "content": "Refleksi akhir tahun menjadi momen penting bagi organisasi..."
+  }
+]

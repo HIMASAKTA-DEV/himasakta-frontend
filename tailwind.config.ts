@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import lineClamp from "@tailwindcss/line-clamp";
 
 const config: Config = {
   content: [
@@ -23,9 +24,10 @@ const config: Config = {
       },
       colors: {
         primaryPink: "#D58A94",
+        primaryGreen: "#22C55E",
       },
     },
   },
-  plugins: [],
+  plugins: [lineClamp],
 };
 export default config;

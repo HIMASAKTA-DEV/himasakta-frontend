@@ -5,7 +5,7 @@ import { ChevronRightIcon } from "@heroicons/react/24/solid";
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full h-[350px] lg:h-[600px] overflow-hidden">
+    <section className="relative w-full h-[550px] lg:h-[750px] overflow-hidden">
       <Image
         src="/images/HeroImage.png"
         alt="hero-image"
@@ -18,7 +18,7 @@ export default function HeroSection() {
           [-webkit-mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]
         "
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-primaryPink/80 via-primaryPink/80 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-primaryPink/80 via-primaryPink/60 to-transparent" />
 
       {/* Ini bagian Title */}
       <div className="relative z-499 flex h-full items-center px-12 lg:px-32 font-libertine">

@@ -64,6 +64,7 @@ export default function MobileNavbar() {
             flex flex-col items-center justify-center gap-6
             h-[calc(100vh-115px)]
             transition-opacity duration-300 delay-100
+            bg-white/95 backdrop-blur-lg
             ${open ? "opacity-100" : "opacity-0"}
           `}
         >

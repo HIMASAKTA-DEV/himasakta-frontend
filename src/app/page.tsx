@@ -1,5 +1,9 @@
+import DepartemenSection from "@/components/landing_page/DepartemenSection";
+import GetToKnow from "@/components/landing_page/GetToKnow";
 import HeroSection from "@/components/landing_page/HeroSection";
+import InformasiBerita from "@/components/landing_page/InformasiBerita";
 import InformasiKabinet from "@/components/landing_page/InformasiKabinet";
+import OrganigramSection from "@/components/landing_page/OrganigramSection";
 import ProfilHimpunan from "@/components/landing_page/ProfilHimpunan";
 import Layout from "@/layouts/Layout";
 import Image from "next/image";
@@ -7,81 +11,23 @@ import Image from "next/image";
 export default function Home() {
   return (
     <>
+      {/* TODO: Add hover effect in each section */}
       <Layout withNavbar={true} withFooter={true}>
-        <main className="h-min flex flex-col items-center gap-32">
-          {/* full bleed container */}
-          <div className="w-full">
+        <main className="flex flex-col items-center mb-24 lg:mb-32">
+          {/* Full bleed Hero: Remove gap by separating it from the rest of the flow */}
+          <div className="w-full mt-[-115px]">
             <HeroSection />
           </div>
 
-          {/* normal content area */}
-          <div className="max-w-8xl flex flex-col gap-32 mx-48">
+          {/* Normal content area: Move the gap/margin here instead of the parent main */}
+          <div className="max-w-8xl flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-12">
             <ProfilHimpunan />
             <InformasiKabinet />
+            <OrganigramSection />
+            <GetToKnow />
+            <DepartemenSection />
+            <InformasiBerita />
           </div>
-
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
-          <div>ini landing page</div>
         </main>
       </Layout>
     </>

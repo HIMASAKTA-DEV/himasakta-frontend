@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import SkeletonProfilHimpunan from "./skeletons/SkeletonProfilHimpunan";
 
 export default function ProfilHimpunan() {
+  // Comment this after creating data fetching
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,6 +15,8 @@ export default function ProfilHimpunan() {
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Sementara gak ada data fetching, biar scalable aku biarin loading 1s
 
   return loading ? (
     <SkeletonProfilHimpunan />

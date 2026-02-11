@@ -1,0 +1,26 @@
+[
+  {
+    "idx": "ev-0001",
+    "title": "Acara Meetup JavaScript",
+    "image": "/_dummy_images/no1.jpg",
+    "description": "Belajar dan berbagi pengalaman tentang JavaScript modern.",
+    "date": "2026-02-05",
+    "url": "https://google.com"
+  },
+  {
+    "idx": "ev-0002",
+    "title": "Workshop Tailwind CSS",
+    "image": "/_dummy_images/no2.jpg",
+    "description": "Hands-on workshop membuat UI responsive dengan Tailwind CSS.",
+    "date": "2026-02-10",
+    "url": "https://google.com"
+  },
+  {
+    "idx": "ev-0003",
+    "title": "Sesi Networking Bulanan",
+    "image": "/_dummy_images/no3.jpg",
+    "description": "Kenalan dengan anggota komunitas baru dan tukar kartu nama. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ",
+    "date": "2026-02-18",
+    "url": "https://google.com"
+  }
+]

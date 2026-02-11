@@ -11,9 +11,11 @@ const ButtonLinkVariant = [
   "green",
   "yellow",
   "red",
+  "black", // ✅ VARIANT BARU
   "outline",
   "ghost",
 ] as const;
+
 const ButtonLinkSize = ["sm", "base", "lg"] as const;
 
 type ButtonLinkProps = {
@@ -49,6 +51,7 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
           "focus:outline-none focus-visible:ring",
           "shadow-sm",
           "transition-colors duration-75",
+
           //#region  //*=========== Size ===========
           [
             size === "lg" && [
@@ -64,7 +67,8 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
               "text-xs md:text-sm",
             ],
           ],
-          //#endregion  //*======== Size ===========
+          //#endregion
+
           //#region  //*=========== Variants ===========
           [
             variant === "blue" && [
@@ -99,18 +103,36 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
               "disabled:bg-yellow-700",
               "focus-visible:ring-yellow-400",
             ],
+
+            // ✅ BLACK VARIANT
+            variant === "black" && [
+              "bg-black text-white",
+              "border border-black",
+              "hover:bg-neutral-800 hover:text-white",
+              "active:bg-neutral-600",
+              "disabled:bg-neutral-500",
+              "focus-visible:ring-neutral-400",
+            ],
+
             variant === "outline" && [
               "text-black",
               "border border-gray-300",
-              "hover:bg-slate-200 focus-visible:ring-gray-400 active:bg-slate-500 disabled:bg-slate-500",
+              "hover:bg-slate-200",
+              "focus-visible:ring-gray-400",
+              "active:bg-slate-300",
+              "disabled:bg-slate-300",
             ],
             variant === "ghost" && [
               "text-neutral-500",
               "shadow-none",
-              "hover:bg-neutral-300 focus-visible:ring-neutral-400 active:bg-neutral-100 disabled:bg-neutral-100",
+              "hover:bg-neutral-300",
+              "focus-visible:ring-neutral-400",
+              "active:bg-neutral-100",
+              "disabled:bg-neutral-100",
             ],
           ],
-          //#endregion  //*======== Variants ===========
+          //#endregion
+
           "disabled:cursor-not-allowed",
           className,
         )}
@@ -130,7 +152,9 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
             />
           </div>
         )}
+
         {children}
+
         {RightIcon && (
           <div
             className={clsxm([

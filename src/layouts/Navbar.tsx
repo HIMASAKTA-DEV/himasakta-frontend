@@ -5,7 +5,7 @@ import MobileNavbar from "./_navbar/MobileNavbar";
 
 export default function Navbar() {
   return (
-    <nav className="flex items-center justify-between bg-white h-[115px] px-12 border-b border-neutral-300 sticky top-0 z-[500]">
+    <nav className="flex items-center justify-between bg-white/80 backdrop-blur-md h-[115px] px-12 border-b border-neutral-300 sticky top-0 z-[500]">
       {/* Ini bagian Logo */}
       <div>
         <Link href="/" className="flex items-center gap-[24px]">
