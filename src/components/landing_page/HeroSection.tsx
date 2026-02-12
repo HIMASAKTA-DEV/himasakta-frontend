@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { navBtnData } from "./_navBtnHeroSection/navBtnData";
-import ButtonLink from "../links/ButtonLink";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+import ButtonLink from "../links/ButtonLink";
+import { navBtnData } from "./_navBtnHeroSection/navBtnData";
 
 export default function HeroSection() {
   return (

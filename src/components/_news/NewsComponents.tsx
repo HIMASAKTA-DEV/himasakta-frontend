@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { newsType } from "@/types/_dummy_db/allTypes";
+import Link from "next/link";
+import { FaArrowRight } from "react-icons/fa6";
 import HashTags from "../commons/HashTags";
 import ImageFallback from "../commons/ImageFallback";
-import { FaArrowRight } from "react-icons/fa6";
 
 export default function NewsComps({ news }: { news: newsType }) {
   return (

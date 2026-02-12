@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import clsx from "clsx";
+import { useState } from "react";
 import {
-  FaSearchPlus,
-  FaSearchMinus,
-  FaRedo,
   FaDownload,
+  FaRedo,
+  FaSearchMinus,
+  FaSearchPlus,
 } from "react-icons/fa";
 
 export default function InteractiveImgViewer({

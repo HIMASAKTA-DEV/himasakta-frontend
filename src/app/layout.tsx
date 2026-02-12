@@ -1,13 +1,13 @@
 import "./globals.css";
-import type { Metadata } from "next";
 import Providers from "@/app/providers";
 import {
+  averiaSerifLibre,
   inter,
+  linuxLibertine,
   lora,
   poppins,
-  averiaSerifLibre,
-  linuxLibertine,
 } from "@/styles/global-fonts";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {

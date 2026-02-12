@@ -1,7 +1,7 @@
+import Skeleton from "@/components/Skeleton";
 import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
 import SkeletonList from "@/components/commons/skeletons/SkeletonList";
 import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
-import Skeleton from "@/components/Skeleton";
 
 export default function SkeletonInformasiKabinet() {
   return (

@@ -1,14 +1,14 @@
 "use client";
 
+import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import beritaDataAllRaw from "@/lib/_dummy_db/_berita/dummyBeritaDataAll.json";
 import get12LatestNews from "@/lib/_dummy_db/_services/get12LatestNews";
-import HeaderSection from "../commons/HeaderSection";
 import divideArray from "@/lib/divideArray";
+import type { newsType } from "@/types/_dummy_db/allTypes";
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
-import type { newsType } from "@/types/_dummy_db/allTypes";
 import NewsComps from "../_news/NewsComponents";
+import HeaderSection from "../commons/HeaderSection";
 import ButtonLink from "../links/ButtonLink";
 
 const beritaDataAll = beritaDataAllRaw as newsType[];

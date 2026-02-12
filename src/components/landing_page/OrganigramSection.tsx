@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import HeaderSection from "@/components/commons/HeaderSection";
 import InteractiveImgViewer from "@/components/commons/InteractiveImgViewer";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
+import { useEffect, useState } from "react";
 
 export default function OrganigramSection() {
   const [loading, setLoading] = useState(true);

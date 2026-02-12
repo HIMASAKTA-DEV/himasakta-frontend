@@ -1,12 +1,12 @@
 // ketika ukuran lebar layar < 1024px
 "use client";
 
+import NextImage from "@/components/NextImage";
+import ButtonLink from "@/components/links/ButtonLink";
+import Link from "next/link";
 import { useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
-import ButtonLink from "@/components/links/ButtonLink";
 import { navigationBtn } from "./navigationBtn";
-import Link from "next/link";
-import NextImage from "@/components/NextImage";
 
 export default function MobileNavbar() {
   const [open, setOpen] = useState(false);

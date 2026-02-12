@@ -1,5 +1,5 @@
 // global fonts config
-import { Inter, Poppins, Lora, Averia_Serif_Libre } from "next/font/google";
+import { Averia_Serif_Libre, Inter, Lora, Poppins } from "next/font/google";
 import localFont from "next/font/local";
 
 export const inter = Inter({

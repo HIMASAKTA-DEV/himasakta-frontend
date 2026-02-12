@@ -1,6 +1,5 @@
 import Skeleton from "@/components/Skeleton";
 import clsx from "clsx";
-import React from "react";
 
 function SkeletonParagraph({ className }: { className?: string }) {
   return (

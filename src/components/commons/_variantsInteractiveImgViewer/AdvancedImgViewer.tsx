@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FaSearchPlus, FaSearchMinus, FaRedo } from "react-icons/fa";
+import { FaRedo, FaSearchMinus, FaSearchPlus } from "react-icons/fa";
 
 export default function InteractiveImgViewerV2({
   src,

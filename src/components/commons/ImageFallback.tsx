@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { ReactNode, useState } from "react";
 import NoImage from "./NoImg";
-import { useState, ReactNode } from "react";
 
 export default function ImageFallback({
   src,

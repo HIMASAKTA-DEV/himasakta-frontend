@@ -1,6 +1,6 @@
+import Skeleton from "@/components/Skeleton";
 import HeaderSectionSkeleton from "@/components/commons/skeletons/SkeletonHeaderSection";
 import ParagraphSkeleton from "@/components/commons/skeletons/SkeletonParagraph";
-import Skeleton from "@/components/Skeleton";
 import clsx from "clsx";
 
 export default function SkeletonProfilHimpunan({

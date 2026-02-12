@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import HeaderSection from "../commons/HeaderSection";
 import { useEffect, useState } from "react";
+import HeaderSection from "../commons/HeaderSection";
 import SkeletonProfilHimpunan from "./skeletons/SkeletonProfilHimpunan";
 
 export default function ProfilHimpunan() {

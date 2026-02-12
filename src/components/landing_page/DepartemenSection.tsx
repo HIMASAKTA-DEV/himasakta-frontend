@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import DeptInfoAll from "@/lib/_dummy_db/_departemen/dummyDepartemenAll.json";
-import DeptCard from "./_departemenSection/DeptCard";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
+import DeptInfoAll from "@/lib/_dummy_db/_departemen/dummyDepartemenAll.json";
+import { useEffect, useState } from "react";
+import DeptCard from "./_departemenSection/DeptCard";
 
 function DepartemenSection() {
   const firstDepts = DeptInfoAll.slice(0, 6);

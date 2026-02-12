@@ -1,7 +1,7 @@
 "use client";
 
-import SimpleImgViewer from "@/components/commons/_variantsInteractiveImgViewer/SimpleImgViewer";
 import AdvancedImgViewer from "@/components/commons/_variantsInteractiveImgViewer/AdvancedImgViewer";
+import SimpleImgViewer from "@/components/commons/_variantsInteractiveImgViewer/SimpleImgViewer";
 
 export type ViewerVariant = "simple" | "advanced";
 

@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import HeaderSection from "../commons/HeaderSection";
 import { dummyListData } from "./_infomasiKabinet/dummyListData";
-import { useEffect, useState } from "react";
 import SkeletonInformasiKabinet from "./skeletons/SkeletonInfoKabinet";
 
 export default function InformasiKabinet() {

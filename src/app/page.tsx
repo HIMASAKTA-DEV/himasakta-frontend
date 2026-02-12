@@ -6,7 +6,6 @@ import InformasiKabinet from "@/components/landing_page/InformasiKabinet";
 import OrganigramSection from "@/components/landing_page/OrganigramSection";
 import ProfilHimpunan from "@/components/landing_page/ProfilHimpunan";
 import Layout from "@/layouts/Layout";
-import Image from "next/image";
 
 export default function Home() {
   return (

@@ -1,5 +1,5 @@
-import type { Config } from "tailwindcss";
 import lineClamp from "@tailwindcss/line-clamp";
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [

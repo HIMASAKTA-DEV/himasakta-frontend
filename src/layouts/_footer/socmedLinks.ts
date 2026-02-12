@@ -1,11 +1,5 @@
 import { FaTiktok } from "react-icons/fa";
-import {
-  FiInstagram,
-  FiTwitter,
-  FiYoutube,
-  FiLinkedin,
-  FiLink,
-} from "react-icons/fi";
+import { FiInstagram, FiLink, FiLinkedin, FiYoutube } from "react-icons/fi";
 
 // TODO: Add url
 export const socmedLinks = [
