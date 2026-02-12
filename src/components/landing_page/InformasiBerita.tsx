@@ -70,7 +70,7 @@ export default function InformasiBerita() {
         </ButtonLink>
       </div>
 
-      {/* SLIDER */}
+      {/* Slider */}
       {loading ? (
         <SkeletonGrid
           className="grid-cols-2 grid-rows-2 lg:grid-rows-1 lg:grid-cols-4 gap-6"
@@ -96,7 +96,7 @@ export default function InformasiBerita() {
             ))}
           </div>
 
-          {/* NAVIGATION */}
+          {/* L & R Navigation */}
           <button
             onClick={prevSlide}
             className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow hover:shadow-lg transition-all duration-300"
@@ -111,7 +111,7 @@ export default function InformasiBerita() {
             <FaChevronRight />
           </button>
 
-          {/* DOTTED PAGINATION */}
+          {/* Dotted pagination */}
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 translate-y-1/2 flex gap-2">
             {slides.map((_, idx) => (
               <span

@@ -37,8 +37,7 @@ function DepartemenSection() {
       </div>
       {loading ? (
         <SkeletonGrid
-          count={12} // Use 12 to match your actual 12 departments
-          /* Remove grid-rows, let the natural flow handle height */
+          count={12}
           className="grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8"
         />
       ) : (

@@ -1,3 +1,4 @@
+import { FaTiktok } from "react-icons/fa";
 import {
   FiInstagram,
   FiTwitter,
@@ -10,27 +11,27 @@ import {
 export const socmedLinks = [
   {
     name: "instagram",
-    url: "https://instagram.com/username",
+    url: "https://www.instagram.com/himasakta.its/?hl=id",
     icon: FiInstagram,
   },
   {
-    name: "twitter",
-    url: "https://twitter.com/username",
-    icon: FiTwitter,
+    name: "tiktok",
+    url: "https://www.tiktok.com/@himasakta.its",
+    icon: FaTiktok,
   },
   {
     name: "youtube",
-    url: "https://youtube.com/username",
+    url: "https://www.youtube.com/@himasaktaits4262",
     icon: FiYoutube,
   },
   {
     name: "linkedin",
-    url: "https://linkedin.com/in/username",
+    url: "https://www.linkedin.com/company/himasaktaits/posts/?feedView=all",
     icon: FiLinkedin,
   },
   {
     name: "linktree",
-    url: "https://linktr.ee/username",
+    url: "https://himasaktaits.carrd.co/",
     icon: FiLink,
   },
 ] as const;

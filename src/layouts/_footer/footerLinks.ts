@@ -1,10 +1,10 @@
-// ini footerLink buat footer
+// ini navigationBtn
 // TODO: Add href
 export const footerLink = [
-  { label: "Profil", href: "/" },
-  { label: "Kabinet", href: "/" },
-  { label: "Departemen", href: "/" },
-  { label: "Progenda", href: "/" },
-  { label: "Galeri", href: "/" },
-  { label: "Berita", href: "/" },
+  { label: "Profil", href: "#profil-himpunan" },
+  { label: "Tentang Kabinet", href: "#informasi-kabinet" },
+  { label: "Kegiatan", href: "#kegiatan-section" },
+  { label: "Departemen", href: "#departemen-list-utama" },
+  { label: "Berita", href: "#informasi-berita" },
+  { label: "info", href: "https://himasaktaits.carrd.co/#" },
 ];

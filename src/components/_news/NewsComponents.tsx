@@ -9,12 +9,11 @@ import { FaArrowRight } from "react-icons/fa6";
 export default function NewsComps({ news }: { news: newsType }) {
   return (
     <div key={news.id} className="flex flex-col gap-3 group/card">
-      {/* IMAGE */}
       <Link
         href={`/news/${news.id}`}
         className="group relative w-full h-[140px] lg:h-[180px] rounded-xl overflow-hidden bg-gray-100"
       >
-        {/* OVERLAY */}
+        {/* Overlay */}
         <div
           className="
             absolute inset-0 bg-black opacity-0 
@@ -22,8 +21,6 @@ export default function NewsComps({ news }: { news: newsType }) {
             transition-all duration-300 z-30
           "
         />
-
-        {/* VIEW DETAIL - Centered content */}
         <div
           className="
             absolute inset-0 flex items-center justify-center
@@ -45,19 +42,16 @@ export default function NewsComps({ news }: { news: newsType }) {
         <ImageFallback src={news.image} alt={news.title} isFill />
       </Link>
 
-      {/* TEXT CONTENT AREA */}
+      {/* Text */}
       <div className="flex flex-col gap-2">
-        {/* TITLE */}
         <Link href={`/news/${news.id}`}>
           <h3 className="font-semibold text-base lg:text-lg line-clamp-2 hover:underline active:text-primaryGreen transition-colors">
             {news.title}
           </h3>
         </Link>
 
-        {/* HASHTAGS */}
         {news.hashtags && <HashTags tags={news.hashtags} />}
 
-        {/* TAGLINE & CONTENT */}
         <div className="space-y-1">
           <Link href={`/news/${news.id}`}>
             <p className="text-sm text-gray-500 line-clamp-1 italic hover:text-gray-700 transition active:text-primaryGreen">

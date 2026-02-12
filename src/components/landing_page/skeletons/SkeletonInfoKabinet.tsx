@@ -6,7 +6,7 @@ import Skeleton from "@/components/Skeleton";
 export default function SkeletonInformasiKabinet() {
   return (
     <section className="w-full flex flex-col lg:flex-row gap-8 lg:gap-24">
-      {/* Teks skeleton */}
+      {/* Text skeleton */}
       <div className="order-2 lg:order-1 flex flex-col gap-4 w-full">
         <SkeletonHeaderSection />
         <SkeletonParagraph />

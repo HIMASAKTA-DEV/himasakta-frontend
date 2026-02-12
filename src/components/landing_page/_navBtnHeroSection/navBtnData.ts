@@ -2,14 +2,14 @@
 export const navBtnData = [
   {
     name: "Media Partner",
-    url: "/",
+    url: "https://himasaktaits.carrd.co/#work",
   },
   {
     name: "About",
-    url: "/",
+    url: "https://himasaktaits.carrd.co/#about",
   },
   {
     name: "Contact",
-    url: "/",
+    url: "https://himasaktaits.carrd.co/#contact",
   },
 ];

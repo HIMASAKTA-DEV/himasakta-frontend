@@ -14,12 +14,12 @@ export default function Home() {
       {/* TODO: Add hover effect in each section */}
       <Layout withNavbar={true} withFooter={true}>
         <main className="flex flex-col items-center mb-24 lg:mb-32">
-          {/* Full bleed Hero: Remove gap by separating it from the rest of the flow */}
+          {/* Full bleed Hero */}
           <div className="w-full mt-[-115px]">
             <HeroSection />
           </div>
 
-          {/* Normal content area: Move the gap/margin here instead of the parent main */}
+          {/* Normal content area */}
           <div className="max-w-8xl flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32">
             <ProfilHimpunan />
             <InformasiKabinet />

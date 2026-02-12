@@ -25,7 +25,10 @@ export default function OrganigramSection() {
         <SkeletonSection />
       ) : (
         <div className="w-full">
-          <InteractiveImgViewer src="images/OrganigramSementara.jpeg" />
+          <InteractiveImgViewer
+            src="images/OrganigramSementara.jpeg"
+            variant="advanced"
+          />
         </div>
       )}
     </section>

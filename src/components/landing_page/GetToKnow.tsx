@@ -18,7 +18,10 @@ export default function GetToKnow() {
   }, []);
 
   return (
-    <section className="w-full flex flex-col items-center gap-8 px-4 lg:px-0">
+    <section
+      className="w-full flex flex-col items-center gap-8 px-4 lg:px-0"
+      id="kegiatan-section"
+    >
       <div className="space-y-2 text-center">
         <h1 className="font-averia text-4xl lg:text-6xl">
           Get to Know: What&apos;s on HIMASAKTA
@@ -42,7 +45,6 @@ export default function GetToKnow() {
                 key={event.idx || idx}
                 className="flex flex-col gap-3 w-full lg:min-w-[280px] lg:max-w-[280px]"
               >
-                {/* IMAGE CARD */}
                 <Link
                   href={event.url}
                   target="_blank"
@@ -50,12 +52,9 @@ export default function GetToKnow() {
                 >
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />
-
-                  {/* Hover Content */}
                   <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300">
                     <div className="flex items-center gap-2 text-white font-inter font-bold transition-colors duration-300 hover:text-[#4ade80]">
                       {" "}
-                      {/* Example primaryGreen */}
                       <span>View detail</span>
                       <FiExternalLink className="w-5 h-5" />
                     </div>
@@ -64,7 +63,7 @@ export default function GetToKnow() {
                   <ImageFallback isFill src={event.image} alt={event.title} />
                 </Link>
 
-                {/* TEXT CONTENT */}
+                {/* Text */}
                 <div className="space-y-1">
                   <Link href={event.url} target="_blank" className="block">
                     <h2 className="font-libertine text-lg font-bold hover:text-primaryGreen transition-colors line-clamp-2 leading-tight">

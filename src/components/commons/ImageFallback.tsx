@@ -19,9 +19,8 @@ export default function ImageFallback({
 }) {
   const [error, setError] = useState(false);
 
-  // If there's an issue with the source
   if (!src || error) {
-    // Return custom fallback if provided, else return default NoImage
+    // Kalo ada fallback return fallback
     return fallback ? (
       <>{fallback}</>
     ) : (
