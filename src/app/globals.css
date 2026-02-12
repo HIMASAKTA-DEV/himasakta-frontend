@@ -25,3 +25,9 @@ body {
     )
     rgb(var(--background-start-rgb));
 } */
+
+/* Make sure the browser is scrolling? */
+html {
+  scroll-padding-top: 130px; /* misal navbar 130px lebihi dari h-nav lah */
+  scroll-behavior: smooth;
+}

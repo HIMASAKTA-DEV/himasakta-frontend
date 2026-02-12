@@ -20,7 +20,7 @@ export default function Home() {
           </div>
 
           {/* Normal content area: Move the gap/margin here instead of the parent main */}
-          <div className="max-w-8xl flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-12">
+          <div className="max-w-8xl flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32">
             <ProfilHimpunan />
             <InformasiKabinet />
             <OrganigramSection />

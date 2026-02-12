@@ -11,7 +11,7 @@ import {
 
 export default function InteractiveImgViewer({
   src,
-  alt = "Organigram Organisasi",
+  alt = "Loading...",
 }: {
   src: string;
   alt?: string;
@@ -86,7 +86,7 @@ export default function InteractiveImgViewer({
       <div
         className={clsx(
           "relative w-full overflow-hidden rounded-[1.5rem] border-2 border-white shadow-lg hover:shadow-xl bg-neutral-50 touch-none transition-all duration-300",
-          // Aspect ratio 16:9 on mobile, fixed taller height on desktop
+          // Aspect ratio 16:9 on mobile
           "aspect-video lg:aspect-auto lg:h-[55vh]",
           "ring-1 ring-neutral-200",
           isDragging ? "cursor-grabbing" : "cursor-grab",
@@ -128,7 +128,7 @@ export default function InteractiveImgViewer({
             draggable={false}
             onError={(e) => {
               (e.target as HTMLImageElement).src =
-                "https://placehold.co/1200x800?text=Organigram+Not+Found";
+                "https://placehold.co/1200x800?text=Image+Not+Found";
             }}
           />
         </div>

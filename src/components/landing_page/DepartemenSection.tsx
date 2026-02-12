@@ -23,7 +23,10 @@ function DepartemenSection() {
   // Hanya perlu fetch all departemen, Ingetin pakai cache aja biar gak refetch.
 
   return (
-    <section className="w-full flex flex-col items-center gap-8 px-4">
+    <section
+      className="w-full flex flex-col items-center gap-8 px-4"
+      id="departemen-list-utama"
+    >
       <div className="flex items-center flex-col gap-2">
         <h1 className="font-averia text-4xl lg:text-6xl font-bold">
           12 Departemen

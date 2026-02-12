@@ -3,7 +3,7 @@
  * Misal:
  *
  * const rawNewsData = fetch(".../api/all-news") atau dari dummyBeritaDataAll.json
- * const allNewsData: newsType[] = rawNewsData
+ * const allNewsData: rawNewsData as newsType[]
  */
 // Kalo gw boleh jujur, gw gak tahu bedanya type sama interface
 
@@ -14,7 +14,7 @@ export interface newsType {
   tagline: string;
   date: string;
   image: string;
-  hashtags: string[];
+  hashtags?: string[];
   content: string;
 }
 

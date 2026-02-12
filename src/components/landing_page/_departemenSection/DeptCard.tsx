@@ -1,23 +1,25 @@
+import ImageFallback from "@/components/commons/ImageFallback";
 import DeptInfoAll from "@/lib/_dummy_db/_departemen/dummyDepartemenAll.json";
 import Link from "next/link";
 import { FaBuilding, FaChevronRight } from "react-icons/fa";
 
 export default function DeptCard({ dept }: { dept: (typeof DeptInfoAll)[0] }) {
   return (
-    <Link href={`/departments/${dept.id}`}>
+    <Link href={`/departments/${dept.id}`} className="block">
       <div className="relative w-full h-[100px] rounded-xl overflow-hidden shadow-md group">
-        {/* Background image */}
-        {dept.image ? (
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${dept.image})` }}
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center gap-4 bg-gray-300 text-white text-2xl lg:text-4xl">
-            <FaBuilding />
-            <h1 className="font-averia">{dept.name}</h1>
-          </div>
-        )}
+        {/* IMAGE WITH CUSTOM FALLBACK INTEGRATED */}
+        <ImageFallback
+          src={dept.image}
+          alt={dept.name}
+          isFill
+          imgStyle="group-hover:none"
+          fallback={
+            <div className="absolute inset-0 flex items-center justify-center gap-4 bg-gray-300 text-white text-2xl lg:text-4xl">
+              <FaBuilding />
+              <h1 className="font-averia">{dept.name}</h1>
+            </div>
+          }
+        />
 
         <div className="absolute inset-0 bg-gradient-to-l from-primaryPink/80 via-primaryPink/40 to-transparent opacity-100 pointer-events-none" />
 

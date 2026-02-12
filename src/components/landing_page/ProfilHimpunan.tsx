@@ -21,7 +21,7 @@ export default function ProfilHimpunan() {
   return loading ? (
     <SkeletonProfilHimpunan />
   ) : (
-    <section className="flex flex-col items-center gap-8">
+    <section className="flex flex-col items-center gap-8" id="profil-himpunan">
       <div className=" w-[75vw] lg:max-w-7xl relative aspect-[16/9] lg:aspect-[16/5]">
         <Image
           src="/images/ProfilHimpunan.png"

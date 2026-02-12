@@ -24,18 +24,21 @@ export default function InformasiKabinet() {
   return loading ? (
     <SkeletonInformasiKabinet />
   ) : (
-    <section className="w-full flex flex-col lg:flex-row  gap-8 lg:gap-24">
+    <section
+      className="w-full flex flex-col lg:flex-row  gap-8 lg:gap-24"
+      id="informasi-kabinet"
+    >
       <div className="order-2 lg:order-1 flex flex-col gap-4">
         <HeaderSection
           title="Informasi Kabinet"
           sub="Lorem ipsum dolor sit amet constectur"
         />
         <p className="font-libertine lg:text-xl">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore aliqua. Lorem ipsum
-          dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-          incididunt ut labore et dolore aliqua. Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+          Di balik setiap langkah besar, ada individu-individu hebat yang
+          bekerja dengan penuh dedikasi. Setiap anggota memiliki peran penting
+          dalam mewujudkan visi transformasi ### dari merancang inovasi,
+          membangun kolaborasi, hingga menciptakan lingkungan yang lebih dinamis
+          dan berdampak.
         </p>
         <h1 className="font-libertine font-bold lg:text-2xl">
           Lorem ipsum dolor sit amet

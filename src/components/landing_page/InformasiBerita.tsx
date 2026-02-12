@@ -5,17 +5,13 @@ import get12LatestNews from "@/lib/_dummy_db/_services/get12LatestNews";
 import HeaderSection from "../commons/HeaderSection";
 import divideArray from "@/lib/divideArray";
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import NoImage from "@/components/commons/NoImg";
-import HashTags from "@/components/commons/HashTags";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
-import { newsType } from "@/types/_dummy_db/allTypes";
+import type { newsType } from "@/types/_dummy_db/allTypes";
 import NewsComps from "../_news/NewsComponents";
 import ButtonLink from "../links/ButtonLink";
 
-const beritaDataAll: newsType[] = beritaDataAllRaw;
+const beritaDataAll = beritaDataAllRaw as newsType[];
 
 export default function InformasiBerita() {
   const _12LatestNews = get12LatestNews(beritaDataAll);
@@ -31,18 +27,24 @@ export default function InformasiBerita() {
     setCurrentSlide((s) => (s === slides.length - 1 ? 0 : s + 1));
   };
 
+  // autoplay tiap 7 detik
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 7000);
+    return () => clearInterval(interval);
+  }, [currentSlide]); // optional: bisa [] tapi TS kadang complain
+
   // TODO: Use data fetching
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <section className="flex flex-col gap-8">
+    <section className="flex flex-col gap-8" id="informasi-berita">
       <div className="flex items-end justify-between">
         <HeaderSection
           title="Informasi Berita"
@@ -76,7 +78,8 @@ export default function InformasiBerita() {
           withDesc
         />
       ) : (
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden pb-8">
+          {/* Slides */}
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -87,7 +90,7 @@ export default function InformasiBerita() {
                 className="min-w-full grid grid-cols-2 grid-rows-2 lg:grid-cols-4 lg:grid-rows-1 gap-6"
               >
                 {slide.map((news) => (
-                  <NewsComps news={news} />
+                  <NewsComps key={news.id} news={news} />
                 ))}
               </div>
             ))}
@@ -107,18 +110,21 @@ export default function InformasiBerita() {
           >
             <FaChevronRight />
           </button>
+
+          {/* DOTTED PAGINATION */}
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 translate-y-1/2 flex gap-2">
+            {slides.map((_, idx) => (
+              <span
+                key={idx}
+                className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${
+                  idx === currentSlide ? "bg-primaryPink" : "bg-gray-300"
+                }`}
+                onClick={() => setCurrentSlide(idx)}
+              />
+            ))}
+          </div>
         </div>
       )}
-      {/* <div className="flex justify-between">
-        <div />
-        <ButtonLink
-          href="/news"
-          variant="black"
-          className="font-libertine font-semibold text-sm opacity-100 lg:opacity-0 w-[175px]"
-        >
-          Berita Selengkapnya
-        </ButtonLink>
-      </div> */}
     </section>
   );
 }
