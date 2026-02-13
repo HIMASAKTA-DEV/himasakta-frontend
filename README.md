@@ -1,41 +1,27 @@
-# Next-JS Template Repository
+# Himasakta-Front-End
 
-## Getting Started
+## Navigasi Website
 
-### 1. Clone this repo using one of the two ways:
+**Notice: himasakta-front-end.vercel.app adalah bagian folder src/app di repo ini**
 
-1. Using bash or other terminal
+### navigasi halaman utama:
 
-   ```
-   git clone https://github.com/tapeds/next-template.git
-   ```
+| No  | Halaman           | URL                                                        | Keterangan / Issue                         |
+| --- | ----------------- | ---------------------------------------------------------- | ------------------------------------------ |
+| 1   | Landing Page      | `himasakta-front-end.vercel.app`                           | gk penting                                 |
+| 2   | Detail Departemen | `himasakta-front-end.vercel.app/departments/id-department` | [FE] Create Halaman Departemen #11         |
+| 3   | Daftar Berita     | `himasakta-front-end.vercel.app/news`                      | [FE] Create Halaman Berita #12             |
+| 4   | Detail Berita     | `himasakta-front-end.vercel.app/news/id-news`              | [FE] Create Halaman Detail Berita #14      |
+| 5   | Detail Progenda   | `himasakta-front-end.vercel.app/progenda/id-progenda`      | [FE] Create Halaman Detail Progenda #13    |
+| 6   | Halaman Info      | `himasakta-front-end.vercel.app/info`                      | [FE] Create Halaman Info (mirip carrd) #19 |
 
-2. By clicking use this template
+### Navigasi halaman admin-side:
 
-   ![image](https://github.com/tapeds/next-template/assets/111473015/37e9ec9c-cae4-4ccf-b048-f4bf195a6bb1)
-
-### 2. Install dependencies
-
-It is encouraged to use **pnpm** so the husky hooks can work properly.
-
-```bash
-pnpm install
-```
-
-### 3. Run the development server
-
-You can start the server using this command:
-
-```bash
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You can start editing the page by modifying `src/app/page.tsx`.
-
-### 4. Change all default settings marked by !CHANGETHIS
-
-You can find the settings you need to change by searching !CHANGETHIS and follow the instruction. You also need to change the name in `package.json` file.
-
-### 5. Commit message
-
-This template uses the conventional commit specification for better readability and clarity. It is mandatory to use conventional commit messages. Read more about conventional commits [here](https://www.conventionalcommits.org/en/v1.0.0/).
+| No  | Halaman Admin            | URL                                                                    | Keterangan / Issue                |
+| --- | ------------------------ | ---------------------------------------------------------------------- | --------------------------------- |
+| 1   | Edit Cabinet Info        | `himasakta-front-end.vercel.app/admin/edit-cabinet-info`               | [FE] Manage Informasi Kabinet #17 |
+| 2   | Edit Departments         | `himasakta-front-end.vercel.app/admin/edit-departments`                | [FE] Manage Departemen #16        |
+| 3   | Edit Department (Detail) | `himasakta-front-end.vercel.app/admin/edit-departments/id-departments` | [FE] Manage Departemen #16        |
+| 4   | Edit Gallery             | `himasakta-front-end.vercel.app/admin/edit-gallery`                    | [FE] Galery #18                   |
+| 5   | Edit News                | `himasakta-front-end.vercel.app/admin/edit-news`                       | [FE] Manage Berita + Edit #15     |
+| 6   | Edit News (Detail)       | `himasakta-front-end.vercel.app/admin/edit-news/id-news`               | [FE] Manage Berita + Edit #15     |

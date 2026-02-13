@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       {/* TODO: Add hover effect in each section */}
-      <Layout withNavbar={true} withFooter={true}>
+      <Layout withNavbar={true} withFooter={true} transparentOnTop={true}>
         <main className="flex flex-col items-center mb-24 lg:mb-32">
           {/* Full bleed Hero */}
           <div className="w-full mt-[-115px]">

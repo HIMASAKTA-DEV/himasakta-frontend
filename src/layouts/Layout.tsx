@@ -6,10 +6,11 @@ export default function Layout({
   children,
   withFooter,
   withNavbar,
+  transparentOnTop,
 }: LayoutProps) {
   return (
     <>
-      {withNavbar && <Navbar />}
+      {withNavbar && <Navbar transparentOnTop={transparentOnTop} />}
       {children}
       {withFooter && <Footer />}
     </>
