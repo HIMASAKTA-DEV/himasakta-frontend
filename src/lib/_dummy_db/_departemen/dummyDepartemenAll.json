@@ -4,6 +4,11 @@
     "name": "Teknik Informatika",
     "description": "Departemen yang fokus pada pengembangan perangkat lunak, algoritma, dan sistem komputer.",
     "image": "/_dummy_images/no1.jpg",
+    "gallery": [
+      "/_dummy_images/no3.jpg",
+      "/_dummy_images/no7.jpg",
+      "/_dummy_images/no10.jpg"
+    ],
     "progenda": [
       { "title": "Workshop JavaScript", "date": "2026-02-10" },
       { "title": "Hackathon Internal", "date": "2026-03-05" }
@@ -17,6 +22,11 @@
     "name": "Sistem Informasi",
     "description": "Departemen yang mempelajari manajemen informasi, basis data, dan analisis sistem.",
     "image": "/_dummy_images/no2.jpg",
+    "gallery": [
+      "/_dummy_images/no1.jpg",
+      "/_dummy_images/no6.jpg",
+      "/_dummy_images/no9.jpg"
+    ],
     "progenda": [
       { "title": "Sesi Analisis Sistem", "date": "2026-02-15" },
       { "title": "Workshop SQL", "date": "2026-03-12" }
@@ -30,6 +40,11 @@
     "name": "Teknik Elektro",
     "description": "Departemen yang mempelajari kelistrikan, elektronika, dan sistem kontrol.",
     "image": "/_dummy_images/no3.jpg",
+    "gallery": [
+      "/_dummy_images/no2.jpg",
+      "/_dummy_images/no8.jpg",
+      "/_dummy_images/no11.jpg"
+    ],
     "progenda": [
       { "title": "Praktikum Rangkaian Listrik", "date": "2026-02-18" },
       { "title": "Workshop Arduino", "date": "2026-03-20" }
@@ -43,6 +58,11 @@
     "name": "Teknik Mesin",
     "description": "Departemen yang mempelajari mekanika, termodinamika, dan desain mesin.",
     "image": "/_dummy_images/no4.jpg",
+    "gallery": [
+      "/_dummy_images/no5.jpg",
+      "/_dummy_images/no1.jpg",
+      "/_dummy_images/no12.jpg"
+    ],
     "progenda": [
       { "title": "Workshop CAD", "date": "2026-02-22" },
       { "title": "Sesi Termodinamika", "date": "2026-03-10" }
@@ -56,6 +76,11 @@
     "name": "Teknik Kimia",
     "description": "Departemen yang fokus pada proses kimia, reaksi, dan pengolahan bahan.",
     "image": "/_dummy_images/no5.jpg",
+    "gallery": [
+      "/_dummy_images/no4.jpg",
+      "/_dummy_images/no9.jpg",
+      "/_dummy_images/no2.jpg"
+    ],
     "progenda": [
       { "title": "Lab Kimia Dasar", "date": "2026-02-25" },
       { "title": "Workshop Proses Industri", "date": "2026-03-15" }
@@ -69,6 +94,11 @@
     "name": "Teknik Sipil",
     "description": "Departemen yang mempelajari konstruksi, struktur bangunan, dan manajemen proyek.",
     "image": "/_dummy_images/no6.jpg",
+    "gallery": [
+      "/_dummy_images/no10.jpg",
+      "/_dummy_images/no3.jpg",
+      "/_dummy_images/no8.jpg"
+    ],
     "progenda": [
       { "title": "Sesi Desain Struktur", "date": "2026-02-28" },
       { "title": "Workshop AutoCAD Civil", "date": "2026-03-18" }
@@ -82,6 +112,11 @@
     "name": "Teknik Industri",
     "description": "Departemen yang mempelajari optimasi proses, manajemen produksi, dan efisiensi industri.",
     "image": "/_dummy_images/no7.jpg",
+    "gallery": [
+      "/_dummy_images/no6.jpg",
+      "/_dummy_images/no11.jpg",
+      "/_dummy_images/no1.jpg"
+    ],
     "progenda": [
       { "title": "Workshop Lean Manufacturing", "date": "2026-02-12" },
       { "title": "Sesi Supply Chain", "date": "2026-03-08" }
@@ -95,6 +130,11 @@
     "name": "Teknik Biomedik",
     "description": "Departemen yang menggabungkan teknik dengan ilmu kesehatan dan medis.",
     "image": "/_dummy_images/no8.jpg",
+    "gallery": [
+      "/_dummy_images/no12.jpg",
+      "/_dummy_images/no5.jpg",
+      "/_dummy_images/no7.jpg"
+    ],
     "progenda": [
       { "title": "Workshop Alat Kesehatan", "date": "2026-02-20" },
       { "title": "Sesi Imaging Medis", "date": "2026-03-25" }
@@ -108,6 +148,11 @@
     "name": "Teknik Lingkungan",
     "description": "Departemen yang fokus pada pengelolaan lingkungan, air, dan energi terbarukan.",
     "image": "/_dummy_images/no9.jpg",
+    "gallery": [
+      "/_dummy_images/no2.jpg",
+      "/_dummy_images/no6.jpg",
+      "/_dummy_images/no10.jpg"
+    ],
     "progenda": [
       { "title": "Sesi Energi Terbarukan", "date": "2026-02-05" },
       { "title": "Workshop Pengelolaan Limbah", "date": "2026-03-12" }
@@ -121,6 +166,11 @@
     "name": "Teknik Material",
     "description": "Departemen yang mempelajari sifat material dan aplikasi tekniknya.",
     "image": "/_dummy_images/no10.jpg",
+    "gallery": [
+      "/_dummy_images/no9.jpg",
+      "/_dummy_images/no4.jpg",
+      "/_dummy_images/no11.jpg"
+    ],
     "progenda": [
       { "title": "Lab Material", "date": "2026-02-14" },
       { "title": "Workshop Metalurgi", "date": "2026-03-22" }
@@ -134,6 +184,11 @@
     "name": "Teknik Telekomunikasi",
     "description": "Departemen yang mempelajari jaringan, sinyal, dan sistem komunikasi.",
     "image": "/_dummy_images/no11.jpg",
+    "gallery": [
+      "/_dummy_images/no3.jpg",
+      "/_dummy_images/no7.jpg",
+      "/_dummy_images/no12.jpg"
+    ],
     "progenda": [
       { "title": "Workshop Jaringan", "date": "2026-02-08" },
       { "title": "Sesi Komunikasi Digital", "date": "2026-03-18" }
@@ -147,6 +202,11 @@
     "name": "Teknik Fisika",
     "description": "Departemen yang mempelajari fisika terapan untuk teknologi dan engineering.",
     "image": "/_dummy_images/no12.jpg",
+    "gallery": [
+      "/_dummy_images/no1.jpg",
+      "/_dummy_images/no8.jpg",
+      "/_dummy_images/no5.jpg"
+    ],
     "progenda": [
       { "title": "Lab Fisika Terapan", "date": "2026-02-17" },
       { "title": "Workshop Optik", "date": "2026-03-28" }
@@ -154,8 +214,5 @@
     "urlBankSoal": "https://www.khanacademy.org/science/physics",
     "urlSilabus": "https://www.edx.org/",
     "urlBankReferensi": "https://www.coursera.org/"
-  },
-  {
-    "_comment": "Format belum fix, masih ada struktur anggota dan galeri"
   }
 ]
