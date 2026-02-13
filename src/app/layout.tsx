@@ -11,10 +11,10 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    default: "Nextjs Starter Template",
-    template: "%s | Nextjs Starter Template",
+    default: "HIMASAKTA ITS | Himpunan Mahasiswa Aktuaria ITS",
+    template: "%s | HIMASAKTA ITS",
   },
-  description: "Nextjs 14.2.1 + Tailwind CSS starter template",
+  description: "Website resmi Himpunan Mahasiswa Aktuaria ITS",
 };
 
 export default function RootLayout({
