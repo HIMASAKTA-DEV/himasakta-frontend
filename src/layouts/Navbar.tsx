@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import NextImage from "@/components/NextImage";
+import clsx from "clsx";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import DesktopNavbar from "./_navbar/DesktopNavbar";
 import MobileNavbar from "./_navbar/MobileNavbar";
-import clsx from "clsx";
 
 type NavbarProps = {
   transparentOnTop?: boolean;

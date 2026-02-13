@@ -1,3 +1,5 @@
-export default function Page() {
-  return <div>hello</div>;
+function page() {
+  return <div>page</div>;
 }
+
+export default page;

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import NextImage from "@/components/NextImage";
 import ButtonLink from "@/components/links/ButtonLink";
+import clsx from "clsx";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { navigationBtn } from "./navigationBtn";
-import clsx from "clsx";
 
 export default function MobileNavbar() {
   const [open, setOpen] = useState(false);

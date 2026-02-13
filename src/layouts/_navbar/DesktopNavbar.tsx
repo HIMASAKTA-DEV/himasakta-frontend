@@ -1,6 +1,6 @@
 import ButtonLink from "@/components/links/ButtonLink";
-import { navigationBtn } from "./navigationBtn";
 import clsx from "clsx";
+import { navigationBtn } from "./navigationBtn";
 
 export default function DesktopNavbar({
   isTransparent,
