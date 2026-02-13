@@ -1,7 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { FaRedo, FaSearchMinus, FaSearchPlus } from "react-icons/fa";
+import clsx from "clsx";
+import React, { useState, useEffect } from "react";
+import {
+  FaChevronDown,
+  FaChevronLeft,
+  FaChevronRight,
+  FaChevronUp,
+  FaSearchMinus,
+  FaSearchPlus,
+} from "react-icons/fa";
 
 export default function InteractiveImgViewerV2({
   src,
@@ -10,97 +18,173 @@ export default function InteractiveImgViewerV2({
   src: string;
   alt?: string;
 }) {
-  const [scale, setScale] = useState(1);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [start, setStart] = useState({ x: 0, y: 0 });
+  const [scale, setScale] = useState(0.3);
+  const [showZoom, setShowZoom] = useState(false);
 
-  const handleStart = (clientX: number, clientY: number) => {
-    setIsDragging(true);
-    setStart({ x: clientX - position.x, y: clientY - position.y });
+  type Position = {
+    x: number;
+    y: number;
   };
+  const [position, setPosition] = useState<Position>({ x: 0, y: 35 });
 
-  const handleMove = (clientX: number, clientY: number) => {
-    if (!isDragging) return;
-    setPosition({ x: clientX - start.x, y: clientY - start.y });
-  };
+  const LIM_ZOOMIN = 5;
+  const LIM_ZOOMOUT = 0.2;
 
-  const handleEnd = () => setIsDragging(false);
+  // Use >= and <= for floating point safety
+  const isMaxZoom = scale >= LIM_ZOOMIN;
+  const isMinZoom = scale <= LIM_ZOOMOUT;
 
-  const zoomIn = () => setScale((s) => Math.min(s * 1.2, 5));
-  const zoomOut = () => setScale((s) => Math.max(s / 1.2, 0.3));
-  const reset = () => {
-    setScale(1);
-    setPosition({ x: 0, y: 0 });
-  };
+  const zoomIn = () => setScale((s) => Math.min(s * 1.2, LIM_ZOOMIN));
+  const zoomOut = () => setScale((s) => Math.max(s / 1.2, LIM_ZOOMOUT));
+
+  // Logic to show zoom text on change and hide after 2 seconds
+  useEffect(() => {
+    setShowZoom(true);
+    const timer = setTimeout(() => setShowZoom(false), 1000);
+    return () => clearTimeout(timer);
+  }, [scale]);
+
+  const LIMITPX = 1000;
+  const STEPPX = 30;
+
+  class MoveImg {
+    private setPosition: React.Dispatch<React.SetStateAction<Position>>;
+    constructor(setPosition: React.Dispatch<React.SetStateAction<Position>>) {
+      this.setPosition = setPosition;
+    }
+    left() {
+      this.setPosition((prev) => ({
+        x: Math.min(prev.x + STEPPX, LIMITPX),
+        y: prev.y,
+      }));
+    }
+    right() {
+      this.setPosition((prev) => ({
+        x: Math.max(prev.x - STEPPX, -LIMITPX),
+        y: prev.y,
+      }));
+    }
+    up() {
+      this.setPosition((prev) => ({
+        x: prev.x,
+        y: Math.min(prev.y + STEPPX, LIMITPX),
+      }));
+    }
+    down() {
+      this.setPosition((prev) => ({
+        x: prev.x,
+        y: Math.max(prev.y - STEPPX, -LIMITPX),
+      }));
+    }
+  }
+
+  const move = new MoveImg(setPosition);
 
   return (
-    <div className="relative flex flex-col gap-3 w-full max-w-6xl mx-auto">
-      {/* TOOLBAR VARIAN KIRI */}
-      <div className="absolute top-4 left-4 flex flex-col gap-2 bg-white/90 backdrop-blur-md border border-neutral-200 p-2 rounded-3xl shadow-lg z-10">
-        <button
-          onClick={zoomIn}
-          className="p-3 hover:bg-neutral-100 rounded-xl text-neutral-700 transition"
-          title="Zoom In"
-        >
-          <FaSearchPlus size={16} />
-        </button>
-        <button
-          onClick={zoomOut}
-          className="p-3 hover:bg-neutral-100 rounded-xl text-neutral-700 transition"
-          title="Zoom Out"
-        >
-          <FaSearchMinus size={16} />
-        </button>
-        <button
-          onClick={reset}
-          className="p-3 hover:bg-neutral-100 rounded-xl text-neutral-500 transition"
-          title="Reset"
-        >
-          <FaRedo size={14} />
-        </button>
-      </div>
+    <section className="flex items-center justify-center">
+      <div className="w-[85vw] aspect-video max-w-[1200px] bg-neutral-200 flex flex-col justify-start items-center rounded-md relative shadow-lg hover:shadow-xl transition-all duration-300">
+        {/* Toolbar */}
+        <div className="w-full bg-gray-100/85 backdrop-blur-md py-1 lg:h-[75px] rounded-t-md absolute flex items-center justify-between z-50 shadow-md">
+          <div className="flex items-center justify-center">
+            {/* Horizontal Controls */}
+            <div className="flex items-center gap-4 lg:gap-6 ml-16 border-r-[1px] border-slate-300 pr-8">
+              <button onClick={() => move.left()}>
+                <FaChevronLeft
+                  className={clsx(
+                    "p-[10px] size-10 lg:size-12 transition-all duration-300 rounded-full",
+                    position.x === LIMITPX
+                      ? "text-gray-400 cursor-default"
+                      : "hover:bg-slate-300 active:bg-slate-400",
+                  )}
+                />
+              </button>
+              <button onClick={() => move.right()}>
+                <FaChevronRight
+                  className={clsx(
+                    "p-[10px] size-10 lg:size-12 transition-all duration-300 rounded-full",
+                    position.x === -LIMITPX
+                      ? "text-gray-400 cursor-default"
+                      : "hover:bg-slate-300 active:bg-slate-400",
+                  )}
+                />
+              </button>
+            </div>
 
-      {/* VIEWER FRAME */}
-      <div
-        className={`relative w-full overflow-hidden rounded-2xl border-2 border-white shadow-lg bg-neutral-50 touch-none ${
-          isDragging ? "cursor-grabbing" : "cursor-grab"
-        } aspect-video lg:aspect-auto lg:h-[55vh]`}
-        onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
-        onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
-        onMouseUp={handleEnd}
-        onMouseLeave={handleEnd}
-        onTouchStart={(e) =>
-          handleStart(e.touches[0].clientX, e.touches[0].clientY)
-        }
-        onTouchMove={(e) =>
-          handleMove(e.touches[0].clientX, e.touches[0].clientY)
-        }
-        onTouchEnd={handleEnd}
-      >
-        <div
-          className="absolute inset-0 flex items-center justify-center"
-          style={{
-            transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-            transition: isDragging ? "none" : "transform 0.25s ease-out",
-          }}
-        >
+            {/* Vertical Controls */}
+            <div className="flex items-center gap-4 lg:gap-6 ml-8 py-2">
+              <button onClick={() => move.up()}>
+                <FaChevronUp
+                  className={clsx(
+                    "p-[10px] size-10 lg:size-12 transition-all duration-300 rounded-full",
+                    position.y === LIMITPX
+                      ? "text-gray-400 cursor-default"
+                      : "hover:bg-slate-300 active:bg-slate-400",
+                  )}
+                />
+              </button>
+              <button onClick={() => move.down()}>
+                <FaChevronDown
+                  className={clsx(
+                    "p-[10px] size-10 lg:size-12 transition-all duration-300 rounded-full",
+                    position.y === -LIMITPX
+                      ? "text-gray-400 cursor-default"
+                      : "hover:bg-slate-300 active:bg-slate-400",
+                  )}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Zoom Controls & Dynamic Indicator */}
+          <div className="flex items-center justify-center mr-8 gap-4">
+            <p
+              className={clsx(
+                "transition-all duration-500 ease-in-out",
+                showZoom || isMaxZoom || isMinZoom
+                  ? "opacity-100"
+                  : "opacity-0 pointer-events-none",
+                isMaxZoom || isMinZoom ? "text-red-500" : "text-black",
+              )}
+            >
+              Zoom: <span>{scale.toFixed(2)}x</span>
+            </p>
+
+            <button onClick={zoomIn}>
+              <FaSearchPlus
+                className={clsx(
+                  "p-[10px] size-10 lg:size-12 transition-all duration-300 rounded-full",
+                  isMaxZoom
+                    ? "text-gray-400 cursor-default"
+                    : "hover:bg-slate-300 active:bg-slate-400",
+                )}
+              />
+            </button>
+            <button onClick={zoomOut}>
+              <FaSearchMinus
+                className={clsx(
+                  "p-[10px] size-10 lg:size-12 transition-all duration-300 rounded-full",
+                  isMinZoom
+                    ? "text-gray-400 cursor-default"
+                    : "hover:bg-slate-300 active:bg-slate-400",
+                )}
+              />
+            </button>
+          </div>
+        </div>
+
+        {/* Image Container */}
+        <div className="flex-1 w-full overflow-hidden flex items-center justify-center rounded-md">
           <img
             src={src}
             alt={alt}
-            className="max-w-none w-auto h-auto max-h-[90%] object-contain select-none pointer-events-none"
-            draggable={false}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src =
-                "https://placehold.co/1200x800?text=Image+Not+Found";
+            style={{
+              transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+              transition: "transform 0.15s ease-out",
             }}
+            className="select-none max-w-none max-h-none shadow-xl"
           />
         </div>
-
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-neutral-900/50 backdrop-blur-md text-white text-[9px] px-4 py-2 rounded-full pointer-events-none font-bold tracking-[0.1em] border border-white/10 uppercase">
-          Drag • Pinch • Zoom
-        </div>
       </div>
-    </div>
+    </section>
   );
 }
