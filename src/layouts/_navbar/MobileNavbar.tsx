@@ -17,7 +17,7 @@ export default function MobileNavbar({
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [scrolled, setScrolled] = useState(false);
+  const [_scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {

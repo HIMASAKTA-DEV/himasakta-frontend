@@ -1,9 +1,7 @@
-import React from "react";
-import HeaderSection from "../commons/HeaderSection";
-import { mediaBtnData } from "./sectionBtn";
-import ButtonLink from "../links/ButtonLink";
-import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import HeaderSection from "../commons/HeaderSection";
+import ButtonLink from "../links/ButtonLink";
+import { mediaBtnData } from "./sectionBtn";
 
 function MediaPartner() {
   return (

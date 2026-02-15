@@ -1,23 +1,46 @@
 "use client";
 
-import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
-import beritaDataAllRaw from "@/lib/_dummy_db/_berita/dummyBeritaDataAll.json";
-import get12LatestNews from "@/lib/_dummy_db/_services/get12LatestNews";
-import divideArray from "@/lib/divideArray";
-import type { newsType } from "@/types/_dummy_db/allTypes";
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
+import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import NewsComps from "../_news/NewsComponents";
 import HeaderSection from "../commons/HeaderSection";
 import ButtonLink from "../links/ButtonLink";
 
-const beritaDataAll = beritaDataAllRaw as newsType[];
+import beritaDataAllRaw from "@/lib/_dummy_db/_berita/dummyBeritaDataAll.json";
+import get12LatestNews from "@/lib/_dummy_db/_services/get12LatestNews";
+import divideArray from "@/lib/divideArray";
+import type { newsType } from "@/types/_dummy_db/allTypes";
+
+const MIN_LOADING_TIME = 1000;
 
 export default function InformasiBerita() {
-  const _12LatestNews = get12LatestNews(beritaDataAll);
-  const slides = divideArray(_12LatestNews, 4);
-
+  const [news, setNews] = useState<newsType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const startTime = Date.now();
+
+    try {
+      setNews(beritaDataAllRaw as newsType[]);
+    } catch (err) {
+      console.error(err);
+      setError(true);
+    } finally {
+      const elapsed = Date.now() - startTime;
+      const delay = Math.max(MIN_LOADING_TIME - elapsed, 0);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, delay);
+    }
+  }, []);
+
+  const latestNews = news.length > 0 ? get12LatestNews(news) : [];
+  const slides = latestNews.length > 0 ? divideArray(latestNews, 4) : [];
 
   const prevSlide = () => {
     setCurrentSlide((s) => (s === 0 ? slides.length - 1 : s - 1));
@@ -27,29 +50,21 @@ export default function InformasiBerita() {
     setCurrentSlide((s) => (s === slides.length - 1 ? 0 : s + 1));
   };
 
-  // autoplay tiap 7 detik
   useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 7000);
+    if (slides.length <= 1) return;
+
+    const interval = setInterval(nextSlide, 7000);
     return () => clearInterval(interval);
-  }, [currentSlide]); // optional: bisa [] tapi TS kadang complain
-
-  // TODO: Use data fetching
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  }, [slides.length]);
 
   return (
     <section className="flex flex-col gap-8" id="informasi-berita">
       <div className="flex items-end justify-between">
         <HeaderSection
           title="Informasi Berita"
-          sub="Berita terbaru dari HIMASAKTA. Halah nyawit mulu lu tong."
+          sub="Berita terbaru dari HIMASAKTA."
         />
+
         <ButtonLink
           href="/news"
           variant="black"
@@ -59,27 +74,30 @@ export default function InformasiBerita() {
         </ButtonLink>
       </div>
 
-      <div className="flex justify-between">
+      <div className="flex justify-between lg:hidden">
         <div />
         <ButtonLink
           href="/news"
           variant="black"
-          className="font-libertine font-semibold text-sm opacity-100 p-3 lg:hidden"
+          className="font-libertine font-semibold text-sm p-3"
         >
           Berita Selengkapnya
         </ButtonLink>
       </div>
 
-      {/* Slider */}
       {loading ? (
         <SkeletonGrid
           className="grid-cols-2 grid-rows-2 lg:grid-rows-1 lg:grid-cols-4 gap-6"
           count={4}
           withDesc
         />
+      ) : error || news.length === 0 ? (
+        <div className="py-12 text-center text-gray-500">
+          <p className="text-lg font-semibold">Belum ada berita</p>
+          <p className="text-sm">Silakan cek kembali nanti.</p>
+        </div>
       ) : (
         <div className="relative overflow-hidden pb-8">
-          {/* Slides */}
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -96,33 +114,35 @@ export default function InformasiBerita() {
             ))}
           </div>
 
-          {/* L & R Navigation */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow hover:shadow-lg transition-all duration-300"
-          >
-            <FaChevronLeft />
-          </button>
+          {slides.length > 1 && (
+            <>
+              <button
+                onClick={prevSlide}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow"
+              >
+                <FaChevronLeft />
+              </button>
 
-          <button
-            onClick={nextSlide}
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow hover:shadow-lg transition-all duration-300"
-          >
-            <FaChevronRight />
-          </button>
+              <button
+                onClick={nextSlide}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow"
+              >
+                <FaChevronRight />
+              </button>
 
-          {/* Dotted pagination */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 translate-y-1/2 flex gap-2">
-            {slides.map((_, idx) => (
-              <span
-                key={idx}
-                className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${
-                  idx === currentSlide ? "bg-primaryPink" : "bg-gray-300"
-                }`}
-                onClick={() => setCurrentSlide(idx)}
-              />
-            ))}
-          </div>
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+                {slides.map((_, idx) => (
+                  <span
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`w-3 h-3 rounded-full cursor-pointer transition ${
+                      idx === currentSlide ? "bg-primaryPink" : "bg-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
     </section>

@@ -1,4 +1,3 @@
-import React from "react";
 import HeaderSection from "../commons/HeaderSection";
 
 function About() {

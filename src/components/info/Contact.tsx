@@ -1,7 +1,6 @@
-import React from "react";
-import HeaderSection from "../commons/HeaderSection";
 import { socmedLinks } from "@/layouts/_footer/socmedLinks";
 import Link from "next/link";
+import HeaderSection from "../commons/HeaderSection";
 
 function Contact() {
   return (
