@@ -6,5 +6,5 @@ export const navigationBtn = [
   { label: "Kegiatan", href: "#kegiatan-section" },
   { label: "Departemen", href: "#departemen-list-utama" },
   { label: "Berita", href: "#informasi-berita" },
-  { label: "info", href: "https://himasaktaits.carrd.co/#" },
+  { label: "info", href: "/info" },
 ];
