@@ -28,13 +28,17 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
 
   const isTransparent = transparentOnTop && isTop;
 
+  const [open, setOpen] = useState(false);
+
   return (
     <nav
       className={clsx(
-        "flex items-center justify-between h-[115px] px-12 sticky top-0 z-[500] transition-all duration-300",
+        "flex items-center justify-between h-[115px] px-12 sticky top-0 z-[499] transition-all duration-300",
         isTransparent
           ? "bg-transparent border-transparent shadow-none text-white"
-          : "bg-white/80 backdrop-blur-md border-b border-neutral-300 shadow-md text-black",
+          : open
+            ? "bg-white/80 border-b border-neutral-300 shadow-md text-black"
+            : "bg-white/90 border-b border-neutral-300 shadow-md text-black backdrop-blur-md",
       )}
     >
       {/* Logo */}
@@ -54,10 +58,13 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
           HIMASAKTA
         </h1>
       </Link>
-
       {/* Navigasi */}
       <DesktopNavbar isTransparent={isTransparent} />
-      <MobileNavbar />
+      <MobileNavbar
+        isTransparent={isTransparent}
+        open={open}
+        setOpen={setOpen}
+      />
     </nav>
   );
 }

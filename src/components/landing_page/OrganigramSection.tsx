@@ -24,7 +24,7 @@ export default function OrganigramSection() {
       {loading ? (
         <SkeletonSection />
       ) : (
-        <div className="w-full">
+        <div className="w-full flex items-center">
           <InteractiveImgViewer
             src="images/OrganigramSementara.jpeg"
             variant="advanced"

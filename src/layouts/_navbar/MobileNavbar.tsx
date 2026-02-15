@@ -8,9 +8,16 @@ import { useEffect, useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { navigationBtn } from "./navigationBtn";
 
-export default function MobileNavbar() {
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+export default function MobileNavbar({
+  isTransparent,
+  open,
+  setOpen,
+}: {
+  isTransparent: boolean;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const [_scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,20 +27,20 @@ export default function MobileNavbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock scroll when menu open
+  // Dynamic Icon Styling
+  const iconBtnStyle = clsx(
+    "rounded-full p-2 transition-all duration-300",
+    open ? "text-black" : isTransparent ? "text-white" : "text-black",
+    "hover:bg-neutral-200/50 active:scale-95 focus:outline-none",
+  );
+
+  // lock scroll
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [open]);
-
-  // Dynamic Icon Styling
-  const iconBtnStyle = clsx(
-    "rounded-full p-2 transition-all duration-300",
-    open || scrolled ? "text-black" : "text-white",
-    "hover:bg-neutral-200/50 active:scale-95 focus:outline-none",
-  );
 
   return (
     <>
@@ -55,9 +62,9 @@ export default function MobileNavbar() {
           open ? "opacity-100" : "opacity-0 pointer-events-none",
         )}
       >
-        <div className="absolute inset-0 bg-white/85 backdrop-blur-2xl" />
+        <div className="fixed inset-0 bg-white/80 backdrop-blur-xl" />
 
-        <div className="relative z-10 flex flex-col h-full">
+        <div className="inset-0 fixed z-10 flex flex-col h-full">
           <div className="flex items-center px-12 h-[115px] border-b border-neutral-100">
             <Link
               href="/"
@@ -103,4 +110,13 @@ export default function MobileNavbar() {
       </div>
     </>
   );
+}
+
+{
+  /**
+  <nav class="flex items-center justify-between h-[115px] px-12 sticky top-0 z-[499] transition-all duration-300 bg-transparent border-transparent shadow-none text-white"> */
+}
+{
+  /**
+  <nav class="flex items-center justify-between h-[115px] px-12 sticky top-0 z-[499] transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-neutral-300 shadow-md text-black"> */
 }
