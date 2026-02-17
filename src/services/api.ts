@@ -10,6 +10,7 @@ import {
   MonthlyEvent,
   News,
   Progenda,
+  Role,
 } from "@/types";
 
 // Cabinet API
@@ -23,13 +24,27 @@ export const getCurrentCabinet = async () => {
   return data.data;
 };
 
-// Admin Cabinet CRUD
 export const updateCabinetInfo = async (
   id: string,
   cabinetData: Record<string, unknown>,
 ) => {
   const { data } = await api.put(`/cabinet-info/${id}`, cabinetData);
   return data.data;
+};
+
+export const getAllCabinets = async (page = 1, limit = 100) => {
+  const { data } = await api.get<ApiResponse<CabinetInfo[]>>(
+    `/cabinet-info?page=${page}&limit=${limit}`,
+  );
+  return data;
+};
+
+// Role API
+export const getAllRoles = async (page = 1, limit = 100) => {
+  const { data } = await api.get<ApiResponse<Role[]>>(
+    `/role?page=${page}&limit=${limit}`,
+  );
+  return data;
 };
 
 export const getDepartments = async (page = 1, limit = 100) => {

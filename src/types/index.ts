@@ -55,6 +55,7 @@ export interface CabinetInfo {
   is_active: boolean;
   created_at?: string;
   updated_at?: string;
+  DeletedAt?: string | null;
 }
 
 export interface News {
@@ -124,18 +125,32 @@ export interface Gallery {
   updated_at?: string;
 }
 
+export interface Role {
+  id: string;
+  name: string;
+  level: number;
+  description: string;
+  created_at?: string;
+  updated_at?: string;
+  DeletedAt?: string | null;
+}
+
 export interface Member {
   id: string;
   name: string;
   nrp: string;
-  role: string;
+  role_id: string;
+  role: Role;
   department_id: string;
   department?: Department;
   photo_id?: string;
   photo?: Media;
-  period: string; // Note: Member still has period string in response example
+  cabinet_id: string;
+  index: number;
+  period?: string; // Legacy support
   created_at?: string;
   updated_at?: string;
+  DeletedAt?: string | null;
 }
 
 export type NewsAutocompletion = string;

@@ -39,7 +39,7 @@ export function DeptMembers({ members }: { members: Member[] }) {
                 {member.name}
               </h4>
               <p className="text-primary font-semibold text-xs uppercase tracking-wider mb-3">
-                {member.role}
+                {member.role.name}
               </p>
               <p className="text-slate-400 text-xs font-medium">
                 NRP. {member.nrp}

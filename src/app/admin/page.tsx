@@ -9,8 +9,10 @@ import {
   deleteGalleryItem,
   deleteMember,
   deleteNews,
+  getAllCabinets,
   getAllMembers,
   getAllNews,
+  getAllRoles,
   getCabinetInfo,
   getDepartments,
   getGallery,
@@ -20,7 +22,7 @@ import {
   updateMember,
   updateNews,
 } from "@/services/api";
-import { AuthResponse, Gallery } from "@/types";
+import { AuthResponse, CabinetInfo, Department, Gallery, Role } from "@/types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -125,9 +127,9 @@ export default function AdminPage() {
   // biome-ignore lint/suspicious/noExplicitAny: dynamic admin data
   const [formValues, setFormValues] = useState<any>({});
   const [isSaving, setIsSaving] = useState(false);
-  // biome-ignore lint/suspicious/noExplicitAny: department options for dropdown
-  // biome-ignore lint/suspicious/noExplicitAny: department options for dropdown
-  const [departmentOptions, setDepartmentOptions] = useState<any[]>([]);
+  const [departmentOptions, setDepartmentOptions] = useState<Department[]>([]);
+  const [roleOptions, setRoleOptions] = useState<Role[]>([]);
+  const [cabinetOptions, setCabinetOptions] = useState<CabinetInfo[]>([]);
   const [showMediaSelector, setShowMediaSelector] = useState(false);
   const [targetField, setTargetField] = useState<string | null>(null);
 
@@ -213,9 +215,15 @@ export default function AdminPage() {
         if (response.meta) {
           setTotalPages(response.meta.total_page);
         }
-        // Also fetch departments for the dropdown
-        const deptRes = await getDepartments(1, 100);
-        setDepartmentOptions(deptRes.data);
+        // Fetch dependencies for dropdowns
+        const [deptRes, roleRes, cabRes] = await Promise.all([
+          getDepartments(1, 100),
+          getAllRoles(1, 100),
+          getAllCabinets(1, 100),
+        ]);
+        setDepartmentOptions(deptRes.data || []);
+        setRoleOptions(roleRes.data || []);
+        setCabinetOptions(cabRes.data || []);
       }
     } catch (error) {
       console.error("Fetch Error:", error);
@@ -331,8 +339,9 @@ export default function AdminPage() {
         const payload = {
           nrp: formValues.nrp,
           name: formValues.name,
-          role: formValues.role,
-          period: formValues.period,
+          role_id: formValues.role_id,
+          cabinet_id: formValues.cabinet_id,
+          index: formValues.index,
           department_id: formValues.department_id,
           photo_id: formValues.photo_id,
         };
@@ -693,7 +702,9 @@ export default function AdminPage() {
                       <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-6">
                         {item.published_at
                           ? new Date(item.published_at).toLocaleDateString()
-                          : item.period || "No Date"}
+                          : activeTab === "anggota"
+                            ? item.role?.name || "No Role"
+                            : item.period || "No Date"}
                       </p>
 
                       <div className="flex items-center justify-end gap-2">
@@ -1109,13 +1120,57 @@ export default function AdminPage() {
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
                   Role / Position
                 </label>
-                <input
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.role || ""}
+                <select
+                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none appearance-none"
+                  value={formValues.role_id || ""}
                   onChange={(e) =>
-                    setFormValues({ ...formValues, role: e.target.value })
+                    setFormValues({ ...formValues, role_id: e.target.value })
                   }
-                  placeholder="e.g. Ketua Departemen, Staff"
+                >
+                  <option value="">Select Role</option>
+                  {roleOptions.map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
+                  Cabinet
+                </label>
+                <select
+                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none appearance-none"
+                  value={formValues.cabinet_id || ""}
+                  onChange={(e) =>
+                    setFormValues({ ...formValues, cabinet_id: e.target.value })
+                  }
+                >
+                  <option value="">Select Cabinet</option>
+                  {cabinetOptions.map((cab) => (
+                    <option key={cab.id} value={cab.id}>
+                      {new Date(cab.period_start).getFullYear()} -{" "}
+                      {new Date(cab.period_end).getFullYear()} (
+                      {cab.is_active ? "Active" : "Inactive"})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
+                  Sorting Index
+                </label>
+                <input
+                  type="number"
+                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
+                  value={formValues.index || 0}
+                  onChange={(e) =>
+                    setFormValues({
+                      ...formValues,
+                      index: Number.parseInt(e.target.value),
+                    })
+                  }
+                  placeholder="e.g. 1"
                 />
               </div>
               <div className="space-y-2">
