@@ -97,7 +97,7 @@ export default async function NewsPage({ searchParams }: Props) {
           )}
 
           {/* Pagination */}
-          {meta && meta.total_pages > 1 && (
+          {meta && meta.total_page > 1 && (
             <div className="flex justify-center gap-4">
               {page > 1 && (
                 <Link
@@ -108,9 +108,9 @@ export default async function NewsPage({ searchParams }: Props) {
                 </Link>
               )}
               <span className="px-4 py-2 text-slate-500">
-                Halaman {page} dari {meta.total_pages}
+                Halaman {page} dari {meta.total_page}
               </span>
-              {page < meta.total_pages && (
+              {page < meta.total_page && (
                 <Link
                   href={`/news?page=${page + 1}&search=${search}`}
                   className="px-4 py-2 bg-white border border-slate-200 rounded-lg hover:border-primary hover:text-primary transition-colors flex items-center gap-2"

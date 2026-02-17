@@ -1,11 +1,11 @@
-import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Navbar } from "@/components/Navbar";
 import {
+  FaExternalLinkAlt,
   FaInstagram,
   FaLinkedin,
-  FaYoutube,
   FaTiktok,
-  FaExternalLinkAlt,
+  FaYoutube,
 } from "react-icons/fa";
 
 export default function InfoPage() {

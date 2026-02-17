@@ -14,9 +14,10 @@ import {
   getLatestNews,
   getMonthlyEvents,
 } from "@/services/api";
+import { ApiResponse, Department, MonthlyEvent, News } from "@/types";
 
 // Revalidate data every hour
-export const revalidate = 3600;
+export const revalidate = 0;
 
 async function CabinetData() {
   const cabinet = await getCabinetInfo();
@@ -37,9 +38,18 @@ async function OtherData() {
     getLatestNews(6),
   ]);
 
-  const events = results[0].status === "fulfilled" ? results[0].value : [];
-  const departments = results[1].status === "fulfilled" ? results[1].value : [];
-  const news = results[2].status === "fulfilled" ? results[2].value : [];
+  const events =
+    results[0].status === "fulfilled"
+      ? (results[0].value as ApiResponse<MonthlyEvent[]>).data || []
+      : [];
+  const departments =
+    results[1].status === "fulfilled"
+      ? (results[1].value as ApiResponse<Department[]>).data || []
+      : [];
+  const news =
+    results[2].status === "fulfilled"
+      ? (results[2].value as ApiResponse<News[]>).data || []
+      : [];
 
   return (
     <>

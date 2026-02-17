@@ -1,16 +1,15 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { HiSearch, HiX } from "react-icons/hi";
 import { getNewsAutocompletion } from "@/services/api";
-import { NewsAutocompletion } from "@/types";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { HiSearch, HiX } from "react-icons/hi";
 import { twMerge } from "tailwind-merge";
 
 export function SearchAutocomplete() {
   const [isOpen, setIsOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [suggestions, setSuggestions] = useState<NewsAutocompletion[]>([]);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -50,8 +49,8 @@ export function SearchAutocomplete() {
     return () => clearTimeout(timer);
   }, [keyword]);
 
-  const handleSelect = (id: string) => {
-    router.push(`/news/${id}`);
+  const handleSearchTerm = (term: string) => {
+    router.push(`/news?search=${encodeURIComponent(term)}`);
     setIsOpen(false);
     setKeyword("");
   };
@@ -106,14 +105,14 @@ export function SearchAutocomplete() {
               <div className="px-4 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Hasil Pencarian
               </div>
-              {suggestions.map((item) => (
+              {suggestions.map((item, index) => (
                 <button
-                  key={item.id}
-                  onClick={() => handleSelect(item.id)}
+                  key={index}
+                  onClick={() => handleSearchTerm(item)}
                   className="w-full px-4 py-3 text-left text-sm text-slate-700 hover:bg-slate-50 transition-colors flex items-center justify-between group"
                 >
                   <span className="line-clamp-1 group-hover:text-primary transition-colors">
-                    {item.title}
+                    {item}
                   </span>
                   <HiSearch
                     size={14}

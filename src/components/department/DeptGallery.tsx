@@ -20,7 +20,7 @@ export function DeptGallery({ gallery }: { gallery: Gallery[] }) {
               {item.image_url ? (
                 <img
                   src={item.image_url}
-                  alt={item.title}
+                  alt={item.caption}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               ) : (
@@ -30,7 +30,7 @@ export function DeptGallery({ gallery }: { gallery: Gallery[] }) {
               )}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-end p-4">
                 <p className="text-white font-medium opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all">
-                  {item.title}
+                  {item.caption}
                 </p>
               </div>
             </div>

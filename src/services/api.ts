@@ -1,15 +1,15 @@
 import { api } from "@/lib/axios";
 import {
   ApiResponse,
+  AuthResponse,
   CabinetInfo,
   Department,
   Gallery,
+  LoginCredentials,
+  Member,
   MonthlyEvent,
   News,
-  NewsAutocompletion,
   Progenda,
-  LoginCredentials,
-  AuthResponse,
 } from "@/types";
 
 // Cabinet API
@@ -32,22 +32,24 @@ export const updateCabinetInfo = async (
   return data.data;
 };
 
-export const getDepartments = async () => {
-  const { data } = await api.get<ApiResponse<Department[]>>("/department");
-  return data.data;
+export const getDepartments = async (page = 1, limit = 100) => {
+  const { data } = await api.get<ApiResponse<Department[]>>(
+    `/department?page=${page}&limit=${limit}`,
+  );
+  return data;
 };
 
 // News API
 export const getLatestNews = async (limit = 6) => {
   const { data } = await api.get<ApiResponse<News[]>>(`/news?limit=${limit}`);
-  return data.data;
+  return data;
 };
 
 export const getMonthlyEvents = async () => {
   const { data } = await api.get<ApiResponse<MonthlyEvent[]>>(
     "/monthly-event/this-month",
   );
-  return data.data;
+  return data;
 };
 
 export const getDepartmentByName = async (name: string) => {
@@ -79,7 +81,7 @@ export const deleteDepartment = async (id: string) => {
 export const getProgendaByDepartment = async (deptId: string) => {
   // Fetch all and filter client side if backend doesn't support filter
   const { data } = await api.get<ApiResponse<Progenda[]>>("/progenda");
-  return data.data.filter((p) => p.department_id === deptId);
+  return (data.data || []).filter((p) => p.department_id === deptId);
 };
 
 export const getAllNews = async (page = 1, limit = 10, search = "") => {
@@ -90,7 +92,7 @@ export const getAllNews = async (page = 1, limit = 10, search = "") => {
 };
 
 export const getNewsAutocompletion = async (keyword: string) => {
-  const { data } = await api.get<ApiResponse<NewsAutocompletion[]>>(
+  const { data } = await api.get<ApiResponse<string[]>>(
     `/news/autocompletion?search=${keyword}`,
   );
   return data.data;
@@ -125,13 +127,21 @@ export const getProgendaById = async (id: string) => {
   return data.data;
 };
 
+// Gallery API
+export const getGallery = async (page = 1, limit = 10) => {
+  const { data } = await api.get<ApiResponse<Gallery[]>>(
+    `/gallery?page=${page}&limit=${limit}`,
+  );
+  return data;
+};
+
 export const getGalleryByDepartment = async (deptId: string) => {
   // Assuming /gallery endpoint exists and returns all or filters
   // If backend has specific endpoint like /gallery/department/:id use that
   // For now, fetch all and filter client side as fallback
   try {
-    const { data } = await api.get<ApiResponse<Gallery[]>>("/gallery");
-    return data.data.filter((g) => g.department_id === deptId);
+    const response = await getGallery(1, 100);
+    return (response.data || []).filter((g) => g.department_id === deptId);
   } catch (e) {
     console.error("Failed to fetch gallery", e);
     return [];
@@ -157,5 +167,38 @@ export const uploadGalleryImage = async (formData: FormData) => {
 
 export const deleteGalleryItem = async (id: string) => {
   const { data } = await api.delete(`/gallery/${id}`);
+  return data.data;
+};
+
+// Member API
+export const getAllMembers = async (page = 1, limit = 100) => {
+  const { data } = await api.get<ApiResponse<Member[]>>(
+    `/member?page=${page}&limit=${limit}`,
+  );
+  return data;
+};
+
+export const getMembersByDepartment = async (deptId: string) => {
+  const { data } = await api.get<ApiResponse<Member[]>>(
+    `/member?filter_by=department_id&filter=${deptId}`,
+  );
+  return data.data;
+};
+
+export const createMember = async (memberData: Record<string, unknown>) => {
+  const { data } = await api.post("/member", memberData);
+  return data.data;
+};
+
+export const updateMember = async (
+  id: string,
+  memberData: Record<string, unknown>,
+) => {
+  const { data } = await api.put(`/member/${id}`, memberData);
+  return data.data;
+};
+
+export const deleteMember = async (id: string) => {
+  const { data } = await api.delete(`/member/${id}`);
   return data.data;
 };

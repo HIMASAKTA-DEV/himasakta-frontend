@@ -27,6 +27,7 @@ const config: Config = {
       },
       fontFamily: {
         inter: ["var(--font-inter)"],
+        playfair: ["var(--font-playfair)", "serif"],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
