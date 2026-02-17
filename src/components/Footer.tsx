@@ -14,8 +14,8 @@ export function Footer() {
               HIMASAKTA ITS
             </h2>
             <p className="mb-6 max-w-sm text-slate-400">
-              Himpunan Mahasiswa Teknik Aktuaria Institut Teknologi Sepuluh
-              Nopember. Mewadahi aspirasi dan kreasi mahasiswa Aktuaria ITS.
+              Himpunan Mahasiswa Aktuaria Institut Teknologi Sepuluh Nopember.
+              Mewadahi aspirasi dan kreasi mahasiswa Aktuaria ITS.
             </p>
             <div className="flex gap-4">
               <a

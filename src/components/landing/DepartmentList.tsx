@@ -20,7 +20,7 @@ export function DepartmentList({ departments }: { departments: Department[] }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {departments.map((dept) => (
             <Link
-              href={`/department/${dept.id}`}
+              href={`/department/${dept.name}`}
               key={dept.id}
               className="group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:-translate-y-1 block"
             >

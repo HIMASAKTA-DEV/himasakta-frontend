@@ -34,7 +34,7 @@ export function NewsSlider({ news }: { news: News[] }) {
         <div className="flex overflow-x-auto pb-8 gap-6 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
           {news.map((item) => (
             <Link
-              href={`/news/${item.id}`}
+              href={`/news/${item.slug}`}
               key={item.id}
               className="flex-shrink-0 w-[85vw] md:w-[400px] snap-center bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300 group"
             >

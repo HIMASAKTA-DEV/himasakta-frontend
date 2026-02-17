@@ -40,6 +40,7 @@ export interface CabinetInfo {
 
 export interface News {
   id: string;
+  slug: string;
   title: string;
   content: string;
   thumbnail_id?: string;
@@ -79,4 +80,28 @@ export interface Gallery {
   image_url: string;
   department_id?: string;
   created_at: string;
+}
+
+export interface NewsAutocompletion {
+  id: string;
+  title: string;
+  thumbnail: string;
+}
+
+export interface LoginCredentials {
+  username?: string;
+  password?: string;
+}
+
+export interface AuthResponse {
+  token?: string;
+  access_token?: string;
+  data?: {
+    token?: string;
+    user?: unknown;
+  };
+  user?: {
+    username: string;
+    role: string;
+  };
 }

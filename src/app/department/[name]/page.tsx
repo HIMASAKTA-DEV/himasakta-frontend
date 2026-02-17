@@ -4,30 +4,30 @@ import { DeptGallery } from "@/components/department/DeptGallery";
 import { DeptHero } from "@/components/department/DeptHero";
 import { DeptProgenda } from "@/components/department/DeptProgenda";
 import {
-  getDepartmentById,
+  getDepartmentByName,
   getDepartments,
   getGalleryByDepartment,
   getProgendaByDepartment,
 } from "@/services/api";
 
 type Props = {
-  params: { id: string };
+  params: { name: string };
 };
 
 // Generate static params for all departments
 export async function generateStaticParams() {
   const departments = await getDepartments();
   return departments.map((dept) => ({
-    id: dept.id,
+    name: dept.name,
   }));
 }
 
 export default async function DepartmentPage({ params }: Props) {
   // Parallel Fetching
   const [department, progendas, gallery] = await Promise.all([
-    getDepartmentById(params.id),
-    getProgendaByDepartment(params.id),
-    getGalleryByDepartment(params.id),
+    getDepartmentByName(params.name),
+    getProgendaByDepartment(params.name), // Note: Check if backend supports name here too
+    getGalleryByDepartment(params.name),
   ]);
 
   if (!department) {

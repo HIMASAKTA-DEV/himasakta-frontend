@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 
-import api from "@/lib/api";
+import { api } from "@/lib/axios";
 
 const defaultQueryFn = async ({ queryKey }: QueryOptions) => {
   const { data } = await api.get(`${queryKey?.[0]}`);

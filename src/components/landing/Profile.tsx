@@ -13,12 +13,12 @@ export function Profile({ cabinet }: { cabinet: CabinetInfo | null }) {
             </div>
             <h2 className="text-4xl font-bold text-slate-900 mb-6 leading-tight">
               Himpunan Mahasiswa <br />
-              <span className="text-primary">Teknik Aktuaria</span>
+              <span className="text-primary">Aktuaria</span>
             </h2>
             <p className="text-lg text-slate-600 mb-8 leading-relaxed">
               {cabinet.tagline
                 ? `Bersama Kabinet "${cabinet.tagline}", kami berkomitmen untuk memajukan potensi mahasiswa Aktuaria ITS.`
-                : "Wadah pengembangan diri dan profesi bagi seluruh mahasiswa Teknik Aktuaria ITS."}
+                : "Wadah pengembangan diri dan profesi bagi seluruh mahasiswa Aktuaria ITS."}
             </p>
 
             <div className="space-y-6">

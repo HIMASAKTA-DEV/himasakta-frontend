@@ -37,7 +37,7 @@ export function Hero({ cabinet }: { cabinet: CabinetInfo | null }) {
           </h1>
 
           <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-2xl mx-auto font-light">
-            {cabinet?.tagline || "Himpunan Mahasiswa Teknik Aktuaria"}
+            {cabinet?.tagline || "Himpunan Mahasiswa Aktuaria"}
           </p>
 
           <div className="flex flex-col md:flex-row gap-4 justify-center">

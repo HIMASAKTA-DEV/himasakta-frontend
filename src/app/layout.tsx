@@ -9,10 +9,27 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: {
-    default: "Nextjs Starter Template",
-    template: "%s | Nextjs Starter Template",
+    default: "HIMASAKTA ITS | Himpunan Mahasiswa Aktuaria",
+    template: "%s | HIMASAKTA ITS",
   },
-  description: "Nextjs 14.2.1 + Tailwind CSS starter template",
+  description:
+    "Portal resmi HIMASAKTA ITS. Informasi kabinet, departemen, berita terkini, dan kegiatan mahasiswa Aktuaria ITS Surabaya.",
+  keywords: [
+    "HIMASAKTA",
+    "ITS",
+    "Aktuaria",
+    "Aktuaria ITS",
+    "Himpunan Mahasiswa",
+  ],
+  authors: [{ name: "HIMASAKTA ITS" }],
+  openGraph: {
+    title: "HIMASAKTA ITS",
+    description: "Himpunan Mahasiswa Teknik Aktuaria ITS Surabaya",
+    url: "https://himasakta.its.ac.id",
+    siteName: "HIMASAKTA ITS",
+    locale: "id_ID",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

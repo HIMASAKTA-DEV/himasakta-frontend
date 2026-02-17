@@ -1,6 +1,7 @@
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { getAllNews } from "@/services/api";
+import { News } from "@/types";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import Link from "next/link";
@@ -47,9 +48,9 @@ export default async function NewsPage({ searchParams }: Props) {
 
           {/* News Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {news.map((item) => (
+            {news.map((item: News) => (
               <Link
-                href={`/news/${item.id}`}
+                href={`/news/${item.slug}`}
                 key={item.id}
                 className="bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-xl transition-all duration-300 group flex flex-col"
               >

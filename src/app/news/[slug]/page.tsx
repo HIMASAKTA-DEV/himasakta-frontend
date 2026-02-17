@@ -1,17 +1,17 @@
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { getNewsById } from "@/services/api";
+import { getNewsBySlug } from "@/services/api";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import Link from "next/link";
 import { FaArrowLeft, FaCalendar, FaTag } from "react-icons/fa";
 
 type Props = {
-  params: { id: string };
+  params: { slug: string };
 };
 
 export default async function NewsDetailPage({ params }: Props) {
-  const news = await getNewsById(params.id);
+  const news = await getNewsBySlug(params.slug);
 
   if (!news) {
     return (
@@ -83,7 +83,7 @@ export default async function NewsDetailPage({ params }: Props) {
 
           {news.hashtags && (
             <div className="mt-12 pt-8 border-t border-slate-100 flex flex-wrap gap-2">
-              {news.hashtags.split(",").map((tag, idx) => (
+              {news.hashtags.split(",").map((tag: string, idx: number) => (
                 <span
                   key={idx}
                   className="text-sm text-primary bg-primary/5 px-3 py-1 rounded-full"
