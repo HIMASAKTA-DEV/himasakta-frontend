@@ -5,6 +5,8 @@ import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import Link from "next/link";
 import { FaArrowLeft, FaCalendar, FaTag } from "react-icons/fa";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Props = {
   params: { slug: string };
@@ -75,10 +77,9 @@ export default async function NewsDetailPage({ params }: Props) {
           </div>
 
           <article className="prose prose-lg prose-slate max-w-none">
-            {/* Simple content rendering preserving newlines */}
-            <div className="whitespace-pre-wrap leading-relaxed text-slate-700">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {news.content}
-            </div>
+            </ReactMarkdown>
           </article>
 
           {news.hashtags && (

@@ -24,6 +24,13 @@ export const getCurrentCabinet = async () => {
   return data.data;
 };
 
+export const createCabinetInfo = async (
+  cabinetData: Record<string, unknown>,
+) => {
+  const { data } = await api.post("/cabinet-info", cabinetData);
+  return data.data;
+};
+
 export const updateCabinetInfo = async (
   id: string,
   cabinetData: Record<string, unknown>,
@@ -32,7 +39,12 @@ export const updateCabinetInfo = async (
   return data.data;
 };
 
-export const getAllCabinets = async (page = 1, limit = 100) => {
+export const deleteCabinetInfo = async (id: string) => {
+  const { data } = await api.delete(`/cabinet-info/${id}`);
+  return data.data;
+};
+
+export const getAllCabinets = async (page = 1, limit = 10) => {
   const { data } = await api.get<ApiResponse<CabinetInfo[]>>(
     `/cabinet-info?page=${page}&limit=${limit}`,
   );
@@ -45,6 +57,58 @@ export const getAllRoles = async (page = 1, limit = 100) => {
     `/role?page=${page}&limit=${limit}`,
   );
   return data;
+};
+
+export const createRole = async (roleData: Record<string, unknown>) => {
+  const { data } = await api.post("/role", roleData);
+  return data.data;
+};
+
+// Progenda API
+export const createProgenda = async (progendaData: Record<string, unknown>) => {
+  const { data } = await api.post("/progenda", progendaData);
+  return data.data;
+};
+
+export const updateProgenda = async (
+  id: string,
+  progendaData: Record<string, unknown>,
+) => {
+  const { data } = await api.put(`/progenda/${id}`, progendaData);
+  return data.data;
+};
+
+export const deleteProgenda = async (id: string) => {
+  const { data } = await api.delete(`/progenda/${id}`);
+  return data.data;
+};
+
+// Monthly Event API
+export const getAllMonthlyEvents = async (page = 1, limit = 10) => {
+  const { data } = await api.get<ApiResponse<MonthlyEvent[]>>(
+    `/monthly-event?page=${page}&limit=${limit}`,
+  );
+  return data;
+};
+
+export const createMonthlyEvent = async (
+  eventData: Record<string, unknown>,
+) => {
+  const { data } = await api.post("/monthly-event", eventData);
+  return data.data;
+};
+
+export const updateMonthlyEvent = async (
+  id: string,
+  eventData: Record<string, unknown>,
+) => {
+  const { data } = await api.put(`/monthly-event/${id}`, eventData);
+  return data.data;
+};
+
+export const deleteMonthlyEvent = async (id: string) => {
+  const { data } = await api.delete(`/monthly-event/${id}`);
+  return data.data;
 };
 
 export const getDepartments = async (page = 1, limit = 100) => {

@@ -354,6 +354,105 @@ All entities include these GORM standard fields:
 | `PUT` | `/member/:id` | ✅ | Update member |
 | `DELETE` | `/member/:id` | ✅ | Delete member |
 
+### Input Structure (POST/PUT)
+
+#### Cabinet Info
+```json
+{
+  "visi": "string",
+  "misi": "string",
+  "tagline": "string",
+  "description": "string",
+  "period_start": "string (ISO Date)",
+  "period_end": "string (ISO Date)",
+  "logo_id": "string (UUID)",
+  "organigram_id": "string (UUID) | null",
+  "is_active": "boolean"
+}
+```
+
+#### Department
+```json
+{
+  "name": "string",
+  "description": "string",
+  "logo_id": "string (UUID)",
+  "social_media_link": "string",
+  "bank_soal_link": "string",
+  "silabus_link": "string",
+  "bank_ref_link": "string"
+}
+```
+
+#### News
+```json
+{
+  "title": "string",
+  "tagline": "string",
+  "hashtags": "string (comma separated)",
+  "content": "string (Markdown)",
+  "thumbnail_id": "string (UUID)",
+  "published_at": "string (ISO Date)"
+}
+```
+
+#### Member
+```json
+{
+  "nrp": "string",
+  "name": "string",
+  "role": "string",
+  "department_id": "string (UUID)",
+  "photo_id": "string (UUID)"
+}
+```
+
+#### Progenda
+```json
+{
+  "name": "string",
+  "goal": "string",
+  "description": "string",
+  "website_link": "string",
+  "instagram_link": "string",
+  "twitter_link": "string",
+  "linkedin_link": "string",
+  "youtube_link": "string",
+  "department_id": "string (UUID)",
+  "thumbnail_id": "string (UUID)",
+  "timelines": [
+    {
+      "timeline_id": "string (UUID) | optional",
+      "date": "string (ISO Date)",
+      "info": "string",
+      "link": "string"
+    }
+  ]
+}
+```
+
+#### Monthly Event
+```json
+{
+  "title": "string",
+  "description": "string",
+  "thumbnail_id": "string (UUID)",
+  "month": "string (ISO Date)",
+  "link": "string"
+}
+```
+
+#### Gallery / Media
+```json
+{
+  "image": "file",
+  "caption": "string",
+  "category": "string",
+  "department_id": "string (UUID) | null",
+  "progenda_id": "string (UUID) | null"
+}
+```
+
 ---
 
 ## Media Type Reference

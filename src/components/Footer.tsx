@@ -74,34 +74,6 @@ export function Footer() {
               </li>
             </ul>
           </div>
-
-          {/* External */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Tautan</h3>
-            <ul className="flex flex-col gap-2">
-              <li>
-                <a href="#" className="hover:text-primary transition-colors">
-                  Kalender Akademik
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://its.ac.id"
-                  className="hover:text-primary transition-colors"
-                >
-                  Website ITS
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://actuarial.its.ac.id"
-                  className="hover:text-primary transition-colors"
-                >
-                  Aktuaria ITS
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
 
         <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">

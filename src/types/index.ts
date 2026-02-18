@@ -147,7 +147,7 @@ export interface Member {
   photo?: Media;
   cabinet_id: string;
   index: number;
-  period?: string; // Legacy support
+  period?: string; // Legacy support - to be removed
   created_at?: string;
   updated_at?: string;
   DeletedAt?: string | null;

@@ -2,49 +2,61 @@
 
 import { MediaSelector } from "@/components/admin/MediaSelector";
 import {
+  createCabinetInfo,
   createDepartment,
   createMember,
+  createMonthlyEvent,
   createNews,
+  createProgenda,
+  createRole,
+  deleteCabinetInfo,
   deleteDepartment,
   deleteGalleryItem,
   deleteMember,
+  deleteMonthlyEvent,
   deleteNews,
+  deleteProgenda,
   getAllCabinets,
   getAllMembers,
+  getAllMonthlyEvents,
   getAllNews,
   getAllRoles,
-  getCabinetInfo,
   getDepartments,
   getGallery,
+  getProgendaByDepartment,
   login,
   updateCabinetInfo,
   updateDepartment,
   updateMember,
+  updateMonthlyEvent,
   updateNews,
+  updateProgenda,
 } from "@/services/api";
-import { AuthResponse, CabinetInfo, Department, Gallery, Role } from "@/types";
+import { AuthResponse, CabinetInfo, Department, Progenda, Role } from "@/types";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   FaBuilding,
   FaImages,
   FaRegNewspaper,
-  FaSignOutAlt,
   FaUserFriends,
   FaUsers,
 } from "react-icons/fa";
-import {
-  HiChevronDown,
-  HiChevronRight,
-  HiLockClosed,
-  HiPencil,
-  HiPlus,
-  HiTrash,
-  HiUser,
-  HiX,
-} from "react-icons/hi";
-import { twMerge } from "tailwind-merge";
+import { HiLockClosed, HiUser } from "react-icons/hi";
+
+// Modular Components
+import { AdminModal } from "@/components/admin/AdminModal";
+import { CabinetForm } from "@/components/admin/forms/CabinetForm";
+import { DepartmentForm } from "@/components/admin/forms/DepartmentForm";
+import { GalleryForm } from "@/components/admin/forms/GalleryForm";
+import { MemberForm } from "@/components/admin/forms/MemberForm";
+import { MonthlyEventForm } from "@/components/admin/forms/MonthlyEventForm";
+import { NewsForm } from "@/components/admin/forms/NewsForm";
+import { AdminHeader } from "@/components/admin/layout/AdminHeader";
+import { AdminSidebar } from "@/components/admin/layout/AdminSidebar";
+import { ProgendaModal } from "@/components/admin/modals/ProgendaModal";
+import { AdminGrid } from "@/components/admin/sections/AdminGrid";
 
 const sidebarLinks = [
   { name: "Kabinet", icon: FaUserFriends, id: "kabinet" },
@@ -52,59 +64,8 @@ const sidebarLinks = [
   { name: "Anggota", icon: FaUsers, id: "anggota" },
   { name: "Berita", icon: FaRegNewspaper, id: "berita", active: true },
   { name: "Galeri", icon: FaImages, id: "galeri" },
+  { name: "Get to know", icon: FaImages, id: "monthly-event" },
 ];
-
-const AdminModal = ({
-  isOpen,
-  onClose,
-  title,
-  children,
-  onConfirm,
-  loading,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  onConfirm: () => void;
-  loading?: boolean;
-}) => {
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-2xl rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-        <div className="p-10 border-b border-slate-50 flex justify-between items-center">
-          <h3 className="text-3xl font-extrabold text-slate-900">{title}</h3>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-slate-50 rounded-full transition-colors"
-          >
-            <HiX size={24} className="text-slate-400" />
-          </button>
-        </div>
-        <div className="p-10 max-h-[60vh] overflow-y-auto">{children}</div>
-        <div className="p-10 bg-slate-50 flex gap-4">
-          <button
-            onClick={onClose}
-            className="flex-1 py-4 px-6 bg-white text-slate-600 rounded-2xl font-bold border border-slate-200 hover:bg-slate-100 transition-all"
-          >
-            Cancel
-          </button>
-          <button
-            disabled={loading}
-            onClick={onConfirm}
-            className="flex-[2] py-4 px-6 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
-          >
-            {loading && (
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            )}
-            Confirm Changes
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -117,8 +78,6 @@ export default function AdminPage() {
   });
   // biome-ignore lint/suspicious/noExplicitAny: dynamic admin data
   const [items, setItems] = useState<any[]>([]);
-  // biome-ignore lint/suspicious/noExplicitAny: dynamic admin data
-  const [cabinetData, setCabinetData] = useState<any>(null);
   const [isDataLoading, setIsDataLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState<"add" | "edit">("add");
@@ -132,11 +91,26 @@ export default function AdminPage() {
   const [cabinetOptions, setCabinetOptions] = useState<CabinetInfo[]>([]);
   const [showMediaSelector, setShowMediaSelector] = useState(false);
   const [targetField, setTargetField] = useState<string | null>(null);
+  const [isAddingRole, setIsAddingRole] = useState(false);
+  const [newRoleName, setNewRoleName] = useState("");
+  const [roleLoading, setRoleLoading] = useState(false);
+
+  // Progenda Management State
+  const [progendas, setProgendas] = useState<Progenda[]>([]);
+  const [isProgendaLoading, setIsProgendaLoading] = useState(false);
+  const [showProgendaModal, setShowProgendaModal] = useState(false);
+  const [progendaModalMode, setProgendaModalMode] = useState<"add" | "edit">(
+    "add",
+  );
+  // biome-ignore lint/suspicious/noExplicitAny: dynamic admin data
+  const [progendaFormValues, setProgendaFormValues] = useState<any>({});
+  const [currentProgenda, setCurrentProgenda] = useState<Progenda | null>(null);
+  const [isProgendaSaving, setIsProgendaSaving] = useState(false);
 
   // Pagination & Refresh State
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [refreshKey, setRefreshKey] = useState(Date.now());
+  const [refreshKey, _setRefreshKey] = useState(Date.now());
   const LIMIT = 10;
 
   // Sync Hash on Mount
@@ -155,26 +129,6 @@ export default function AdminPage() {
     window.location.hash = tabId;
   };
 
-  const handleMediaSelect = (media: Gallery) => {
-    if (activeTab === "galeri") {
-      fetchTabData();
-      setShowMediaSelector(false);
-      toast.success("Gallery refreshed");
-      return;
-    }
-
-    if (targetField) {
-      // Heuristic: targetField is like "thumbnail_id", preview key is "thumbnail"
-      const previewKey = targetField.replace("_id", "");
-      setFormValues({
-        ...formValues,
-        [targetField]: media.id,
-        [previewKey]: media,
-      });
-    }
-    setShowMediaSelector(false);
-  };
-
   useEffect(() => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("docs_token") : null;
@@ -186,7 +140,7 @@ export default function AdminPage() {
 
   async function fetchTabData() {
     setIsDataLoading(true);
-    setRefreshKey(Date.now()); // Update refresh key to bust image cache
+    // setRefreshKey(Date.now()); // Disabled to allow standard caching
     try {
       if (activeTab === "berita") {
         const response = await getAllNews(page, LIMIT);
@@ -201,8 +155,11 @@ export default function AdminPage() {
           setTotalPages(response.meta.total_page);
         }
       } else if (activeTab === "kabinet") {
-        const data = await getCabinetInfo();
-        setCabinetData(data);
+        const response = await getAllCabinets(page, LIMIT);
+        setItems(response.data || []);
+        if (response.meta) {
+          setTotalPages(response.meta.total_page);
+        }
       } else if (activeTab === "galeri") {
         const response = await getGallery(page, LIMIT);
         setItems(response.data || []);
@@ -224,6 +181,12 @@ export default function AdminPage() {
         setDepartmentOptions(deptRes.data || []);
         setRoleOptions(roleRes.data || []);
         setCabinetOptions(cabRes.data || []);
+      } else if (activeTab === "monthly-event") {
+        const response = await getAllMonthlyEvents(page, LIMIT);
+        setItems(response.data || []);
+        if (response.meta) {
+          setTotalPages(response.meta.total_page);
+        }
       }
     } catch (error) {
       console.error("Fetch Error:", error);
@@ -287,11 +250,54 @@ export default function AdminPage() {
     setShowModal(true);
   };
 
+  async function fetchProgendas(deptId: string) {
+    setIsProgendaLoading(true);
+    try {
+      const response = await getProgendaByDepartment(deptId);
+      setProgendas(response || []);
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to fetch progendas");
+    } finally {
+      setIsProgendaLoading(false);
+    }
+  }
+
+  // biome-ignore lint/suspicious/noExplicitAny: dynamic media selection
+  const handleMediaSelect = (media: any) => {
+    if (targetField === "progenda_thumbnail_id") {
+      setProgendaFormValues({
+        ...progendaFormValues,
+        [targetField]: media.id,
+        [targetField.replace("_id", "")]: media,
+      });
+    } else if (targetField === "organigram_id") {
+      setFormValues({
+        ...formValues,
+        organigram_id: media.id,
+        organigram: media,
+      });
+    } else if (targetField) {
+      setFormValues({
+        ...formValues,
+        [targetField]: media.id,
+        [targetField.replace("_id", "")]: media,
+      });
+    } else if (activeTab === "galeri") {
+      fetchTabData();
+    }
+    setShowMediaSelector(false);
+    setTargetField(null);
+  };
+
   // biome-ignore lint/suspicious/noExplicitAny: dynamic admin data
   const handleEdit = (item: any) => {
     setModalMode("edit");
     setCurrentItem(item);
     setFormValues({ ...item });
+    if (activeTab === "departemen") {
+      fetchProgendas(item.id);
+    }
     setShowModal(true);
   };
 
@@ -326,9 +332,16 @@ export default function AdminPage() {
         const payload = {
           ...formValues,
           logo_id: formValues.logo_id,
+          organigram_id: formValues.organigram_id,
+          is_active: !!formValues.is_active,
         };
-        await updateCabinetInfo(cabinetData.id, payload);
-        toast.success("Cabinet info updated");
+        if (modalMode === "add") {
+          await createCabinetInfo(payload);
+          toast.success("Cabinet created successfully");
+        } else {
+          await updateCabinetInfo(currentItem.id, payload);
+          toast.success("Cabinet updated successfully");
+        }
       } else if (activeTab === "galeri") {
         if (modalMode === "add") {
           toast.success("Image added to gallery");
@@ -352,6 +365,18 @@ export default function AdminPage() {
           await updateMember(currentItem.id, payload);
           toast.success("Member updated successfully");
         }
+      } else if (activeTab === "monthly-event") {
+        const payload = {
+          ...formValues,
+          thumbnail_id: formValues.thumbnail_id,
+        };
+        if (modalMode === "add") {
+          await createMonthlyEvent(payload);
+          toast.success("Monthly event created");
+        } else {
+          await updateMonthlyEvent(currentItem.id, payload);
+          toast.success("Monthly event updated");
+        }
       }
       setShowModal(false);
       fetchTabData();
@@ -371,12 +396,99 @@ export default function AdminPage() {
       else if (activeTab === "departemen") await deleteDepartment(id);
       else if (activeTab === "galeri") await deleteGalleryItem(id);
       else if (activeTab === "anggota") await deleteMember(id);
+      else if (activeTab === "kabinet") await deleteCabinetInfo(id);
+      else if (activeTab === "monthly-event") await deleteMonthlyEvent(id);
 
       toast.success("Deleted successfully");
       fetchTabData();
     } catch (error) {
       console.error("Delete Error:", error);
       toast.error("Failed to delete item");
+    }
+  };
+
+  const _handleProgendaAdd = () => {
+    setProgendaModalMode("add");
+    setCurrentProgenda(null);
+    setProgendaFormValues({
+      department_id: currentItem.id,
+      timelines: [],
+    });
+    setShowProgendaModal(true);
+  };
+
+  const handleProgendaEdit = (progenda: Progenda) => {
+    setProgendaModalMode("edit");
+    setCurrentProgenda(progenda);
+    setProgendaFormValues({ ...progenda });
+    setShowProgendaModal(true);
+  };
+
+  const handleProgendaDelete = async (id: string) => {
+    if (!confirm("Delete this progenda?")) return;
+    try {
+      await deleteProgenda(id);
+      toast.success("Progenda deleted");
+      fetchProgendas(currentItem.id);
+    } catch (_e) {
+      toast.error("Failed to delete progenda");
+    }
+  };
+
+  const handleProgendaConfirm = async () => {
+    setIsProgendaSaving(true);
+    try {
+      const payload = {
+        ...progendaFormValues,
+        department_id: currentItem.id,
+        // biome-ignore lint/suspicious/noExplicitAny: dynamic timeline
+        timelines: (progendaFormValues.timelines || []).map((t: any) => {
+          const isUUID =
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+              t.id,
+            );
+          return {
+            timeline_id: isUUID ? t.id : undefined,
+            date: t.date,
+            info: t.info,
+            link: t.link,
+          };
+        }),
+      };
+      if (progendaModalMode === "add") {
+        await createProgenda(payload);
+        toast.success("Progenda created");
+      } else {
+        await updateProgenda(currentProgenda!.id, payload);
+        toast.success("Progenda updated");
+      }
+      setShowProgendaModal(false);
+      fetchProgendas(currentItem.id);
+    } catch (_e) {
+      toast.error("Failed to save progenda");
+    } finally {
+      setIsProgendaSaving(false);
+    }
+  };
+
+  const handleCreateRole = async () => {
+    setRoleLoading(true);
+    try {
+      const newRole = await createRole({
+        name: newRoleName,
+        level: 1,
+        description: "",
+      });
+      setRoleOptions([...roleOptions, newRole]);
+      setFormValues({ ...formValues, role_id: newRole.id });
+      setIsAddingRole(false);
+      setNewRoleName("");
+      toast.success("Role created");
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to create role");
+    } finally {
+      setRoleLoading(false);
     }
   };
 
@@ -485,759 +597,111 @@ export default function AdminPage() {
 
   return (
     <div className="flex h-screen bg-[#F8F9FA] overflow-hidden">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-slate-100 flex flex-col z-20">
-        <div className="p-8 border-b border-slate-50">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center transition-transform group-hover:scale-95">
-              <svg
-                viewBox="0 0 24 24"
-                className="w-6 h-6 text-white"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
-            </div>
-            <span className="font-extrabold text-slate-800 tracking-tight text-lg">
-              HIMASAKTA
-            </span>
-          </Link>
-        </div>
+      <AdminSidebar
+        activeTab={activeTab}
+        handleTabChange={handleTabChange}
+        handleLogout={handleLogout}
+        sidebarLinks={sidebarLinks}
+      />
 
-        <div className="flex-1 px-4 py-8">
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-4">
-            Main Menu
-          </div>
-          <nav className="space-y-2">
-            {sidebarLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => handleTabChange(link.id)}
-                className={twMerge(
-                  "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all relative group",
-                  activeTab === link.id
-                    ? "bg-primary/10 text-primary shadow-sm"
-                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-700",
-                )}
-              >
-                <link.icon
-                  size={20}
-                  className={
-                    activeTab === link.id
-                      ? "text-primary"
-                      : "text-slate-400 group-hover:text-slate-600 transition-colors"
-                  }
-                />
-                {link.name}
-                {activeTab === link.id && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-primary rounded-full -ml-0.75" />
-                )}
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <div className="p-6 border-t border-slate-50">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-sm text-red-500 hover:bg-red-50 transition-all"
-          >
-            <FaSignOutAlt size={18} />
-            Keluar Dashboard
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden relative">
-        {/* Top Header */}
-        <header className="h-20 bg-white border-b border-slate-100 flex items-center justify-between px-10 shrink-0">
-          <div className="flex-1"></div>
+        <AdminHeader />
 
-          <div className="flex items-center gap-6">
-            <div className="flex flex-col text-right">
-              <span className="text-sm font-bold text-slate-800">Admin</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                Super Administrator
-              </span>
-            </div>
-            <div className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white shadow-sm overflow-hidden">
-              <img
-                src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff"
-                alt="Avatar"
-              />
-            </div>
-            <HiChevronDown className="text-slate-400 cursor-pointer" />
-          </div>
-        </header>
-
-        {/* Dashboard Content */}
         <div className="flex-1 overflow-y-auto p-10 bg-[#F8F9FA]">
-          <div className="max-w-6xl mx-auto">
-            {/* Page Title & Action */}
-            <div className="flex justify-between items-end mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div>
-                <h2 className="text-4xl font-extrabold text-slate-900 mb-2">
-                  {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-                </h2>
-                <p className="text-slate-400 text-sm font-medium">
-                  Manage your {activeTab} content efficiently
-                </p>
-              </div>
-              <button
-                onClick={handleAdd}
-                className="flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
-              >
-                <HiPlus size={20} />
-                Add {activeTab}
-              </button>
-            </div>
-
-            {/* Data Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {isDataLoading && (
-                <div className="col-span-full py-20 text-center">
-                  <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4" />
-                  <p className="text-slate-400 font-bold">
-                    Loading {activeTab}...
-                  </p>
-                </div>
-              )}
-
-              {!isDataLoading &&
-                items.length === 0 &&
-                activeTab !== "kabinet" && (
-                  <div className="col-span-full py-20 text-center bg-white rounded-[40px] border border-dashed border-slate-200">
-                    <p className="text-slate-400 font-bold">
-                      No {activeTab} found.
-                    </p>
-                  </div>
-                )}
-
-              {activeTab === "kabinet" && cabinetData && (
-                <div className="col-span-full bg-white rounded-[40px] p-10 border border-slate-100 shadow-xl shadow-slate-200/40">
-                  <div className="flex justify-between items-start mb-8">
-                    <h3 className="text-2xl font-extrabold text-slate-800">
-                      Cabinet Information
-                    </h3>
-                    <button
-                      onClick={() => handleEdit(cabinetData)}
-                      className="p-3 rounded-2xl bg-slate-50 text-slate-400 hover:bg-primary/10 hover:text-primary transition-all"
-                    >
-                      <HiPencil size={20} />
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div className="space-y-6">
-                      <div>
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
-                          Tagline
-                        </label>
-                        <p className="text-slate-800 font-bold text-lg">
-                          {cabinetData.tagline}
-                        </p>
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
-                          Period
-                        </label>
-                        <p className="text-slate-800 font-bold">
-                          {new Date(cabinetData.period_start).getFullYear()} -{" "}
-                          {new Date(cabinetData.period_end).getFullYear()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="space-y-6">
-                      <div>
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
-                          Vision
-                        </label>
-                        <p className="text-slate-600 text-sm leading-relaxed">
-                          {cabinetData.visi}
-                        </p>
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
-                          Mission
-                        </label>
-                        <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line">
-                          {cabinetData.misi}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeTab !== "kabinet" &&
-                items.map((item, i) => (
-                  <div
-                    key={item.id}
-                    className="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-xl shadow-slate-200/40 group hover:shadow-2xl hover:shadow-slate-300/40 transition-all duration-500 animate-in fade-in zoom-in-95"
-                    style={{ animationDelay: `${i * 50}ms` }}
-                  >
-                    <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
-                      <img
-                        src={`${
-                          item.thumbnail?.image_url ||
-                          item.logo?.image_url ||
-                          item.image_url ||
-                          "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000&auto=format&fit=crop"
-                        }?t=${refreshKey}`}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                        alt={item.title || item.name}
-                      />
-                      <div className="absolute top-4 left-4">
-                        <span className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-bold text-slate-800 uppercase tracking-widest shadow-sm">
-                          {activeTab}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-7">
-                      <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-primary transition-colors line-clamp-1">
-                        {item.title || item.name}
-                      </h3>
-                      <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-6">
-                        {item.published_at
-                          ? new Date(item.published_at).toLocaleDateString()
-                          : activeTab === "anggota"
-                            ? item.role?.name || "No Role"
-                            : item.period || "No Date"}
-                      </p>
-
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleEdit(item)}
-                          className="p-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-primary/10 hover:text-primary transition-all"
-                        >
-                          <HiPencil size={18} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="p-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all"
-                        >
-                          <HiTrash size={18} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-            </div>
-
-            {/* Pagination Controls */}
-            {activeTab !== "kabinet" && totalPages > 1 && (
-              <div className="mt-12 flex justify-center items-center gap-2">
-                <button
-                  disabled={page === 1}
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  className="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-white hover:text-primary transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <HiChevronRight className="rotate-180" />
-                </button>
-
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (p) => (
-                    <button
-                      key={p}
-                      onClick={() => setPage(p)}
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-lg transition-all ${
-                        page === p
-                          ? "bg-primary text-white shadow-primary/20"
-                          : "bg-white border border-slate-200 text-slate-600 hover:border-primary hover:text-primary"
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ),
-                )}
-
-                <button
-                  disabled={page === totalPages}
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-white hover:text-primary transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <HiChevronRight />
-                </button>
-              </div>
-            )}
-          </div>
+          <AdminGrid
+            activeTab={activeTab}
+            items={items}
+            isDataLoading={isDataLoading}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            handleAdd={handleAdd}
+            page={page}
+            setPage={setPage}
+            totalPages={totalPages}
+            refreshKey={refreshKey}
+          />
         </div>
       </main>
 
       <AdminModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        title={`${modalMode === "add" ? "Add" : "Edit"} ${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`}
+        title={modalMode === "add" ? `Add ${activeTab}` : `Edit ${activeTab}`}
         onConfirm={handleConfirmAction}
         loading={isSaving}
       >
-        <div className="space-y-6">
-          {activeTab === "berita" && (
-            <>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Title
-                </label>
-                <input
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.title || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, title: e.target.value })
-                  }
-                  placeholder="Article Title"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Tagline
-                </label>
-                <input
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.tagline || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, tagline: e.target.value })
-                  }
-                  placeholder="Short tagline..."
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Content (Markdown)
-                </label>
-                <textarea
-                  rows={8}
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none min-h-[200px]"
-                  value={formValues.content || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, content: e.target.value })
-                  }
-                  placeholder="Article content..."
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Hashtags
-                </label>
-                <input
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.hashtags || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, hashtags: e.target.value })
-                  }
-                  placeholder="#tag1, #tag2"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Thumbnail Image
-                </label>
-                <div className="flex flex-col gap-4">
-                  {formValues.thumbnail?.image_url && (
-                    <div className="relative w-full aspect-video rounded-xl overflow-hidden group">
-                      <img
-                        src={formValues.thumbnail.image_url}
-                        className="w-full h-full object-cover"
-                        alt="thumbnail"
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="text-white font-bold">
-                          Change Image
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                  <button
-                    onClick={() => {
-                      setTargetField("thumbnail_id");
-                      setShowMediaSelector(true);
-                    }}
-                    className="w-full py-4 px-6 bg-[#F8F9FA] border border-dashed border-slate-300 rounded-2xl text-slate-500 font-bold hover:bg-white hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
-                  >
-                    <FaImages size={20} />
-                    {formValues.thumbnail
-                      ? "Change Thumbnail"
-                      : "Select Thumbnail"}
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
-
-          {activeTab === "departemen" && (
-            <>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Department Name
-                </label>
-                <input
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.name || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, name: e.target.value })
-                  }
-                  placeholder="Department Name"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Description
-                </label>
-                <textarea
-                  rows={6}
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none min-h-[150px]"
-                  value={formValues.description || ""}
-                  onChange={(e) =>
-                    setFormValues({
-                      ...formValues,
-                      description: e.target.value,
-                    })
-                  }
-                  placeholder="About the department..."
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Department Logo
-                </label>
-                <div className="flex flex-col gap-4">
-                  {formValues.logo?.image_url && (
-                    <div className="relative w-32 h-32 rounded-xl overflow-hidden group mx-auto">
-                      <img
-                        src={formValues.logo.image_url}
-                        className="w-full h-full object-cover"
-                        alt="logo"
-                      />
-                    </div>
-                  )}
-                  <button
-                    onClick={() => {
-                      setTargetField("logo_id");
-                      setShowMediaSelector(true);
-                    }}
-                    className="w-full py-4 px-6 bg-[#F8F9FA] border border-dashed border-slate-300 rounded-2xl text-slate-500 font-bold hover:bg-white hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
-                  >
-                    <FaImages size={20} />
-                    {formValues.logo ? "Change Logo" : "Select Logo"}
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
-
-          {activeTab === "kabinet" && (
-            <>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Vision
-                </label>
-                <textarea
-                  rows={4}
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none min-h-[100px]"
-                  value={formValues.visi || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, visi: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Mission
-                </label>
-                <textarea
-                  rows={6}
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none min-h-[150px]"
-                  value={formValues.misi || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, misi: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Tagline
-                </label>
-                <input
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.tagline || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, tagline: e.target.value })
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                    Start Year
-                  </label>
-                  <input
-                    type="date"
-                    className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                    value={
-                      formValues.period_start
-                        ? new Date(formValues.period_start as string)
-                            .toISOString()
-                            .split("T")[0]
-                        : ""
-                    }
-                    onChange={(e) =>
-                      setFormValues({
-                        ...formValues,
-                        period_start: new Date(e.target.value).toISOString(),
-                      })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                    End Year
-                  </label>
-                  <input
-                    type="date"
-                    className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                    value={
-                      formValues.period_end
-                        ? new Date(formValues.period_end as string)
-                            .toISOString()
-                            .split("T")[0]
-                        : ""
-                    }
-                    onChange={(e) =>
-                      setFormValues({
-                        ...formValues,
-                        period_end: new Date(e.target.value).toISOString(),
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Cabinet Logo
-                </label>
-                <div className="flex flex-col gap-4">
-                  {formValues.logo?.image_url && (
-                    <div className="relative w-32 h-32 rounded-xl overflow-hidden group mx-auto">
-                      <img
-                        src={formValues.logo.image_url}
-                        className="w-full h-full object-cover"
-                        alt="logo"
-                      />
-                    </div>
-                  )}
-                  <button
-                    onClick={() => {
-                      setTargetField("logo_id");
-                      setShowMediaSelector(true);
-                    }}
-                    className="w-full py-4 px-6 bg-[#F8F9FA] border border-dashed border-slate-300 rounded-2xl text-slate-500 font-bold hover:bg-white hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
-                  >
-                    <FaImages size={20} />
-                    {formValues.logo ? "Change Logo" : "Select Logo"}
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
-
-          {activeTab === "galeri" && (
-            <>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Gallery Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, file: e.target.files?.[0] })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Caption
-                </label>
-                <input
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.caption || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, caption: e.target.value })
-                  }
-                  placeholder="Image caption"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Category
-                </label>
-                <select
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none appearance-none"
-                  value={formValues.category || "General"}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, category: e.target.value })
-                  }
-                >
-                  <option value="General">General</option>
-                  <option value="Event">Event</option>
-                  <option value="Department">Department</option>
-                </select>
-              </div>
-            </>
-          )}
-
-          {activeTab === "anggota" && (
-            <>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  NRP
-                </label>
-                <input
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.nrp || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, nrp: e.target.value })
-                  }
-                  placeholder="e.g. 12345678"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Full Name
-                </label>
-                <input
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.name || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, name: e.target.value })
-                  }
-                  placeholder="Member full name"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Role / Position
-                </label>
-                <select
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none appearance-none"
-                  value={formValues.role_id || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, role_id: e.target.value })
-                  }
-                >
-                  <option value="">Select Role</option>
-                  {roleOptions.map((role) => (
-                    <option key={role.id} value={role.id}>
-                      {role.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Cabinet
-                </label>
-                <select
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none appearance-none"
-                  value={formValues.cabinet_id || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, cabinet_id: e.target.value })
-                  }
-                >
-                  <option value="">Select Cabinet</option>
-                  {cabinetOptions.map((cab) => (
-                    <option key={cab.id} value={cab.id}>
-                      {new Date(cab.period_start).getFullYear()} -{" "}
-                      {new Date(cab.period_end).getFullYear()} (
-                      {cab.is_active ? "Active" : "Inactive"})
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Sorting Index
-                </label>
-                <input
-                  type="number"
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.index || 0}
-                  onChange={(e) =>
-                    setFormValues({
-                      ...formValues,
-                      index: Number.parseInt(e.target.value),
-                    })
-                  }
-                  placeholder="e.g. 1"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Period
-                </label>
-                <input
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none"
-                  value={formValues.period || ""}
-                  onChange={(e) =>
-                    setFormValues({ ...formValues, period: e.target.value })
-                  }
-                  placeholder="e.g. 2024-2025"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Member Photo
-                </label>
-                <div className="flex flex-col gap-4">
-                  {formValues.photo?.image_url && (
-                    <div className="relative w-24 h-32 rounded-xl overflow-hidden group mx-auto">
-                      <img
-                        src={formValues.photo.image_url}
-                        className="w-full h-full object-cover"
-                        alt="photo"
-                      />
-                    </div>
-                  )}
-                  <button
-                    onClick={() => {
-                      setTargetField("photo_id");
-                      setShowMediaSelector(true);
-                    }}
-                    className="w-full py-4 px-6 bg-[#F8F9FA] border border-dashed border-slate-300 rounded-2xl text-slate-500 font-bold hover:bg-white hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
-                  >
-                    <FaImages size={20} />
-                    {formValues.photo ? "Change Photo" : "Select Photo"}
-                  </button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-4">
-                  Department
-                </label>
-                <select
-                  className="w-full px-6 py-4 bg-[#F8F9FA] rounded-2xl border border-transparent focus:bg-white focus:border-primary/30 outline-none appearance-none"
-                  value={formValues.department_id || ""}
-                  onChange={(e) =>
-                    setFormValues({
-                      ...formValues,
-                      department_id: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Select Department</option>
-                  {departmentOptions.map((dept) => (
-                    <option key={dept.id} value={dept.id}>
-                      {dept.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </>
-          )}
-        </div>
+        {activeTab === "berita" && (
+          <NewsForm
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setTargetField={setTargetField}
+            setShowMediaSelector={setShowMediaSelector}
+          />
+        )}
+        {activeTab === "departemen" && (
+          <DepartmentForm
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setTargetField={setTargetField}
+            setShowMediaSelector={setShowMediaSelector}
+            progendas={progendas}
+            isProgendaLoading={isProgendaLoading}
+            handleEditProgenda={handleProgendaEdit}
+            handleDeleteProgenda={handleProgendaDelete}
+            setShowProgendaModal={setShowProgendaModal}
+            setProgendaModalMode={setProgendaModalMode}
+            setProgendaFormValues={setProgendaFormValues}
+          />
+        )}
+        {activeTab === "anggota" && (
+          <MemberForm
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setTargetField={setTargetField}
+            setShowMediaSelector={setShowMediaSelector}
+            roleOptions={roleOptions}
+            cabinetOptions={cabinetOptions}
+            departmentOptions={departmentOptions}
+            isAddingRole={isAddingRole}
+            setIsAddingRole={setIsAddingRole}
+            newRoleName={newRoleName}
+            setNewRoleName={setNewRoleName}
+            roleLoading={roleLoading}
+            handleCreateRole={handleCreateRole}
+          />
+        )}
+        {activeTab === "galeri" && (
+          <GalleryForm formValues={formValues} setFormValues={setFormValues} />
+        )}
+        {activeTab === "kabinet" && (
+          <CabinetForm
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setTargetField={setTargetField}
+            setShowMediaSelector={setShowMediaSelector}
+          />
+        )}
+        {activeTab === "monthly-event" && (
+          <MonthlyEventForm
+            formValues={formValues}
+            setFormValues={setFormValues}
+            setTargetField={setTargetField}
+            setShowMediaSelector={setShowMediaSelector}
+          />
+        )}
       </AdminModal>
+
+      <ProgendaModal
+        isOpen={showProgendaModal}
+        onClose={() => setShowProgendaModal(false)}
+        mode={progendaModalMode}
+        progendaFormValues={progendaFormValues}
+        setProgendaFormValues={setProgendaFormValues}
+        onConfirm={handleProgendaConfirm}
+        isSaving={isProgendaSaving}
+        setTargetField={setTargetField}
+        setShowMediaSelector={setShowMediaSelector}
+      />
 
       {showMediaSelector && (
         <MediaSelector
