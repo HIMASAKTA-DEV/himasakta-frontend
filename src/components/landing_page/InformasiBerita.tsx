@@ -12,11 +12,13 @@ import beritaDataAllRaw from "@/lib/_dummy_db/_berita/dummyBeritaDataAll.json";
 import get12LatestNews from "@/lib/_dummy_db/_services/get12LatestNews";
 import divideArray from "@/lib/divideArray";
 import type { newsType } from "@/types/_dummy_db/allTypes";
+import { Get12RecentNews } from "@/services/landing_page/InformasiBerita";
+import { NewsType } from "@/types/data/InformasiBerita";
 
 const MIN_LOADING_TIME = 1000;
 
 export default function InformasiBerita() {
-  const [news, setNews] = useState<newsType[]>([]);
+  const [news, setNews] = useState<NewsType[] | []>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -24,23 +26,35 @@ export default function InformasiBerita() {
   useEffect(() => {
     const startTime = Date.now();
 
-    try {
-      setNews(beritaDataAllRaw as newsType[]);
-    } catch (err) {
-      console.error(err);
-      setError(true);
-    } finally {
-      const elapsed = Date.now() - startTime;
-      const delay = Math.max(MIN_LOADING_TIME - elapsed, 0);
+    const fetchRecent12News = async () => {
+      try {
+        // setNews(beritaDataAllRaw as newsType[]);
+        const allData = await Get12RecentNews({
+          limit: 12,
+          page: 1,
+          sort: "asc",
+          sort_by: "published_at",
+        });
 
-      setTimeout(() => {
-        setLoading(false);
-      }, delay);
-    }
+        setNews(allData.data);
+      } catch (err) {
+        console.error(err);
+        setError(true);
+      } finally {
+        const elapsed = Date.now() - startTime;
+        const delay = Math.max(MIN_LOADING_TIME - elapsed, 0);
+
+        setTimeout(() => {
+          setLoading(false);
+        }, delay);
+      }
+    };
+
+    fetchRecent12News();
   }, []);
 
-  const latestNews = news.length > 0 ? get12LatestNews(news) : [];
-  const slides = latestNews.length > 0 ? divideArray(latestNews, 4) : [];
+  // const latestNews = news.length > 0 ? get12LatestNews(news) : [];
+  const slides = news.length > 0 ? divideArray(news, 4) : [];
 
   const prevSlide = () => {
     setCurrentSlide((s) => (s === 0 ? slides.length - 1 : s - 1));
@@ -51,7 +65,7 @@ export default function InformasiBerita() {
   };
 
   useEffect(() => {
-    if (slides.length <= 1) return;
+    if (slides.length <= 1) return; // matikan auto play jika slide hanya 1
 
     const interval = setInterval(nextSlide, 7000);
     return () => clearInterval(interval);
@@ -108,7 +122,7 @@ export default function InformasiBerita() {
                 className="min-w-full grid grid-cols-2 grid-rows-2 lg:grid-cols-4 lg:grid-rows-1 gap-6"
               >
                 {slide.map((news) => (
-                  <NewsComps key={news.id} news={news} />
+                  <NewsComps key={news.id} {...news} />
                 ))}
               </div>
             ))}
