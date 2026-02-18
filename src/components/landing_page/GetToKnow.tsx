@@ -1,21 +1,39 @@
 "use client";
 
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
-import eventsThisMo from "@/lib/_dummy_db/_getToKnow/dummyFilteredEventListData.json";
 import truncate from "@/lib/truncated";
+import { getEventThisMonth } from "@/services/landing_page/GetToKnow";
+import { MonthlyEvent } from "@/types/data/GetToKnow";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FiExternalLink } from "react-icons/fi";
 import ImageFallback from "../commons/ImageFallback";
 
 export default function GetToKnow() {
-  const eventsThisMonth = eventsThisMo.slice(0, 5);
+  // const eventsThisMonth = eventsThisMo.slice(0, 5);
   const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState<MonthlyEvent[] | []>([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
+    // fetch event this month
+    const fetchEvThisMonth = async () => {
+      try {
+        const data = await getEventThisMonth();
+        setEvents(data);
+      } catch (err) {
+        console.error("Failed to load event this month ", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvThisMonth();
   }, []);
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setLoading(false), 1000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   return (
     <section
@@ -39,34 +57,36 @@ export default function GetToKnow() {
         />
       ) : (
         <div className="w-full grid grid-cols-2 gap-6 lg:flex lg:flex-nowrap lg:justify-center lg:overflow-x-auto pb-4">
-          {eventsThisMonth.length > 0 ? (
-            eventsThisMonth.map((event, idx) => (
+          {events.length > 0 ? (
+            events.map((event) => (
               <div
-                key={event.idx || idx}
+                key={event.id}
                 className="flex flex-col gap-3 w-full lg:min-w-[280px] lg:max-w-[280px]"
               >
                 <Link
-                  href={event.url}
+                  href={event.link}
                   target="_blank"
                   className="group relative w-full aspect-square overflow-hidden rounded-xl bg-gray-100"
                 >
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />
                   <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300">
-                    <div className="flex items-center gap-2 text-white font-inter font-bold transition-colors duration-300 hover:text-[#4ade80]">
-                      {" "}
+                    <div className="flex items-center gap-2 text-white font-inter font-bold hover:text-[#4ade80]">
                       <span>View detail</span>
                       <FiExternalLink className="w-5 h-5" />
                     </div>
                   </div>
 
-                  <ImageFallback isFill src={event.image} alt={event.title} />
+                  <ImageFallback
+                    isFill
+                    src={event.thumbnail?.image_url}
+                    alt={event.title}
+                  />
                 </Link>
 
-                {/* Text */}
                 <div className="space-y-1">
-                  <Link href={event.url} target="_blank" className="block">
-                    <h2 className="font-libertine text-lg font-bold hover:text-primaryGreen transition-colors line-clamp-2 leading-tight">
+                  <Link href={event.link} target="_blank">
+                    <h2 className="font-libertine text-lg font-bold hover:text-primaryGreen line-clamp-2">
                       {event.title}
                     </h2>
                   </Link>
@@ -77,7 +97,7 @@ export default function GetToKnow() {
               </div>
             ))
           ) : (
-            <div className="w-full text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+            <div className="w-full text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed">
               <p className="text-gray-500">Belum ada acara bulan ini</p>
             </div>
           )}

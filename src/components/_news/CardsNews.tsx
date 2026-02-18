@@ -7,12 +7,15 @@ import { FaArrowRight } from "react-icons/fa6";
 import HashTags from "../commons/HashTags";
 import ImageFallback from "../commons/ImageFallback";
 
-export default function NewsComps({ ...news }: NewsType) {
+export default function CardNews({ ...news }: NewsType) {
   // wajib normalize tags ke string[]
   const tags = normalizeHashtags(news.hashtag);
 
   return (
-    <div key={news.id} className="flex flex-col gap-3 group/card">
+    <div
+      key={news.id}
+      className="flex flex-col gap-3 group/card rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 p-3"
+    >
       <Link
         href={`/news/${news.id}`}
         className="group relative w-full h-[140px] lg:h-[180px] rounded-xl overflow-hidden bg-gray-100"
