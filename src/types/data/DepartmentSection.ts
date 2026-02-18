@@ -1,8 +1,8 @@
 // this is for DepartementSection.tsx
 
 import { UUID } from "crypto";
-import { Media } from "../commons/mediaType";
 import { ApiMeta } from "../commons/apiMeta";
+import { Media } from "../commons/mediaType";
 
 export type DepartmentInfo = {
   id: UUID | string;

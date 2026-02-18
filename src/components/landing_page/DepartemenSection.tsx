@@ -1,11 +1,10 @@
 "use client";
 
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
-import DeptInfoAll from "@/lib/_dummy_db/_departemen/dummyDepartemenAll.json";
-import { useEffect, useState } from "react";
-import DeptCard from "./_departemenSection/DeptCard";
 import { getDepartmentInfo } from "@/services/landing_page/DepartementSection";
 import { DepartmentInfo } from "@/types/data/DepartmentSection";
+import { useEffect, useState } from "react";
+import DeptCard from "./_departemenSection/DeptCard";
 
 function DepartemenSection() {
   // Comment this after creating data fetching

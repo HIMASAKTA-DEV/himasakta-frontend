@@ -1,15 +1,12 @@
 "use client";
 
 import CardNews from "@/components/_news/CardsNews";
-import NewsComps from "@/components/_news/NewsComponents";
 import RenderPagination from "@/components/_news/RenderPagination";
 import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
-import beritaDataAllRaw from "@/lib/_dummy_db/_berita/dummyBeritaDataAll.json";
 import { GetAllNews } from "@/services/news/FetchAllNews";
-import type { newsType } from "@/types/_dummy_db/allTypes";
 import { NewsType } from "@/types/data/InformasiBerita";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -19,7 +16,6 @@ import {
   FaChevronRight,
   FaFilter,
   FaSearch,
-  FaSort,
   FaSortAmountUpAlt,
 } from "react-icons/fa";
 

@@ -1,7 +1,7 @@
 // untuk InformasiBerita.tsx
 
-import { ApiResponse } from "@/types/commons/apiResponse";
 import { ApiMeta } from "@/types/commons/apiMeta";
+import { ApiResponse } from "@/types/commons/apiResponse";
 import { NewsType } from "@/types/data/InformasiBerita";
 
 // config base_url using env later

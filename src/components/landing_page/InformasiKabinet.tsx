@@ -1,12 +1,11 @@
 "use client";
 
+import { getCurrentCabinetInfo } from "@/services/landing_page/InformasiKabinet";
+import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import HeaderSection from "../commons/HeaderSection";
-import { dummyListData } from "./_infomasiKabinet/dummyListData";
 import SkeletonInformasiKabinet from "./skeletons/SkeletonInfoKabinet";
-import { CabinetInfo } from "@/types/data/InformasiKabinet";
-import { getCurrentCabinetInfo } from "@/services/landing_page/InformasiKabinet";
 
 export default function InformasiKabinet() {
   // Comment this after creating data fetching

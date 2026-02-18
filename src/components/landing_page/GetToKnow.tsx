@@ -1,14 +1,13 @@
 "use client";
 
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
-import eventsThisMo from "@/lib/_dummy_db/_getToKnow/dummyFilteredEventListData.json";
 import truncate from "@/lib/truncated";
+import { getEventThisMonth } from "@/services/landing_page/GetToKnow";
+import { MonthlyEvent } from "@/types/data/GetToKnow";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FiExternalLink } from "react-icons/fi";
 import ImageFallback from "../commons/ImageFallback";
-import { MonthlyEvent } from "@/types/data/GetToKnow";
-import { getEventThisMonth } from "@/services/landing_page/GetToKnow";
 
 export default function GetToKnow() {
   // const eventsThisMonth = eventsThisMo.slice(0, 5);

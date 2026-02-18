@@ -1,8 +1,7 @@
 import ImageFallback from "@/components/commons/ImageFallback";
-import DeptInfoAll from "@/lib/_dummy_db/_departemen/dummyDepartemenAll.json";
+import { DepartmentInfo } from "@/types/data/DepartmentSection";
 import Link from "next/link";
 import { FaBuilding, FaChevronRight } from "react-icons/fa";
-import { DepartmentInfo } from "@/types/data/DepartmentSection";
 
 // don't forget to sync the type and just spread the vars.
 export default function DeptCard({ ...dept }: DepartmentInfo) {
