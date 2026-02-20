@@ -14,7 +14,7 @@ export default function NewsComps({ ...news }: NewsType) {
   return (
     <div key={news.id} className="flex flex-col gap-3 group/card">
       <Link
-        href={`/news/${news.id}`}
+        href={`/news/${news.slug}`}
         className="group relative w-full h-[140px] lg:h-[180px] rounded-xl overflow-hidden bg-gray-100"
       >
         {/* Overlay */}

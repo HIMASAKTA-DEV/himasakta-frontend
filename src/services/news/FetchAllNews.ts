@@ -12,7 +12,7 @@ export const GetAllNews = async ({ ...params }: ApiMeta) => {
     Object.entries(params).map(([k, v]) => [k, String(v)]),
   );
 
-  const resp = await fetch(`${BASE_URL}/news?${metaParams}`, {
+  const resp = await fetch(`${BASE_URL}/news?${metaParams.toString()}`, {
     cache: "no-store",
   });
 

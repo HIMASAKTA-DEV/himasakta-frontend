@@ -198,7 +198,7 @@ export default function Page() {
     setSortBy(val);
     setShowSortDd(false);
     setCurrentPage(1);
-    fetchNews(query, sortBy); // urutan perhatikan kocak
+    fetchNews(query, val); // urutan perhatikan kocak, jir ngebug gara2 harus pakai val dong
   };
 
   // filter handler
