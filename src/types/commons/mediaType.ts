@@ -6,6 +6,6 @@ export type Media = {
   caption?: string;
   category?: string;
   department_id?: UUID | null;
-  progenda_id?: UUID | null;
+  progenda_id?: UUID[] | null;
   cabinet_id?: UUID | null;
 };

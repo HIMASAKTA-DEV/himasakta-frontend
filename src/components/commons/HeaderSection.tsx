@@ -1,8 +1,8 @@
 import clsx from "clsx";
 
 type HeaderProps = {
-  title?: string;
-  sub?: string;
+  title?: string | null;
+  sub?: string | null;
   className?: string;
   subStyle?: string;
   titleStyle?: string;

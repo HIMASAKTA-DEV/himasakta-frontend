@@ -37,8 +37,8 @@ function DepartemenSection() {
   // TODO: Ini bakal ada data fetching (Buat folder services di src)
   // Hanya perlu fetch all departemen, Ingetin pakai cache aja biar gak refetch.
 
-  const firstDepts = depts.slice(0, 6);
-  const secDepts = depts.slice(6, 12);
+  const firstDepts = depts.slice(0, Math.ceil(depts.length / 2));
+  const secDepts = depts.slice(Math.ceil(depts.length / 2), depts.length);
 
   return (
     <section
