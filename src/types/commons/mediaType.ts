@@ -8,4 +8,7 @@ export type Media = {
   department_id?: UUID | null;
   progenda_id?: UUID[] | null;
   cabinet_id?: UUID | null;
+  created_at: string;
+  updated_at: string;
+  Deleted_at: string;
 };

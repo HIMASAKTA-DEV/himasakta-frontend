@@ -8,6 +8,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
+import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 type MemberCard = {
   name: string;
@@ -84,11 +85,18 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
     return (
       <div className="flex flex-col gap-8 items-center w-full">
         <HeaderSection title="Struktur Anggota" />
-        <EventSkeleton />
+        <div className="w-full gap-4">
+          <EventSkeleton
+            count={itemsPerSlide}
+            className={`grid grid-rows-1 grid-cols-${itemsPerSlide}`}
+            withDesc={true}
+          />
+        </div>
+        <SkeletonPleaseWait />
       </div>
     );
   }
-  if (error) return <p>Gagal memuat data</p>;
+  if (error) return <p>&#9940; Gagal memuat data :&#40;</p>;
 
   return (
     <div className="flex flex-col gap-8 items-center">
@@ -96,38 +104,44 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
 
       <div className="relative overflow-hidden w-full pb-10">
         {/* Slider */}
-        <div
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
-          {slides.map((slide, idx) => (
-            <div key={idx} className="min-w-full flex gap-4">
-              {slide.map((member, i) => (
-                <div
-                  key={i}
-                  className="basis-1/2 max-w-1/2 lg:basis-1/3 lg:max-w-1/3 flex flex-col gap-3 items-center"
-                >
-                  <div className="w-full h-[200px] relative rounded-lg shadow">
-                    <ImageFallback
-                      isFill
-                      src={member.photoUrl || "/placeholder-user.png"}
-                      imgStyle="rounded-lg object-cover"
-                    />
-                  </div>
+        {slides.length <= 0 ? (
+          <div className="w-full flex items-center">
+            <p>Data struktur anggota tidak ada :&#40;</p>
+          </div>
+        ) : (
+          <div
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {slides.map((slide, idx) => (
+              <div key={idx} className="min-w-full flex gap-4">
+                {slide.map((member, i) => (
+                  <div
+                    key={i}
+                    className="basis-1/2 max-w-1/2 lg:basis-1/3 lg:max-w-1/3 flex flex-col gap-3 items-center"
+                  >
+                    <div className="w-full aspect-square lg:h-[500px] relative rounded-lg shadow">
+                      <ImageFallback
+                        isFill
+                        src={member.photoUrl}
+                        imgStyle="rounded-lg object-cover"
+                      />
+                    </div>
 
-                  <div className="flex flex-col gap-1">
-                    <p className="font-semibold text-center">
-                      Nama: {member.name}
-                    </p>
-                    <p className="text-sm text-gray-600 text-center">
-                      Jabatan: {member.role}
-                    </p>
+                    <div className="flex flex-col gap-1">
+                      <p className="font-semibold text-center">
+                        Nama: {member.name}
+                      </p>
+                      <p className="text-sm text-gray-600 text-center">
+                        Jabatan: {member.role}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Btn */}
         {slides.length > 1 && (

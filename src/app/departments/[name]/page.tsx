@@ -4,8 +4,11 @@ import NotFound from "@/app/not-found";
 import EventSkeleton from "@/components/commons/skeletons/SkeletonGrid";
 import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
 import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
+import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
+import GalleryDept from "@/components/departments/GalleryDept";
 import InformasiDepartment from "@/components/departments/InformasiDepartment";
+import ProgendaDept from "@/components/departments/ProgendaDept";
 import StrukturAnggota from "@/components/departments/StrukturAnggota";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
@@ -59,16 +62,18 @@ function page() {
                 {/* Ensure this has a height/aspect ratio inside */}
               </div>
               {/* Skeleton matches the 55% column */}
-              <div className="w-full lg:w-[55%] flex flex-col gap-4 lg:mt-8">
+              <div className="w-full lg:w-[100%] flex flex-col gap-4 lg:mt-8">
                 <SkeletonHeaderSection />
                 <SkeletonParagraph />
-                <EventSkeleton count={1} />
               </div>
+              <SkeletonPleaseWait />
             </div>
           ) : (
             <InformasiDepartment {...dept} />
           )}
           <StrukturAnggota {...dept} />
+          <ProgendaDept {...dept} />
+          <GalleryDept {...dept} />
           <p>Hi ini main</p>
           <p>Hi ini main</p>
           <p>Hi ini main</p>
