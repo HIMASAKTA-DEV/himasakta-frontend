@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import HeaderSection from "../commons/HeaderSection";
-import { ProgendaType } from "@/types/data/ProgendaType";
 import { GetProgendaByDeptId } from "@/services/departments/GetProgendaByDeptId";
 import { DepartmentType } from "@/types/data/DepartmentType";
-import EventSkeleton from "../commons/skeletons/SkeletonGrid";
-import ImageFallback from "../commons/ImageFallback";
-import { FaArrowRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { ProgendaType } from "@/types/data/ProgendaType";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FaArrowRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import HeaderSection from "../commons/HeaderSection";
+import ImageFallback from "../commons/ImageFallback";
+import EventSkeleton from "../commons/skeletons/SkeletonGrid";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 type ProgendaCard = {

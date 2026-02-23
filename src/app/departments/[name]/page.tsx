@@ -1,7 +1,6 @@
 "use client";
 
 import NotFound from "@/app/not-found";
-import EventSkeleton from "@/components/commons/skeletons/SkeletonGrid";
 import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
 import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";

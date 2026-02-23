@@ -4,11 +4,11 @@ import { GetGalleryByDeptId } from "@/services/departments/GetGalleryByDept";
 import { ApiMeta } from "@/types/commons/apiMeta";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { GalleryType } from "@/types/data/GalleryType";
-import React, { useEffect, useState } from "react";
-import ImageFallback from "../commons/ImageFallback";
+import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
+import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
@@ -26,7 +26,7 @@ function GalleryDept({ ...dept }: DepartmentType) {
   const [hasNext, setHasNext] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [cntItems, setCntItems] = useState(3);
+  const [_cntItems, setCntItems] = useState(3);
   const handleResize = () => {
     if (window.innerWidth < 1024) {
       setCntItems(2); // mobile & tablet

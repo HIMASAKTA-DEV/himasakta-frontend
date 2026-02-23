@@ -1,6 +1,5 @@
-import AccDropDown from "./AccDropDown";
-import { LuUsers } from "react-icons/lu";
 import { useEffect, useState } from "react";
+import AccDropDown from "./AccDropDown";
 
 type Props = {
   usr: string;

@@ -1,13 +1,12 @@
 "use client";
 
 import clsx from "clsx";
-import { MdDashboard } from "react-icons/md";
-import { LuUsers, LuScroll, LuClipboardList } from "react-icons/lu";
+import type { IconType } from "react-icons";
 import { FaRegBuilding, FaRegUser } from "react-icons/fa";
 import { FiEdit3 } from "react-icons/fi";
 import { IoImagesOutline } from "react-icons/io5";
-import type { IconType } from "react-icons";
-import ImageFallback from "../commons/ImageFallback";
+import { LuClipboardList, LuScroll, LuUsers } from "react-icons/lu";
+import { MdDashboard } from "react-icons/md";
 import NextImage from "../NextImage";
 
 type Menu = {

@@ -1,5 +1,6 @@
 import "./globals.css";
 import Providers from "@/app/providers";
+import AuthGuard from "@/layouts/AuthGuard";
 import {
   averiaSerifLibre,
   inter,
@@ -8,7 +9,6 @@ import {
   poppins,
 } from "@/styles/global-fonts";
 import type { Metadata } from "next";
-import AuthGuard from "@/layouts/AuthGuard";
 
 export const metadata: Metadata = {
   title: {

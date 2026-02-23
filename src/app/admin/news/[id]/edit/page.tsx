@@ -1,5 +1,4 @@
 import HeaderSection from "@/components/commons/HeaderSection";
-import React from "react";
 
 function page() {
   return (
