@@ -15,13 +15,13 @@ import ManageNews from "@/components/admin/ManageNews";
 import ManageProgenda from "@/components/admin/ManageProgenda";
 
 import ManageEvent from "@/components/admin/ManageEvent";
+import ManageNrpWhitelist from "@/components/admin/ManageNrpWhitelist";
 import ImageFallback from "@/components/commons/ImageFallback";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import ButtonLink from "@/components/links/ButtonLink";
 import api from "@/lib/axios";
 import { ApiResponse } from "@/types/api";
 import { FaChevronLeft } from "react-icons/fa";
-import ManageNrpWhitelist from "@/components/admin/ManageNrpWhitelist";
 
 type LoginForm = {
   username: string;
