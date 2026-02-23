@@ -1,5 +1,6 @@
 import "./globals.css";
 import Providers from "@/app/providers";
+import AuthGuard from "@/layouts/AuthGuard";
 import {
   averiaSerifLibre,
   inter,
@@ -33,6 +34,7 @@ export default function RootLayout({
           ${linuxLibertine.variable}
         `}
       >
+        <AuthGuard />
         <Providers>{children}</Providers>
       </body>
     </html>

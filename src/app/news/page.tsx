@@ -367,7 +367,7 @@ export default function Page() {
                             fetchNews(query, sortBy, newTags.join(","));
                           }}
                         >
-                          ×
+                          x
                         </button>
                       </span>
                     ))}

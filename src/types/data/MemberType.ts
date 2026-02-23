@@ -2,7 +2,7 @@ import { PhotoType } from "../commons/PhotoType";
 import { DepartmentType } from "./DepartmentType";
 import { RoleType } from "./RoleType";
 
-export interface BaseEntity {
+interface BaseEntity {
   created_at: string; // ISO date
   updated_at: string; // ISO date
   DeletedAt: string | null;

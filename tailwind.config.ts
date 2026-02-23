@@ -26,6 +26,33 @@ const config: Config = {
         primaryPink: "#D58A94",
         primaryGreen: "#22C55E",
       },
+      keyframes: {
+        blob: {
+          "0%": {
+            transform: "translate(0px, 0px) scale(1)",
+          },
+          "25%": {
+            transform: "translate(80px, -120px) scale(1.15)",
+          },
+          "50%": {
+            transform: "translate(-100px, 100px) scale(0.9)",
+          },
+          "75%": {
+            transform: "translate(120px, 60px) scale(1.1)",
+          },
+          "100%": {
+            transform: "translate(0px, 0px) scale(1)",
+          },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+      },
+      animation: {
+        blob: "blob 18s ease-in-out infinite",
+        shimmer: "shimmer 8s ease-in-out infinite",
+      },
     },
   },
   plugins: [lineClamp],
