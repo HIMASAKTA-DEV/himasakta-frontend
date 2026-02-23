@@ -8,6 +8,7 @@ import {
   poppins,
 } from "@/styles/global-fonts";
 import type { Metadata } from "next";
+import AuthGuard from "@/layouts/AuthGuard";
 
 export const metadata: Metadata = {
   title: {
@@ -33,6 +34,7 @@ export default function RootLayout({
           ${linuxLibertine.variable}
         `}
       >
+        <AuthGuard />
         <Providers>{children}</Providers>
       </body>
     </html>

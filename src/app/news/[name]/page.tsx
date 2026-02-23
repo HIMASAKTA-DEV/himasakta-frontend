@@ -52,12 +52,12 @@ function page() {
   return (
     <Layout withFooter withNavbar={false} transparentOnTop>
       <ButtonLink
-        href="/"
+        href="/news"
         className="w-28 flex gap-4 items-center m-8"
         variant="black"
       >
         <FaChevronLeft />
-        <p>Home</p>
+        <p>Back</p>
       </ButtonLink>
       <main className="min-h-screen px-10 flex flex-col lg:px-40 gap-4 mb-20">
         {loading ? (
