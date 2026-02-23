@@ -84,6 +84,15 @@ export default function TopBar({ usr, onLogout }: Props) {
             <p>Atur data kegiatan/GetToKnow pada halaman utama</p>
           </div>
         );
+      case "manage-nrp-whitelist":
+        return (
+          <div className="flex gap-2 items-center">
+            <h1 className="text-md lg:text-lg font-semibold">
+              Manage Nrp Whitelist:
+            </h1>
+            <p>Atur siapa saja yang dapat mengakses tautan departemen</p>
+          </div>
+        );
       default:
         return (
           <div className="flex gap-2 items-center">

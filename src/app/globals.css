@@ -42,3 +42,11 @@ html {
 .dot-anim span:nth-child(3) {
   animation-delay: 0.4s;
 }
+
+/* globals.css */
+.shimmer {
+  background: linear-gradient(110deg, #000 40%, #b1b1b1 50%, #000 60%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

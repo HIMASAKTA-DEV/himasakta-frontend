@@ -44,9 +44,14 @@ const config: Config = {
             transform: "translate(0px, 0px) scale(1)",
           },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
       },
       animation: {
         blob: "blob 18s ease-in-out infinite",
+        shimmer: "shimmer 8s ease-in-out infinite",
       },
     },
   },

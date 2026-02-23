@@ -21,6 +21,7 @@ import ButtonLink from "@/components/links/ButtonLink";
 import api from "@/lib/axios";
 import { ApiResponse } from "@/types/api";
 import { FaChevronLeft } from "react-icons/fa";
+import ManageNrpWhitelist from "@/components/admin/ManageNrpWhitelist";
 
 type LoginForm = {
   username: string;
@@ -116,6 +117,8 @@ export default function AdminPage() {
         return <ManageProgenda />;
       case "manage-kegiatan":
         return <ManageEvent />;
+      case "manage-nrp-whitelist":
+        return <ManageNrpWhitelist />;
       default:
         return <DashboardAdmin usr={usr} onLogout={handleLogout} />;
     }
