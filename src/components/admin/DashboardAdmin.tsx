@@ -24,15 +24,15 @@ function DashboardAdmin({ usr, onLogout }: Props) {
 
         <p>How are you today?</p>
       </div>
-      <main className="flex flex-col gap-4 p-4">
-        <h1 className="font-inter font-bold text-4xl text-center">
+      <main className="flex flex-col gap-4 w-full lg:p-4">
+        <h1 className="font-inter font-bold text-3xl lg:text-4xl text-center">
           Getting Started
         </h1>
-        <ul className="list-none flex flex-col gap-4">
+        <ul className="list-none flex flex-col gap-4 w-full">
           <li className="flex flex-col gap-4 items-start mb-4">
             <div className="flex items-center gap-3">
               <span className="h-2 w-2 rounded-full bg-black"></span>
-              <h1 className="font-inter font-bold text-3xl">
+              <h1 className="font-inter font-bold text-xl lg:text-3xl">
                 What is Administrator Page?
               </h1>
             </div>

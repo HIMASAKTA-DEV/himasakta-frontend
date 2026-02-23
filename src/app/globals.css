@@ -50,3 +50,16 @@ html {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.max-lg\:animate-marquee {
+  animation: marquee 10s linear infinite;
+}

@@ -135,14 +135,16 @@ export default function Sidebar({ active }: { active: string }) {
           variant="black"
           className="
           flex items-center justify-start gap-8
-          w-full
+          lg:w-full py-3
           m-4
           "
         >
           <FaChevronLeft />
-          <p className="text-sm">Back to Landing Page (Logout)</p>
+          <p className="text-sm hidden lg:inline-block">
+            Back to Landing Page (Logout)
+          </p>
         </ButtonLink>
-        <small className="text-gray-400 font-medium mb-4">
+        <small className="text-gray-400 font-medium mb-4 lg:inline-block hidden">
           &copy; HIMASAKTA 2026
         </small>
       </div>

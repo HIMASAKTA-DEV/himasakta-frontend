@@ -134,10 +134,10 @@ export default function AdminPage() {
     );
   }
 
-  // login page
+  // if authed
   if (jwt) {
     return (
-      <div className="flex min-h-screen sticky top-0">
+      <div className="flex min-h-screen sticky top-0 overflow-x-clip">
         {/* SIDEBAR */}
         <aside
           className="
@@ -149,14 +149,14 @@ export default function AdminPage() {
             bg-white/70
             backdrop-blur-xl
             border-r
-            z-50
-          "
+            z-50 shadow-md
+            "
         >
           <Sidebar active={active} />
         </aside>
         <main className="flex-1 bg-gray-50 ml-20 lg:ml-80">
           {/* Sesuaikan ml sesuai ukuran sidebar */}
-          <div className="border-b px-4 py-3 sticky top-0">
+          <div className="border-b px-4 py-4 sticky top-0 bg-white/70 backdrop-blur-md shadow-md">
             <AdminTopBar usr={usr} onLogout={handleLogout} />
           </div>
           <div className="p-6">{renderContent()}</div>
@@ -165,7 +165,7 @@ export default function AdminPage() {
     );
   }
 
-  // if authed
+  // login page
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* Background + Login */}
@@ -183,7 +183,7 @@ export default function AdminPage() {
           className="
             relative
             flex flex-col gap-4
-            bg-slate-200/10 backdrop-blur-2xl
+            bg-gray-100/70 backdrop-blur-2xl
             p-10 rounded-2xl
             w-full max-w-xl
             items-center
