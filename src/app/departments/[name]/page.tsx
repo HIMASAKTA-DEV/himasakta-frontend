@@ -7,6 +7,7 @@ import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWai
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
 import GalleryDept from "@/components/departments/GalleryDept";
 import InformasiDepartment from "@/components/departments/InformasiDepartment";
+import NavbarDept from "@/components/departments/NavbarDept";
 import ProgendaDept from "@/components/departments/ProgendaDept";
 import StrukturAnggota from "@/components/departments/StrukturAnggota";
 import ButtonLink from "@/components/links/ButtonLink";
@@ -51,7 +52,7 @@ function page() {
   return (
     <Layout withFooter withNavbar={false} transparentOnTop>
       <main className="min-h-screen px-10 flex flex-col lg:px-40 gap-4 mb-20 py-10">
-        <section>Ini Navbar</section>
+        <NavbarDept />
         <section className="bg-white rounded-lg shadow-[0_0_12px_rgba(0,0,0,0.15)] mb-10 flex flex-col gap-8 p-10">
           {loading ? (
             <div className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8">
