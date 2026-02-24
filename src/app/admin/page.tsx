@@ -154,9 +154,9 @@ export default function AdminPage() {
         >
           <Sidebar active={active} />
         </aside>
-        <main className="flex-1 bg-gray-50 ml-20 lg:ml-80">
+        <main className="flex-1 bg-white ml-20 lg:ml-80">
           {/* Sesuaikan ml sesuai ukuran sidebar */}
-          <div className="border-b px-4 py-4 sticky top-0 bg-white/70 backdrop-blur-md shadow-md">
+          <div className="border-b px-4 py-4 sticky top-0 bg-white/70 backdrop-blur-md shadow-md z-40">
             <AdminTopBar usr={usr} onLogout={handleLogout} />
           </div>
           <div className="p-6">{renderContent()}</div>
