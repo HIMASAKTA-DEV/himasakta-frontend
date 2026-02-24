@@ -2,13 +2,8 @@
 
 import clsx from "clsx";
 import type { IconType } from "react-icons";
-import {
-  FaChevronLeft,
-  FaRegBuilding,
-  FaRegUser,
-  FaUserCheck,
-} from "react-icons/fa";
-import { FiEdit3 } from "react-icons/fi";
+import { FaChevronLeft, FaRegBuilding, FaRegUser } from "react-icons/fa";
+import { FiCheckSquare, FiEdit3 } from "react-icons/fi";
 import { IoImagesOutline } from "react-icons/io5";
 import { LuClipboardList, LuScroll, LuUsers } from "react-icons/lu";
 import { MdDashboard } from "react-icons/md";
@@ -37,7 +32,7 @@ const menus: Menu[] = [
   {
     label: "Manage Nrp Whitelist",
     hash: "manage-nrp-whitelist",
-    icon: FaUserCheck,
+    icon: FiCheckSquare,
   },
 ];
 

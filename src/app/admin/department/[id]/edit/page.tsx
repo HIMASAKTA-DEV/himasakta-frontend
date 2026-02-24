@@ -15,8 +15,8 @@ function page() {
         <div className="absolute bottom-1/4 right-1/4 w-10 h-10 bg-white/20 border border-white/30 rounded-full backdrop-blur-md animate-bounce [animation-duration:6s]" />
       </div>
 
-      <div className="lg:w-[50vw] relative flex flex-col gap-4 bg-white/70 backdrop-blur-2xl p-10 rounded-2xl w-full max-w-xl items-center shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/40 animate-fade-in">
-        <HeaderSection title={"Tambah Kabinet"} />
+      <div className="lg:w-[80vw] relative flex flex-col gap-4 bg-white/70 backdrop-blur-2xl p-10 rounded-2xl w-full items-center shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/40 animate-fade-in">
+        <HeaderSection title={"Edit Kabinet"} />
         <p>Ini form</p>
         <p>Ini form</p>
         <p>Ini form</p>
