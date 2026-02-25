@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
 import HashTags from "../commons/HashTags";
 import ImageFallback from "../commons/ImageFallback";
+import ReactMarkdown from "react-markdown";
 
 export default function CardNews({ ...news }: NewsType) {
   // wajib normalize tags ke string[]

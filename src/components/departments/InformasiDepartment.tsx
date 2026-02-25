@@ -6,6 +6,7 @@ import Link from "next/link";
 import HeaderSection from "../commons/HeaderSection";
 import SocmedCard from "./_socmedCard";
 import ImagesSlideshow from "./slideShowImages.tsx/ImagesSlideshow";
+import ReactMarkdown from "react-markdown";
 
 function InformasiDepartment({ ...dept }: DepartmentType) {
   const logoImages = mediaToImages(dept?.logo);
@@ -24,7 +25,9 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
           subStyle="font-libertine text-slate-700 text-lg font-semibold"
         />
 
-        <p className="text-md font-libertine">{dept?.description}</p>
+        <div className="text-md font-libertine">
+          <ReactMarkdown>{dept?.description}</ReactMarkdown>
+        </div>
 
         <div className="gap-2 flex flex-col">
           <h1 className="font-libertine font-bold text-xl">Akademik</h1>

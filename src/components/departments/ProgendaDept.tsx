@@ -44,7 +44,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
       const cards: ProgendaCard[] = json.data.map((p: ProgendaType) => ({
         name: p.name,
         desc: p.description,
-        thumbnailUrl: p.thumbnail.image_url,
+        thumbnailUrl: p.thumbnail?.image_url,
         progendaId: p.id,
       }));
 
@@ -97,7 +97,10 @@ function ProgendaDept({ ...dept }: DepartmentType) {
       </div>
     );
   }
-  if (error) return <p>&#9940; Gagal memuat data :&#40;</p>;
+  if (error)
+    return (
+      <p>&#9940; Gagal memuat data Progenda atau progenda tidak ada :&#40;</p>
+    );
 
   return (
     <div className="w-full flex-col gap-8">
@@ -131,7 +134,6 @@ function ProgendaDept({ ...dept }: DepartmentType) {
                   >
                     <Link
                       href={`/progenda/${progenda.progendaId}`}
-                      target="_blank"
                       className="group relative aspect-square overflow-hidden bg-gray-100 w-full lg:h-[400px] rounded-lg"
                     >
                       {/* Overlay */}
