@@ -1,4 +1,3 @@
-import * as React from "react";
 import { FaPlus } from "react-icons/fa";
 import {
   HiOutlineEye,
@@ -6,10 +5,10 @@ import {
   HiOutlineTrash,
 } from "react-icons/hi";
 
-import HeaderSection from "../commons/HeaderSection";
-import ButtonLink from "../links/ButtonLink";
 import NextImage from "../NextImage";
 import Typography from "../Typography";
+import HeaderSection from "../commons/HeaderSection";
+import ButtonLink from "../links/ButtonLink";
 
 const newsData = Array.from({ length: 6 }).map((_, i) => ({
   id: i + 1,
