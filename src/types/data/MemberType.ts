@@ -1,14 +1,9 @@
+import { ApiMeta } from "../commons/apiMeta";
 import { PhotoType } from "../commons/PhotoType";
 import { DepartmentType } from "./DepartmentType";
 import { RoleType } from "./RoleType";
 
-interface BaseEntity {
-  created_at: string; // ISO date
-  updated_at: string; // ISO date
-  DeletedAt: string | null;
-}
-
-export interface MemberType extends BaseEntity {
+export type MemberType = {
   id: string;
   nrp: string;
   name: string;
@@ -20,4 +15,5 @@ export interface MemberType extends BaseEntity {
   photo: PhotoType | null;
   cabinet_id: string;
   index: number;
-}
+  meta?: ApiMeta;
+};
