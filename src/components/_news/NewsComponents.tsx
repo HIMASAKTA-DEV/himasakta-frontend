@@ -4,6 +4,7 @@ import { normalizeHashtags } from "@/lib/normalizeHashTags";
 import { NewsType } from "@/types/data/InformasiBerita";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
+import ReactMarkdown from "react-markdown";
 import HashTags from "../commons/HashTags";
 import ImageFallback from "../commons/ImageFallback";
 
@@ -68,9 +69,9 @@ export default function NewsComps({ ...news }: NewsType) {
           </Link>
 
           <Link href={`/news/${news.id}`}>
-            <p className="text-sm text-gray-600 line-clamp-2 lg:line-clamp-3 hover:text-gray-800 transition active:text-primaryGreen">
-              {news.content}
-            </p>
+            <div className="text-sm text-gray-600 line-clamp-2 lg:line-clamp-3 hover:text-gray-800 transition active:text-primaryGreen">
+              <ReactMarkdown>{news.content}</ReactMarkdown>
+            </div>
           </Link>
         </div>
       </div>

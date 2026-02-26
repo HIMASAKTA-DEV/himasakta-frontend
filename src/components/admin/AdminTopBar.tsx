@@ -104,7 +104,7 @@ export default function TopBar({ usr, onLogout }: Props) {
   };
 
   return (
-    <div className="flex justify-between items-center sticky top-0 gap-4 w-full z-50 px-4 max-lg:h-6 lg:py-2">
+    <div className="flex justify-between items-center sticky top-0 gap-4 w-full z-999 px-4 max-lg:h-6 lg:py-2">
       {/* Make it marquee in mobile */}
       <div className="lg:hidden relative flex-1 h-full overflow-hidden min-w-0">
         <div className="absolute inset-y-0 left-0 flex items-center whitespace-nowrap max-lg:animate-marquee lg:animate-none">

@@ -3,6 +3,7 @@
 import { mediaToImages } from "@/lib/mediaToImages";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 import HeaderSection from "../commons/HeaderSection";
 import SocmedCard from "./_socmedCard";
 import ImagesSlideshow from "./slideShowImages.tsx/ImagesSlideshow";
@@ -24,7 +25,9 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
           subStyle="font-libertine text-slate-700 text-lg font-semibold"
         />
 
-        <p className="text-md font-libertine">{dept?.description}</p>
+        <div className="text-md font-libertine">
+          <ReactMarkdown>{dept?.description}</ReactMarkdown>
+        </div>
 
         <div className="gap-2 flex flex-col">
           <h1 className="font-libertine font-bold text-xl">Akademik</h1>
