@@ -1,14 +1,13 @@
-import Link from "next/link";
-import HeaderSection from "../commons/HeaderSection";
-import { useEffect, useState } from "react";
+import { GetMemberByDeptIdPaginated } from "@/services/admin/GetMemberByIdPaginated";
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
 import { DepartmentType } from "@/types/data/DepartmentType";
-import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
-import { GetMemberByDeptId } from "@/services/departments/GetMemberByDeptId";
-import { GetMemberByDeptIdPaginated } from "@/services/admin/GetMemberByIdPaginated";
 import { MemberType } from "@/types/data/MemberType";
-import RenderPagination from "../_news/RenderPagination";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { FaChevronUp } from "react-icons/fa";
+import RenderPagination from "../_news/RenderPagination";
+import HeaderSection from "../commons/HeaderSection";
+import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 function ManageAnggota() {
   // handle dept drop down
@@ -21,7 +20,6 @@ function ManageAnggota() {
   const [selectedDeptName, setSelectedDeptName] = useState(
     "dari semua departemen",
   );
-  const [search, setSearch] = useState("");
   const limitDd = 5;
 
   const fetchAllDeptName = async () => {
@@ -42,7 +40,7 @@ function ManageAnggota() {
 
   useEffect(() => {
     fetchAllDeptName();
-  }, [currPg, search]);
+  }, [currPg]);
 
   // handle fetching members data
   const [loadingMain, setLoadingMain] = useState(true);

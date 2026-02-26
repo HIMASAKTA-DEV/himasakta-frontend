@@ -1,6 +1,5 @@
 import { ProgendaType } from "@/types/data/ProgendaType";
 import Link from "next/link";
-import React from "react";
 
 interface TimelineCompProps {
   timeline: ProgendaType["timelines"];

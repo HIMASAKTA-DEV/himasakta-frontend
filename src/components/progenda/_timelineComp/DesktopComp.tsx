@@ -1,6 +1,5 @@
 import { ProgendaType } from "@/types/data/ProgendaType";
 import Link from "next/link";
-import React from "react";
 
 interface TimelineCompProps {
   timeline: ProgendaType["timelines"];
@@ -26,7 +25,7 @@ function DesktopComp({ timeline }: TimelineCompProps) {
         <ul
           className={`flex justify-between items-start list-none ${timeline.length > 4 ? "lg:w-full" : "lg:w-[80%]"}`}
         >
-          {timeline.map((item, idx) => (
+          {timeline.map((item) => (
             <li className="relative flex items-center flex-col gap-6">
               {/* Node */}
               <div className="w-12 h-12 rounded-full bg-gray-300 mb-2 z-20" />

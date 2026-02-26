@@ -5,7 +5,6 @@ import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
 import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
-import SocmedCard from "@/components/departments/_socmedCard";
 import ButtonLink from "@/components/links/ButtonLink";
 import TimelineComp from "@/components/progenda/TimelineComp";
 import Layout from "@/layouts/Layout";

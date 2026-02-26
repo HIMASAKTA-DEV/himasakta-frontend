@@ -24,9 +24,7 @@ export default function Page() {
     mode: "onBlur",
   });
 
-  const onSubmit = async (data: FormValues) => {
-    console.log("SUBMIT:", data);
-
+  const onSubmit = async (_data: FormValues) => {
     // contoh async submit
     await new Promise((r) => setTimeout(r, 1000));
 

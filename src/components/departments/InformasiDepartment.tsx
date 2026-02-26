@@ -3,10 +3,10 @@
 import { mediaToImages } from "@/lib/mediaToImages";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 import HeaderSection from "../commons/HeaderSection";
 import SocmedCard from "./_socmedCard";
 import ImagesSlideshow from "./slideShowImages.tsx/ImagesSlideshow";
-import ReactMarkdown from "react-markdown";
 
 function InformasiDepartment({ ...dept }: DepartmentType) {
   const logoImages = mediaToImages(dept?.logo);

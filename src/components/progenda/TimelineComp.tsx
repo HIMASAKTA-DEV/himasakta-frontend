@@ -1,9 +1,7 @@
-import React from "react";
 import { ProgendaType } from "@/types/data/ProgendaType";
-import Link from "next/link";
+import HeaderSection from "../commons/HeaderSection";
 import DesktopComp from "./_timelineComp/DesktopComp";
 import MobileComp from "./_timelineComp/MobileComp";
-import HeaderSection from "../commons/HeaderSection";
 
 interface TimelineCompProps {
   timeline: ProgendaType["timelines"];

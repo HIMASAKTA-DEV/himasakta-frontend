@@ -1,5 +1,5 @@
-import { ApiMeta } from "../commons/apiMeta";
 import { PhotoType } from "../commons/PhotoType";
+import { ApiMeta } from "../commons/apiMeta";
 import { DepartmentType } from "./DepartmentType";
 import { RoleType } from "./RoleType";
 
