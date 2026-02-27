@@ -1,34 +1,119 @@
-import HeaderSection from "@/components/commons/HeaderSection";
+"use client";
 
-function page() {
+import Link from "next/link";
+import { FaChevronLeft } from "react-icons/fa";
+import { HiOutlineUpload } from "react-icons/hi";
+
+import Typography from "@/components/Typography";
+
+export default function EditGalleryPage({
+  params: _params,
+}: {
+  params: { id: string };
+}) {
   return (
-    <main className="relative min-h-screen overflow-hidden flex items-center justify-center p-4 bg-gradient-to-br from-primaryPink/20 via-white to-primaryGreen/20">
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-[32rem] h-[32rem] bg-primaryPink/40 rounded-full blur-2xl animate-blob will-change-transform" />
+    <div className="p-10 bg-white min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        <Typography
+          variant="h1"
+          className="font-averia text-black text-5xl font-bold mb-10"
+        >
+          Edit Gallery
+        </Typography>
 
-        <div className="absolute top-1/4 -right-40 w-[36rem] h-[36rem] bg-primaryGreen/40 rounded-full blur-2xl animate-blob [animation-delay:3s] [animation-duration:22s] will-change-transform" />
+        <div className="flex flex-col lg:flex-row gap-12 md:gap-16">
+          {/* Left Column: Form Fields */}
+          <div className="flex-1 lg:max-w-[55%] flex flex-col gap-6">
+            <div>
+              <label className="block text-black font-semibold mb-2 text-[15px]">
+                Title
+              </label>
+              <input
+                type="text"
+                placeholder="Insert post title..."
+                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 placeholder:text-[#9BA5B7] placeholder:italic text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-medium"
+              />
+            </div>
 
-        <div className="absolute bottom-[-10rem] left-1/4 w-[34rem] h-[34rem] bg-pink-300/40 rounded-full blur-2xl animate-blob [animation-delay:6s] [animation-duration:26s] will-change-transform" />
+            <div>
+              <label className="block text-black font-semibold mb-2 text-[15px]">
+                Short Description
+              </label>
+              <input
+                type="text"
+                placeholder="Insert short description..."
+                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 placeholder:text-[#9BA5B7] placeholder:italic text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-medium"
+              />
+            </div>
 
-        {/* floating particles */}
-        <div className="absolute top-1/4 left-1/3 w-14 h-14 bg-white/20 border border-white/30 rounded-full backdrop-blur-md animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-10 h-10 bg-white/20 border border-white/30 rounded-full backdrop-blur-md animate-bounce [animation-duration:6s]" />
+            <div>
+              <label className="block text-black font-semibold mb-2 text-[15px]">
+                Category
+              </label>
+              <input
+                type="text"
+                placeholder="Insert photo category..."
+                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 placeholder:text-[#9BA5B7] placeholder:italic text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-medium"
+              />
+            </div>
+
+            <div>
+              <label className="block text-black font-semibold mb-2 text-[15px]">
+                Department
+              </label>
+              <div className="relative">
+                <select className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-medium appearance-none">
+                  <option value="">Departemen A</option>
+                  <option value="dept-b">Departemen B</option>
+                  <option value="dept-c">Departemen C</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-600">
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <Link
+                href="/admin#manage-gallery"
+                className="w-fit flex items-center gap-2 bg-[#12182B] text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-all font-medium text-sm"
+              >
+                <FaChevronLeft size={12} /> Back
+              </Link>
+            </div>
+          </div>
+
+          {/* Middle Divider */}
+          <div className="hidden lg:block w-[1px] bg-gray-200 min-h-full"></div>
+
+          {/* Right Column: Image Upload & Publish */}
+          <div className="flex-1 flex flex-col">
+            <div className="flex-1">
+              <label className="block text-black font-semibold mb-2 text-[15px]">
+                Image
+              </label>
+              <div className="w-full aspect-[4/3] bg-[#f8fafc] border-2 border-dashed border-[#d1d9e2] rounded-2xl flex flex-col items-center justify-center text-[#9BA5B7] cursor-pointer hover:bg-slate-100 transition-all">
+                <HiOutlineUpload size={36} className="mb-4" />
+                <p className="font-averia italic text-[22px]">
+                  Upload your image here
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-12 flex justify-end">
+              <button className="bg-primaryPink text-white px-8 py-3 w-40 rounded-[10px] hover:bg-opacity-90 transition-all font-medium text-[15px] shadow-sm">
+                Publish Post
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div className="lg:w-[80vw] relative flex flex-col gap-4 bg-white/70 backdrop-blur-2xl p-10 rounded-2xl w-full items-center shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/40 animate-fade-in">
-        <HeaderSection title={"Edit Kabinet"} />
-        <p>Ini form</p>
-        <p>Ini form</p>
-        <p>Ini form</p>
-        <p>Ini form</p>
-        <p>Ini form</p>
-        <p>Ini form</p>
-        <p>Ini form</p>
-        <p>Ini form</p>
-        <p>Ini form</p>
-      </div>
-    </main>
+    </div>
   );
 }
-
-export default page;
