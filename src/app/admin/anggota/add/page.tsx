@@ -25,9 +25,6 @@ export default function Page() {
   });
 
   const onSubmit = async (_data: FormValues) => {
-    // contoh async submit
-    await new Promise((r) => setTimeout(r, 1000));
-
     reset();
   };
 
@@ -41,7 +38,6 @@ export default function Page() {
           onSubmit={handleSubmit(onSubmit)}
           className="w-full flex flex-col gap-4"
         >
-          {/* NAMA */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium">Nama</label>
             <input
@@ -60,7 +56,6 @@ export default function Page() {
             )}
           </div>
 
-          {/* EMAIL */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium">Email</label>
             <input
@@ -80,7 +75,6 @@ export default function Page() {
             )}
           </div>
 
-          {/* ROLE */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium">Role</label>
             <select
@@ -98,7 +92,6 @@ export default function Page() {
             )}
           </div>
 
-          {/* ACTIONS */}
           <div className="flex gap-3 pt-4">
             <button
               type="submit"

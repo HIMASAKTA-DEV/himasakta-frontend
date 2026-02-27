@@ -1,0 +1,112 @@
+PUT https://himasakta-backend.vercel.app/api/v1/cabinet-info/1185b547-76de-4c98-97d4-4fd4b039f87d
+
+body: {
+  "visi": "Updated visi",
+  "misi": "Updated misi",
+  "description": "Updated desc",
+  "tagline": "New tagline",
+  "period_start": "2025-01-01",
+  "period_end": "2025-12-31",
+  "logo_id": "",
+  "organigram_id": "",
+  "is_active": false
+}
+
+response: {
+  "success": false,
+  "message": "invalid request body",
+  "error": "invalid UUID length: 0"
+}
+
+POST https://himasakta-backend.vercel.app/api/v1/department/1efb7bf0-952c-487d-abe5-0e43367ff77d
+
+body: {
+  "name": "Updated Name",
+  "description": "Updated desc",
+  "logo_id": "uuid-of-gallery",
+  "social_media_link": "https://...",
+  "bank_soal_link": "https://...",
+  "silabus_link": "https://...",
+  "bank_ref_link": "https://..."
+}
+
+response: {
+  "success": false,
+  "message": "invalid request body",
+  "error": "invalid UUID length: 15"
+}
+
+PUT https://himasakta-backend.vercel.app/api/v1/news/7ca6fe8b-7add-4348-bb2a-7834498d93ef
+
+body: {
+  "title": "Updated Title",
+  "tagline": "Updated tagline",
+  "hashtags": "UPDATED",
+  "content": "Updated content...",
+  "thumbnail_id": "",
+  "published_at": "2026-02-15T10:00:00Z"
+}
+
+response: {
+  "success": false,
+  "message": "invalid request body",
+  "error": "invalid UUID length: 0"
+}
+
+PUT https://himasakta-backend.vercel.app/api/v1/monthly-event/1ec863cf-65ae-4481-ac46-4fb6974d99ad
+
+body: {
+  "title": "Updated Title",
+  "thumbnail_id": "",
+  "description": "Updated desc",
+  "month": "2026-03-01T00:00:00Z",
+  "link": ""
+}
+
+response: {
+  "success": false,
+  "message": "invalid request body",
+  "error": "invalid UUID length: 0"
+}
+
+
+Bukan error sih memastikan saja:
+
+POST 
+
+body: {
+  "title": "Penerimaan Anggota Baru",
+  "tagline": "Ayo bergabung!",
+  "hashtags": "OPREC,HIMASAKTA",
+  "content": "# Selamat Datang\nKami membuka pendaftaran.",
+  "thumbnail_id": null,
+  "published_at": "2026-02-01T10:00:00Z"
+}
+
+response: {
+  "success": false,
+  "message": "failed create news",
+  "error": "ERROR: duplicate key value violates unique constraint \"uni_news_title\" (SQLSTATE 23505)"
+}
+
+Kalo nama sama yg ada di data gak boleh ya? Berarti harus cek kalo error gini berarti ada judul yg sama dan harus ganti judul?
+
+POST https://himasakta-backend.vercel.app/api/v1/department
+
+body: {
+  "name": "Kaderisasi",
+  "description": "Departemen kaderisasi",
+  "logo_id": null,
+  "social_media_link": "",
+  "bank_soal_link": "",
+  "silabus_link": "",
+  "bank_ref_link": ""
+}
+
+response: {
+  "success": false,
+  "message": "failed create department",
+  "error": "ERROR: duplicate key value violates unique constraint \"uni_departments_name\" (SQLSTATE 23505)"
+}
+
+Ini juga?
