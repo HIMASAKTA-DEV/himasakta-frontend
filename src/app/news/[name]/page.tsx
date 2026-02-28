@@ -15,7 +15,7 @@ import { NewsType } from "@/types/data/InformasiBerita";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaChevronLeft } from "react-icons/fa";
-import ReactMarkdown from "react-markdown";
+import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 
 function page() {
   const params = useParams();
@@ -101,7 +101,7 @@ function page() {
               </div>
             </div>
             {(news?.content ?? "").split("\n\n").map((p, idx) => (
-              <ReactMarkdown key={idx}>{p}</ReactMarkdown>
+              <MarkdownRenderer key={idx}>{p}</MarkdownRenderer>
             ))}
             <AdvanceHashTags tags={tags} />
           </>

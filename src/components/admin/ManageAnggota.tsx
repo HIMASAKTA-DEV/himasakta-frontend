@@ -201,7 +201,7 @@ function ManageAnggota() {
                   <tr key={m.id} className="border-t hover:bg-gray-50">
                     <td className="px-4 py-3">{m.name}</td>
                     <td className="px-4 py-3 hidden lg:table-cell">
-                      {m.role.name}
+                      {m.role?.name}
                     </td>
                     <td className="px-4 py-3">{m.role?.name}</td>
                   </tr>
