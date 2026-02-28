@@ -3,6 +3,7 @@
 import HeaderSection from "@/components/commons/HeaderSection";
 import { GetAllCabinets } from "@/services/admin/GetAllCabinets";
 import { GetAllRole } from "@/services/admin/GetAllRole";
+import { PostCreateMember } from "@/services/admin/PostCreateMember";
 import { PostCreateRole } from "@/services/admin/PostCreateRole";
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
 import { CreateMemberType } from "@/types/data/CreateMember";
@@ -10,6 +11,7 @@ import { CreateRoleType } from "@/types/data/CreateRole";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import { RoleType } from "@/types/data/RoleType";
+import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
@@ -118,7 +120,13 @@ export default function Page() {
 
   // Submit main form
   const onSubmit = async (data: FormValues) => {
-    // Add your PostCreateMember service here
+    try {
+      await PostCreateMember(data);
+      alert("Berhasil menambahkan anggota baru!");
+    } catch (err) {
+      console.error("API ERROR: ", err);
+      alert("Gagal menambahkan anggota baru :(");
+    }
     reset();
   };
 
@@ -258,17 +266,25 @@ export default function Page() {
 
           <div className="flex gap-3 pt-4">
             <button
+              className="flex-1 border py-2 rounded-lg hover:opacity-80 active:opacity-70 bg-black text-white transition-all"
               disabled={isSubmitting}
-              className="flex-1 bg-primaryPink text-white py-2 rounded-lg active:bg-primaryPink/40 hover:opacity-80 transition-all disabled:bg-gray-300"
+              type="button"
             >
-              {isSubmitting ? "Menyimpan..." : "Simpan"}
+              <Link href={"/admin/#manage-anggota"}>Back</Link>
             </button>
             <button
               type="button"
               onClick={() => reset()}
+              disabled={isSubmitting}
               className="flex-1 border py-2 rounded-lg hover:bg-gray-50 transition-all"
             >
               Reset
+            </button>
+            <button
+              disabled={isSubmitting}
+              className="flex-1 bg-primaryPink text-white py-2 rounded-lg active:bg-primaryPink/40 hover:opacity-80 transition-all disabled:bg-gray-300"
+            >
+              {isSubmitting ? "Menyimpan..." : "Simpan"}
             </button>
           </div>
         </form>
@@ -326,12 +342,8 @@ export default function Page() {
               </div>
 
               <div className="flex gap-2 pt-4">
-                <button
-                  disabled={roleSubmitting}
-                  className="flex-1 bg-primaryPink text-white py-2 rounded-lg hover:opacity-80 transition-all disabled:bg-gray-300"
-                  type="submit"
-                >
-                  {roleSubmitting ? "Menyimpan..." : "Simpan"}
+                <button>
+                  <Link href={"admin/#manage-member"}>Back</Link>
                 </button>
                 <button
                   type="button"
@@ -342,6 +354,13 @@ export default function Page() {
                   className="flex-1 border py-2 rounded-lg hover:bg-gray-50 transition-all"
                 >
                   Batal
+                </button>
+                <button
+                  disabled={roleSubmitting}
+                  className="flex-1 bg-primaryPink text-white py-2 rounded-lg hover:opacity-80 transition-all disabled:bg-gray-300"
+                  type="submit"
+                >
+                  {roleSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
               </div>
             </form>
