@@ -19,6 +19,7 @@ function MediaPartner() {
       <div className="flex items-center gap-4 flex-col lg:flex-row lg:gap-6">
         {mediaBtnData.map((item) => (
           <ButtonLink
+            key={item.url}
             href={item.url}
             variant="outline"
             className="border-black bg-white rounded-full gap-3 flex items-center transition-all duration-200 hover:border-primaryGreen hover:bg-white hover:scale-105"

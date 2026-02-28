@@ -32,6 +32,7 @@ export default function HeroSection() {
           <div className="flex items-center gap-4">
             {navBtnData.map((item) => (
               <ButtonLink
+                key={item.url}
                 href={item.url}
                 variant="outline"
                 className="border-none bg-white rounded-md gap-1 flex items-center transition-all duration-200"
