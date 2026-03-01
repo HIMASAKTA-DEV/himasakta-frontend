@@ -4,17 +4,14 @@ import { ApiMeta } from "@/types/commons/apiMeta";
 import { ApiResponse } from "@/types/commons/apiResponse";
 import { NewsType } from "@/types/data/InformasiBerita";
 
-// config base_url using env later
-const BASE_URL = "https://himasakta-backend.vercel.app/api/v1";
+import { baseURL } from "@/lib/axios";
 
 export const GetAllNews = async ({ ...params }: ApiMeta) => {
   const metaParams = new URLSearchParams(
     Object.entries(params).map(([k, v]) => [k, String(v)]),
   );
 
-  const resp = await fetch(`${BASE_URL}/news?${metaParams.toString()}`, {
-    cache: "no-store",
-  });
+  const resp = await fetch(`${baseURL}/news?${metaParams.toString()}`);
 
   if (!resp.ok) {
     throw new Error("Failed to load recent News");

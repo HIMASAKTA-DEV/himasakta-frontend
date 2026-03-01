@@ -3,13 +3,10 @@
 import { ApiResponse } from "@/types/commons/apiResponse";
 import { NewsType } from "@/types/data/InformasiBerita";
 
-// config base_url using env later
-const BASE_URL = "https://himasakta-backend.vercel.app/api/v1";
+import { baseURL } from "@/lib/axios";
 
 export const GetNewsByNameOrSlug = async (slug: string) => {
-  const resp = await fetch(`${BASE_URL}/news/${slug}`, {
-    cache: "no-store",
-  });
+  const resp = await fetch(`${baseURL}/news/${slug}`);
 
   if (!resp.ok) {
     throw new Error("Failed to load recent News");

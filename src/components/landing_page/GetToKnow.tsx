@@ -97,8 +97,11 @@ export default function GetToKnow() {
               </div>
             ))
           ) : (
-            <div className="w-full text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed">
-              <p className="text-gray-500">Belum ada acara bulan ini</p>
+            <div className="w-full text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed text-gray-500">
+              <p className="text-lg font-semibold">
+                Tidak ada acara yang tersedia bulan ini.
+              </p>
+              <p className="text-sm">kembali lagi nanti</p>
             </div>
           )}
         </div>

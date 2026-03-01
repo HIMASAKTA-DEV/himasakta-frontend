@@ -7,6 +7,8 @@ import OrganigramSection from "@/components/landing_page/OrganigramSection";
 import ProfilHimpunan from "@/components/landing_page/ProfilHimpunan";
 import Layout from "@/layouts/Layout";
 
+export const revalidate = 60;
+
 export default async function Home() {
   return (
     <>

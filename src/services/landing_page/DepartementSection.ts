@@ -3,13 +3,10 @@
 import { ApiResponse } from "@/types/commons/apiResponse";
 import { DepartmentInfo } from "@/types/data/DepartmentSection";
 
-// config base_url using env later
-const BASE_URL = "https://himasakta-backend.vercel.app/api/v1";
+import { baseURL } from "@/lib/axios";
 
 export const getDepartmentInfo = async () => {
-  const resp = await fetch(`${BASE_URL}/department`, {
-    cache: "no-store",
-  });
+  const resp = await fetch(`${baseURL}/department`);
 
   if (!resp.ok) {
     throw new Error("Failed to load department info");
