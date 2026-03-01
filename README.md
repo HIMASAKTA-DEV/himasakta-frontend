@@ -1,6 +1,6 @@
 # Himasakta-Front-End
 
-English version of this documentation:
+English version of this documentation: coming soon.
 
 ## Landing page
 
