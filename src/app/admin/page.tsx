@@ -20,6 +20,7 @@ import ImageFallback from "@/components/commons/ImageFallback";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import ButtonLink from "@/components/links/ButtonLink";
 import api from "@/lib/axios";
+import { useAdminAuth } from "@/services/admin/useAdminAuth";
 import { ApiResponse } from "@/types/api";
 import { FaChevronLeft } from "react-icons/fa";
 
@@ -124,7 +125,10 @@ export default function AdminPage() {
     }
   };
 
-  if (!isReady) {
+  // check token
+  const { jwtToken, ready } = useAdminAuth();
+
+  if (!isReady && !ready) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span className="animate-pulse text-gray-500">
@@ -135,7 +139,7 @@ export default function AdminPage() {
   }
 
   // if authed
-  if (jwt) {
+  if (jwt && jwtToken) {
     return (
       <div className="flex min-h-screen sticky top-0 overflow-x-clip">
         {/* SIDEBAR */}

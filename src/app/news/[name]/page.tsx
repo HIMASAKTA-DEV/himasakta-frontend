@@ -4,6 +4,7 @@ import NotFound from "@/app/not-found";
 import AdvanceHashTags from "@/components/commons/AdvanceHastags";
 import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
+import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
 import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
@@ -15,7 +16,6 @@ import { NewsType } from "@/types/data/InformasiBerita";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaChevronLeft } from "react-icons/fa";
-import ReactMarkdown from "react-markdown";
 
 function page() {
   const params = useParams();
@@ -101,7 +101,7 @@ function page() {
               </div>
             </div>
             {(news?.content ?? "").split("\n\n").map((p, idx) => (
-              <ReactMarkdown key={idx}>{p}</ReactMarkdown>
+              <MarkdownRenderer key={idx}>{p}</MarkdownRenderer>
             ))}
             <AdvanceHashTags tags={tags} />
           </>
