@@ -65,7 +65,7 @@ export default function NavbarDept() {
 
   // Handle page nav
   const pathname = usePathname();
-  const activeDept = pathname.split("/").pop();
+  const activeDept = decodeURIComponent(pathname.split("/").pop() ?? "");
   const [showSearch, setShowSearch] = useState(false);
   const [keyword, setKeyword] = useState("");
 
@@ -97,7 +97,7 @@ export default function NavbarDept() {
 
   if (loading) {
     return (
-      <nav className="bg-white p-4 shadow rounded-full">
+      <nav className="bg-white p-4 shadow rounded-full flex items-center justify-center">
         <SkeletonPleaseWait />
       </nav>
     );

@@ -22,6 +22,7 @@ import ButtonLink from "@/components/links/ButtonLink";
 import api from "@/lib/axios";
 import { ApiResponse } from "@/types/api";
 import { FaChevronLeft } from "react-icons/fa";
+import { useAdminAuth } from "@/services/admin/useAdminAuth";
 
 type LoginForm = {
   username: string;
@@ -124,7 +125,10 @@ export default function AdminPage() {
     }
   };
 
-  if (!isReady) {
+  // check token
+  const { jwtToken, ready } = useAdminAuth();
+
+  if (!isReady && !ready) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span className="animate-pulse text-gray-500">
@@ -135,7 +139,7 @@ export default function AdminPage() {
   }
 
   // if authed
-  if (jwt) {
+  if (jwt && jwtToken) {
     return (
       <div className="flex min-h-screen sticky top-0 overflow-x-clip">
         {/* SIDEBAR */}
