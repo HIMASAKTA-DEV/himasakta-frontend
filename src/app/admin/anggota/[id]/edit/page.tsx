@@ -1,5 +1,6 @@
 "use client";
 
+import { UUID } from "crypto";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
@@ -14,10 +15,9 @@ import { CreateRoleType } from "@/types/data/CreateRole";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import { RoleType } from "@/types/data/RoleType";
-import { UUID } from "crypto";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation"; // Added router
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   FaCloudUploadAlt,
@@ -251,6 +251,7 @@ export default function Page() {
       setOpenUpload(false);
     } catch (err) {
       alert("Gagal upload");
+      console.error(err);
     } finally {
       setUploading(false);
     }
