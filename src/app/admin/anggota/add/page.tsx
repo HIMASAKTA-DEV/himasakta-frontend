@@ -415,6 +415,7 @@ export default function Page() {
                 minLength: { value: 3, message: "Minimal 3 karakter" },
               })}
               className="px-4 py-2 rounded-lg border focus:ring-2 focus:ring-primaryPink outline-none"
+              placeholder="Nama Lengkap"
             />
           </Field>
 
@@ -426,6 +427,7 @@ export default function Page() {
                 pattern: { value: /^\d+$/, message: "NRP hanya boleh angka" },
               })}
               className="px-4 py-2 rounded-lg border focus:ring-2 focus:ring-primaryPink outline-none"
+              placeholder="e.g. 5025261..."
             />
           </Field>
 

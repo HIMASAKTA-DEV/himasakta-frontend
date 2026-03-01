@@ -237,7 +237,7 @@ function ManageAnggota() {
                     <td className="px-4 py-3 flex gap-2">
                       <button>
                         <Link href={`/admin/anggota/${m.id}/edit`}>
-                          <FaRegEdit className="text-blue-500" />
+                          <FaRegEdit className="text-blue-500 hover:text-blue-600 active:text-blue-700 transition-all duration-300" />
                         </Link>
                       </button>
                       <button
@@ -246,7 +246,7 @@ function ManageAnggota() {
                           setShowDeleteModal(true);
                         }}
                       >
-                        <FaRegTrashAlt className="text-red-500" />
+                        <FaRegTrashAlt className="text-red-500 hover:text-red-600 active:text-red-700 transition-all duration-300" />
                       </button>
                     </td>
                   </tr>

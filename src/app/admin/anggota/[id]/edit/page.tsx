@@ -336,7 +336,7 @@ export default function Page() {
     }
 
     try {
-      await api.put(`/role/${editingRoleId}`, payload); // 🔥 JSON, BUKAN FormData
+      await api.put(`/role/${editingRoleId}`, payload);
       alert("Jabatan berhasil diperbarui!");
       await fetchRoles();
       closeRoleModal();
@@ -397,13 +397,19 @@ export default function Page() {
             <input
               {...register("name", { required: "Nama wajib diisi" })}
               className="px-4 py-2 rounded-lg border focus:ring-2 focus:ring-primaryPink outline-none"
+              placeholder="Nama Lengkap"
             />
           </Field>
 
+          {/* NRP */}
           <Field label="NRP" required error={errors.nrp?.message}>
             <input
-              {...register("nrp", { required: "NRP wajib diisi" })}
+              {...register("nrp", {
+                required: "NRP wajib diisi",
+                pattern: { value: /^\d+$/, message: "NRP hanya boleh angka" },
+              })}
               className="px-4 py-2 rounded-lg border focus:ring-2 focus:ring-primaryPink outline-none"
+              placeholder="e.g. 5025261..."
             />
           </Field>
 
