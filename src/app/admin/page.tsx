@@ -128,7 +128,7 @@ export default function AdminPage() {
   // check token
   const { jwtToken, ready } = useAdminAuth();
 
-  if (!isReady && !ready) {
+  if (!isReady || !ready) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span className="animate-pulse text-gray-500">
@@ -139,7 +139,7 @@ export default function AdminPage() {
   }
 
   // if authed
-  if (jwt && jwtToken) {
+  if (jwt || jwtToken) {
     return (
       <div className="flex min-h-screen sticky top-0 overflow-x-clip">
         {/* SIDEBAR */}
