@@ -4,10 +4,11 @@ import { DepartmentType } from "@/types/data/DepartmentType";
 import { MemberType } from "@/types/data/MemberType";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaChevronUp } from "react-icons/fa";
+import { FaChevronUp, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
+import api from "@/lib/axios";
 
 function ManageAnggota() {
   // handle dept drop down
@@ -74,6 +75,35 @@ function ManageAnggota() {
   useEffect(() => {
     fetchAnggotaByDept();
   }, [currMemberPg, selectedDept]);
+
+  // handle delete anggota
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const handleDelete = async () => {
+    if (!selectedMemberId) return;
+
+    setDeleteLoading(true);
+    setDeleteError(null);
+
+    try {
+      await api.delete(`/member/${selectedMemberId}`);
+
+      // close modal
+      setShowDeleteModal(false);
+      setSelectedMemberId(null);
+
+      // refetch member list
+      fetchAnggotaByDept();
+    } catch (err) {
+      console.error(err);
+      setDeleteError("Gagal menghapus anggota");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen w-full lg:p-10 p-4 gap-8 ">
@@ -203,7 +233,22 @@ function ManageAnggota() {
                     <td className="px-4 py-3 hidden lg:table-cell">
                       {m.role?.name}
                     </td>
-                    <td className="px-4 py-3">{m.role?.name}</td>
+                    {/* Actions */}
+                    <td className="px-4 py-3 flex gap-2">
+                      <button>
+                        <Link href={`/admin/anggota/${m.id}/edit`}>
+                          <FaRegEdit className="text-blue-500" />
+                        </Link>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedMemberId(m.id ?? null);
+                          setShowDeleteModal(true);
+                        }}
+                      >
+                        <FaRegTrashAlt className="text-red-500" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -251,6 +296,45 @@ function ManageAnggota() {
           </button>
         </div>
       </div>
+
+      {/* Show delete modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
+            <h2 className="text-lg font-semibold mb-2">Hapus Anggota</h2>
+
+            <p className="text-sm text-gray-600 mb-4">
+              Apakah Anda yakin ingin menghapus anggota ini? Tindakan ini tidak
+              dapat dibatalkan.
+            </p>
+
+            {deleteError && (
+              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
+            )}
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setSelectedMemberId(null);
+                }}
+                disabled={deleteLoading}
+                className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
+              >
+                Batal
+              </button>
+
+              <button
+                onClick={handleDelete}
+                disabled={deleteLoading}
+                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:opacity-90 disabled:opacity-50"
+              >
+                {deleteLoading ? "Menghapus..." : "Hapus"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
