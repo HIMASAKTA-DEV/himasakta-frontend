@@ -1,3 +1,4 @@
+import api from "@/lib/axios";
 import { GetMemberByDeptIdPaginated } from "@/services/admin/GetMemberByIdPaginated";
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
 import { DepartmentType } from "@/types/data/DepartmentType";
@@ -8,7 +9,6 @@ import { FaChevronUp, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
-import api from "@/lib/axios";
 
 function ManageAnggota() {
   // handle dept drop down
