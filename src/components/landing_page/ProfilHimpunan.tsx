@@ -37,13 +37,12 @@ export default function ProfilHimpunan() {
           className="w-[75vw] lg:max-w-7xl mx-auto"
         />
         <p className="w-[75vw] lg:max-w-7xl mx-auto font-libertine lg:text-xl">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea. Lorem ipsum dolor sit amet, consectetur adipiscing
-          elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-          aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-          laboris nisi ut aliquip ex ea
+          In the 2024 leadership period, HIMASAKTA ITS adopted the name
+          AVANTURIER as the name of the cabinet. AVANTURIER is derived from
+          Dutch, meaning "adventurer." As the 6th cabinet, Avanturier is
+          expected to carry forward and continue the leadership legacy of
+          HIMASAKTA. It is also hoped that HIMASAKTA ITS will continue to serve
+          the needs of ITS Actuarial students.
         </p>
       </div>
     </section>

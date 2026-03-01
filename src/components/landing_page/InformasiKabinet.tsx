@@ -6,6 +6,9 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import HeaderSection from "../commons/HeaderSection";
 import SkeletonInformasiKabinet from "./skeletons/SkeletonInfoKabinet";
+import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
+import "./md.info-kabinet.css";
 
 export default function InformasiKabinet() {
   // Comment this after creating data fetching
@@ -38,19 +41,21 @@ export default function InformasiKabinet() {
       <div className="order-2 lg:order-1 flex flex-col gap-4">
         <HeaderSection title="Informasi Kabinet" sub={cabinet?.tagline} />
         <p className="font-libertine lg:text-xl">{cabinet?.description}</p>
-        {/* Ini ul kemungkinan ada dua: visi dan misi */}
-        <h1 className="font-libertine font-bold lg:text-2xl">Visi & Misi:</h1>
-        <ul className="list-disc list-inside ml-6">
-          <li key={cabinet?.visi || "visi"}>{cabinet?.visi}</li>
-          <li key={cabinet?.misi || "misi"}>{cabinet?.misi}</li>
-        </ul>
+        <div className="info-kabinet-content">
+          <h1 className="font-libertine font-bold lg:text-2xl">Visi:</h1>
+          <p key={cabinet?.visi || "visi"}>{cabinet?.visi}</p>
+          <h1 className="font-libertine font-bold lg:text-2xl mt-4">Misi:</h1>
+          <ReactMarkdown remarkPlugins={[gfm]}>
+            {cabinet?.misi ?? ""}
+          </ReactMarkdown>
+        </div>
       </div>
       <Image
         src={cabinet?.logo?.image_url ?? "/images/InformasiKabinet.png"}
         alt="profil-himpunan"
-        width={402}
-        height={569}
-        className="order-1 lg:order-2 rounded-3xl hidden lg:inline-block"
+        width={400}
+        height={400}
+        className="order-1 lg:order-2 rounded-3xl hidden lg:inline-block aspect-square object-contain"
       />
       <div className="lg:hidden w-full relative aspect-[16/12]">
         <Image
