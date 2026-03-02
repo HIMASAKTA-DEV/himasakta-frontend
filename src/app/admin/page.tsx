@@ -20,7 +20,6 @@ import ImageFallback from "@/components/commons/ImageFallback";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import ButtonLink from "@/components/links/ButtonLink";
 import api from "@/lib/axios";
-import { useAdminAuth } from "@/services/admin/useAdminAuth";
 import { ApiResponse } from "@/types/api";
 import { FaChevronLeft } from "react-icons/fa";
 

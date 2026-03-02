@@ -1,17 +1,17 @@
 "use client";
 
+import Typography from "@/components/Typography";
+import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
+import api from "@/lib/axios";
+import { CreateCabinetType } from "@/types/admin/CreateCabinet";
+import Link from "next/link";
+import { useState } from "react";
+import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
 import { FaChevronLeft, FaCloudUploadAlt } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
-import Typography from "@/components/Typography";
-import Link from "next/link";
-import { CreateCabinetType } from "@/types/admin/CreateCabinet";
-import { useState } from "react";
-import api from "@/lib/axios";
-import { useRef } from "react";
-import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
   is_active: string;
@@ -189,7 +189,7 @@ export default function EditCabinetPage() {
   // handle markdown desc edit
   const [descMode, setDescMode] = useState<"edit" | "preview">("edit");
   const [descVal, setDescVal] = useState("");
-  const [preview, setPreview] = useState(false);
+  const [_preview, setPreview] = useState(false);
   const applyFormat = (before: string, after = before) => {
     if (!descRef.current) return;
 

@@ -6,10 +6,10 @@ import { MemberType } from "@/types/data/MemberType";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaChevronUp } from "react-icons/fa";
+import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
-import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 function ManageAnggota() {
   // handle dept drop down

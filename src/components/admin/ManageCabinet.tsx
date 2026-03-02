@@ -3,13 +3,13 @@
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 import HeaderSection from "@/components/commons/HeaderSection";
-import Link from "next/link";
-import type { ManageCabinet } from "@/types/admin/ManageCabinetType";
-import { useEffect, useState } from "react";
 import api from "@/lib/axios";
-import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
-import RenderPagination from "../_news/RenderPagination";
 import { GetManageCabinet } from "@/services/admin/GetManageCabinets";
+import type { ManageCabinet } from "@/types/admin/ManageCabinetType";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import RenderPagination from "../_news/RenderPagination";
+import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 type CabinetRow = ManageCabinet; // type sebaiknya dipindah ke folder types/
 
@@ -23,7 +23,7 @@ function ManageCabinet() {
   const [activeCabinets, setActiveCabinets] = useState<CabinetRow[]>([]);
   const [currPg, setCurrPg] = useState(1);
   const [totData, setTotData] = useState(0);
-  const [errData, setErrData] = useState(false);
+  const [_errData, setErrData] = useState(false);
   const [loadData, setLoadData] = useState(true);
   const [totPage, setTotPg] = useState(1);
 

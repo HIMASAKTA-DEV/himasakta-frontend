@@ -4,12 +4,11 @@ import { getCurrentCabinetInfo } from "@/services/landing_page/InformasiKabinet"
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import HeaderSection from "../commons/HeaderSection";
-import SkeletonInformasiKabinet from "./skeletons/SkeletonInfoKabinet";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
+import HeaderSection from "../commons/HeaderSection";
+import SkeletonInformasiKabinet from "./skeletons/SkeletonInfoKabinet";
 import "./md.info-kabinet.css";
-import Markdown from "react-markdown";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
 
 export default function InformasiKabinet() {
