@@ -5,10 +5,11 @@ import { DepartmentType } from "@/types/data/DepartmentType";
 import { MemberType } from "@/types/data/MemberType";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaChevronUp, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import { FaChevronUp } from "react-icons/fa";
 import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
+import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 function ManageAnggota() {
   // handle dept drop down
@@ -135,7 +136,7 @@ function ManageAnggota() {
 
             {/* Dropdown */}
             {showDd && (
-              <div className="absolute z-10 mt-2 w-full bg-white border rounded-xl shadow-lg overflow-hidden">
+              <div className="absolute z-10 mt-2 w-full bg-white border rounded-xl shadow-lg overflow-hidden max-lg:text-sm">
                 {/* List */}
                 <div className="max-h-56 overflow-y-auto">
                   {loadingDd && (
@@ -198,7 +199,7 @@ function ManageAnggota() {
               </div>
             )}
           </div>
-          <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90  active:opacity-80 duration-300 transition-all">
+          <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90  active:opacity-80 duration-300 transition-all max-lg:text-sm">
             <Link href={"/admin/anggota/add"}>+ Add Member</Link>
           </button>
         </div>
@@ -214,9 +215,9 @@ function ManageAnggota() {
           </div>
         )}
         {!loadingMain && !errMain && members.length > 0 && (
-          <div className=" flex flex-col gap-4 w-full rounded-3xl overflow-hidden border border-gray-200">
-            <table className="w-full min-w-max border-collapse">
-              <thead className="bg-gray-100">
+          <div className=" flex flex-col gap-4 w-full rounded-3xl overflow-auto border border-gray-200">
+            <table className="w-full min-w-[500px] border-collapse overflow-auto">
+              <thead className="bg-[#F8E8EA] text-gray-700">
                 <tr>
                   <th className="px-4 py-3 text-left">Nama</th>
                   <th className="px-4 py-3 text-left hidden lg:table-cell">
@@ -234,20 +235,24 @@ function ManageAnggota() {
                       {m.role?.name}
                     </td>
                     {/* Actions */}
-                    <td className="px-4 py-3 flex gap-2">
-                      <button>
-                        <Link href={`/admin/anggota/${m.id}/edit`}>
-                          <FaRegEdit className="text-blue-500 hover:text-blue-600 active:text-blue-700 transition-all duration-300" />
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center gap-2">
+                        <Link
+                          href={`/admin/anggota/${m.id}/edit`}
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
+                        >
+                          <HiOutlinePencilAlt size={16} />
                         </Link>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedMemberId(m.id ?? null);
-                          setShowDeleteModal(true);
-                        }}
-                      >
-                        <FaRegTrashAlt className="text-red-500 hover:text-red-600 active:text-red-700 transition-all duration-300" />
-                      </button>
+                        <button
+                          onClick={() => {
+                            setSelectedMemberId(m.id);
+                            setShowDeleteModal(true);
+                          }}
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-red-50 hover:text-red-600"
+                        >
+                          <HiOutlineTrash size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -257,9 +262,9 @@ function ManageAnggota() {
         )}
       </div>
       <div className="flex w-full items-center lg:justify-between flex-col lg:flex-row gap-4">
-        <p className="text-md font-libertine">
-          Shwoing {Math.min(limitMembers * currMemberPg, totalDataMembers)} of{" "}
-          {totalDataMembers} data.
+        <p className="font-libertine text-sm text-primaryPink">
+          Showing {Math.min(currPg * limitMembers, totalDataMembers)} of{" "}
+          {totalDataMembers} in current selection
         </p>
 
         {/* Pagination controls */}

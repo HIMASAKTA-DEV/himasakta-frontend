@@ -11,7 +11,9 @@ import Link from "next/link";
 
 export default function EditCabinetPage({
   params: _params,
-}: { params: { id: string } }) {
+}: {
+  params: { id: string };
+}) {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [visi, setVisi] = useState("");
