@@ -20,7 +20,6 @@ import ImageFallback from "@/components/commons/ImageFallback";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import ButtonLink from "@/components/links/ButtonLink";
 import api from "@/lib/axios";
-import { useAdminAuth } from "@/services/admin/useAdminAuth";
 import { ApiResponse } from "@/types/api";
 import { FaChevronLeft } from "react-icons/fa";
 
@@ -125,10 +124,7 @@ export default function AdminPage() {
     }
   };
 
-  // check token
-  const { jwtToken, ready } = useAdminAuth();
-
-  if (!isReady || !ready) {
+  if (!isReady) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span className="animate-pulse text-gray-500">
@@ -139,7 +135,7 @@ export default function AdminPage() {
   }
 
   // if authed
-  if (jwt || jwtToken) {
+  if (jwt) {
     return (
       <div className="flex min-h-screen sticky top-0 overflow-x-clip">
         {/* SIDEBAR */}
@@ -158,12 +154,12 @@ export default function AdminPage() {
         >
           <Sidebar active={active} />
         </aside>
-        <main className="flex-1 bg-white ml-20 lg:ml-80">
+        <main className="flex-1 bg-white ml-20 lg:ml-80 overflow-auto">
           {/* Sesuaikan ml sesuai ukuran sidebar */}
-          <div className="border-b px-4 py-4 sticky top-0 bg-white/70 backdrop-blur-md shadow-md z-40">
+          <div className="border-b px-4 py-4 fixed top-0 bg-white/70 backdrop-blur-md shadow-md z-40 w-[83vw]">
             <AdminTopBar usr={usr} onLogout={handleLogout} />
           </div>
-          <div className="p-6">{renderContent()}</div>
+          <div className="p-6 py-20">{renderContent()}</div>
         </main>
       </div>
     );
