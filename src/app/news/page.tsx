@@ -213,7 +213,29 @@ export default function Page() {
     "#organisasi",
     "#penerimaan anggota",
     "#workshop",
+    "#markdown",
+    "#its",
+    "#tutorial",
+    "#OPREC",
+    "#oprec",
+    "#HIMASAKTA",
+    "#softwareengineering",
   ];
+
+  // filter only searched tags
+  // Filter tags berdasarkan input user (case-insensitive)
+  const [filteredTags, setFilteredTags] = useState<string[]>(availableTags);
+
+  const filterTheTags = () => {
+    const tmp = availableTags.filter((tag) =>
+      tag.toLowerCase().includes(tagQuery.toLowerCase()),
+    );
+    setFilteredTags(tmp);
+  };
+
+  useEffect(() => {
+    filterTheTags();
+  }, [tagQuery]);
 
   // Handler pilih tag
   const handleToggleTag = (tag: string) => {
@@ -345,7 +367,7 @@ export default function Page() {
                   placeholder="Cari tag..."
                   value={tagQuery}
                   onChange={(ev) => setTagQuery(ev.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200 mb-2"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primaryPink mb-2"
                 />
 
                 {/* Selected tags */}
@@ -375,7 +397,7 @@ export default function Page() {
                 )}
 
                 <ul className="max-h-60 overflow-auto">
-                  {availableTags.map((tag) => (
+                  {filteredTags.map((tag) => (
                     <li
                       key={tag}
                       className={`px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center justify-between ${

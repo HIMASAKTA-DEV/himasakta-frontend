@@ -32,15 +32,15 @@ export default function EditCabinetPage() {
     control,
   } = useForm<FormValues>({
     defaultValues: {
-      visi: "", // done
-      misi: "", // done
-      description: "", // markdown missing
-      tagline: "", // done
-      period_start: "", // done
-      period_end: "", // done
-      logo_id: undefined, // blum
-      organigram_id: undefined, // blum
-      is_active: "false", // blum
+      visi: "",
+      misi: "",
+      description: "",
+      tagline: "",
+      period_start: "",
+      period_end: "",
+      logo_id: "",
+      organigram_id: "",
+      is_active: "false",
     },
   });
 

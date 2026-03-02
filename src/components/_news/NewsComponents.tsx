@@ -7,13 +7,17 @@ import { FaArrowRight } from "react-icons/fa6";
 import ReactMarkdown from "react-markdown";
 import HashTags from "../commons/HashTags";
 import ImageFallback from "../commons/ImageFallback";
+import MarkdownRenderer from "../commons/MarkdownRenderer";
 
 export default function NewsComps({ ...news }: NewsType) {
   // wajib normalize tags ke string[]
-  const tags = normalizeHashtags(news.hashtag);
+  const tags = normalizeHashtags(news.hashtags);
 
   return (
-    <div key={news.id} className="flex flex-col gap-3 group/card">
+    <div
+      key={news.id}
+      className="flex flex-col gap-3 group/card shadow-lg p-2 rounded-lg"
+    >
       <Link
         href={`/news/${news.slug}`}
         className="group relative w-full h-[140px] lg:h-[180px] rounded-xl overflow-hidden bg-gray-100"
@@ -69,8 +73,13 @@ export default function NewsComps({ ...news }: NewsType) {
           </Link>
 
           <Link href={`/news/${news.id}`}>
-            <div className="text-sm text-gray-600 line-clamp-2 lg:line-clamp-3 hover:text-gray-800 transition active:text-primaryGreen">
-              <ReactMarkdown>{news.content}</ReactMarkdown>
+            <div className="relative group text-sm text-gray-600 h-[50px] lg:h-[80px] overflow-hidden">
+              <MarkdownRenderer>{news.content}</MarkdownRenderer>
+              <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-24 bg-gradient-to-t from-white to-transparent transition-all duration-300 flex items-end justify-center">
+                <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-2">
+                  Baca selengkapnya
+                </p>
+              </div>
             </div>
           </Link>
         </div>
