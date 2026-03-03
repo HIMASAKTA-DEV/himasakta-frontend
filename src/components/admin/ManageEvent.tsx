@@ -1,20 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import HeaderSection from "../commons/HeaderSection";
-import { UUID } from "crypto";
 import api from "@/lib/axios";
-import { ManageEventsType } from "@/types/admin/ManageEvents";
 import { GetManageEvents } from "@/services/admin/GetManageEvent";
+import { ManageEventsType } from "@/types/admin/ManageEvents";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
-import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 import RenderPagination from "../_news/RenderPagination";
+import HeaderSection from "../commons/HeaderSection";
+import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 function ManageEvent() {
   // handle data fetching all data needed
   const [loadingData, setLoadingData] = useState(false);
-  const [errMainData, setErrMainData] = useState(false);
+  const [_errMainData, setErrMainData] = useState(false);
   const [eventsData, setEventsData] = useState<ManageEventsType[]>([]);
   const [currPg, setCurrPg] = useState(1);
   const [totData, setTotData] = useState(1);
