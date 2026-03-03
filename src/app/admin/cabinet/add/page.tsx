@@ -57,14 +57,15 @@ export default function EditCabinetPage() {
       };
 
       await api.post("/cabinet-info", payload);
-      alert("Berhasil menambahkan kabinet baru!");
 
       // Reset everything
       localStorage.removeItem("cabinet_form_draft"); // Clear the draft
       reset();
+      setDescVal("");
       setIsActive(false);
       setLogo(null);
       setOrganigram(null);
+      alert("Berhasil menambahkan kabinet baru!");
     } catch (err) {
       console.error("API ERROR: ", err);
       alert("Gagal menambahkan kabinet baru.");
@@ -254,12 +255,28 @@ export default function EditCabinetPage() {
     setIsRestored(true);
   }, [reset]);
 
-  if (!isRestored)
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const isModalOpen = openUpload || openUploadOrganigram;
+
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [openUpload, openUploadOrganigram]);
+
+  if (!isRestored) {
     return (
       <div className=" flex items-center justify-center p-10 min-h-screen w-full">
         <SkeletonPleaseWait />
       </div>
     );
+  }
 
   return (
     <form
@@ -375,6 +392,7 @@ export default function EditCabinetPage() {
                         applyFormat("**");
                         e.preventDefault();
                       }}
+                      className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
                     >
                       <BiBold size={18} />
                     </button>
@@ -385,6 +403,7 @@ export default function EditCabinetPage() {
                         applyFormat("*");
                         e.preventDefault();
                       }}
+                      className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
                     >
                       <BiItalic size={18} />
                     </button>
@@ -395,6 +414,7 @@ export default function EditCabinetPage() {
                         e.preventDefault();
                         applyFormat("<u>", "</u>");
                       }}
+                      className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
                     >
                       <BiUnderline size={18} />
                     </button>
@@ -405,6 +425,7 @@ export default function EditCabinetPage() {
                         e.preventDefault();
                         applyFormat("\n  - ", "");
                       }}
+                      className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
                     >
                       <AiOutlineUnorderedList size={18} />
                     </button>
@@ -415,6 +436,7 @@ export default function EditCabinetPage() {
                         applyFormat("\n  1. ", "");
                         e.preventDefault();
                       }}
+                      className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
                     >
                       <AiOutlineOrderedList size={18} />
                     </button>
@@ -556,7 +578,7 @@ export default function EditCabinetPage() {
 
             <Link
               href="/admin#manage-cabinet"
-              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white max-lg:hidden"
+              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white max-lg:hidden hover:opacity-80 transition-all duration-300"
             >
               <FaChevronLeft size={12} /> Back
             </Link>
@@ -684,7 +706,7 @@ export default function EditCabinetPage() {
 
             <Link
               href="/admin#manage-cabinet"
-              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden"
+              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden hover:opacity-80 transition-all duration-300"
             >
               <FaChevronLeft size={12} /> Back
             </Link>
