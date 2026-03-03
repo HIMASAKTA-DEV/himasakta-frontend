@@ -6,12 +6,11 @@
 "use client";
 
 import Typography from "@/components/Typography";
-import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import api from "@/lib/axios";
 import { CreateCabinetType } from "@/types/admin/CreateCabinet";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation"; // Gunakan next/navigation untuk App Router
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
@@ -37,7 +36,7 @@ export default function EditCabinetPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
     reset,
     setValue,
     control,
