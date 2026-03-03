@@ -27,6 +27,7 @@ type PhotoData = {
 };
 
 export default function EditCabinetPage() {
+  const [initVal, setInitVal] = useState<FormValues | null>(null);
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const descRef = useRef<HTMLTextAreaElement | null>(null);
@@ -64,6 +65,7 @@ export default function EditCabinetPage() {
         // Set state tambahan
         setDescVal(data.description);
         setIsActive(data.is_active);
+        setInitVal(data);
         if (data.logo) setLogo(data.logo);
         if (data.organigram) setOrganigram(data.organigram);
       } catch (err) {
@@ -135,7 +137,7 @@ export default function EditCabinetPage() {
     if (!logo?.id) return;
 
     const confirmDelete = confirm(
-      "Are you sure? This will update the cabinet and delete the image permanently.",
+      "Yakin? Link akan dilepas dan gambar dihapus permanen.",
     );
     if (!confirmDelete) return;
 
@@ -574,8 +576,9 @@ export default function EditCabinetPage() {
               <button
                 type="button"
                 onClick={() => {
-                  reset();
-                  handleDeleteImage();
+                  if (!initVal) return;
+                  reset(initVal);
+                  setDescVal(initVal?.description ?? "");
                 }}
                 disabled={isSubmitting || deletingLogo || deletingOrganigram}
                 className="px-4 border py-2 rounded-lg hover:bg-gray-50 transition-all"
@@ -620,7 +623,7 @@ export default function EditCabinetPage() {
               }}
               className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all
           ${
-            uploading
+            uploading || deletingLogo
               ? "cursor-not-allowed opacity-60 bg-gray-100"
               : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
           }
