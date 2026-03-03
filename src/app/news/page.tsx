@@ -6,6 +6,7 @@ import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
+import { STATIC_TAGS } from "@/lib/_dummy_db/_tags/StaticTags";
 import { GetAllNews } from "@/services/news/FetchAllNews";
 import { NewsType } from "@/types/data/InformasiBerita";
 import React, { useEffect, useRef, useState } from "react";
@@ -206,14 +207,20 @@ export default function Page() {
   const [showFilterDd, setShowFilterDd] = useState(false);
   const [tagQuery, setTagQuery] = useState("");
 
-  // Contoh tags (bisa diambil dari API nanti)
-  const availableTags = [
-    "#pengumuman",
-    "#event",
-    "#organisasi",
-    "#penerimaan anggota",
-    "#workshop",
-  ];
+  // filter only searched tags
+  // Filter tags berdasarkan input user (case-insensitive)
+  const [filteredTags, setFilteredTags] = useState<string[]>(STATIC_TAGS);
+
+  const filterTheTags = () => {
+    const tmp = STATIC_TAGS.filter((tag) =>
+      tag.toLowerCase().includes(tagQuery.toLowerCase()),
+    );
+    setFilteredTags(tmp);
+  };
+
+  useEffect(() => {
+    filterTheTags();
+  }, [tagQuery]);
 
   // Handler pilih tag
   const handleToggleTag = (tag: string) => {
@@ -345,7 +352,7 @@ export default function Page() {
                   placeholder="Cari tag..."
                   value={tagQuery}
                   onChange={(ev) => setTagQuery(ev.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200 mb-2"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-primaryPink mb-2"
                 />
 
                 {/* Selected tags */}
@@ -375,7 +382,7 @@ export default function Page() {
                 )}
 
                 <ul className="max-h-60 overflow-auto">
-                  {availableTags.map((tag) => (
+                  {filteredTags.map((tag) => (
                     <li
                       key={tag}
                       className={`px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center justify-between ${

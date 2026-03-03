@@ -6,10 +6,11 @@ import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
 import HashTags from "../commons/HashTags";
 import ImageFallback from "../commons/ImageFallback";
+import MarkdownRenderer from "../commons/MarkdownRenderer";
 
 export default function CardNews({ ...news }: NewsType) {
   // wajib normalize tags ke string[]
-  const tags = normalizeHashtags(news.hashtag);
+  const tags = normalizeHashtags(news.hashtags);
 
   return (
     <div
@@ -71,9 +72,14 @@ export default function CardNews({ ...news }: NewsType) {
           </Link>
 
           <Link href={`/news/${news.id}`}>
-            <p className="text-sm text-gray-600 line-clamp-2 lg:line-clamp-3 hover:text-gray-800 transition active:text-primaryGreen">
-              {news.content}
-            </p>
+            <div className="relative group text-sm text-gray-600 h-[72px] lg:h-[96px] overflow-hidden">
+              <MarkdownRenderer>{news.content}</MarkdownRenderer>
+              <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-24 bg-gradient-to-t from-white to-transparent transition-all duration-300 flex items-end justify-center">
+                <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-2">
+                  Baca selengkapnya
+                </p>
+              </div>
+            </div>
           </Link>
         </div>
       </div>

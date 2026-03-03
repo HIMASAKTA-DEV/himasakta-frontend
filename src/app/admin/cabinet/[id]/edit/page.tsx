@@ -1,237 +1,733 @@
+/**
+ * for edit mode, to delete image you have to set "" in logo_id then PUT it first
+ * After that you can try deleting it
+ */
+
 "use client";
 
-import { useState } from "react";
+import Typography from "@/components/Typography";
+import api from "@/lib/axios";
+import { CreateCabinetType } from "@/types/admin/CreateCabinet";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation"; // Gunakan next/navigation untuk App Router
+import { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
-import { FaChevronLeft, FaRegCalendarAlt } from "react-icons/fa";
+import { FaChevronLeft, FaCloudUploadAlt } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
-import Typography from "@/components/Typography";
-import Link from "next/link";
+type FormValues = Omit<CreateCabinetType, "is_active"> & {
+  is_active: string;
+};
 
-export default function EditCabinetPage({
-  params: _params,
-}: {
-  params: { id: string };
-}) {
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
-  const [visi, setVisi] = useState("");
-  const [misi, setMisi] = useState("");
-  const [content, setContent] = useState("");
-  const [periodStart, setPeriodStart] = useState("");
-  const [periodEnd, setPeriodEnd] = useState("");
+type PhotoData = {
+  id: string;
+  image_url: string;
+};
+
+export default function EditCabinetPage() {
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const descRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const [isActive, setIsActive] = useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+    reset,
+    setValue,
+    control,
+  } = useForm<FormValues>();
+
+  // fetch cabinet by id
+  useEffect(() => {
+    const fetchCabinetDetail = async () => {
+      try {
+        const resp = await api.get(`/cabinet-info/${id}`);
+        const data = resp.data.data;
+
+        // Isi form dengan data yang didapat
+        reset({
+          tagline: data.tagline,
+          visi: data.visi,
+          misi: data.misi,
+          description: data.description,
+          period_start: data.period_start,
+          period_end: data.period_end,
+          logo_id: data.logo?.id,
+          organigram_id: data.organigram?.id,
+        });
+
+        // Set state tambahan
+        setDescVal(data.description);
+        setIsActive(data.is_active);
+        if (data.logo) setLogo(data.logo);
+        if (data.organigram) setOrganigram(data.organigram);
+      } catch (err) {
+        console.error("Failed to fetch cabinet:", err);
+        alert("Gagal mengambil data kabinet.");
+      }
+    };
+
+    if (id) fetchCabinetDetail();
+  }, [id, reset]);
+
+  // handle submit
+  const onSubmit = async (data: FormValues) => {
+    try {
+      const payload: CreateCabinetType = {
+        ...data,
+        is_active: isActive,
+      };
+
+      await api.put(`/cabinet-info/${id}`, payload);
+      alert("Berhasil memperbarui kabinet!");
+
+      // Redirect kembali ke admin management
+      router.push("/admin#manage-cabinet");
+    } catch (err) {
+      console.error("API ERROR: ", err);
+      alert("Gagal memperbarui kabinet.");
+    }
+  };
+
+  // handle image upload
+  const [openUpload, setOpenUpload] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [logo, setLogo] = useState<PhotoData | null>(null);
+
+  const handleUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      setUploading(true);
+
+      const resp = await api.post("/gallery", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const uploaded: PhotoData = resp.data.data;
+
+      setLogo(uploaded);
+      setValue("logo_id", uploaded.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+
+      setOpenUpload(false);
+      alert("Berhasil upload gambar");
+    } catch (err) {
+      console.error(err);
+      alert("Gagal upload gambar");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // handle delete image
+  const [deletingLogo, setDeletingLogo] = useState(false);
+
+  const handleDeleteImage = async () => {
+    if (!logo?.id) return;
+
+    const confirmDelete = confirm(
+      "Are you sure? This will update the cabinet and delete the image permanently.",
+    );
+    if (!confirmDelete) return;
+
+    setDeletingLogo(true);
+
+    try {
+      // unlink by changing the logo_id to empty string
+      const currentValues = control._formValues;
+      const unlinkPayload = {
+        ...currentValues,
+        logo_id: "",
+        is_active: isActive,
+      };
+
+      // update by PUT first
+      await api.put(`/cabinet-info/${id}`, unlinkPayload);
+
+      // then delete from gallery
+      await api.delete(`/gallery/${logo.id}`);
+
+      // update the ui
+      setLogo(null);
+      setValue("logo_id", "");
+
+      alert("Gambar berhasil dihapus dan diupdate!");
+    } catch (err) {
+      console.error("Delete Flow Error:", err);
+      alert("Gagal menghapus gambar :(");
+    } finally {
+      setDeletingLogo(false);
+    }
+  };
+
+  // handle upload organigram
+  const [organigram, setOrganigram] = useState<PhotoData | null>(null);
+  const [openUploadOrganigram, setOpenUploadOrganigram] = useState(false);
+  const [uploadingOrganigram, setUploadingOrganigram] = useState(false);
+
+  const handleUploadOrganigram = async (file: File) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      setUploadingOrganigram(true);
+
+      const resp = await api.post("/gallery", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const uploaded: PhotoData = resp.data.data;
+
+      setOrganigram(uploaded);
+      setValue("organigram_id", uploaded.id, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+
+      setOpenUploadOrganigram(false);
+      alert("Berhasil upload organigram");
+    } catch (err) {
+      console.error(err);
+      alert("Gagal upload organigram");
+    } finally {
+      setUploadingOrganigram(false);
+    }
+  };
+
+  // handle delete organigram
+  const [deletingOrganigram, setDeletingOrganigram] = useState(false);
+
+  const handleDeleteOrganigram = async () => {
+    if (!organigram?.id) return;
+
+    setDeletingOrganigram(true);
+
+    try {
+      // unlink via put
+      const currentValues = control._formValues;
+      const unlinkPayload = {
+        ...currentValues,
+        organigram_id: "",
+        is_active: isActive,
+      };
+
+      await api.put(`/cabinet-info/${id}`, unlinkPayload);
+
+      // then delete it
+      await api.delete(`/gallery/${organigram.id}`);
+
+      // sync the ui
+      setOrganigram(null);
+      setValue("organigram_id", "");
+
+      alert("Gambar berhasil dihapus dan diupdate!");
+    } catch (err) {
+      console.error(err);
+      alert("Gagal menghapus organigram");
+    } finally {
+      setDeletingOrganigram(false);
+    }
+  };
+
+  // handle markdown desc edit
+  const [descMode, setDescMode] = useState<"edit" | "preview">("edit");
+  const [descVal, setDescVal] = useState("");
+  const [_preview, setPreview] = useState(false);
+
+  const applyFormat = (before: string, after = before) => {
+    if (!descRef.current) return;
+    const el = descRef.current;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const selected = descVal.slice(start, end);
+    const newValue =
+      descVal.slice(0, start) + before + selected + after + descVal.slice(end);
+    setDescVal(newValue);
+    setValue("description", newValue);
+    setTimeout(() => {
+      el.focus();
+      el.setSelectionRange(
+        start + before.length,
+        start + before.length + selected.length,
+      );
+    }, 0);
+  };
 
   return (
-    <div className="min-h-screen bg-white p-4 lg:p-10">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="min-h-screen bg-white p-10"
+    >
       <div className="mx-auto max-w-7xl">
-        {/* Title */}
         <Typography
-          variant="h1"
+          variant="h3"
           className="mb-10 font-averia text-4xl font-bold text-black lg:text-5xl"
         >
-          Edit Informasi Kabinet
+          Edit Cabinet
         </Typography>
 
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
-          {/* Left Column: Form */}
+          {/* LEFT SIDE: Form Inputs */}
           <div className="flex flex-1 flex-col gap-6 lg:max-w-[55%]">
-            {/* Title Field */}
+            {/* Nama Kabinet */}
             <div>
               <label className="mb-2 block text-[15px] font-semibold text-black">
-                Title
+                Nama Kabinet
               </label>
               <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Insert post title..."
-                className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                {...register("tagline", {
+                  required: "Nama kabinet wajib diisi",
+                })}
+                className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                placeholder="Enter cabinet name"
               />
             </div>
 
-            {/* Sub-title Field */}
-            <div>
-              <label className="mb-2 block text-[15px] font-semibold text-black">
-                Sub-title
-              </label>
-              <input
-                type="text"
-                value={subtitle}
-                onChange={(e) => setSubtitle(e.target.value)}
-                placeholder="Insert short description..."
-                className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
-              />
-            </div>
-
-            {/* Visi Field */}
+            {/* Visi & Misi */}
             <div>
               <label className="mb-2 block text-[15px] font-semibold text-black">
                 Visi
               </label>
               <textarea
-                value={visi}
-                onChange={(e) => setVisi(e.target.value)}
-                placeholder="Insert text here..."
+                {...register("visi", { required: "Visi wajib diisi" })}
                 rows={3}
-                className="w-full resize-none rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                className="w-full resize-none rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800"
               />
             </div>
 
-            {/* Misi Field */}
             <div>
               <label className="mb-2 block text-[15px] font-semibold text-black">
                 Misi
               </label>
               <textarea
-                value={misi}
-                onChange={(e) => setMisi(e.target.value)}
-                placeholder="Insert text here..."
+                {...register("misi", { required: "Misi wajib diisi" })}
                 rows={3}
-                className="w-full resize-none rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                className="w-full resize-none rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800"
               />
             </div>
 
-            {/* Content Field with Rich Text Toolbar */}
+            {/* Deskripsi Markdown */}
             <div>
+              {/* Toolbar & Controller logic remains same as your original code */}
               <label className="mb-2 block text-[15px] font-semibold text-black">
-                Content
+                Deskripsi
               </label>
+              <div className="flex w-44 rounded-lg border overflow-hidden text-sm my-2">
+                <button
+                  type="button"
+                  onClick={() => setDescMode("edit")}
+                  className={`px-4 py-1.5 font-medium transition ${
+                    descMode === "edit"
+                      ? "bg-primaryPink text-white"
+                      : "bg-white text-gray-500 hover:bg-gray-100"
+                  }`}
+                >
+                  Markdown
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDescMode("preview")}
+                  className={`px-4 py-1.5 font-medium transition ${
+                    descMode === "preview"
+                      ? "bg-primaryPink text-white"
+                      : "bg-white text-gray-500 hover:bg-gray-100"
+                  }`}
+                >
+                  Preview
+                </button>
+              </div>
               <div className="overflow-hidden rounded-xl border border-gray-200 bg-[#f8fafc]">
-                {/* Rich Text Toolbar */}
-                <div className="flex items-center gap-1 border-b border-gray-200 px-3 py-2">
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
-                  >
-                    <BiBold size={18} />
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
-                  >
-                    <BiItalic size={18} />
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
-                  >
-                    <BiUnderline size={18} />
-                  </button>
-                  <div className="mx-1 h-5 w-px bg-gray-300" />
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
-                  >
-                    <AiOutlineUnorderedList size={18} />
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
-                  >
-                    <AiOutlineOrderedList size={18} />
-                  </button>
-                </div>
-                {/* Textarea */}
-                <textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Insert text here..."
-                  rows={5}
-                  className="w-full resize-none bg-transparent px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] focus:outline-none"
+                {/* TOOLBAR — cuma muncul di edit */}
+                {descMode === "edit" && (
+                  <div className="flex items-center gap-2 border-b px-3 py-2">
+                    <button
+                      type="button"
+                      onMouseDown={(e) => {
+                        applyFormat("**");
+                        e.preventDefault();
+                      }}
+                    >
+                      <BiBold size={18} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onMouseDown={(e) => {
+                        applyFormat("*");
+                        e.preventDefault();
+                      }}
+                    >
+                      <BiItalic size={18} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        applyFormat("<u>", "</u>");
+                      }}
+                    >
+                      <BiUnderline size={18} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        applyFormat("\n  - ", "");
+                      }}
+                    >
+                      <AiOutlineUnorderedList size={18} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onMouseDown={(e) => {
+                        applyFormat("\n  1. ", "");
+                        e.preventDefault();
+                      }}
+                    >
+                      <AiOutlineOrderedList size={18} />
+                    </button>
+
+                    <button
+                      type="button"
+                      className="ml-auto text-sm text-primaryPink"
+                      onMouseDown={(e) => {
+                        setPreview((p) => !p);
+                        e.preventDefault();
+                      }}
+                    ></button>
+                  </div>
+                )}
+                {descMode === "edit" && (
+                  <Controller
+                    name="description"
+                    control={control}
+                    render={({ field }) => (
+                      <textarea
+                        {...field}
+                        ref={(el) => {
+                          field.ref(el);
+                          descRef.current = el;
+                        }}
+                        value={descVal}
+                        onChange={(e) => {
+                          setDescVal(e.target.value);
+                          field.onChange(e.target.value);
+                        }}
+                        className="w-full min-h-[200px] bg-[#f8fafc] p-4"
+                      />
+                    )}
+                  />
+                )}
+              </div>
+
+              {/* Period Dates */}
+              <div className="grid grid-cols-2 gap-6">
+                <input
+                  type="date"
+                  {...register("period_start")}
+                  className="..."
+                />
+                <input
+                  type="date"
+                  {...register("period_end")}
+                  className="..."
                 />
               </div>
-            </div>
 
-            {/* Period Date Fields */}
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className="mb-2 block text-[15px] font-semibold text-black">
-                  Period Start Date
-                </label>
-                <div className="relative">
-                  <FaRegCalendarAlt
-                    size={14}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9BA5B7]"
-                  />
-                  <input
-                    type="date"
-                    value={periodStart}
-                    onChange={(e) => setPeriodStart(e.target.value)}
-                    placeholder="Pick a date"
-                    className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] py-3 pl-10 pr-4 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="mb-2 block text-[15px] font-semibold text-black">
-                  Period End Date
-                </label>
-                <div className="relative">
-                  <FaRegCalendarAlt
-                    size={14}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9BA5B7]"
-                  />
-                  <input
-                    type="date"
-                    value={periodEnd}
-                    onChange={(e) => setPeriodEnd(e.target.value)}
-                    placeholder="Pick a date"
-                    className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] py-3 pl-10 pr-4 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
-                  />
-                </div>
+              {/* Status Aktif */}
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setIsActive(true)}
+                  className={`flex-1 py-3 border rounded-xl ${isActive ? "bg-green-50 border-green-500" : ""}`}
+                >
+                  Aktif
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsActive(false)}
+                  className={`flex-1 py-3 border rounded-xl ${!isActive ? "bg-red-50 border-red-500" : ""}`}
+                >
+                  Tidak Aktif
+                </button>
               </div>
             </div>
-
-            {/* Back Button */}
-            <div className="mt-6">
-              <Link
-                href="/admin#manage-cabinet"
-                className="flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white transition-all hover:bg-opacity-90"
-              >
-                <FaChevronLeft size={12} /> Back
-              </Link>
-            </div>
+            <Link
+              href="/admin#manage-cabinet"
+              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white max-lg:hidden"
+            >
+              <FaChevronLeft size={12} /> Back
+            </Link>
           </div>
-
-          {/* Right Column: Image & Save */}
+          {/* RIGHT SIDE: Uploads & Actions */}
           <div className="flex flex-1 flex-col">
-            {/* Headline Image */}
-            <div>
-              <label className="mb-2 block text-[15px] font-semibold text-black">
-                Headline Image
-              </label>
+            <label className="mb-2 block text-[15px] font-semibold text-black">
+              Headline Image
+            </label>
+
+            <div
+              className="flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc]"
+              style={{ aspectRatio: "4/3" }}
+            >
               <div
-                className="flex w-full items-center justify-center overflow-hidden rounded-2xl border border-gray-200 bg-[#f8fafc]"
+                onClick={() => setOpenUpload(true)}
+                className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full"
                 style={{ aspectRatio: "4/3" }}
               >
-                <p className="text-sm italic text-[#9BA5B7]">
-                  No image uploaded
-                </p>
+                {logo ? (
+                  <img
+                    src={logo.image_url}
+                    alt="logo"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <p className="italic text-[#9BA5B7]">No image uploaded</p>
+                )}
+
+                {/* overlay hover */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center duration-300">
+                  <HiOutlinePencilAlt className="text-white text-2xl" />
+                </div>
               </div>
             </div>
 
-            {/* Image Action Buttons */}
             <div className="mt-4 flex flex-col gap-2">
-              <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 transition-all hover:bg-blue-100">
-                <HiOutlinePencilAlt size={16} />
-                Edit Image
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-100 transition-all duration-300"
+                onClick={() => {
+                  handleDeleteImage();
+                  setOpenUpload(true);
+                }}
+              >
+                <HiOutlinePencilAlt size={16} /> Edit Image
               </button>
-              <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-500 transition-all hover:bg-red-100">
-                <HiOutlineTrash size={16} />
-                Delete Image
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-500 hover:text-red-600 hover:bg-red-100 transition-all duration-300"
+                onClick={() => handleDeleteImage()}
+                disabled={deletingLogo}
+              >
+                <HiOutlineTrash size={16} /> Delete Image
               </button>
             </div>
 
-            {/* Save Changes */}
-            <div className="mt-8 flex justify-end">
-              <button className="rounded-[10px] bg-primaryPink px-8 py-3 text-[15px] font-medium text-white shadow-sm transition-all hover:bg-opacity-90">
-                Save Changes
+            <label className="mb-2 mt-6 block text-[15px] font-semibold text-black">
+              Organigram
+            </label>
+
+            <div
+              onClick={() => setOpenUploadOrganigram(true)}
+              className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full"
+              style={{ aspectRatio: "4/3" }}
+            >
+              {organigram ? (
+                <img
+                  src={organigram.image_url}
+                  alt="organigram"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <p className="italic text-[#9BA5B7]">No organigram uploaded</p>
+              )}
+
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center duration-300">
+                <HiOutlinePencilAlt className="text-white text-2xl" />
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-col gap-2">
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-100 transition"
+                onClick={() => {
+                  handleDeleteOrganigram();
+                  setOpenUploadOrganigram(true);
+                }}
+              >
+                <HiOutlinePencilAlt size={16} /> Edit Organigram
+              </button>
+
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-100 transition"
+                onClick={handleDeleteOrganigram}
+                disabled={deletingOrganigram}
+              >
+                <HiOutlineTrash size={16} /> Delete Organigram
+              </button>
+            </div>
+
+            <div className="mt-8 flex justify-end items-center gap-4">
+              <button
+                type="button"
+                onClick={() => {
+                  reset();
+                  handleDeleteImage();
+                }}
+                disabled={isSubmitting || deletingLogo || deletingOrganigram}
+                className="px-4 border py-2 rounded-lg hover:bg-gray-50 transition-all"
+              >
+                Reset
+              </button>
+              <button
+                type="submit"
+                className="rounded-[10px] bg-primaryPink px-8 py-3 text-[15px] font-medium text-white hover:opacity-80 active:opacity-70 transition-all duration-300"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+
+            <Link
+              href="/admin#manage-cabinet"
+              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden"
+            >
+              <FaChevronLeft size={12} /> Back
+            </Link>
+          </div>
+        </div>
+      </div>
+      {/* Upload image modal */}
+      {openUpload && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
+            <h2 className="text-lg font-semibold mb-4">Upload Image</h2>
+
+            <div
+              onClick={() => {
+                if (uploading) return;
+                document.getElementById("upload-input")?.click();
+              }}
+              onDragOver={(e) => !uploading && e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                if (uploading) return;
+                const file = e.dataTransfer.files?.[0];
+                if (file) handleUpload(file);
+              }}
+              className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all
+          ${
+            uploading
+              ? "cursor-not-allowed opacity-60 bg-gray-100"
+              : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
+          }
+        `}
+            >
+              <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
+                <FaCloudUploadAlt />
+              </div>
+
+              <p className="text-sm font-medium">
+                {uploading ? "Uploading..." : "Klik atau drag file ke sini"}
+              </p>
+
+              <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
+
+              <input
+                id="upload-input"
+                type="file"
+                accept="image/*"
+                hidden
+                disabled={uploading}
+                onChange={(e) => {
+                  if (uploading) return;
+                  if (e.target.files?.[0]) {
+                    handleUpload(e.target.files[0]);
+                  }
+                }}
+              />
+            </div>
+
+            <div className="flex gap-2 pt-6">
+              <button
+                type="button"
+                onClick={() => setOpenUpload(false)}
+                className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
+              >
+                Tutup
               </button>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+
+      {openUploadOrganigram && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
+            <h2 className="text-lg font-semibold mb-4">Upload Organigram</h2>
+
+            <div
+              onClick={() => {
+                if (uploadingOrganigram) return;
+                document.getElementById("upload-organigram")?.click();
+              }}
+              onDragOver={(e) => !uploadingOrganigram && e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                if (uploadingOrganigram) return;
+                const file = e.dataTransfer.files?.[0];
+                if (file) handleUploadOrganigram(file);
+              }}
+              className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all
+          ${
+            uploadingOrganigram
+              ? "cursor-not-allowed opacity-60 bg-gray-100"
+              : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
+          }
+        `}
+            >
+              <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
+                <FaCloudUploadAlt />
+              </div>
+
+              <p className="text-sm font-medium">
+                {uploadingOrganigram
+                  ? "Uploading..."
+                  : "Klik atau drag file ke sini"}
+              </p>
+
+              <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
+
+              <input
+                id="upload-organigram"
+                type="file"
+                accept="image/*"
+                hidden
+                disabled={uploadingOrganigram}
+                onChange={(e) => {
+                  if (uploadingOrganigram) return;
+                  if (e.target.files?.[0]) {
+                    handleUploadOrganigram(e.target.files[0]);
+                  }
+                }}
+              />
+            </div>
+
+            <div className="flex gap-2 pt-6">
+              <button
+                type="button"
+                onClick={() => setOpenUploadOrganigram(false)}
+                className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </form>
   );
 }
