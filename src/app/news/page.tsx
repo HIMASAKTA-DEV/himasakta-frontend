@@ -6,6 +6,7 @@ import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
+import { STATIC_TAGS } from "@/lib/_dummy_db/_tags/StaticTags";
 import { GetAllNews } from "@/services/news/FetchAllNews";
 import { NewsType } from "@/types/data/InformasiBerita";
 import React, { useEffect, useRef, useState } from "react";
@@ -206,28 +207,12 @@ export default function Page() {
   const [showFilterDd, setShowFilterDd] = useState(false);
   const [tagQuery, setTagQuery] = useState("");
 
-  // Contoh tags (bisa diambil dari API nanti)
-  const availableTags = [
-    "#pengumuman",
-    "#event",
-    "#organisasi",
-    "#penerimaan anggota",
-    "#workshop",
-    "#markdown",
-    "#its",
-    "#tutorial",
-    "#OPREC",
-    "#oprec",
-    "#HIMASAKTA",
-    "#softwareengineering",
-  ];
-
   // filter only searched tags
   // Filter tags berdasarkan input user (case-insensitive)
-  const [filteredTags, setFilteredTags] = useState<string[]>(availableTags);
+  const [filteredTags, setFilteredTags] = useState<string[]>(STATIC_TAGS);
 
   const filterTheTags = () => {
-    const tmp = availableTags.filter((tag) =>
+    const tmp = STATIC_TAGS.filter((tag) =>
       tag.toLowerCase().includes(tagQuery.toLowerCase()),
     );
     setFilteredTags(tmp);

@@ -1,3 +1,8 @@
+/**
+ * for edit mode, to delete image you have to set "" in logo_id then PUT it first
+ * After that you can try deleting it
+ */
+
 "use client";
 
 import Typography from "@/components/Typography";
@@ -38,7 +43,7 @@ export default function EditCabinetPage() {
     control,
   } = useForm<FormValues>();
 
-  // 1. FETCH DATA KABINET LAMA
+  // fetch cabinet by id
   useEffect(() => {
     const fetchCabinetDetail = async () => {
       try {
@@ -71,7 +76,7 @@ export default function EditCabinetPage() {
     if (id) fetchCabinetDetail();
   }, [id, reset]);
 
-  // 2. SUBMIT MENGGUNAKAN PUT
+  // handle submit
   const onSubmit = async (data: FormValues) => {
     try {
       const payload: CreateCabinetType = {
@@ -126,24 +131,40 @@ export default function EditCabinetPage() {
 
   // handle delete image
   const [deletingLogo, setDeletingLogo] = useState(false);
+
   const handleDeleteImage = async () => {
     if (!logo?.id) return;
+
+    const confirmDelete = confirm(
+      "Are you sure? This will update the cabinet and delete the image permanently.",
+    );
+    if (!confirmDelete) return;
 
     setDeletingLogo(true);
 
     try {
+      // unlink by changing the logo_id to empty string
+      const currentValues = control._formValues;
+      const unlinkPayload = {
+        ...currentValues,
+        logo_id: "",
+        is_active: isActive,
+      };
+
+      // update by PUT first
+      await api.put(`/cabinet-info/${id}`, unlinkPayload);
+
+      // then delete from gallery
       await api.delete(`/gallery/${logo.id}`);
 
+      // update the ui
       setLogo(null);
-      setValue("logo_id", undefined, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
+      setValue("logo_id", "");
 
-      alert("Gambar berhasil dihapus");
+      alert("Gambar berhasil dihapus dan diupdate!");
     } catch (err) {
-      console.error(err);
-      alert("Gagal menghapus gambar");
+      console.error("Delete Flow Error:", err);
+      alert("Gagal menghapus gambar :(");
     } finally {
       setDeletingLogo(false);
     }
@@ -185,21 +206,31 @@ export default function EditCabinetPage() {
 
   // handle delete organigram
   const [deletingOrganigram, setDeletingOrganigram] = useState(false);
+
   const handleDeleteOrganigram = async () => {
     if (!organigram?.id) return;
 
+    setDeletingOrganigram(true);
+
     try {
+      // unlink via put
+      const currentValues = control._formValues;
+      const unlinkPayload = {
+        ...currentValues,
+        organigram_id: "",
+        is_active: isActive,
+      };
+
+      await api.put(`/cabinet-info/${id}`, unlinkPayload);
+
+      // then delete it
       await api.delete(`/gallery/${organigram.id}`);
 
-      setDeletingOrganigram(true);
-
+      // sync the ui
       setOrganigram(null);
-      setValue("organigram_id", undefined, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
+      setValue("organigram_id", "");
 
-      alert("Organigram berhasil dihapus");
+      alert("Gambar berhasil dihapus dan diupdate!");
     } catch (err) {
       console.error(err);
       alert("Gagal menghapus organigram");
@@ -434,6 +465,12 @@ export default function EditCabinetPage() {
                 </button>
               </div>
             </div>
+            <Link
+              href="/admin#manage-cabinet"
+              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white max-lg:hidden"
+            >
+              <FaChevronLeft size={12} /> Back
+            </Link>
           </div>
           {/* RIGHT SIDE: Uploads & Actions */}
           <div className="flex flex-1 flex-col">

@@ -2,10 +2,11 @@
 
 import Typography from "@/components/Typography";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
+import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { CreateCabinetType } from "@/types/admin/CreateCabinet";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
@@ -30,6 +31,7 @@ export default function EditCabinetPage() {
     reset,
     setValue,
     control,
+    watch,
   } = useForm<FormValues>({
     defaultValues: {
       visi: "",
@@ -57,7 +59,8 @@ export default function EditCabinetPage() {
       await api.post("/cabinet-info", payload);
       alert("Berhasil menambahkan kabinet baru!");
 
-      // Optional: Reset state on success
+      // Reset everything
+      localStorage.removeItem("cabinet_form_draft"); // Clear the draft
       reset();
       setIsActive(false);
       setLogo(null);
@@ -113,7 +116,7 @@ export default function EditCabinetPage() {
       await api.delete(`/gallery/${logo.id}`);
 
       setLogo(null);
-      setValue("logo_id", undefined, {
+      setValue("logo_id", "", {
         shouldDirty: true,
         shouldValidate: true,
       });
@@ -172,7 +175,7 @@ export default function EditCabinetPage() {
       setDeletingOrganigram(true);
 
       setOrganigram(null);
-      setValue("organigram_id", undefined, {
+      setValue("organigram_id", "", {
         shouldDirty: true,
         shouldValidate: true,
       });
@@ -211,6 +214,52 @@ export default function EditCabinetPage() {
       );
     }, 0);
   };
+
+  // temp storage
+  // add temp storage
+  const watchedValues = watch();
+  const [isRestored, setIsRestored] = useState(false);
+
+  useEffect(() => {
+    // Prevent overwriting local storage with default values on initial mount
+    if (!isRestored) return;
+
+    const draft = {
+      ...watchedValues,
+      description: descVal,
+      is_active: isActive,
+      logo,
+      organigram,
+    };
+
+    localStorage.setItem("cabinet_form_draft", JSON.stringify(draft));
+  }, [watchedValues, descVal, isActive, logo, organigram, isRestored]);
+
+  // restore localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("cabinet_form_draft");
+    if (saved) {
+      const data = JSON.parse(saved);
+
+      // 1. Sync React Hook Form
+      reset(data);
+
+      // 2. Sync local states
+      setDescVal(data.description ?? "");
+      setIsActive(data.is_active ?? false);
+      setLogo(data.logo ?? null);
+      setOrganigram(data.organigram ?? null);
+    }
+    // 3. Mark as restored ONLY after states are set
+    setIsRestored(true);
+  }, [reset]);
+
+  if (!isRestored)
+    return (
+      <div className=" flex items-center justify-center p-10 min-h-screen w-full">
+        <SkeletonPleaseWait />
+      </div>
+    );
 
   return (
     <form
@@ -629,7 +678,7 @@ export default function EditCabinetPage() {
                 className="rounded-[10px] bg-primaryPink px-8 py-3 text-[15px] font-medium text-white hover:opacity-80 active:opacity-70 transition-all duration-300"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Saving..." : "Save Changes"}
+                {isSubmitting ? "Adding..." : "Add Cabinet"}
               </button>
             </div>
 
