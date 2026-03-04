@@ -56,13 +56,9 @@ function ManageDepartment() {
           title="Manage Department"
           titleStyle="font-averia text-black"
           className="gap-0"
+          sub={"Atur data departemen di website"}
+          subStyle="text-black font-libertine"
         />
-
-        {/* Kabinet Dropdown (static placeholder) */}
-        <button className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50">
-          Kabinet Lorem Ipsum
-          <FaChevronDown size={12} className="text-gray-400" />
-        </button>
       </div>
 
       {/* Table */}
@@ -121,7 +117,7 @@ function ManageDepartment() {
                       </td>
                       <td className="px-6 py-4 text-gray-600">
                         {/* Kepala departemen — not available in current type, show placeholder */}
-                        Lorem Ipsum
+                        Fitur belum tersedia
                       </td>
                       <td className="px-6 py-4 text-gray-600">
                         {/* Members count — not in current type */}—

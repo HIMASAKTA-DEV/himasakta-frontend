@@ -92,7 +92,7 @@ function ManageCabinet() {
         {/* Header */}
         <HeaderSection
           title="Manage Kabinet"
-          titleStyle="font-averia text-black"
+          titleStyle="font-averia text-black max-lg:text-3xl"
           className="gap-0"
           sub="Atur informasi tiap kabinet"
           subStyle="font-libertine text-black"
