@@ -86,13 +86,28 @@ function ManageCabinet() {
     }
   };
 
+  // prevent scrolling when opening modal
+  useEffect(() => {
+    const isModalOpen = showDeleteModal;
+
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showDeleteModal]);
+
   return (
     <div className="flex min-h-screen w-full flex-col gap-8 p-4 lg:p-10">
       <div className="flex w-full items-center justify-between gap-4 max-lg:flex-col">
         {/* Header */}
         <HeaderSection
           title="Manage Kabinet"
-          titleStyle="font-averia text-black"
+          titleStyle="font-averia text-black max-lg:text-3xl"
           className="gap-0"
           sub="Atur informasi tiap kabinet"
           subStyle="font-libertine text-black"
