@@ -1,119 +1,356 @@
 "use client";
 
 import Link from "next/link";
-import { FaChevronLeft } from "react-icons/fa";
-import { HiOutlineUpload } from "react-icons/hi";
+import { FaChevronLeft, FaCloudUploadAlt } from "react-icons/fa";
+import {
+  HiOutlinePencilAlt,
+  HiOutlineTrash,
+  HiOutlineUpload,
+} from "react-icons/hi";
 
 import Typography from "@/components/Typography";
+import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
+import api from "@/lib/axios";
+import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { ManageGalleryType } from "@/types/admin/ManageGallery";
+import { ApiResponse } from "@/types/commons/apiResponse";
 
-export default function EditGalleryPage({
-  params: _params,
-}: {
-  params: { id: string };
-}) {
+type PhotoData = {
+  id: string;
+  image_url: string;
+};
+
+type DeptName = {
+  id: string;
+  name: string;
+};
+
+export default function EditGalleryPage() {
+  const { id } = useParams<{ id: string }>();
+  const route = useRouter();
+  const [initVal, setInitVal] = useState<ManageGalleryType | null>(null);
+  const [logo, setLogo] = useState<PhotoData | null>(null);
+  const [deptData, setDeptData] = useState<DeptName[]>([]);
+  const [openUpload, setOpenUpload] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [deletingLogo, setDeletingLogo] = useState(false);
+  const [isRestored, setIsRestored] = useState(false);
+  const LOCAL_KEY = `edit_gallery_${id}`;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+    setValue,
+    watch,
+  } = useForm<ManageGalleryType>({
+    defaultValues: {},
+  });
+
+  const watchedValues = watch();
+
+  /* ================= FETCH INIT DATA ================= */
+  useEffect(() => {
+    const fetchInit = async () => {
+      try {
+        // fetch gallery detail
+        const resp = await api.get<ApiResponse<ManageGalleryType>>(
+          `/gallery/${id}`,
+        );
+        const data: ManageGalleryType = resp.data.data;
+        setInitVal(data);
+        reset(data);
+
+        // set logo if available
+        if (data.image_url) {
+          setLogo({ id: data.id, image_url: data.image_url });
+        }
+
+        // fetch department options
+        const deptResp = await api.get<ApiResponse<DeptName[]>>("/department");
+        setDeptData(deptResp.data.data);
+      } catch (err) {
+        console.error(err);
+        alert(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
+      } finally {
+        setIsRestored(true);
+      }
+    };
+
+    fetchInit();
+  }, [id, reset]);
+
+  /* ================= LOCAL STORAGE ================= */
+  useEffect(() => {
+    if (!isRestored) return;
+
+    const draft = {
+      ...watchedValues,
+      logo,
+    };
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(draft));
+  }, [watchedValues, logo, isRestored]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(LOCAL_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      reset(data);
+      setLogo(data.logo ?? null);
+    }
+    setIsRestored(true);
+  }, [reset]);
+
+  /* ================= UPLOAD IMAGE ================= */
+  const handleUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      setUploading(true);
+      const resp = await api.post("/gallery", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const uploaded: PhotoData = resp.data.data;
+      setLogo(uploaded);
+      setValue("image_url", uploaded.image_url, { shouldValidate: true });
+      setOpenUpload(false);
+      alert("Berhasil upload gambar");
+    } catch (err) {
+      console.error(err);
+      alert(`Gagal upload gambar: ${getApiErrorMessage(err)}`);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  /* ================= DELETE IMAGE ================= */
+  const handleDeleteImage = async () => {
+    if (!logo?.id) return;
+    const confirmDelete = confirm("Yakin ingin menghapus gambar ini?");
+    if (!confirmDelete) return;
+
+    try {
+      setDeletingLogo(true);
+      await api.delete(`/gallery/${logo.id}`);
+      setLogo(null);
+      setValue("image_url", "");
+      alert("Gambar berhasil dihapus");
+    } catch (err) {
+      console.error(err);
+      alert(`Gagal menghapus gambar: ${getApiErrorMessage(err)}`);
+    } finally {
+      setDeletingLogo(false);
+    }
+  };
+
+  /* ================= SUBMIT FORM ================= */
+  const onSubmit = async (data: ManageGalleryType) => {
+    try {
+      await api.put(`/gallery/${id}`, data);
+      alert("Berhasil memperbarui gallery!");
+      reset();
+      setLogo(null);
+      localStorage.removeItem(LOCAL_KEY);
+      route.push("/admin#manage-gallery");
+    } catch (err) {
+      console.error(err);
+      alert(`Gagal memperbarui gallery: ${getApiErrorMessage(err)}`);
+    }
+  };
+
+  if (!isRestored) {
+    return (
+      <div className="flex items-center justify-center p-10 min-h-screen w-full">
+        <SkeletonPleaseWait />
+      </div>
+    );
+  }
+
   return (
-    <div className="p-10 bg-white min-h-screen">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="p-10 bg-white min-h-screen"
+    >
       <div className="max-w-7xl mx-auto">
         <Typography
           variant="h1"
-          className="font-averia text-black text-5xl font-bold mb-10"
+          className="font-averia text-black text-5xl font-bold mb-10 mx-auto"
         >
-          Edit Gallery
+          Edit Post
         </Typography>
-
-        <div className="flex flex-col lg:flex-row gap-12 md:gap-16">
-          {/* Left Column: Form Fields */}
-          <div className="flex-1 lg:max-w-[55%] flex flex-col gap-6">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
+          {/* LEFT FORM */}
+          <div className="flex-1 flex flex-col gap-6">
+            {/* TITLE */}
             <div>
-              <label className="block text-black font-semibold mb-2 text-[15px]">
-                Title
-              </label>
+              <label className="block font-semibold mb-2">Title</label>
               <input
-                type="text"
-                placeholder="Insert post title..."
-                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 placeholder:text-[#9BA5B7] placeholder:italic text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-medium"
+                {...register("caption", { required: "Judul wajib diisi" })}
+                placeholder="Insert photo title..."
+                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primaryPink transition-all"
+              />
+              {errors.caption && (
+                <p className="text-sm text-red-500">{errors.caption.message}</p>
+              )}
+            </div>
+
+            {/* CATEGORY */}
+            <div>
+              <label className="block font-semibold mb-2">Category</label>
+              <input
+                {...register("category")}
+                placeholder="Insert category..."
+                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primaryPink transition-all"
               />
             </div>
 
+            {/* DEPARTMENT */}
             <div>
-              <label className="block text-black font-semibold mb-2 text-[15px]">
-                Short Description
-              </label>
-              <input
-                type="text"
-                placeholder="Insert short description..."
-                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 placeholder:text-[#9BA5B7] placeholder:italic text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-medium"
-              />
-            </div>
-
-            <div>
-              <label className="block text-black font-semibold mb-2 text-[15px]">
-                Category
-              </label>
-              <input
-                type="text"
-                placeholder="Insert photo category..."
-                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 placeholder:text-[#9BA5B7] placeholder:italic text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-medium"
-              />
-            </div>
-
-            <div>
-              <label className="block text-black font-semibold mb-2 text-[15px]">
-                Department
-              </label>
-              <div className="relative">
-                <select className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-medium appearance-none">
-                  <option value="">Departemen A</option>
-                  <option value="dept-b">Departemen B</option>
-                  <option value="dept-c">Departemen C</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-600">
-                  <svg
-                    className="fill-current h-4 w-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <Link
-                href="/admin#manage-gallery"
-                className="w-fit flex items-center gap-2 bg-[#12182B] text-white px-8 py-3 rounded-lg hover:bg-opacity-90 transition-all font-medium text-sm"
+              <label className="block font-semibold mb-2">Department</label>
+              <select
+                {...register("department_id")}
+                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primaryPink transition-all"
               >
-                <FaChevronLeft size={12} /> Back
-              </Link>
+                <option value="">Pilih Departemen</option>
+                {deptData.map((dept) => (
+                  <option key={dept.id} value={dept.id}>
+                    {dept.name}
+                  </option>
+                ))}
+              </select>
             </div>
+
+            <Link
+              href="/admin#manage-gallery"
+              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 max-lg:hidden"
+            >
+              <FaChevronLeft size={12} /> Back
+            </Link>
           </div>
 
-          {/* Middle Divider */}
-          <div className="hidden lg:block w-[1px] bg-gray-200 min-h-full"></div>
-
-          {/* Right Column: Image Upload & Publish */}
+          {/* RIGHT IMAGE */}
           <div className="flex-1 flex flex-col">
-            <div className="flex-1">
-              <label className="block text-black font-semibold mb-2 text-[15px]">
-                Image
-              </label>
-              <div className="w-full aspect-[4/3] bg-[#f8fafc] border-2 border-dashed border-[#d1d9e2] rounded-2xl flex flex-col items-center justify-center text-[#9BA5B7] cursor-pointer hover:bg-slate-100 transition-all">
-                <HiOutlineUpload size={36} className="mb-4" />
-                <p className="font-averia italic text-[22px]">
-                  Upload your image here
-                </p>
+            <label className="mb-2 font-semibold">Photo</label>
+            <div
+              onClick={() => {
+                handleDeleteImage();
+                setOpenUpload(true);
+              }}
+              className="relative cursor-pointer overflow-hidden rounded-xl border"
+              style={{ aspectRatio: "4/3" }}
+            >
+              {logo ? (
+                <img
+                  src={logo.image_url}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center italic text-gray-400">
+                  No image
+                </div>
+              )}
+              <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition">
+                <HiOutlinePencilAlt className="text-white text-2xl" />
               </div>
             </div>
 
-            <div className="mt-12 flex justify-end">
-              <button className="bg-primaryPink text-white px-8 py-3 w-40 rounded-[10px] hover:bg-opacity-90 transition-all font-medium text-[15px] shadow-sm">
-                Publish Post
+            <div className="mt-4 flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  handleDeleteImage();
+                  setOpenUpload(true);
+                }}
+                className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-100 transition-all duration-300"
+              >
+                <HiOutlineUpload /> Change Image
+              </button>
+              {logo && (
+                <button
+                  type="button"
+                  onClick={handleDeleteImage}
+                  disabled={deletingLogo}
+                  className="flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-500 hover:text-red-600 hover:bg-red-100 transition-all duration-300"
+                >
+                  <HiOutlineTrash /> Delete Image
+                </button>
+              )}
+            </div>
+
+            <div className="mt-12 flex justify-end gap-4">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-primaryPink px-8 py-3 text-white rounded-lg hover:opacity-80 transition"
+              >
+                {isSubmitting ? "Saving..." : "Save Gallery"}
+              </button>
+            </div>
+          </div>
+          <Link
+            href="/admin#manage-gallery"
+            className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 lg:hidden"
+          >
+            <FaChevronLeft size={12} /> Back
+          </Link>
+        </div>
+      </div>
+
+      {/* UPLOAD MODAL */}
+      {openUpload && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
+            <h2 className="text-lg font-semibold mb-4">Upload Photo</h2>
+
+            <div
+              onClick={() => document.getElementById("upload-input")?.click()}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files?.[0];
+                if (file) handleUpload(file);
+              }}
+              className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all ${
+                uploading || deletingLogo
+                  ? "opacity-60 cursor-not-allowed bg-gray-100"
+                  : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
+              }`}
+            >
+              <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
+                <FaCloudUploadAlt />
+              </div>
+              <p>
+                {uploading ? "Uploading..." : "Klik atau drag file ke sini"}
+              </p>
+              <input
+                id="upload-input"
+                type="file"
+                accept="image/*"
+                hidden
+                disabled={uploading}
+                onChange={(e) =>
+                  e.target.files?.[0] && handleUpload(e.target.files[0])
+                }
+              />
+            </div>
+
+            <div className="flex gap-2 pt-6">
+              <button
+                type="button"
+                onClick={() => setOpenUpload(false)}
+                className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
+              >
+                Tutup
               </button>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </form>
   );
 }
