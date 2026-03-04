@@ -9,14 +9,14 @@ import {
 } from "react-icons/hi";
 
 import Typography from "@/components/Typography";
+import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import { ManageGalleryType } from "@/types/admin/ManageGallery";
+import { ApiResponse } from "@/types/commons/apiResponse";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ManageGalleryType } from "@/types/admin/ManageGallery";
-import { ApiResponse } from "@/types/commons/apiResponse";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 
 type PhotoData = {
   id: string;
@@ -28,9 +28,21 @@ type DeptName = {
   name: string;
 };
 
+type ProgendaDD = {
+  id: string;
+  name: string;
+};
+
+type CabinetDD = {
+  id: string;
+  tagline: string;
+};
+
 export default function AddGalleryPage() {
   const router = useRouter();
   const [deptData, setDeptData] = useState<DeptName[]>([]);
+  const [progendaDD, setProgendaDD] = useState<ProgendaDD[]>([]);
+  const [cabinetDD, setCabinetDD] = useState<CabinetDD[]>([]);
   const [logo, setLogo] = useState<PhotoData | null>(null);
   const [openUpload, setOpenUpload] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -52,6 +64,8 @@ export default function AddGalleryPage() {
       category: "",
       department_id: "",
       image_url: "",
+      cabinet_id: "",
+      progenda_id: "",
     },
   });
 
@@ -76,6 +90,48 @@ export default function AddGalleryPage() {
       }
     };
     fetchDept();
+  }, []);
+
+  /* ================= FETCH PROGENDA ================= */
+  useEffect(() => {
+    const fetchProgenda = async () => {
+      try {
+        const resp = await api.get<ApiResponse<ProgendaDD[]>>("/progenda");
+        if (Array.isArray(resp.data.data)) {
+          setProgendaDD(resp.data.data);
+        } else {
+          console.warn("Progenda response is not an array", resp.data.data);
+          setProgendaDD([]);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Gagal mengambil daftar progenda");
+      } finally {
+        setIsRestored(true);
+      }
+    };
+    fetchProgenda();
+  }, []);
+
+  /* ================= FETCH CABINET ================= */
+  useEffect(() => {
+    const fetchCabinet = async () => {
+      try {
+        const resp = await api.get<ApiResponse<CabinetDD[]>>("/cabinet-info");
+        if (Array.isArray(resp.data.data)) {
+          setCabinetDD(resp.data.data);
+        } else {
+          console.warn("Cabinet response is not an array", resp.data.data);
+          setCabinetDD([]);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Gagal mengambil daftar cabinet");
+      } finally {
+        setIsRestored(true);
+      }
+    };
+    fetchCabinet();
   }, []);
 
   /* ================= LOCAL STORAGE DRAFT ================= */
@@ -118,10 +174,11 @@ export default function AddGalleryPage() {
   };
 
   /* ================= DELETE IMAGE ================= */
-  const handleDeleteImage = async () => {
-    if (!logo?.id) return;
+  const handleDeleteImage = async (): Promise<boolean> => {
+    if (!logo?.id) return true; // tidak ada gambar → langsung boleh upload
+
     const confirmDelete = confirm("Yakin ingin menghapus gambar ini?");
-    if (!confirmDelete) return;
+    if (!confirmDelete) return false;
 
     try {
       setDeletingLogo(true);
@@ -129,9 +186,11 @@ export default function AddGalleryPage() {
       setLogo(null);
       setValue("image_url", "");
       alert("Gambar berhasil dihapus");
+      return true;
     } catch (err) {
       console.error(err);
       alert(`Gagal menghapus gambar: ${getApiErrorMessage(err)}`);
+      return false;
     } finally {
       setDeletingLogo(false);
     }
@@ -150,6 +209,21 @@ export default function AddGalleryPage() {
       console.error(err);
       alert(`Gagal menambahkan gallery: ${getApiErrorMessage(err)}`);
     }
+  };
+
+  const handleResetForm = () => {
+    reset({
+      caption: "",
+      category: "",
+      department_id: "",
+      image_url: "",
+      cabinet_id: "",
+      progenda_id: "",
+    });
+
+    setLogo(null);
+    setOpenUpload(false);
+    localStorage.removeItem(LOCAL_KEY);
   };
 
   if (!isRestored) {
@@ -215,6 +289,38 @@ export default function AddGalleryPage() {
               </select>
             </div>
 
+            {/* PROGENDA */}
+            <div>
+              <label className="block font-semibold mb-2">Progenda</label>
+              <select
+                {...register("progenda_id")}
+                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primaryPink transition-all"
+              >
+                <option value="">Pilih Progenda</option>
+                {progendaDD.map((progenda) => (
+                  <option key={progenda.id} value={progenda.id}>
+                    {progenda.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* KABINET */}
+            <div>
+              <label className="block font-semibold mb-2">Kabinet</label>
+              <select
+                {...register("cabinet_id")}
+                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primaryPink transition-all"
+              >
+                <option value="">Pilih Kabinet</option>
+                {cabinetDD.map((cabinet) => (
+                  <option key={cabinet.id} value={cabinet.id}>
+                    {cabinet.tagline}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <Link
               href="/admin#manage-gallery"
               className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 max-lg:hidden"
@@ -227,9 +333,9 @@ export default function AddGalleryPage() {
           <div className="flex-1 flex flex-col">
             <label className="mb-2 font-semibold">Photo</label>
             <div
-              onClick={() => {
-                handleDeleteImage();
-                setOpenUpload(true);
+              onClick={async () => {
+                const ok = await handleDeleteImage();
+                if (ok) setOpenUpload(true);
               }}
               className="relative cursor-pointer overflow-hidden rounded-xl border"
               style={{ aspectRatio: "4/3" }}
@@ -252,9 +358,9 @@ export default function AddGalleryPage() {
             <div className="mt-4 flex flex-col gap-2">
               <button
                 type="button"
-                onClick={() => {
-                  handleDeleteImage();
-                  setOpenUpload(true);
+                onClick={async () => {
+                  const ok = await handleDeleteImage();
+                  if (ok) setOpenUpload(true);
                 }}
                 className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-100 transition-all duration-300"
               >
@@ -271,15 +377,30 @@ export default function AddGalleryPage() {
                   <HiOutlineTrash /> Delete Image
                 </button>
               )}
+              {logo && (
+                <small className="text-red-600 mt-4 bg-red-100 px-2">
+                  ⚠️ WARNING: Kosongkan Departemen, Kabinet, dan Progenda sebelum
+                  edit/hapus gambar!
+                </small>
+              )}
             </div>
 
             <div className="mt-12 flex justify-end gap-4">
+              <button
+                type="button"
+                onClick={handleResetForm}
+                disabled={isSubmitting}
+                className="px-8 py-3 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 transition disabled:opacity-50"
+              >
+                Reset
+              </button>
+
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className="bg-primaryPink px-8 py-3 text-white rounded-lg hover:opacity-80 transition"
               >
-                {isSubmitting ? "Saving..." : "Add Gallery"}
+                {isSubmitting ? "Adding..." : "Add Gallery"}
               </button>
             </div>
           </div>
@@ -319,6 +440,7 @@ export default function AddGalleryPage() {
               <p>
                 {uploading ? "Uploading..." : "Klik atau drag file ke sini"}
               </p>
+              <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
               <input
                 id="upload-input"
                 type="file"
@@ -334,6 +456,7 @@ export default function AddGalleryPage() {
             <div className="flex gap-2 pt-6">
               <button
                 type="button"
+                disabled={uploading}
                 onClick={() => setOpenUpload(false)}
                 className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
               >

@@ -1,22 +1,23 @@
 "use client";
 
+import api from "@/lib/axios";
+import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import { ManageGalleryType } from "@/types/admin/ManageGallery";
+import { ApiResponse } from "@/types/commons/apiResponse";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { FaChevronLeft, FaCloudUploadAlt } from "react-icons/fa";
 import {
   HiOutlinePencilAlt,
   HiOutlineTrash,
   HiOutlineUpload,
 } from "react-icons/hi";
+import Select, { StylesConfig } from "react-select";
 
 import Typography from "@/components/Typography";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
-import api from "@/lib/axios";
-import { getApiErrorMessage } from "@/services/GetApiErrMessage";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { ManageGalleryType } from "@/types/admin/ManageGallery";
-import { ApiResponse } from "@/types/commons/apiResponse";
 
 type PhotoData = {
   id: string;
@@ -28,12 +29,71 @@ type DeptName = {
   name: string;
 };
 
+type ProgendaDD = {
+  id: string;
+  name: string;
+};
+
+type CabinetDD = {
+  id: string;
+  tagline: string;
+};
+
+type OptionType = { label?: string; value?: string };
+
+const selectStyles: StylesConfig<OptionType, false> = {
+  control: (base, state) => ({
+    ...base,
+    borderRadius: "0.5rem",
+    minHeight: "42px",
+    outline: "none",
+    borderColor: state.isFocused ? "#D58A94" : "#e5e7eb",
+    boxShadow: state.isFocused ? "0 0 0 1px #D58A94" : "none",
+    "&:hover": { borderColor: "#D58A94" },
+  }),
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: state.isSelected
+      ? "#D58A94"
+      : state.isFocused
+        ? "#fce7f3"
+        : "white",
+    color: state.isSelected ? "white" : "#111827",
+    cursor: "pointer",
+  }),
+};
+
+function Field({
+  label,
+  required,
+  error,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label className="text-sm font-medium">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      {children}
+      {error && <p className="text-xs text-red-500">{error}</p>}
+    </div>
+  );
+}
+
 export default function EditGalleryPage() {
   const { id } = useParams<{ id: string }>();
   const route = useRouter();
   const [initVal, setInitVal] = useState<ManageGalleryType | null>(null);
   const [logo, setLogo] = useState<PhotoData | null>(null);
   const [deptData, setDeptData] = useState<DeptName[]>([]);
+  const [progendaDD, setProgendaDD] = useState<ProgendaDD[]>([]);
+  const [cabinetDD, setCabinetDD] = useState<CabinetDD[]>([]);
+  const [loadDept, setLoadDept] = useState(false);
   const [openUpload, setOpenUpload] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deletingLogo, setDeletingLogo] = useState(false);
@@ -41,6 +101,7 @@ export default function EditGalleryPage() {
   const LOCAL_KEY = `edit_gallery_${id}`;
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -56,6 +117,7 @@ export default function EditGalleryPage() {
   /* ================= FETCH INIT DATA ================= */
   useEffect(() => {
     const fetchInit = async () => {
+      setLoadDept(true);
       try {
         // fetch gallery detail
         const resp = await api.get<ApiResponse<ManageGalleryType>>(
@@ -70,13 +132,22 @@ export default function EditGalleryPage() {
           setLogo({ id: data.id, image_url: data.image_url });
         }
 
-        // fetch department options
-        const deptResp = await api.get<ApiResponse<DeptName[]>>("/department");
-        setDeptData(deptResp.data.data);
+        // fetch department, cabinet, and progenda
+        const [{ data: deptRes }, { data: cabinetRes }, { data: progendaRes }] =
+          await Promise.all([
+            api.get<ApiResponse<DeptName[]>>("/department"),
+            api.get<ApiResponse<CabinetDD[]>>("/cabinet-info"),
+            api.get<ApiResponse<ProgendaDD[]>>("/progenda"),
+          ]);
+
+        setDeptData(deptRes.data);
+        setCabinetDD(cabinetRes.data);
+        setProgendaDD(progendaRes.data);
       } catch (err) {
         console.error(err);
         alert(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
       } finally {
+        setLoadDept(false);
         setIsRestored(true);
       }
     };
@@ -129,10 +200,11 @@ export default function EditGalleryPage() {
   };
 
   /* ================= DELETE IMAGE ================= */
-  const handleDeleteImage = async () => {
-    if (!logo?.id) return;
+  const handleDeleteImage = async (): Promise<boolean> => {
+    if (!logo?.id) return true; // tidak ada gambar → langsung boleh upload
+
     const confirmDelete = confirm("Yakin ingin menghapus gambar ini?");
-    if (!confirmDelete) return;
+    if (!confirmDelete) return false;
 
     try {
       setDeletingLogo(true);
@@ -140,9 +212,11 @@ export default function EditGalleryPage() {
       setLogo(null);
       setValue("image_url", "");
       alert("Gambar berhasil dihapus");
+      return true;
     } catch (err) {
       console.error(err);
       alert(`Gagal menghapus gambar: ${getApiErrorMessage(err)}`);
+      return false;
     } finally {
       setDeletingLogo(false);
     }
@@ -163,6 +237,16 @@ export default function EditGalleryPage() {
     }
   };
 
+  const handleResetForm = () => {
+    reset({
+      ...initVal,
+    });
+
+    setLogo(initVal);
+    setOpenUpload(false);
+    localStorage.removeItem(LOCAL_KEY);
+  };
+
   if (!isRestored) {
     return (
       <div className="flex items-center justify-center p-10 min-h-screen w-full">
@@ -181,7 +265,7 @@ export default function EditGalleryPage() {
           variant="h1"
           className="font-averia text-black text-5xl font-bold mb-10 mx-auto"
         >
-          Edit Post
+          Edit Gallery
         </Typography>
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
           {/* LEFT FORM */}
@@ -210,20 +294,100 @@ export default function EditGalleryPage() {
             </div>
 
             {/* DEPARTMENT */}
-            <div>
-              <label className="block font-semibold mb-2">Department</label>
-              <select
-                {...register("department_id")}
-                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primaryPink transition-all"
-              >
-                <option value="">Pilih Departemen</option>
-                {deptData.map((dept) => (
-                  <option key={dept.id} value={dept.id}>
-                    {dept.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Field label="Departemen" error={errors.department_id?.message}>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Controller
+                      control={control}
+                      name="department_id"
+                      render={({ field }) => (
+                        <Select
+                          placeholder="Pilih Jabatan"
+                          styles={selectStyles}
+                          isLoading={loadDept}
+                          options={deptData.map((d) => ({
+                            value: d.id,
+                            label: d.name,
+                          }))}
+                          value={
+                            deptData
+                              .map((d) => ({ value: d.id, label: d.name }))
+                              .find((o) => o.value === field.value) || null
+                          }
+                          onChange={(opt) => field.onChange(opt?.value ?? "")}
+                          isClearable
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              </div>
+            </Field>
+
+            {/* PROGENDA */}
+            <Field label="Progenda" error={errors.progenda_id?.message}>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Controller
+                      control={control}
+                      name="progenda_id"
+                      render={({ field }) => (
+                        <Select
+                          placeholder="Pilih Progenda"
+                          styles={selectStyles}
+                          isLoading={loadDept}
+                          options={progendaDD.map((p) => ({
+                            value: p.id,
+                            label: p.name,
+                          }))}
+                          value={
+                            progendaDD
+                              .map((p) => ({ value: p.id, label: p.name }))
+                              .find((o) => o.value === field.value) || null
+                          }
+                          onChange={(opt) => field.onChange(opt?.value ?? "")}
+                          isClearable
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              </div>
+            </Field>
+
+            {/* CABINET */}
+            <Field label="Kabinet" error={errors.cabinet_id?.message}>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Controller
+                      control={control}
+                      name="cabinet_id"
+                      render={({ field }) => (
+                        <Select
+                          placeholder="Pilih Kabinet"
+                          styles={selectStyles}
+                          isLoading={loadDept}
+                          options={cabinetDD.map((c) => ({
+                            value: c.id,
+                            label: c.tagline,
+                          }))}
+                          value={
+                            cabinetDD
+                              .map((c) => ({ value: c.id, label: c.tagline }))
+                              .find((o) => o.value === field.value) || null
+                          }
+                          onChange={(opt) => field.onChange(opt?.value ?? "")}
+                          isClearable
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              </div>
+            </Field>
 
             <Link
               href="/admin#manage-gallery"
@@ -237,9 +401,9 @@ export default function EditGalleryPage() {
           <div className="flex-1 flex flex-col">
             <label className="mb-2 font-semibold">Photo</label>
             <div
-              onClick={() => {
-                handleDeleteImage();
-                setOpenUpload(true);
+              onClick={async () => {
+                const ok = await handleDeleteImage();
+                if (ok) setOpenUpload(true);
               }}
               className="relative cursor-pointer overflow-hidden rounded-xl border"
               style={{ aspectRatio: "4/3" }}
@@ -262,9 +426,9 @@ export default function EditGalleryPage() {
             <div className="mt-4 flex flex-col gap-2">
               <button
                 type="button"
-                onClick={() => {
-                  handleDeleteImage();
-                  setOpenUpload(true);
+                onClick={async () => {
+                  const ok = await handleDeleteImage();
+                  if (ok) setOpenUpload(true);
                 }}
                 className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-100 transition-all duration-300"
               >
@@ -280,9 +444,21 @@ export default function EditGalleryPage() {
                   <HiOutlineTrash /> Delete Image
                 </button>
               )}
+              <small className="text-red-600 mt-4 bg-red-100 px-2">
+                WARNING: Kosongkan Departemen, Kabinet, dan Progenda sebelum
+                edit/hapus gambar!
+              </small>
             </div>
 
             <div className="mt-12 flex justify-end gap-4">
+              <button
+                type="button"
+                onClick={handleResetForm}
+                disabled={isSubmitting}
+                className="px-8 py-3 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 transition disabled:opacity-50"
+              >
+                Reset
+              </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -327,6 +503,7 @@ export default function EditGalleryPage() {
               <p>
                 {uploading ? "Uploading..." : "Klik atau drag file ke sini"}
               </p>
+              <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
               <input
                 id="upload-input"
                 type="file"

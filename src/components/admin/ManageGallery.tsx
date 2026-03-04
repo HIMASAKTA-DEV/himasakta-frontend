@@ -1,22 +1,14 @@
-import Link from "next/link";
-import { FaPlus } from "react-icons/fa";
-import {
-  HiOutlineEye,
-  HiOutlinePencilAlt,
-  HiOutlineTrash,
-} from "react-icons/hi";
-
-import NextImage from "../NextImage";
-import Typography from "../Typography";
-import HeaderSection from "../commons/HeaderSection";
-import ButtonLink from "../links/ButtonLink";
-import { useEffect, useState } from "react";
-import { ManageGalleryType } from "@/types/admin/ManageGallery";
 import api from "@/lib/axios";
-import { ApiResponse } from "@/types/commons/apiResponse";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
-import ImageFallback from "../commons/ImageFallback";
+import { ManageGalleryType } from "@/types/admin/ManageGallery";
+import { ApiResponse } from "@/types/commons/apiResponse";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
+import Typography from "../Typography";
 import RenderPagination from "../_news/RenderPagination";
+import HeaderSection from "../commons/HeaderSection";
+import ImageFallback from "../commons/ImageFallback";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 // const galleryData = Array.from({ length: 6 }).map((_, i) => ({
@@ -105,6 +97,15 @@ function ManageGallery() {
     };
   }, [showDeleteModal]);
 
+  // check if the data is deleteable
+  const isDeleteable = (gallery: ManageGalleryType) => {
+    return (
+      (!gallery.department_id || gallery.department_id === "") &&
+      (!gallery.cabinet_id || gallery.cabinet_id === "") &&
+      (!gallery.progenda_id || gallery.progenda_id === "")
+    );
+  };
+
   if (loadData) {
     return (
       <div className="p-10 w-full min-h-screen flex items-center justify-center">
@@ -115,7 +116,7 @@ function ManageGallery() {
 
   return (
     <div className="p-10 bg-white min-h-screen">
-      <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto">
+      <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto max-lg:flex-col">
         <div>
           <HeaderSection
             title="Manage Gallery"
@@ -128,14 +129,15 @@ function ManageGallery() {
           >
             Atur semua informasi media gambar dalam website
           </Typography>
+          <small className="mt-4 text-red-600 bg-red-200 px-2">
+            ⚠️ WARNING: Ada data yang tidak dapat dihapus karena tertaut dengan
+            data lain. Arahkan kursor/hover pada data untuk melihat statusnya.
+            Ada easter egg juga btw 🤫
+          </small>
         </div>
-        <ButtonLink
-          href="/admin/gallery/add"
-          className="bg-primaryPink hover:bg-[#C27A84] active:bg-[#C27A84] border-none rounded-xl py-3 px-8 h-fit text-white font-averia text-lg shadow-md transition-all active:scale-95 focus:outline-none"
-          leftIcon={FaPlus}
-        >
-          Add Photo
-        </ButtonLink>
+        <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90  active:opacity-80 duration-300 transition-all max-lg:text-sm">
+          <Link href={"/admin/gallery/add"}>+ Add Gallery</Link>
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-7xl mx-auto">
@@ -172,13 +174,23 @@ function ManageGallery() {
                   {new Date(gallery.updated_at).toLocaleString("id-ID")}
                 </Typography>
                 <div className="flex gap-[8px]">
+                  {/* Status badge */}
+                  {isDeleteable(gallery) ? (
+                    <span className="absolute top-4 right-4 text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-semibold">
+                      Deleteable
+                    </span>
+                  ) : (
+                    <span className="absolute top-4 right-4 text-xs px-3 py-1 rounded-full bg-red-100 text-red-700 font-semibold">
+                      Undeleteable
+                    </span>
+                  )}
                   <Link
                     href={`/admin/gallery/${gallery.id}/edit`}
                     className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
                   >
                     <HiOutlinePencilAlt size={16} />
                   </Link>
-                  {/* Not available */}
+                  {/* Not available, TODO for next update */}
                   {/* <button className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all">
                     <HiOutlineEye size={16} />
                   </button> */}
@@ -228,9 +240,7 @@ function ManageGallery() {
           <button
             disabled={currPg === totPg || loadData}
             onClick={() => setCurrPg((p) => p + 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 
-                                hover:bg-gray-100 transition flex items-center gap-4
-                                ${currPg === totPg || loadData ? "cursor-not-allowed" : "cursor-pointer"}`}
+            className={`p-2 rounded-md border disabled:opacity-40 hover:bg-gray-100 transition flex items-center gap-4 ${currPg === totPg || loadData ? "cursor-not-allowed" : "cursor-pointer"}`}
           >
             {/* icon kanan */}
             &gt;
