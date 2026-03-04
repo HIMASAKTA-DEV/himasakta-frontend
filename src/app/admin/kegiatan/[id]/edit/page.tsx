@@ -175,7 +175,7 @@ function page() {
       alert("Gambar berhasil dihapus");
     } catch (err) {
       console.error(err);
-      alert("Gagal menghapus gambar");
+      alert(`Gagal menghapus gambar: ${getApiErrorMessage(err)}`);
     } finally {
       setDeletingLogo(false);
     }

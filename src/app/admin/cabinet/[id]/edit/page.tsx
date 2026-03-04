@@ -264,6 +264,21 @@ export default function EditCabinetPage() {
     }, 0);
   };
 
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const isModalOpen = openUpload || openUploadOrganigram;
+
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [openUpload, openUploadOrganigram]);
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -455,14 +470,24 @@ export default function EditCabinetPage() {
                   onClick={() => setIsActive(true)}
                   className={`flex-1 py-3 border rounded-xl ${isActive ? "bg-green-50 border-green-500" : ""}`}
                 >
-                  Aktif
+                  <div className="flex items-center justify-center gap-2">
+                    <span
+                      className={`h-2 w-2 rounded-full ${isActive ? "bg-green-500" : "bg-gray-300"}`}
+                    />
+                    Aktif
+                  </div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsActive(false)}
                   className={`flex-1 py-3 border rounded-xl ${!isActive ? "bg-red-50 border-red-500" : ""}`}
                 >
-                  Tidak Aktif
+                  <div className="flex items-center justify-center gap-2">
+                    <span
+                      className={`h-2 w-2 rounded-full ${!isActive ? "bg-red-500" : "bg-gray-300"}`}
+                    />
+                    Tidak Aktif
+                  </div>
                 </button>
               </div>
             </div>

@@ -1,19 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { FaChevronLeft, FaCloudUploadAlt } from "react-icons/fa";
-import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
+import { FaChevronLeft, FaCloudUploadAlt } from "react-icons/fa";
+import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
+import { UUID } from "crypto";
 import Typography from "@/components/Typography";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
-import { UUID } from "crypto";
-import { useForm } from "react-hook-form";
-import { useEffect, useRef, useState } from "react";
+import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 
 type FormValues = {
   title: string;
@@ -95,6 +95,7 @@ export default function AddNewsPage() {
       reset();
       setDescVal("");
       setLogo(null);
+      localStorage.removeItem("add_event_draft");
     } catch (err) {
       console.error(err);
       alert(`Gagal menambahkan berita: ${getApiErrorMessage(err)}`);
@@ -135,11 +136,6 @@ export default function AddNewsPage() {
   const handleDeleteImage = async () => {
     if (!logo?.id) return;
 
-    const confirmDelete = confirm(
-      "Yakin? Thumbnail akan dilepas dan gambar dihapus permanen.",
-    );
-    if (!confirmDelete) return;
-
     try {
       setDeletingLogo(true);
 
@@ -150,7 +146,7 @@ export default function AddNewsPage() {
       alert("Gambar berhasil dihapus");
     } catch (err) {
       console.error(err);
-      alert("Gagal menghapus gambar");
+      alert(`Gagal menghapus gambar: ${getApiErrorMessage(err)}`);
     } finally {
       setDeletingLogo(false);
     }

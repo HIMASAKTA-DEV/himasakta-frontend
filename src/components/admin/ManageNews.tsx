@@ -6,18 +6,16 @@ import {
   HiOutlineTrash,
 } from "react-icons/hi";
 
-import Link from "next/link";
-import NextImage from "../NextImage";
-import Typography from "../Typography";
-import HeaderSection from "../commons/HeaderSection";
-import ButtonLink from "../links/ButtonLink";
-import { useEffect, useState } from "react";
-import { UUID } from "crypto";
-import { ManageNewsType } from "@/types/admin/ManageNewsType";
-import { GetManageNews } from "@/services/admin/GetManageNews";
+import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
-import ImageFallback from "../commons/ImageFallback";
+import { GetManageNews } from "@/services/admin/GetManageNews";
+import { ManageNewsType } from "@/types/admin/ManageNewsType";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import Typography from "../Typography";
 import RenderPagination from "../_news/RenderPagination";
+import HeaderSection from "../commons/HeaderSection";
+import ImageFallback from "../commons/ImageFallback";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 // const newsData = Array.from({ length: 6 }).map((_, i) => ({
@@ -34,6 +32,10 @@ function ManageNews() {
   const [totData, setTotData] = useState(0);
   const [loadData, setLoadData] = useState(false);
   const LIM_NEWS = 6;
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchManageNews = async () => {
@@ -53,6 +55,47 @@ function ManageNews() {
 
     fetchManageNews();
   }, [currPg]);
+
+  // handle delete data
+  const handleDelete = async () => {
+    if (!selectedNewsId) return;
+
+    setDeleteLoading(true);
+    setDeleteError(null);
+
+    try {
+      await api.delete(`/news/${selectedNewsId}`);
+
+      setShowDeleteModal(false);
+      setSelectedNewsId(null);
+
+      // refetch news
+      const json = await GetManageNews(currPg, LIM_NEWS);
+      setNewsData(json.data);
+      setTotData(json.meta.total_data ?? 1);
+      setTotPage(json.meta.total_page ?? 1);
+    } catch (err) {
+      console.error(err);
+      setDeleteError("Gagal menghapus berita");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const isModalOpen = showDeleteModal;
+
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showDeleteModal]);
 
   if (loadData) {
     return (
@@ -120,7 +163,6 @@ function ManageNews() {
                 <div className="flex gap-[8px]">
                   <Link
                     href={`/admin/news/${news.id}/edit`}
-                    target="_blank"
                     className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
                   >
                     <HiOutlinePencilAlt size={16} />
@@ -130,7 +172,13 @@ function ManageNews() {
                       <HiOutlineEye size={16} />
                     </Link>
                   </button>
-                  <button className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all">
+                  <button
+                    onClick={() => {
+                      setSelectedNewsId(news.id);
+                      setShowDeleteModal(true);
+                    }}
+                    className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
+                  >
                     <HiOutlineTrash size={16} />
                   </button>
                 </div>
@@ -180,6 +228,43 @@ function ManageNews() {
           </button>
         </div>
       </div>
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
+            <h2 className="text-lg font-semibold mb-2">Hapus Berita</h2>
+
+            <p className="text-sm text-gray-600 mb-4">
+              Apakah Anda yakin ingin menghapus berita ini?{" "}
+              <b>Tindakan ini tidak dapat dibatalkan.</b>
+            </p>
+
+            {deleteError && (
+              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
+            )}
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setSelectedNewsId(null);
+                }}
+                disabled={deleteLoading}
+                className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
+              >
+                Batal
+              </button>
+
+              <button
+                onClick={handleDelete}
+                disabled={deleteLoading}
+                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:opacity-90 disabled:opacity-50"
+              >
+                {deleteLoading ? "Menghapus..." : "Hapus"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
