@@ -51,9 +51,9 @@ function page() {
 
   return (
     <Layout withFooter withNavbar={false} transparentOnTop>
-      <main className="min-h-screen px-10 flex flex-col lg:px-40 gap-4 mb-20 py-10">
+      <main className="min-h-screen px-4 flex flex-col lg:px-40 gap-4 mb-20 py-10 lg:py-16">
         <NavbarDept />
-        <section className="bg-white rounded-lg shadow-[0_0_12px_rgba(0,0,0,0.15)] mb-10 flex flex-col gap-8 p-10">
+        <section className="bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.08)] mb-10 flex flex-col gap-8 p-5 lg:p-12 overflow-hidden">
           {loading ? (
             <div className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8">
               {/* Skeleton matches the 40% column */}
@@ -74,10 +74,6 @@ function page() {
           <StrukturAnggota {...dept} />
           <ProgendaDept {...dept} />
           <GalleryDept {...dept} />
-          <p>Hi ini main</p>
-          <p>Hi ini main</p>
-          <p>Hi ini main</p>
-          <p>Hi ini main</p>
         </section>
 
         <ButtonLink

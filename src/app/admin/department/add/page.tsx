@@ -3,15 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
-import { FaChevronLeft, FaCloudUploadAlt } from "react-icons/fa";
+import { FaChevronLeft } from "react-icons/fa";
 import {
   HiOutlinePencilAlt,
   HiOutlineTrash,
   HiOutlineUpload,
 } from "react-icons/hi";
 
-import { UUID } from "crypto";
 import Typography from "@/components/Typography";
+import MediaSelector from "@/components/admin/MediaSelector";
+import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
@@ -35,7 +36,7 @@ type LinkProps = {
 type FormValues = {
   name: string;
   description: string;
-  logo_id: UUID | string;
+  logo_id: string;
   social_media_link: string;
   bank_soal_link: string;
   silabus_link: string;
@@ -43,7 +44,7 @@ type FormValues = {
 };
 
 type PhotoData = {
-  id: UUID | string;
+  id: string;
   image_url: string;
 };
 
@@ -55,10 +56,8 @@ export default function AddDepartmentPage() {
   const [descVal, setDescVal] = useState("");
   const [descMode, setDescMode] = useState<"edit" | "preview">("edit");
 
-  const [openUpload, setOpenUpload] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [_preview, setPreview] = useState(false);
   const [deletingLogo, setDeletingLogo] = useState(false);
+  const [openMedia, setOpenMedia] = useState(false);
 
   const {
     register,
@@ -81,31 +80,6 @@ export default function AddDepartmentPage() {
   });
 
   const watchedValues = watch();
-
-  const handleUploadLogo = async (file: File) => {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      setUploading(true);
-
-      const resp = await api.post("/gallery", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      const uploaded: PhotoData = resp.data.data;
-
-      setLogo(uploaded);
-      setValue("logo_id", uploaded.id);
-
-      setOpenUpload(false);
-      alert("Berhasil upload logo");
-    } catch (err) {
-      alert(`Gagal upload logo: ${getApiErrorMessage(err)}`);
-    } finally {
-      setUploading(false);
-    }
-  };
 
   const handleDeleteLogo = async (): Promise<boolean> => {
     if (!logo?.id) return true;
@@ -213,12 +187,11 @@ export default function AddDepartmentPage() {
     }
   };
 
-  // HANDLE RESET FORM
   const handleResetForm = () => {
     reset();
-    setOpenUpload(false);
     setLinks([]);
     setDescVal("");
+    setLogo(null);
     localStorage.removeItem("department_form_draft");
   };
 
@@ -241,15 +214,15 @@ export default function AddDepartmentPage() {
     const saved = localStorage.getItem("department_form_draft");
 
     if (saved) {
-      const data = JSON.parse(saved);
-
-      // restore form
-      reset(data);
-
-      // restore state
-      setDescVal(data.description ?? "");
-      setLogo(data.logo ?? null);
-      setLinks(data.links ?? []);
+      try {
+        const data = JSON.parse(saved);
+        reset(data);
+        setDescVal(data.description ?? "");
+        setLogo(data.logo ?? null);
+        setLinks(data.links ?? []);
+      } catch (e) {
+        console.error("Failed to restore draft", e);
+      }
     }
 
     setIsRestored(true);
@@ -257,7 +230,7 @@ export default function AddDepartmentPage() {
 
   if (!isRestored) {
     return (
-      <div className=" flex items-center justify-center p-10 min-h-screen w-full">
+      <div className="flex items-center justify-center p-10 min-h-screen w-full">
         <SkeletonPleaseWait />
       </div>
     );
@@ -273,7 +246,6 @@ export default function AddDepartmentPage() {
           Add Department
         </Typography>
 
-        {/* FORM */}
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
           <div className="flex flex-1 flex-col gap-6 lg:max-w-[55%]">
             {/* NAME */}
@@ -284,14 +256,13 @@ export default function AddDepartmentPage() {
 
               <input
                 {...register("name")}
-                className="w-full resize-none rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
                 placeholder="Enter department name"
               />
             </div>
 
-            {/* Deskripsi Markdown */}
+            {/* DESCRIPTION */}
             <div>
-              {/* Toolbar & Controller logic remains same as your original code */}
               <label className="mb-2 block text-[15px] font-semibold text-black">
                 Deskripsi
               </label>
@@ -320,90 +291,81 @@ export default function AddDepartmentPage() {
                 </button>
               </div>
               <div className="overflow-hidden rounded-xl border border-gray-200 bg-[#f8fafc]">
-                {/* TOOLBAR — cuma muncul di edit */}
                 {descMode === "edit" && (
-                  <div className="flex items-center gap-2 border-b px-3 py-2">
-                    <button
-                      type="button"
-                      onMouseDown={(e) => {
-                        applyFormat("**");
-                        e.preventDefault();
-                      }}
-                    >
-                      <BiBold size={18} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onMouseDown={(e) => {
-                        applyFormat("*");
-                        e.preventDefault();
-                      }}
-                    >
-                      <BiItalic size={18} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        applyFormat("<u>", "</u>");
-                      }}
-                    >
-                      <BiUnderline size={18} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        applyFormat("\n  - ", "");
-                      }}
-                    >
-                      <AiOutlineUnorderedList size={18} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onMouseDown={(e) => {
-                        applyFormat("\n  1. ", "");
-                        e.preventDefault();
-                      }}
-                    >
-                      <AiOutlineOrderedList size={18} />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="ml-auto text-sm text-primaryPink"
-                      onMouseDown={(e) => {
-                        setPreview((p) => !p);
-                        e.preventDefault();
-                      }}
-                    ></button>
-                  </div>
+                  <>
+                    <div className="flex items-center gap-2 border-b px-3 py-2">
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          applyFormat("**");
+                          e.preventDefault();
+                        }}
+                      >
+                        <BiBold size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          applyFormat("*");
+                          e.preventDefault();
+                        }}
+                      >
+                        <BiItalic size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          applyFormat("<u>", "</u>");
+                        }}
+                      >
+                        <BiUnderline size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          applyFormat("\n  - ", "");
+                        }}
+                      >
+                        <AiOutlineUnorderedList size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          applyFormat("\n  1. ", "");
+                          e.preventDefault();
+                        }}
+                      >
+                        <AiOutlineOrderedList size={18} />
+                      </button>
+                    </div>
+                    <Controller
+                      name="description"
+                      control={control}
+                      render={({ field }) => (
+                        <textarea
+                          {...field}
+                          ref={(el) => {
+                            field.ref(el);
+                            descRef.current = el;
+                          }}
+                          value={descVal}
+                          onChange={(e) => {
+                            setDescVal(e.target.value);
+                            field.onChange(e.target.value);
+                          }}
+                          className="w-full min-h-[200px] bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 focus:outline-none"
+                          placeholder="Tulis markdown di sini..."
+                        />
+                      )}
+                    />
+                  </>
                 )}
-                {descMode === "edit" && (
-                  <Controller
-                    name="description"
-                    control={control}
-                    render={({ field }) => (
-                      <textarea
-                        {...field}
-                        ref={(el) => {
-                          field.ref(el);
-                          descRef.current = el;
-                        }}
-                        value={descVal}
-                        onChange={(e) => {
-                          setDescVal(e.target.value);
-                          field.onChange(e.target.value);
-                        }}
-                        className="w-full resize-none bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 focus:outline-none"
-                        placeholder="Tulis markdown di sini..."
-                      />
-                    )}
-                  />
+                {descMode === "preview" && (
+                  <div className="w-full min-h-[200px] bg-[#f8fafc] p-4">
+                    <MarkdownRenderer>{descVal}</MarkdownRenderer>
+                  </div>
                 )}
               </div>
             </div>
@@ -418,7 +380,6 @@ export default function AddDepartmentPage() {
                 {links.map((link) => (
                   <div key={link.id}>
                     <span className="text-sm">{link.label}</span>
-
                     <div className="flex gap-2">
                       <input
                         value={link.url}
@@ -426,7 +387,6 @@ export default function AddDepartmentPage() {
                         className="flex-1 rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-sm font-medium text-gray-600 placeholder:italic placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
                         placeholder="https://"
                       />
-
                       <button
                         type="button"
                         onClick={() => removeLink(link.id)}
@@ -442,7 +402,7 @@ export default function AddDepartmentPage() {
                   <button
                     type="button"
                     onClick={addLink}
-                    className="border border-dashed rounded-xl py-3"
+                    className="border border-dashed rounded-xl py-3 hover:bg-gray-50 transition"
                   >
                     Add Link
                   </button>
@@ -450,26 +410,19 @@ export default function AddDepartmentPage() {
               </div>
             </div>
 
-            <button disabled={isSubmitting}>
+            <div className="mt-8 flex gap-4 max-lg:hidden">
               <Link
                 href="/admin#manage-department"
-                className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 max-lg:hidden"
+                className="flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300"
               >
                 <FaChevronLeft size={12} /> Back
               </Link>
-            </button>
+            </div>
           </div>
 
           <div className="flex-1 flex flex-col">
-            <label className="mb-2 font-semibold">Photo</label>
-            <div
-              onClick={async () => {
-                const ok = await handleDeleteLogo();
-                if (ok) setOpenUpload(true);
-              }}
-              className="relative cursor-pointer overflow-hidden rounded-xl border"
-              style={{ aspectRatio: "4/3" }}
-            >
+            <label className="mb-2 font-semibold">Logo</label>
+            <div className="relative overflow-hidden rounded-xl border bg-gray-50 aspect-square">
               {logo ? (
                 <img
                   src={logo.image_url}
@@ -477,10 +430,13 @@ export default function AddDepartmentPage() {
                 />
               ) : (
                 <div className="flex h-full items-center justify-center italic text-gray-400">
-                  No image
+                  No image (Recommended 1:1)
                 </div>
               )}
-              <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition">
+              <div
+                onClick={() => setOpenMedia(true)}
+                className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition cursor-pointer"
+              >
                 <HiOutlinePencilAlt className="text-white text-2xl" />
               </div>
             </div>
@@ -488,13 +444,10 @@ export default function AddDepartmentPage() {
             <div className="mt-4 flex flex-col gap-2">
               <button
                 type="button"
-                onClick={async () => {
-                  const ok = await handleDeleteLogo();
-                  if (ok) setOpenUpload(true);
-                }}
+                onClick={() => setOpenMedia(true)}
                 className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-100 transition-all duration-300"
               >
-                <HiOutlineUpload /> Change Image
+                <HiOutlineUpload /> {logo ? "Change Logo" : "Upload Logo"}
               </button>
               {logo && (
                 <button
@@ -503,7 +456,7 @@ export default function AddDepartmentPage() {
                   disabled={deletingLogo}
                   className="flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-500 hover:text-red-600 hover:bg-red-100 transition-all duration-300"
                 >
-                  <HiOutlineTrash /> Delete Image
+                  <HiOutlineTrash /> Delete Logo
                 </button>
               )}
             </div>
@@ -511,10 +464,7 @@ export default function AddDepartmentPage() {
             <div className="mt-12 flex justify-end gap-4">
               <button
                 type="button"
-                onClick={() => {
-                  handleResetForm();
-                  handleDeleteLogo();
-                }}
+                onClick={handleResetForm}
                 disabled={isSubmitting}
                 className="px-8 py-3 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 transition disabled:opacity-50"
               >
@@ -525,83 +475,27 @@ export default function AddDepartmentPage() {
                 disabled={isSubmitting}
                 className="bg-primaryPink px-8 py-3 text-white rounded-lg hover:opacity-80 transition"
               >
-                {isSubmitting ? "Saving..." : "Save Gallery"}
+                {isSubmitting ? "Adding..." : "Add Department"}
               </button>
             </div>
-            <button disabled={isSubmitting}>
-              <Link
-                href="/admin#manage-department"
-                className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden hover:opacity-80 transition-all duration-300"
-              >
-                <FaChevronLeft size={12} /> Back
-              </Link>
-            </button>
+            <Link
+              href="/admin#manage-department"
+              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden hover:opacity-80 transition-all duration-300"
+            >
+              <FaChevronLeft size={12} /> Back
+            </Link>
           </div>
         </div>
 
-        {/* Upload image modal */}
-        {openUpload && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
-              <h2 className="text-lg font-semibold mb-4">Upload Image</h2>
-
-              <div
-                onClick={() => {
-                  if (uploading) return;
-                  document.getElementById("upload-input")?.click();
-                }}
-                onDragOver={(e) => !uploading && e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  if (uploading) return;
-                  const file = e.dataTransfer.files?.[0];
-                  if (file) handleUploadLogo(file);
-                }}
-                className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all
-          ${
-            uploading
-              ? "cursor-not-allowed opacity-60 bg-gray-100"
-              : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
-          }
-        `}
-              >
-                <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
-                  <FaCloudUploadAlt />
-                </div>
-
-                <p className="text-sm font-medium">
-                  {uploading ? "Uploading..." : "Klik atau drag file ke sini"}
-                </p>
-
-                <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
-
-                <input
-                  id="upload-input"
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  disabled={uploading}
-                  onChange={(e) => {
-                    if (uploading) return;
-                    if (e.target.files?.[0]) {
-                      handleUploadLogo(e.target.files[0]);
-                    }
-                  }}
-                />
-              </div>
-
-              <div className="flex gap-2 pt-6">
-                <button
-                  type="button"
-                  onClick={() => setOpenUpload(false)}
-                  className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
-                  disabled={uploading}
-                >
-                  Tutup
-                </button>
-              </div>
-            </div>
-          </div>
+        {openMedia && (
+          <MediaSelector
+            onClose={() => setOpenMedia(false)}
+            onSelect={(photo) => {
+              setLogo(photo);
+              setValue("logo_id", photo.id);
+              setOpenMedia(false);
+            }}
+          />
         )}
       </form>
     </div>

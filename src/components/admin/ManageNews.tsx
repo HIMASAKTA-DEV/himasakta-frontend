@@ -16,14 +16,8 @@ import Typography from "../Typography";
 import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
+import MarkdownRenderer from "../commons/MarkdownRenderer";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
-
-// const newsData = Array.from({ length: 6 }).map((_, i) => ({
-//   id: i + 1,
-//   title: "Lorem ipsum dolor sit amet.",
-//   date: "09 Februari 2026",
-//   image: "/_dummy_images/no1.jpg",
-// }));
 
 function ManageNews() {
   const [newsData, setNewsData] = useState<ManageNewsType[]>([]);
@@ -31,17 +25,26 @@ function ManageNews() {
   const [totPage, setTotPage] = useState(1);
   const [totData, setTotData] = useState(0);
   const [loadData, setLoadData] = useState(false);
-  const LIM_NEWS = 6;
+  const [limNews, setLimNews] = useState(6);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
+  // Preview state
+  const [previewData, setPreviewData] = useState<{
+    title: string;
+    content: string;
+    thumbnail?: string;
+    published_at: string;
+  } | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+
   useEffect(() => {
     const fetchManageNews = async () => {
       setLoadData(true);
       try {
-        const json = await GetManageNews(currPg, LIM_NEWS);
+        const json = await GetManageNews(currPg, limNews);
         setNewsData(json.data);
         setTotData(json.meta.total_data ?? 1);
         setTotPage(json.meta.total_page ?? 1);
@@ -52,25 +55,18 @@ function ManageNews() {
         setLoadData(false);
       }
     };
-
     fetchManageNews();
-  }, [currPg]);
+  }, [currPg, limNews]);
 
-  // handle delete data
   const handleDelete = async () => {
     if (!selectedNewsId) return;
-
     setDeleteLoading(true);
     setDeleteError(null);
-
     try {
       await api.delete(`/news/${selectedNewsId}`);
-
       setShowDeleteModal(false);
       setSelectedNewsId(null);
-
-      // refetch news
-      const json = await GetManageNews(currPg, LIM_NEWS);
+      const json = await GetManageNews(currPg, limNews);
       setNewsData(json.data);
       setTotData(json.meta.total_data ?? 1);
       setTotPage(json.meta.total_page ?? 1);
@@ -82,20 +78,35 @@ function ManageNews() {
     }
   };
 
-  // prevent scrolling when modal opened
-  useEffect(() => {
-    const isModalOpen = showDeleteModal;
-
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+  const handlePreview = async (newsId: string) => {
+    setPreviewLoading(true);
+    setPreviewData(null);
+    try {
+      const resp = await api.get(`/news/${newsId}`);
+      const d = resp.data?.data ?? resp.data;
+      setPreviewData({
+        title: d.title ?? "",
+        content: d.content ?? d.body ?? "",
+        thumbnail: d.thumbnail?.image_url ?? "",
+        published_at: d.published_at ?? "",
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Gagal memuat preview berita");
+      setPreviewLoading(false);
+      return;
     }
+    setPreviewLoading(false);
+  };
 
+  useEffect(() => {
+    const isModalOpen = showDeleteModal || !!previewData || previewLoading;
+    if (isModalOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [showDeleteModal]);
+  }, [showDeleteModal, previewData, previewLoading]);
 
   if (loadData) {
     return (
@@ -104,6 +115,7 @@ function ManageNews() {
       </div>
     );
   }
+
   return (
     <div className="p-10 bg-white min-h-screen">
       <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto">
@@ -121,9 +133,33 @@ function ManageNews() {
               Atur publikasi berita di website
             </Typography>
           </div>
-          <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90  active:opacity-80 duration-300 transition-all max-lg:text-sm">
-            <Link href="/admin/news/add">+ Add Post</Link>
-          </button>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium text-gray-700 font-libertine">
+                Show
+              </label>
+              <select
+                value={limNews}
+                onChange={(e) => {
+                  setLimNews(Number(e.target.value));
+                  setCurrPg(1);
+                }}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+              >
+                {[5, 10, 15, 20].map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Link
+              href="/admin/news/add"
+              className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
+            >
+              + Add Post
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -167,14 +203,15 @@ function ManageNews() {
                   >
                     <HiOutlinePencilAlt size={16} />
                   </Link>
-                  <button className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all">
-                    <Link href={`/news/${news.id}`}>
-                      <HiOutlineEye size={16} />
-                    </Link>
+                  <button
+                    onClick={() => handlePreview(news.id as string)}
+                    className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
+                  >
+                    <HiOutlineEye size={16} />
                   </button>
                   <button
                     onClick={() => {
-                      setSelectedNewsId(news.id);
+                      setSelectedNewsId(news.id as string);
                       setShowDeleteModal(true);
                     }}
                     className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
@@ -187,61 +224,89 @@ function ManageNews() {
           </div>
         ))}
       </div>
-      {/* Footer: Showing X of Y + Pagination + Publish */}
+
       <div className="flex w-full flex-col items-center justify-between gap-4 lg:flex-row mt-8">
         <p className="font-libertine text-sm text-primaryPink">
-          Showing {Math.min(currPg * LIM_NEWS, totData)} of {totData} in current
+          Showing {Math.min((currPg - 1) * limNews + 1, totData)} to{" "}
+          {Math.min(currPg * limNews, totData)} of {totData} in current
           selection
         </p>
-
-        {/* Pagination controls */}
-        <div className="flex items-center gap-3">
-          {/* Prev page */}
-          <button
-            disabled={currPg === 1 || loadData}
-            onClick={() => setCurrPg((p) => p - 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 
-                          hover:bg-gray-100 transition flex items-center gap-4
-                          ${currPg === 1 || loadData ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            {/* icon kiri */}
-            &lt;
-          </button>
-
-          {/* Page numbers */}
-          <RenderPagination
-            currPage={currPg}
-            totPage={totPage}
-            onChange={setCurrPg}
-          />
-
-          {/* Next page */}
-          <button
-            disabled={currPg === totPage || loadData}
-            onClick={() => setCurrPg((p) => p + 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 
-                          hover:bg-gray-100 transition flex items-center gap-4
-                          ${currPg === totPage || loadData ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            {/* icon kanan */}
-            &gt;
-          </button>
-        </div>
+        <RenderPagination
+          currPage={currPg}
+          totPage={totPage}
+          onChange={setCurrPg}
+        />
       </div>
+
+      {/* News preview modal */}
+      {(previewData || previewLoading) && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          onClick={() => {
+            setPreviewData(null);
+            setPreviewLoading(false);
+          }}
+        >
+          <div
+            className="bg-white rounded-2xl w-[90%] max-w-3xl max-h-[85vh] overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {previewLoading ? (
+              <div className="py-16 flex items-center justify-center">
+                <SkeletonPleaseWait />
+              </div>
+            ) : (
+              previewData && (
+                <>
+                  {previewData.thumbnail && (
+                    <div className="relative w-full h-56 overflow-hidden rounded-t-2xl">
+                      <img
+                        src={previewData.thumbnail}
+                        alt={previewData.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="p-8">
+                    <h2 className="text-2xl font-bold font-averia mb-2">
+                      {previewData.title}
+                    </h2>
+                    <p className="text-sm text-gray-400 mb-6">
+                      {new Date(previewData.published_at).toLocaleString(
+                        "id-ID",
+                      )}
+                    </p>
+                    <div className="prose prose-sm max-w-none">
+                      <MarkdownRenderer>{previewData.content}</MarkdownRenderer>
+                    </div>
+                  </div>
+                </>
+              )
+            )}
+            <div className="px-8 pb-6 flex justify-end">
+              <button
+                onClick={() => setPreviewData(null)}
+                className="px-4 py-2 rounded-lg border hover:bg-gray-100 transition-all"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
             <h2 className="text-lg font-semibold mb-2">Hapus Berita</h2>
-
             <p className="text-sm text-gray-600 mb-4">
               Apakah Anda yakin ingin menghapus berita ini?{" "}
               <b>Tindakan ini tidak dapat dibatalkan.</b>
             </p>
-
             {deleteError && (
               <p className="text-sm text-red-500 mb-3">{deleteError}</p>
             )}
-
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => {
@@ -253,7 +318,6 @@ function ManageNews() {
               >
                 Batal
               </button>
-
               <button
                 onClick={handleDelete}
                 disabled={deleteLoading}

@@ -1,7 +1,7 @@
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { configuration } from "../../../config";
 import HeaderSection from "../commons/HeaderSection";
 import ButtonLink from "../links/ButtonLink";
-import { mediaBtnData } from "./sectionBtn";
 
 function MediaPartner() {
   return (
@@ -17,7 +17,7 @@ function MediaPartner() {
         relationships that support HIMASAKTA's mission and values.
       </p>
       <div className="flex items-center gap-4 flex-col lg:flex-row lg:gap-6">
-        {mediaBtnData.map((item) => (
+        {configuration.MediaButtons.map((item) => (
           <ButtonLink
             key={item.url}
             href={item.url}

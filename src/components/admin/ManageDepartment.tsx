@@ -22,9 +22,12 @@ function ManageDepartment() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [currPage, setCurrPage] = useState(1);
+  const [limitDept, setLimitDept] = useState(5);
   const [totalPage, setTotalPage] = useState(1);
   const [totalData, setTotalData] = useState(0);
-  const LIMIT_DEPT = 7;
+  const [memberCounts, setMemberCounts] = useState<{ [key: string]: number }>(
+    {},
+  );
   // DELETE MODAL STATE
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedDeptId, setSelectedDeptId] = useState<string | null>(null);
@@ -36,10 +39,39 @@ function ManageDepartment() {
     setLoading(true);
     setError(false);
     try {
-      const json = await GetAllDepts(currPage, LIMIT_DEPT);
-      setDepartments(json.data);
+      const json = await GetAllDepts(currPage, limitDept);
+
+      // Sorting: Newest first (created_at) then by name
+      const sorted = [...json.data].sort((a, b) => {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+
+        if (dateB !== dateA) return dateB - dateA;
+        return (a.name || "").localeCompare(b.name || "");
+      });
+
+      setDepartments(sorted);
       setTotalPage(json.meta.total_page ?? 1);
       setTotalData(json.meta.total_data ?? 0);
+
+      // Fetch member counts for each department
+      const counts: { [key: string]: number } = {};
+      await Promise.all(
+        json.data.map(async (dept) => {
+          if (dept.id) {
+            try {
+              const res = await api.get(
+                `/member?filter_by=department_id&filter=${dept.id}`,
+              );
+              counts[dept.id] = res.data.meta.total_data ?? 0;
+            } catch (err) {
+              console.error(`Gagal ambil count member dept ${dept.id}`, err);
+              counts[dept.id] = 0;
+            }
+          }
+        }),
+      );
+      setMemberCounts(counts);
     } catch (err) {
       console.error(err);
       setError(true);
@@ -50,7 +82,7 @@ function ManageDepartment() {
 
   useEffect(() => {
     fetchDepartments();
-  }, [currPage]);
+  }, [currPage, limitDept]);
 
   // HANDLE DELETE MODAL
   const handleDelete = async () => {
@@ -86,9 +118,30 @@ function ManageDepartment() {
           sub={"Atur data departemen di website"}
           subStyle="text-black font-libertine"
         />
-        <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90  active:opacity-80 duration-300 transition-all max-lg:text-sm">
-          <Link href={"/admin/department/add"}>+ Add Department</Link>
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700 font-libertine">
+              Show
+            </label>
+            <select
+              value={limitDept}
+              onChange={(e) => {
+                setLimitDept(Number(e.target.value));
+                setCurrPage(1);
+              }}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer font-libertine"
+            >
+              {[5, 10, 15, 20].map((val) => (
+                <option key={val} value={val}>
+                  {val}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
+            <Link href={"/admin/department/add"}>+ Add Department</Link>
+          </button>
+        </div>
       </div>
 
       {error && !loading && (
@@ -138,11 +191,10 @@ function ManageDepartment() {
                       {dept.name ?? "—"}
                     </td>
                     <td className="px-6 py-4 text-gray-600">
-                      {/* Kepala departemen — not available in current type, show placeholder */}
-                      Fitur belum tersedia
+                      {dept.leader?.name ?? "—"}
                     </td>
                     <td className="px-6 py-4 text-gray-600">
-                      {/* Members count — not in current type */}—
+                      {memberCounts[dept.id as string] ?? 0} Members
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
@@ -185,40 +237,15 @@ function ManageDepartment() {
       {/* Footer: Showing X of Y + Pagination */}
       <div className="flex w-full flex-col items-center justify-between gap-4 lg:flex-row">
         <p className="font-libertine text-sm text-primaryPink">
-          Showing {Math.min(LIMIT_DEPT * currPage, totalData)} of {totalData} in
-          current selection
+          Showing {Math.min((currPage - 1) * limitDept + 1, totalData)} to{" "}
+          {Math.min(limitDept * currPage, totalData)} of {totalData} in current
+          selection
         </p>
-        <div className="flex items-center gap-3">
-          <button
-            disabled={currPage === 1 || loading}
-            onClick={() => setCurrPage((p) => p - 1)}
-            className={`rounded-md border border-gray-300 p-2 text-sm transition hover:bg-gray-100 disabled:opacity-40 ${
-              currPage === 1 || loading
-                ? "cursor-not-allowed"
-                : "cursor-pointer"
-            }`}
-          >
-            &lt;
-          </button>
-
-          <RenderPagination
-            currPage={currPage}
-            totPage={totalPage}
-            onChange={setCurrPage}
-          />
-
-          <button
-            disabled={currPage === totalPage || loading}
-            onClick={() => setCurrPage((p) => p + 1)}
-            className={`rounded-md border border-gray-300 p-2 text-sm transition hover:bg-gray-100 disabled:opacity-40 ${
-              currPage === totalPage || loading
-                ? "cursor-not-allowed"
-                : "cursor-pointer"
-            }`}
-          >
-            &gt;
-          </button>
-        </div>
+        <RenderPagination
+          currPage={currPage}
+          totPage={totalPage}
+          onChange={setCurrPage}
+        />
       </div>
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">

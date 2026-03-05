@@ -1,6 +1,7 @@
 "use client";
 
 import { UUID } from "crypto";
+import MediaSelector from "@/components/admin/MediaSelector";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
@@ -18,12 +19,8 @@ import { RoleType } from "@/types/data/RoleType";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  FaCloudUploadAlt,
-  FaEdit,
-  FaRegEdit,
-  FaRegTrashAlt,
-} from "react-icons/fa";
+import { FaEdit, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import { HiOutlinePencilAlt, HiOutlineUpload } from "react-icons/hi";
 import Select from "react-select";
 import { StylesConfig } from "react-select";
 
@@ -310,36 +307,8 @@ export default function Page() {
   };
 
   // handle image upload
-  const [openUpload, setOpenUpload] = useState(false);
+  const [openMedia, setOpenMedia] = useState(false);
   const [photo, setPhoto] = useState<PhotoData | null>(null);
-  const [uploading, setUploading] = useState(false);
-
-  const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("image", file);
-    try {
-      setUploading(true);
-      const resp = await api.post("/gallery", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      const uploadedPhoto: PhotoData = resp.data.data;
-      setPhoto(uploadedPhoto);
-      setValue("photo_id", uploadedPhoto.id, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-      setOpenUpload(false);
-      alert("Berhasil upload");
-    } catch (err) {
-      console.error(err);
-      alert("Gagal upload");
-    } finally {
-      setUploading(false);
-    }
-  };
 
   // test if the jwt is here
   const { jwtToken, ready } = useAdminAuth();
@@ -373,8 +342,8 @@ export default function Page() {
               error={errors.photo_id?.message}
             >
               <div
-                onClick={() => setOpenUpload(true)}
-                className="group relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer overflow-hidden transition-all duration-300 hover:opacity-90"
+                onClick={() => setOpenMedia(true)}
+                className="group relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer overflow-hidden transition-all duration-300 hover:border-primaryPink"
               >
                 {photo ? (
                   <img
@@ -383,26 +352,13 @@ export default function Page() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-gray-400 text-sm">Upload</span>
+                  <div className="flex flex-col items-center justify-center gap-1 text-gray-400">
+                    <HiOutlineUpload size={20} className="text-primaryPink" />
+                    <span className="text-[10px]">Upload</span>
+                  </div>
                 )}
-
-                {/* Overlay hover */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3 7h3l2-3h8l2 3h3v11H3V7z"
-                    />
-                    <circle cx="12" cy="13" r="3" />
-                  </svg>
+                  <HiOutlinePencilAlt className="text-white text-xl" />
                 </div>
               </div>
             </Field>
@@ -575,24 +531,24 @@ export default function Page() {
           <small className="text-red-500">* wajib diisi</small>
 
           <div className="flex gap-3 pt-4">
-            <button
-              className="flex-1 border py-2 rounded-lg hover:opacity-80 active:opacity-70 bg-black text-white transition-all"
-              disabled={isSubmitting}
-              type="button"
+            <Link
+              href="/admin/#manage-anggota"
+              className="flex-1 border py-2.5 rounded-xl text-center bg-slate-900 text-white font-semibold transition-all hover:bg-slate-800 active:scale-95"
             >
-              <Link href={"/admin/#manage-anggota"}>Back</Link>
-            </button>
+              Back
+            </Link>
             <button
               type="button"
               onClick={() => reset()}
               disabled={isSubmitting}
-              className="flex-1 border py-2 rounded-lg hover:bg-gray-50 transition-all"
+              className="flex-1 border py-2.5 rounded-xl font-semibold text-gray-600 transition-all hover:bg-gray-50 active:scale-95"
             >
               Reset
             </button>
             <button
+              type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-primaryPink text-white py-2 rounded-lg active:bg-primaryPink/40 hover:opacity-80 transition-all disabled:bg-gray-300"
+              className="flex-1 bg-primaryPink text-white py-2.5 rounded-xl font-semibold shadow-lg shadow-pink-200 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
             >
               {isSubmitting ? "Menyimpan..." : "Simpan"}
             </button>
@@ -675,74 +631,19 @@ export default function Page() {
         </div>
       )}
 
-      {openUpload && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
-            <h2 className="text-lg font-semibold mb-4">Upload</h2>
-
-            <div
-              onClick={() => {
-                if (uploading) return;
-                document.getElementById("upload-input")?.click();
-              }}
-              onDragOver={(e) => {
-                if (!uploading) e.preventDefault();
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-                if (uploading) return;
-
-                const file = e.dataTransfer.files?.[0];
-                if (file) handleUpload(file);
-              }}
-              className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all
-              ${
-                uploading
-                  ? "cursor-not-allowed opacity-60 bg-gray-100"
-                  : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
-              }
-            `}
-            >
-              <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
-                <FaCloudUploadAlt />
-              </div>
-
-              <p className="text-sm font-medium">
-                {uploading ? "Uploading..." : "Klik atau drag file ke sini"}
-              </p>
-
-              <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
-
-              <input
-                id="upload-input"
-                type="file"
-                accept="image/*"
-                hidden
-                disabled={uploading}
-                onChange={(e) => {
-                  if (uploading) return;
-                  if (e.target.files?.[0]) {
-                    handleUpload(e.target.files[0]);
-                  }
-                }}
-              />
-            </div>
-
-            <div className="flex gap-2 pt-6">
-              <button
-                type="button"
-                disabled={uploading}
-                onClick={() => {
-                  setOpenUpload(false);
-                  resetRoleForm();
-                }}
-                className="flex-1 border py-2 rounded-lg hover:bg-gray-200 transition-all duration-300"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* MEDIA SELECTOR */}
+      {openMedia && (
+        <MediaSelector
+          onSelect={(m) => {
+            setPhoto(m);
+            setValue("photo_id", m.id, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+            setOpenMedia(false);
+          }}
+          onClose={() => setOpenMedia(false)}
+        />
       )}
 
       {/* Delete role modal */}

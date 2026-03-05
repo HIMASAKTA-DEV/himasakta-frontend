@@ -18,12 +18,12 @@ function ManageEvent() {
   const [currPg, setCurrPg] = useState(1);
   const [totData, setTotData] = useState(1);
   const [totPg, setTotPg] = useState(1);
-  const LIM_MAIN_DATA = 5;
+  const [limData, setLimData] = useState(5);
   const fetchAllEvents = async () => {
     setLoadingData(true);
     setErrMainData(false);
     try {
-      const json = await GetManageEvents(currPg, LIM_MAIN_DATA);
+      const json = await GetManageEvents(currPg, limData);
       setTotData(json.meta.total_data ?? 1);
       setTotPg(json.meta.total_page ?? 1);
       setEventsData(json.data);
@@ -37,7 +37,7 @@ function ManageEvent() {
 
   useEffect(() => {
     fetchAllEvents();
-  }, [currPg]);
+  }, [currPg, limData]);
 
   // handle delete event
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -70,15 +70,39 @@ function ManageEvent() {
 
   return (
     <main className="flex w-full min-h-screen gap-8 p-4 flex-col lg:p-10">
-      <div className="flex w-full items-center lg:justify-between max-lg:flex-col gap-2">
+      <div className="flex w-full items-center lg:justify-between max-lg:flex-col gap-4">
         <HeaderSection
           title={"Manage Kegiatan"}
           sub={"Atur daftar kegiatan bulanan (What's On HIMASAKTA)"}
           subStyle="text-black font-libertine"
         />
-        <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90  active:opacity-80 duration-300 transition-all max-lg:text-sm">
-          <Link href={"/admin/kegiatan/add"}>+ Add Event</Link>
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700 font-libertine">
+              Show
+            </label>
+            <select
+              value={limData}
+              onChange={(e) => {
+                setLimData(Number(e.target.value));
+                setCurrPg(1);
+              }}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+            >
+              {[5, 10, 15, 20].map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+          <Link
+            href="/admin/kegiatan/add"
+            className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
+          >
+            + Add Event
+          </Link>
+        </div>
       </div>
 
       {_errMainData && !loadingData && (
@@ -143,43 +167,16 @@ function ManageEvent() {
       </div>
       <div className="flex w-full items-center lg:justify-between flex-col lg:flex-row gap-4">
         <p className="font-libertine text-sm text-primaryPink">
-          Showing {Math.min(currPg * LIM_MAIN_DATA, totData)} of {totData} in
-          current selection
+          Showing {Math.min((currPg - 1) * limData + 1, totData)} to{" "}
+          {Math.min(currPg * limData, totData)} of {totData} in current
+          selection
         </p>
 
-        {/* Pagination controls */}
-        <div className="flex items-center gap-3">
-          {/* Prev page */}
-          <button
-            disabled={currPg === 1 || loadingData}
-            onClick={() => setCurrPg((p) => p - 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 
-                  hover:bg-gray-100 transition flex items-center gap-4
-                  ${currPg === 1 || loadingData ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            {/* icon kiri */}
-            &lt;
-          </button>
-
-          {/* Page numbers */}
-          <RenderPagination
-            currPage={currPg}
-            totPage={totPg}
-            onChange={setCurrPg}
-          />
-
-          {/* Next page */}
-          <button
-            disabled={currPg === totPg || loadingData}
-            onClick={() => setCurrPg((p) => p + 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 
-                  hover:bg-gray-100 transition flex items-center gap-4
-                  ${currPg === totPg || loadingData ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            {/* icon kanan */}
-            &gt;
-          </button>
-        </div>
+        <RenderPagination
+          currPage={currPg}
+          totPage={totPg}
+          onChange={setCurrPg}
+        />
       </div>
       {/* Show delete modal */}
       {showDeleteModal && (

@@ -1,6 +1,10 @@
 "use client";
 
-import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
+import {
+  HiOutlineEye,
+  HiOutlinePencilAlt,
+  HiOutlineTrash,
+} from "react-icons/hi";
 
 import HeaderSection from "@/components/commons/HeaderSection";
 import api from "@/lib/axios";
@@ -10,32 +14,62 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import RenderPagination from "../_news/RenderPagination";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
+import CabinetPreviewDialog from "./CabinetPreviewDialog";
 
 type CabinetRow = ManageCabinet; // type sebaiknya dipindah ke folder types/
 
 // const cabinetData: CabinetRow[]; data sebaiknya diganti dengan useState untuk data fetching
 
 // usahakan kasih komen biar jelas bagian2nya
-const LIM_CABINETS = 5;
 function ManageCabinet() {
   // handle fetch data
   const [cabinets, setCabinets] = useState<CabinetRow[]>([]);
   const [activeCabinets, setActiveCabinets] = useState<CabinetRow[]>([]);
   const [currPg, setCurrPg] = useState(1);
+  const [limCabinets, setLimCabinets] = useState(5);
   const [totData, setTotData] = useState(0);
   const [_errData, setErrData] = useState(false);
   const [loadData, setLoadData] = useState(true);
   const [totPage, setTotPg] = useState(1);
 
+  // handle preview
+  const [selectedPreviewId, setSelectedPreviewId] = useState<string | null>(
+    null,
+  );
+
   const fetchAllCabinets = async () => {
     setLoadData(true);
     setErrData(false);
     try {
-      const json = await GetManageCabinet(currPg, LIM_CABINETS);
-      const filteredInactive = json.data.filter(
+      const json = await GetManageCabinet(currPg, limCabinets);
+
+      // Custom Sorting Logic:
+      // 1. is_active (true first)
+      // 2. newest period_start
+      // 3. newest period_end
+      const sortedData = [...json.data].sort((a, b) => {
+        // Active first
+        if (a.is_active !== b.is_active) {
+          return a.is_active ? -1 : 1;
+        }
+
+        // Same active status, compare period_start (newest first)
+        const startA = new Date(a.period_start).getTime();
+        const startB = new Date(b.period_start).getTime();
+        if (startA !== startB) {
+          return startB - startA;
+        }
+
+        // Same period_start, compare period_end (newest first)
+        const endA = new Date(a.period_end).getTime();
+        const endB = new Date(b.period_end).getTime();
+        return endB - endA;
+      });
+
+      const filteredInactive = sortedData.filter(
         (c) => String(c.is_active) === "false",
       );
-      const filteredActive = json.data.filter(
+      const filteredActive = sortedData.filter(
         (c) => String(c.is_active) === "true",
       );
       setCabinets(filteredInactive);
@@ -52,7 +86,7 @@ function ManageCabinet() {
 
   useEffect(() => {
     fetchAllCabinets();
-  }, [currPg]);
+  }, [currPg, limCabinets]);
 
   // TODO: handle delete
   // handle delete anggota
@@ -86,9 +120,8 @@ function ManageCabinet() {
     }
   };
 
-  // prevent scrolling when opening modal
   useEffect(() => {
-    const isModalOpen = showDeleteModal;
+    const isModalOpen = showDeleteModal || !!selectedPreviewId;
 
     if (isModalOpen) {
       document.body.style.overflow = "hidden";
@@ -112,9 +145,32 @@ function ManageCabinet() {
           sub="Atur informasi tiap kabinet"
           subStyle="font-libertine text-black"
         />
-        <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90  active:opacity-80 duration-300 transition-all max-lg:text-sm">
-          <Link href={"/admin/cabinet/add"}>+ Add Cabinet</Link>
-        </button>
+
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700 font-libertine">
+              Show
+            </label>
+            <select
+              value={limCabinets}
+              onChange={(e) => {
+                setLimCabinets(Number(e.target.value));
+                setCurrPg(1); // reset to first page
+              }}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+            >
+              {[5, 10, 15, 20].map((val) => (
+                <option key={val} value={val}>
+                  {val}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
+            <Link href={"/admin/cabinet/add"}>+ Add Cabinet</Link>
+          </button>
+        </div>
       </div>
       {_errData && !loadData && (
         <div className="flex w-full items-center justify-center py-20">
@@ -181,6 +237,12 @@ function ManageCabinet() {
 
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => setSelectedPreviewId(cabinet.id)}
+                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-pink-50 hover:text-primaryPink"
+                      >
+                        <HiOutlineEye size={18} />
+                      </button>
                       <Link
                         href={`/admin/cabinet/${cabinet.id}/edit`}
                         className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
@@ -231,6 +293,12 @@ function ManageCabinet() {
 
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => setSelectedPreviewId(cabinet.id)}
+                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-pink-50 hover:text-primaryPink"
+                      >
+                        <HiOutlineEye size={18} />
+                      </button>
                       <Link
                         href={`/admin/cabinet/${cabinet.id}/edit`}
                         className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
@@ -268,43 +336,16 @@ function ManageCabinet() {
       {/* Footer: Showing X of Y + Pagination + Publish */}
       <div className="flex w-full flex-col items-center justify-between gap-4 lg:flex-row">
         <p className="font-libertine text-sm text-primaryPink">
-          Showing {Math.min(currPg * LIM_CABINETS, totData)} of {totData} in
-          current selection
+          Showing {Math.min((currPg - 1) * limCabinets + 1, totData)} to{" "}
+          {Math.min(currPg * limCabinets, totData)} of {totData} in current
+          selection
         </p>
 
-        {/* Pagination controls */}
-        <div className="flex items-center gap-3">
-          {/* Prev page */}
-          <button
-            disabled={currPg === 1 || loadData}
-            onClick={() => setCurrPg((p) => p - 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 
-                    hover:bg-gray-100 transition flex items-center gap-4
-                    ${currPg === 1 || loadData ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            {/* icon kiri */}
-            &lt;
-          </button>
-
-          {/* Page numbers */}
-          <RenderPagination
-            currPage={currPg}
-            totPage={totPage}
-            onChange={setCurrPg}
-          />
-
-          {/* Next page */}
-          <button
-            disabled={currPg === totPage || loadData}
-            onClick={() => setCurrPg((p) => p + 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 
-                    hover:bg-gray-100 transition flex items-center gap-4
-                    ${currPg === totPage || loadData ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            {/* icon kanan */}
-            &gt;
-          </button>
-        </div>
+        <RenderPagination
+          currPage={currPg}
+          totPage={totPage}
+          onChange={setCurrPg}
+        />
       </div>
 
       {/* Show delete modal */}
@@ -344,6 +385,14 @@ function ManageCabinet() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Preview Dialog */}
+      {selectedPreviewId && (
+        <CabinetPreviewDialog
+          cabinetId={selectedPreviewId}
+          onClose={() => setSelectedPreviewId(null)}
+        />
       )}
     </div>
   );

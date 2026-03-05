@@ -4,19 +4,16 @@ import { ManageGalleryType } from "@/types/admin/ManageGallery";
 import { ApiResponse } from "@/types/commons/apiResponse";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
+import {
+  HiOutlineEye,
+  HiOutlinePencilAlt,
+  HiOutlineTrash,
+} from "react-icons/hi";
 import Typography from "../Typography";
 import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
-
-// const galleryData = Array.from({ length: 6 }).map((_, i) => ({
-//   id: i + 1,
-//   title: "Lorem ipsum dolor sit amet.",
-//   date: "09 Februari 2026",
-//   image: "/_dummy_images/no1.jpg",
-// }));
 
 function ManageGallery() {
   const [galleryData, setGalleryData] = useState<ManageGalleryType[]>([]);
@@ -24,27 +21,29 @@ function ManageGallery() {
   const [totData, setTotData] = useState(1);
   const [totPg, setTotPg] = useState(1);
   const [currPg, setCurrPg] = useState(1);
-  const LIM_GALLERY = 6;
+  const [limGallery, setLimGallery] = useState(6);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedGalleryId, setSelectedGalleryId] = useState<string | null>(
     null,
   );
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<{
+    url: string;
+    caption: string;
+  } | null>(null);
 
   const fetchGalleryData = async () => {
     setLoadData(true);
     try {
       const json = await api.get<ApiResponse<ManageGalleryType[]>>(
-        `/gallery?page=${currPg}&limit=${LIM_GALLERY}`,
+        `/gallery?page=${currPg}&limit=${limGallery}`,
       );
       const data = json.data;
-
       const sortedData = [...data.data].sort(
         (a, b) =>
           new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
       );
-
       setGalleryData(sortedData);
       setTotData(data.meta.total_data ?? 1);
       setTotPg(data.meta.total_page ?? 1);
@@ -58,21 +57,16 @@ function ManageGallery() {
 
   useEffect(() => {
     fetchGalleryData();
-  }, [currPg]);
+  }, [currPg, limGallery]);
 
-  // handle delete image
   const handleDeleteGallery = async () => {
     if (!selectedGalleryId) return;
-
     setDeleteLoading(true);
     setDeleteError(null);
-
     try {
       await api.delete(`/gallery/${selectedGalleryId}`);
       setShowDeleteModal(false);
       setSelectedGalleryId(null);
-
-      // Refetch gallery
       fetchGalleryData();
     } catch (err) {
       console.error(err);
@@ -82,22 +76,15 @@ function ManageGallery() {
     }
   };
 
-  // prevent scrolling when modal opened
   useEffect(() => {
-    const isModalOpen = showDeleteModal;
-
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
+    const isModalOpen = showDeleteModal || !!previewImage;
+    if (isModalOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [showDeleteModal]);
+  }, [showDeleteModal, previewImage]);
 
-  // check if the data is deleteable
   const isDeleteable = (gallery: ManageGalleryType) => {
     return (
       (!gallery.department_id || gallery.department_id === "") &&
@@ -131,13 +118,36 @@ function ManageGallery() {
           </Typography>
           <small className="mt-4 text-red-600 bg-red-200 px-2">
             ⚠️ WARNING: Ada data yang tidak dapat dihapus karena tertaut dengan
-            data lain. Arahkan kursor/hover pada data untuk melihat statusnya.
-            Ada easter egg juga btw 🤫
+            data lain.
           </small>
         </div>
-        <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90  active:opacity-80 duration-300 transition-all max-lg:text-sm">
-          <Link href={"/admin/gallery/add"}>+ Add Gallery</Link>
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700 font-libertine">
+              Show
+            </label>
+            <select
+              value={limGallery}
+              onChange={(e) => {
+                setLimGallery(Number(e.target.value));
+                setCurrPg(1);
+              }}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+            >
+              {[5, 10, 15, 20].map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+          <Link
+            href="/admin/gallery/add"
+            className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
+          >
+            + Add Gallery
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-7xl mx-auto">
@@ -174,7 +184,6 @@ function ManageGallery() {
                   {new Date(gallery.updated_at).toLocaleString("id-ID")}
                 </Typography>
                 <div className="flex gap-[8px]">
-                  {/* Status badge */}
                   {isDeleteable(gallery) ? (
                     <span className="absolute top-4 right-4 text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-semibold">
                       Deleteable
@@ -190,13 +199,20 @@ function ManageGallery() {
                   >
                     <HiOutlinePencilAlt size={16} />
                   </Link>
-                  {/* Not available, TODO for next update */}
-                  {/* <button className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all">
+                  <button
+                    onClick={() =>
+                      setPreviewImage({
+                        url: gallery.image_url,
+                        caption: gallery.caption,
+                      })
+                    }
+                    className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
+                  >
                     <HiOutlineEye size={16} />
-                  </button> */}
+                  </button>
                   <button
                     onClick={() => {
-                      setSelectedGalleryId(gallery.id);
+                      setSelectedGalleryId(gallery.id as string);
                       setShowDeleteModal(true);
                     }}
                     className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
@@ -211,42 +227,46 @@ function ManageGallery() {
       </div>
       <div className="flex w-full flex-col items-center justify-between gap-4 lg:flex-row mt-8">
         <p className="font-libertine text-sm text-primaryPink">
-          Showing {Math.min(currPg * LIM_GALLERY, totData)} of {totData} in
-          current selection
+          Showing {Math.min((currPg - 1) * limGallery + 1, totData)} to{" "}
+          {Math.min(currPg * limGallery, totData)} of {totData} in current
+          selection
         </p>
-
-        {/* Pagination controls */}
-        <div className="flex items-center gap-3">
-          {/* Prev page */}
-          <button
-            disabled={currPg === 1 || loadData}
-            onClick={() => setCurrPg((p) => p - 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 
-                                hover:bg-gray-100 transition flex items-center gap-4
-                                ${currPg === 1 || loadData ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            {/* icon kiri */}
-            &lt;
-          </button>
-
-          {/* Page numbers */}
-          <RenderPagination
-            currPage={currPg}
-            totPage={totPg}
-            onChange={setCurrPg}
-          />
-
-          {/* Next page */}
-          <button
-            disabled={currPg === totPg || loadData}
-            onClick={() => setCurrPg((p) => p + 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 hover:bg-gray-100 transition flex items-center gap-4 ${currPg === totPg || loadData ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            {/* icon kanan */}
-            &gt;
-          </button>
-        </div>
+        <RenderPagination
+          currPage={currPg}
+          totPage={totPg}
+          onChange={setCurrPg}
+        />
       </div>
+
+      {/* Image preview modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={previewImage.url}
+              alt={previewImage.caption}
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+            />
+            <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
+              {previewImage.caption}
+            </p>
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
@@ -255,11 +275,9 @@ function ManageGallery() {
               Apakah Anda yakin ingin menghapus gambar ini?{" "}
               <b>Tindakan ini tidak dapat dibatalkan.</b>
             </p>
-
             {deleteError && (
               <p className="text-sm text-red-500 mb-3">{deleteError}</p>
             )}
-
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => {

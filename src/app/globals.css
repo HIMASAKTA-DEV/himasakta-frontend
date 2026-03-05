@@ -28,7 +28,8 @@ body {
 
 /* Make sure the browser is scrolling? */
 html {
-  scroll-padding-top: 130px; /* misal navbar 130px lebihi dari h-nav lah */
+  scroll-padding-top: 130px;
+  /* misal navbar 130px lebihi dari h-nav lah */
   scroll-behavior: smooth;
 }
 
@@ -39,6 +40,7 @@ html {
 .dot-anim span:nth-child(2) {
   animation-delay: 0.2s;
 }
+
 .dot-anim span:nth-child(3) {
   animation-delay: 0.4s;
 }
@@ -55,6 +57,7 @@ html {
   0% {
     transform: translateX(100%);
   }
+
   100% {
     transform: translateX(-100%);
   }
@@ -63,3 +66,70 @@ html {
 .max-lg\:animate-marquee {
   animation: marquee 10s linear infinite;
 }
+
+/* Markdown biar bisa list (-,1.2.3.) dll */
+.markdown-content {
+  font-family: var(--font-linux-libertine);
+}
+
+.markdown-content p,
+.markdown-content ul,
+.markdown-content ol,
+.markdown-content li {
+  font-size: 1.125rem;
+  /* text-lg */
+  line-height: 1.75rem;
+}
+
+@media (min-width: 1024px) {
+
+  .markdown-content p,
+  .markdown-content ul,
+  .markdown-content ol,
+  .markdown-content li {
+    font-size: 1.25rem;
+    /* text-xl */
+    line-height: 1.75rem;
+  }
+}
+
+.markdown-content ol {
+  list-style: decimal;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+  list-style-position: inside;
+  margin-bottom: 1rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  font-family: var(--font-linux-libertine);
+  font-weight: bold;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content h1 {
+  font-size: 1.875rem;
+}
+
+/* text-3xl */
+.markdown-content h2 {
+  font-size: 1.5rem;
+}
+
+/* text-2xl */
+.markdown-content h3 {
+  font-size: 1.25rem;
+}
+
+/* text-xl */
