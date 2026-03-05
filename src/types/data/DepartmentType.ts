@@ -11,8 +11,8 @@ export type DepartmentType = {
   id?: UUID | string;
   name?: string;
   description?: string;
-  logo?: Media | Media[] | null;
-  social_media_link?: string[] | string | null;
+  logo?: Media;
+  social_media_link?: string;
   silabus_link?: string;
   bank_soal_link?: string;
   bank_ref_link?: string;

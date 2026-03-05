@@ -12,11 +12,12 @@ import {
 
 import { UUID } from "crypto";
 import Typography from "@/components/Typography";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import { ApiResponse } from "@/types/commons/apiResponse";
+import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 
 type DepartmentLinkType =
@@ -29,10 +30,11 @@ type LinkProps = {
   id: string;
   type: DepartmentLinkType;
   label: string;
-  url: string;
+  url: string; // match with department type
 };
 
 type FormValues = {
+  id: UUID | string;
   name: string;
   description: string;
   logo_id: UUID | string;
@@ -47,40 +49,29 @@ type PhotoData = {
   image_url: string;
 };
 
-export default function AddDepartmentPage() {
+export default function EditDepartmentPage() {
+  const { name } = useParams<{ name: string }>();
   const route = useRouter();
   const descRef = useRef<HTMLTextAreaElement | null>(null);
-
+  const [initVal, setInitVal] = useState<DepartmentType>();
   const [logo, setLogo] = useState<PhotoData | null>(null);
+  const [initLogo, setInitLogo] = useState<PhotoData | null>(null);
+  const [_loadData, setLoadData] = useState(false);
   const [descVal, setDescVal] = useState("");
   const [descMode, setDescMode] = useState<"edit" | "preview">("edit");
-
-  const [openUpload, setOpenUpload] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [_preview, setPreview] = useState(false);
-  const [deletingLogo, setDeletingLogo] = useState(false);
-
   const {
     register,
     formState: { isSubmitting },
     control,
-    reset,
     setValue,
+    reset,
     handleSubmit,
-    watch,
-  } = useForm<FormValues>({
-    defaultValues: {
-      name: "",
-      description: "",
-      logo_id: "",
-      social_media_link: "",
-      silabus_link: "",
-      bank_soal_link: "",
-      bank_ref_link: "",
-    },
-  });
-
-  const watchedValues = watch();
+  } = useForm<FormValues>();
+  const [openUpload, setOpenUpload] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [deletingLogo, setDeletingLogo] = useState(false);
+  const [_logoDeleted, setLogoDeleted] = useState(false);
 
   const handleUploadLogo = async (file: File) => {
     const formData = new FormData();
@@ -88,7 +79,6 @@ export default function AddDepartmentPage() {
 
     try {
       setUploading(true);
-
       const resp = await api.post("/gallery", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -96,9 +86,9 @@ export default function AddDepartmentPage() {
       const uploaded: PhotoData = resp.data.data;
 
       setLogo(uploaded);
-      setValue("logo_id", uploaded.id);
-
+      setValue("logo_id", uploaded.id, { shouldValidate: true });
       setOpenUpload(false);
+
       alert("Berhasil upload logo");
     } catch (err) {
       alert(`Gagal upload logo: ${getApiErrorMessage(err)}`);
@@ -108,44 +98,88 @@ export default function AddDepartmentPage() {
   };
 
   const handleDeleteLogo = async (): Promise<boolean> => {
-    if (!logo?.id) return true;
+    if (!logo?.id || !initVal?.id) return true;
 
-    const confirmDelete = confirm("Yakin hapus gambar?");
+    const confirmDelete = confirm(
+      "Yakin? Logo akan dilepas dan gambar dihapus permanen.",
+    );
     if (!confirmDelete) return false;
 
-    setDeletingLogo(true);
-
     try {
+      setDeletingLogo(true);
+
+      // 1️⃣ UNLINK LOGO DARI DEPARTMENT
+      await api.put(`/department/${initVal.id}`, {
+        ...initVal,
+        logo_id: "",
+      });
+
+      // 2️⃣ DELETE FILE GALLERY
       await api.delete(`/gallery/${logo.id}`);
 
+      // 3️⃣ UPDATE STATE FE
+      setLogoDeleted(true);
       setLogo(null);
-      setValue("logo_id", "");
+      setInitLogo(null);
+      setValue("logo_id", "", { shouldDirty: true });
 
       alert("Logo berhasil dihapus");
+      return true;
     } catch (err) {
       alert(`Gagal menghapus logo: ${getApiErrorMessage(err)}`);
       return false;
     } finally {
       setDeletingLogo(false);
     }
-    return true;
   };
 
+  // FETCH DEPT BY ID
+  useEffect(() => {
+    const fetchDeptById = async () => {
+      setLoadData(true);
+      try {
+        const resp = await api.get<ApiResponse<DepartmentType>>(
+          `/department/${name}`,
+        );
+        const data = resp.data.data;
+        reset({
+          id: data.id,
+          name: data.name,
+          description: data.description,
+          logo_id: data.logo?.id,
+          social_media_link: data.social_media_link ?? "",
+          bank_soal_link: data.bank_soal_link,
+          bank_ref_link: data.bank_ref_link,
+          silabus_link: data.silabus_link,
+        });
+
+        setDescVal(data.description ?? "");
+        setInitVal(data);
+        if (data.logo?.id && data.logo?.image_url) {
+          setInitLogo({ id: data.logo.id, image_url: data.logo.image_url });
+          setLogo({ id: data.logo.id, image_url: data.logo.image_url });
+        }
+      } catch (err) {
+        alert(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
+      } finally {
+        setLoadData(false);
+      }
+    };
+
+    fetchDeptById();
+  }, []);
+
+  // HANDLE MARKDOWN EDIT
   const applyFormat = (before: string, after = before) => {
     if (!descRef.current) return;
-
     const el = descRef.current;
     const start = el.selectionStart;
     const end = el.selectionEnd;
-
     const selected = descVal.slice(start, end);
-
     const newValue =
       descVal.slice(0, start) + before + selected + after + descVal.slice(end);
-
     setDescVal(newValue);
     setValue("description", newValue);
-
     setTimeout(() => {
       el.focus();
       el.setSelectionRange(
@@ -155,18 +189,77 @@ export default function AddDepartmentPage() {
     }, 0);
   };
 
+  // HANDLE ADD LINKS UI
   const [links, setLinks] = useState<LinkProps[]>([]);
 
-  const linkOpts = [
+  // SYNC WITH INITVAl FOR EDIT MODE
+  useEffect(() => {
+    if (!initVal) return;
+
+    const mappedLinks: LinkProps[] = [];
+
+    if (initVal.social_media_link) {
+      mappedLinks.push({
+        id: crypto.randomUUID(),
+        type: "social_media_link",
+        label: "Social Media",
+        url: initVal?.social_media_link,
+      });
+    }
+
+    if (initVal.silabus_link) {
+      mappedLinks.push({
+        id: crypto.randomUUID(),
+        type: "silabus_link",
+        label: "Silabus",
+        url: initVal.silabus_link,
+      });
+    }
+
+    if (initVal.bank_soal_link) {
+      mappedLinks.push({
+        id: crypto.randomUUID(),
+        type: "bank_soal_link",
+        label: "Bank Soal",
+        url: initVal.bank_soal_link,
+      });
+    }
+
+    if (initVal.bank_ref_link) {
+      mappedLinks.push({
+        id: crypto.randomUUID(),
+        type: "bank_ref_link",
+        label: "Bank Referensi",
+        url: initVal.bank_ref_link,
+      });
+    }
+
+    setLinks(mappedLinks);
+  }, [initVal]);
+
+  // HANDLE RESET FORM
+  const handleResetForm = () => {
+    reset({
+      ...initVal,
+    });
+
+    setLogo(initLogo);
+    setOpenUpload(false);
+  };
+
+  const linkOpts: {
+    type: DepartmentLinkType;
+    label: string;
+  }[] = [
     { type: "social_media_link", label: "Social Media" },
     { type: "silabus_link", label: "Silabus" },
     { type: "bank_soal_link", label: "Bank Soal" },
     { type: "bank_ref_link", label: "Bank Referensi" },
-  ] as const;
+  ];
 
   const addLink = () => {
-    const used = links.map((l) => l.type);
-    const available = linkOpts.find((l) => !used.includes(l.type));
+    const usedTypes = links.map((l) => l.type);
+    const available = linkOpts.find((opt) => !usedTypes.includes(opt.type));
 
     if (!available) return;
 
@@ -191,6 +284,7 @@ export default function AddDepartmentPage() {
     setLinks((prev) => prev.filter((l) => l.id !== id));
   };
 
+  // PUT CHANGES
   const onSubmit = async (data: FormValues) => {
     try {
       const payload = {
@@ -203,89 +297,37 @@ export default function AddDepartmentPage() {
         bank_ref_link: links.find((l) => l.type === "bank_ref_link")?.url || "",
       };
 
-      await api.post("/department", payload);
-
-      alert("Departemen berhasil ditambahkan!");
-      localStorage.removeItem("department_form_draft");
+      await api.put(`/department/${payload.id}`, payload);
+      alert("Berhasil menyimpan perubahan!");
       route.push("/admin#manage-department");
     } catch (err) {
-      alert(`Gagal menambahkan departemen: ${getApiErrorMessage(err)}`);
+      alert(`Gagal menyimpan perubahan departemen: ${getApiErrorMessage(err)}`);
     }
   };
-
-  // HANDLE RESET FORM
-  const handleResetForm = () => {
-    reset();
-    setOpenUpload(false);
-    setLinks([]);
-    setDescVal("");
-    localStorage.removeItem("department_form_draft");
-  };
-
-  const [isRestored, setIsRestored] = useState(false);
-
-  useEffect(() => {
-    if (!isRestored) return;
-
-    const draft = {
-      ...watchedValues,
-      description: descVal,
-      logo,
-      links,
-    };
-
-    localStorage.setItem("department_form_draft", JSON.stringify(draft));
-  }, [watchedValues, descVal, logo, links, isRestored]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("department_form_draft");
-
-    if (saved) {
-      const data = JSON.parse(saved);
-
-      // restore form
-      reset(data);
-
-      // restore state
-      setDescVal(data.description ?? "");
-      setLogo(data.logo ?? null);
-      setLinks(data.links ?? []);
-    }
-
-    setIsRestored(true);
-  }, [reset]);
-
-  if (!isRestored) {
-    return (
-      <div className=" flex items-center justify-center p-10 min-h-screen w-full">
-        <SkeletonPleaseWait />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-white p-4 lg:p-10">
       <form className="mx-auto max-w-7xl" onSubmit={handleSubmit(onSubmit)}>
+        {/* Title */}
         <Typography
           variant="h1"
-          className="mb-10 font-averia text-4xl font-bold lg:text-5xl"
+          className="mb-10 font-averia text-4xl font-bold text-black lg:text-5xl"
         >
-          Add Department
+          Edit Department
         </Typography>
 
-        {/* FORM */}
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
+          {/* Left Column: Form */}
           <div className="flex flex-1 flex-col gap-6 lg:max-w-[55%]">
-            {/* NAME */}
+            {/* Name Field */}
             <div>
-              <label className="mb-2 block text-[15px] font-semibold">
+              <label className="mb-2 block text-[15px] font-semibold text-black">
                 Nama Departemen
               </label>
-
               <input
                 {...register("name")}
-                className="w-full resize-none rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
-                placeholder="Enter department name"
+                placeholder="Insert post title..."
+                className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
               />
             </div>
 
@@ -399,8 +441,7 @@ export default function AddDepartmentPage() {
                           setDescVal(e.target.value);
                           field.onChange(e.target.value);
                         }}
-                        className="w-full resize-none bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 focus:outline-none"
-                        placeholder="Tulis markdown di sini..."
+                        className="w-full min-h-[200px] bg-[#f8fafc] p-4"
                       />
                     )}
                   />
@@ -408,29 +449,32 @@ export default function AddDepartmentPage() {
               </div>
             </div>
 
-            {/* LINKS */}
+            {/* DEPT LINKS */}
             <div>
-              <label className="mb-3 block text-[15px] font-semibold">
+              <label className="mb-3 block text-[15px] font-semibold text-black">
                 Link
               </label>
 
               <div className="flex flex-col gap-4">
                 {links.map((link) => (
-                  <div key={link.id}>
-                    <span className="text-sm">{link.label}</span>
+                  <div key={link.id} className="flex flex-col gap-1">
+                    <span className="text-sm font-medium text-gray-700">
+                      {link.label}
+                    </span>
 
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                       <input
-                        value={link.url}
+                        type="text"
+                        value={link.url ?? ""}
                         onChange={(e) => updateLink(link.id, e.target.value)}
+                        placeholder="https://..."
                         className="flex-1 rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-sm font-medium text-gray-600 placeholder:italic placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
-                        placeholder="https://"
                       />
 
                       <button
                         type="button"
                         onClick={() => removeLink(link.id)}
-                        className="px-3 text-red-500"
+                        className="flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition hover:bg-red-50 hover:text-red-500"
                       >
                         ✕
                       </button>
@@ -438,28 +482,34 @@ export default function AddDepartmentPage() {
                   </div>
                 ))}
 
+                {/* ADD BUTTON */}
                 {links.length < linkOpts.length && (
                   <button
                     type="button"
                     onClick={addLink}
-                    className="border border-dashed rounded-xl py-3"
+                    className="flex w-full items-center justify-between rounded-xl border border-dashed border-gray-300 bg-[#f8fafc] px-4 py-3 text-sm font-medium italic text-[#9BA5B7] transition-all hover:border-primaryPink hover:bg-pink-50/30 hover:text-primaryPink"
                   >
                     Add Link
+                    <span className="text-lg">＋</span>
                   </button>
                 )}
               </div>
             </div>
 
-            <button disabled={isSubmitting}>
-              <Link
-                href="/admin#manage-department"
-                className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 max-lg:hidden"
-              >
-                <FaChevronLeft size={12} /> Back
-              </Link>
-            </button>
+            {/* Back Button */}
+            <div className="mt-6">
+              <button disabled={isSubmitting}>
+                <Link
+                  href="/admin#manage-department"
+                  className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 max-lg:hidden"
+                >
+                  <FaChevronLeft size={12} /> Back
+                </Link>
+              </button>
+            </div>
           </div>
 
+          {/* Dept Image */}
           <div className="flex-1 flex flex-col">
             <label className="mb-2 font-semibold">Photo</label>
             <div
@@ -511,10 +561,7 @@ export default function AddDepartmentPage() {
             <div className="mt-12 flex justify-end gap-4">
               <button
                 type="button"
-                onClick={() => {
-                  handleResetForm();
-                  handleDeleteLogo();
-                }}
+                onClick={handleResetForm}
                 disabled={isSubmitting}
                 className="px-8 py-3 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 transition disabled:opacity-50"
               >
@@ -538,7 +585,6 @@ export default function AddDepartmentPage() {
             </button>
           </div>
         </div>
-
         {/* Upload image modal */}
         {openUpload && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -558,12 +604,12 @@ export default function AddDepartmentPage() {
                   if (file) handleUploadLogo(file);
                 }}
                 className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all
-          ${
-            uploading
-              ? "cursor-not-allowed opacity-60 bg-gray-100"
-              : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
-          }
-        `}
+                  ${
+                    uploading
+                      ? "cursor-not-allowed opacity-60 bg-gray-100"
+                      : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
+                  }
+                `}
               >
                 <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
                   <FaCloudUploadAlt />

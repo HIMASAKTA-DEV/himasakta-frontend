@@ -180,11 +180,15 @@ function page() {
   };
 
   // handle delete image
-  const handleDeleteImage = async () => {
-    if (!logo?.id) return;
+  const handleDeleteImage = async (): Promise<boolean> => {
+    if (!logo?.id) return true;
+
+    const confirmDelete = confirm(
+      "Yakin? Thumbnail akan dilepas dan gambar dihapus permanen.",
+    );
+    if (!confirmDelete) return false;
 
     setDeletingLogo(true);
-
     try {
       await api.delete(`/gallery/${logo.id}`);
 
@@ -198,9 +202,12 @@ function page() {
     } catch (err) {
       console.error(err);
       alert("Gagal menghapus gambar");
+      return false;
     } finally {
       setDeletingLogo(false);
     }
+
+    return true;
   };
 
   if (!isRestored) {
@@ -419,12 +426,14 @@ function page() {
                   </p>
                 )}
               </div>
-              <Link
-                href="/admin#manage-kegiatan"
-                className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white max-lg:hidden hover:opacity-80 transition-all duration-300"
-              >
-                <FaChevronLeft size={12} /> Back
-              </Link>
+              <button disabled={isSubmitting}>
+                <Link
+                  href="/admin#manage-kegiatan"
+                  className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 max-lg:hidden"
+                >
+                  <FaChevronLeft size={12} /> Back
+                </Link>
+              </button>
             </div>
 
             {/* RIGHT */}
@@ -438,7 +447,10 @@ function page() {
                 style={{ aspectRatio: "4/3" }}
               >
                 <div
-                  onClick={() => setOpenUpload(true)}
+                  onClick={async () => {
+                    const ok = await handleDeleteImage();
+                    if (ok) setOpenUpload(true);
+                  }}
                   className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full"
                   style={{ aspectRatio: "4/3" }}
                 >
@@ -463,9 +475,9 @@ function page() {
                 <button
                   type="button"
                   className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-100 transition-all duration-300"
-                  onClick={() => {
-                    handleDeleteImage();
-                    setOpenUpload(true);
+                  onClick={async () => {
+                    const ok = await handleDeleteImage();
+                    if (ok) setOpenUpload(true);
                   }}
                 >
                   <HiOutlinePencilAlt size={16} /> Edit Image
@@ -500,12 +512,14 @@ function page() {
                 </button>
               </div>
 
-              <Link
-                href="/admin#manage-kegiatan"
-                className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden hover:opacity-80 transition-all duration-300"
-              >
-                <FaChevronLeft size={12} /> Back
-              </Link>
+              <button disabled={isSubmitting}>
+                <Link
+                  href="/admin#manage-kegiatan"
+                  className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden hover:opacity-80 transition-all duration-300"
+                >
+                  <FaChevronLeft size={12} /> Back
+                </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -568,6 +582,7 @@ function page() {
                   type="button"
                   onClick={() => setOpenUpload(false)}
                   className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
+                  disabled={uploading}
                 >
                   Tutup
                 </button>

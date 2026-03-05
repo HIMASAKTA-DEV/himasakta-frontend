@@ -81,6 +81,14 @@ function ManageEvent() {
         </button>
       </div>
 
+      {_errMainData && !loadingData && (
+        <div className="flex w-full items-center justify-center py-20">
+          <p className="text-red-500">
+            Gagal memuat data departemen. Silakan coba lagi.
+          </p>
+        </div>
+      )}
+
       <div className="flex w-full flex-col gap-4 rounded-3xl overflow-auto border border-gray-200">
         <table className="w-full min-w-[500px] border-collapse overflow-auto">
           <thead className="bg-[#F8E8EA] text-gray-700">
