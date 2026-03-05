@@ -1,5 +1,16 @@
 # Himasakta-Front-End
 
+<div align="center">
+  <img src="https://img.shields.io/github/repo-size/HIMASAKTA-DEV/himasakta-frontend?style=for-the-badge&color=orange">
+  <img src="https://img.shields.io/github/stars/HIMASAKTA-DEV/himasakta-frontend?style=for-the-badge&color=yellow">
+  <img src="https://img.shields.io/github/forks/HIMASAKTA-DEV/himasakta-frontend?style=for-the-badge&color=purple">
+  
+  <img src="https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white&style=for-the-badge">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white&style=for-the-badge">
+  <img src="https://img.shields.io/badge/TailwindCSS-06B6D4?logo=tailwindcss&logoColor=white&style=for-the-badge">
+  <img src="https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white&style=for-the-badge">
+</div>
+
 English version of this documentation: coming soon.
 
 ## Landing page
