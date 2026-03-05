@@ -1,6 +1,7 @@
 "use client";
 
 import { UUID } from "crypto";
+import MediaSelector from "@/components/admin/MediaSelector";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
@@ -16,15 +17,11 @@ import { DepartmentType } from "@/types/data/DepartmentType";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import { RoleType } from "@/types/data/RoleType";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation"; // Added router
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  FaCloudUploadAlt,
-  FaEdit,
-  FaRegEdit,
-  FaRegTrashAlt,
-} from "react-icons/fa";
+import { FaEdit, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import { HiOutlinePencilAlt, HiOutlineUpload } from "react-icons/hi";
 import Select, { StylesConfig } from "react-select";
 
 type FormValues = CreateMemberType;
@@ -96,8 +93,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [openRoleModal, setOpenRoleModal] = useState(false);
   const [photo, setPhoto] = useState<PhotoData | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [openUpload, setOpenUpload] = useState(false);
+  const [openMedia, setOpenMedia] = useState(false);
 
   const fetchRoles = useCallback(async () => {
     try {
@@ -230,33 +226,6 @@ export default function Page() {
     }
   };
 
-  const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("image", file);
-    try {
-      setUploading(true);
-      const resp = await api.post("/gallery", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      const uploadedPhoto: PhotoData = resp.data.data;
-      setPhoto(uploadedPhoto);
-
-      // Mark photo_id as dirty so it's included in PUT request
-      setValue("photo_id", uploadedPhoto.id, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-      setOpenUpload(false);
-    } catch (err) {
-      alert("Gagal upload");
-      console.error(err);
-    } finally {
-      setUploading(false);
-    }
-  };
-
   // handle role edit functionality
   const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
   const [isManagingRoles, setIsManagingRoles] = useState(false);
@@ -374,8 +343,8 @@ export default function Page() {
           <div className="w-full flex items-center justify-center">
             <Field label="Photo Profile" error={errors.photo_id?.message}>
               <div
-                onClick={() => setOpenUpload(true)}
-                className="group relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer overflow-hidden transition-all duration-300 hover:opacity-90"
+                onClick={() => setOpenMedia(true)}
+                className="group relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer overflow-hidden transition-all duration-300 hover:border-primaryPink"
               >
                 {photo ? (
                   <img
@@ -384,10 +353,13 @@ export default function Page() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-gray-400 text-sm">Upload</span>
+                  <div className="flex flex-col items-center justify-center gap-1 text-gray-400">
+                    <HiOutlineUpload size={20} className="text-primaryPink" />
+                    <span className="text-[10px]">Upload</span>
+                  </div>
                 )}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <FaCloudUploadAlt className="text-white text-2xl" />
+                  <HiOutlinePencilAlt className="text-white text-xl" />
                 </div>
               </div>
             </Field>
@@ -547,17 +519,16 @@ export default function Page() {
           </Field>
 
           <div className="flex gap-3 pt-4">
-            <button disabled={isSubmitting}>
-              <Link
-                href="/admin/#manage-anggota"
-                className="flex-1 border py-2 rounded-lg text-center bg-black text-white"
-              >
-                Back
-              </Link>
-            </button>
+            <Link
+              href="/admin/#manage-anggota"
+              className="flex-1 border py-2.5 rounded-xl text-center bg-slate-900 text-white font-semibold transition-all hover:bg-slate-800 active:scale-95"
+            >
+              Back
+            </Link>
             <button
+              type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-primaryPink text-white py-2 rounded-lg active:bg-primaryPink/40 hover:opacity-80 transition-all disabled:bg-gray-300"
+              className="flex-1 bg-primaryPink text-white py-2.5 rounded-xl font-semibold shadow-lg shadow-pink-200 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
             >
               {isSubmitting ? "Menyimpan..." : "Update Data"}
             </button>
@@ -640,75 +611,19 @@ export default function Page() {
         </div>
       )}
 
-      {/* Small change, pretty reuseable but whatever */}
-      {openUpload && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
-            <h2 className="text-lg font-semibold mb-4">Upload foto baru</h2>
-
-            <div
-              onClick={() => {
-                if (uploading) return;
-                document.getElementById("upload-input")?.click();
-              }}
-              onDragOver={(e) => {
-                if (!uploading) e.preventDefault();
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-                if (uploading) return;
-
-                const file = e.dataTransfer.files?.[0];
-                if (file) handleUpload(file);
-              }}
-              className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all
-              ${
-                uploading
-                  ? "cursor-not-allowed opacity-60 bg-gray-100"
-                  : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
-              }
-            `}
-            >
-              <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
-                <FaCloudUploadAlt />
-              </div>
-
-              <p className="text-sm font-medium">
-                {uploading ? "Uploading..." : "Klik atau drag file ke sini"}
-              </p>
-
-              <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
-
-              <input
-                id="upload-input"
-                type="file"
-                accept="image/*"
-                hidden
-                disabled={uploading}
-                onChange={(e) => {
-                  if (uploading) return;
-                  if (e.target.files?.[0]) {
-                    handleUpload(e.target.files[0]);
-                  }
-                }}
-              />
-            </div>
-
-            <div className="flex gap-2 pt-6">
-              <button
-                type="button"
-                disabled={uploading}
-                onClick={() => {
-                  setOpenUpload(false);
-                  resetRoleForm();
-                }}
-                className="flex-1 border py-2 rounded-lg hover:bg-gray-200 transition-all duration-300"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* MEDIA SELECTOR */}
+      {openMedia && (
+        <MediaSelector
+          onSelect={(m) => {
+            setPhoto(m);
+            setValue("photo_id", m.id, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+            setOpenMedia(false);
+          }}
+          onClose={() => setOpenMedia(false)}
+        />
       )}
 
       {/* Delete role modal */}

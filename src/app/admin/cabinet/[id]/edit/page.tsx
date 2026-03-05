@@ -6,6 +6,8 @@
 "use client";
 
 import Typography from "@/components/Typography";
+import MediaSelector from "@/components/admin/MediaSelector";
+import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import api from "@/lib/axios";
 import { CreateCabinetType } from "@/types/admin/CreateCabinet";
 import Link from "next/link";
@@ -14,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
-import { FaChevronLeft, FaCloudUploadAlt } from "react-icons/fa";
+import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
@@ -28,6 +30,7 @@ type PhotoData = {
 
 export default function EditCabinetPage() {
   const [initVal, setInitVal] = useState<FormValues | null>(null);
+  const [isFetching, setIsFetching] = useState(true);
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const descRef = useRef<HTMLTextAreaElement | null>(null);
@@ -50,14 +53,20 @@ export default function EditCabinetPage() {
         const resp = await api.get(`/cabinet-info/${id}`);
         const data = resp.data.data;
 
+        // Ensure dates are in YYYY-MM-DD format for HTML5 date inputs
+        const formatDate = (dateStr: string) => {
+          if (!dateStr) return "";
+          return new Date(dateStr).toISOString().split("T")[0];
+        };
+
         // Isi form dengan data yang didapat
         reset({
           tagline: data.tagline,
           visi: data.visi,
           misi: data.misi,
           description: data.description,
-          period_start: data.period_start,
-          period_end: data.period_end,
+          period_start: formatDate(data.period_start),
+          period_end: formatDate(data.period_end),
           logo_id: data.logo?.id,
           organigram_id: data.organigram?.id,
         });
@@ -65,16 +74,23 @@ export default function EditCabinetPage() {
         // Set state tambahan
         setDescVal(data.description);
         setIsActive(data.is_active);
-        setInitVal(data);
+        setInitVal({
+          ...data,
+          period_start: formatDate(data.period_start),
+          period_end: formatDate(data.period_end),
+        });
         if (data.logo) setLogo(data.logo);
         if (data.organigram) setOrganigram(data.organigram);
       } catch (err) {
         console.error("Failed to fetch cabinet:", err);
         alert("Gagal mengambil data kabinet.");
+      } finally {
+        setIsFetching(false);
       }
     };
 
     if (id) fetchCabinetDetail();
+    else setIsFetching(false);
   }, [id, reset]);
 
   // handle submit
@@ -98,37 +114,7 @@ export default function EditCabinetPage() {
 
   // handle image upload
   const [openUpload, setOpenUpload] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [logo, setLogo] = useState<PhotoData | null>(null);
-
-  const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      setUploading(true);
-
-      const resp = await api.post("/gallery", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      const uploaded: PhotoData = resp.data.data;
-
-      setLogo(uploaded);
-      setValue("logo_id", uploaded.id, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-
-      setOpenUpload(false);
-      alert("Berhasil upload gambar");
-    } catch (err) {
-      console.error(err);
-      alert("Gagal upload gambar");
-    } finally {
-      setUploading(false);
-    }
-  };
 
   // handle delete image
   const [deletingLogo, setDeletingLogo] = useState(false);
@@ -172,36 +158,6 @@ export default function EditCabinetPage() {
   // handle upload organigram
   const [organigram, setOrganigram] = useState<PhotoData | null>(null);
   const [openUploadOrganigram, setOpenUploadOrganigram] = useState(false);
-  const [uploadingOrganigram, setUploadingOrganigram] = useState(false);
-
-  const handleUploadOrganigram = async (file: File) => {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      setUploadingOrganigram(true);
-
-      const resp = await api.post("/gallery", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      const uploaded: PhotoData = resp.data.data;
-
-      setOrganigram(uploaded);
-      setValue("organigram_id", uploaded.id, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-
-      setOpenUploadOrganigram(false);
-      alert("Berhasil upload organigram");
-    } catch (err) {
-      console.error(err);
-      alert("Gagal upload organigram");
-    } finally {
-      setUploadingOrganigram(false);
-    }
-  };
 
   // handle delete organigram
   const [deletingOrganigram, setDeletingOrganigram] = useState(false);
@@ -279,6 +235,19 @@ export default function EditCabinetPage() {
     };
   }, [openUpload, openUploadOrganigram]);
 
+  if (isFetching) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-primaryPink border-t-transparent" />
+          <p className="font-averia text-lg text-gray-600">
+            Loading Cabinet Data...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -316,8 +285,7 @@ export default function EditCabinetPage() {
               </label>
               <textarea
                 {...register("visi", { required: "Visi wajib diisi" })}
-                rows={3}
-                className="w-full resize-none rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800"
+                className="w-full min-h-[100px] rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
               />
             </div>
 
@@ -327,8 +295,7 @@ export default function EditCabinetPage() {
               </label>
               <textarea
                 {...register("misi", { required: "Misi wajib diisi" })}
-                rows={3}
-                className="w-full resize-none rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800"
+                className="w-full min-h-[100px] rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
               />
             </div>
 
@@ -447,20 +414,35 @@ export default function EditCabinetPage() {
                     )}
                   />
                 )}
+                {descMode === "preview" && (
+                  <div className="w-full min-h-[200px] bg-[#f8fafc] p-4">
+                    <MarkdownRenderer>{descVal}</MarkdownRenderer>
+                  </div>
+                )}
               </div>
 
               {/* Period Dates */}
-              <div className="grid grid-cols-2 gap-6">
-                <input
-                  type="date"
-                  {...register("period_start")}
-                  className="..."
-                />
-                <input
-                  type="date"
-                  {...register("period_end")}
-                  className="..."
-                />
+              <div className="grid grid-cols-2 gap-6 py-6">
+                <div className="flex flex-col gap-2">
+                  <label className="text-[15px] font-semibold text-black">
+                    Start period
+                  </label>
+                  <input
+                    type="date"
+                    {...register("period_start")}
+                    className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="text-[15px] font-semibold text-black">
+                    End period
+                  </label>
+                  <input
+                    type="date"
+                    {...register("period_end")}
+                    className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                  />
+                </div>
               </div>
 
               {/* Status Aktif */}
@@ -491,7 +473,7 @@ export default function EditCabinetPage() {
                 </button>
               </div>
             </div>
-            <button disabled={isSubmitting}>
+            <button type="button" disabled={isSubmitting}>
               <Link
                 href="/admin#manage-cabinet"
                 className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white max-lg:hidden"
@@ -507,16 +489,13 @@ export default function EditCabinetPage() {
             </label>
 
             <div
-              className="flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc]"
-              style={{ aspectRatio: "4/3" }}
+              className="flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] max-w-[250px]"
+              style={{ aspectRatio: "1/1" }}
             >
               <div
-                onClick={async () => {
-                  const ok = await handleDeleteImage();
-                  if (ok) setUploading(true);
-                }}
+                onClick={() => setOpenUpload(true)}
                 className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full"
-                style={{ aspectRatio: "4/3" }}
+                style={{ aspectRatio: "1/1" }}
               >
                 {logo ? (
                   <img
@@ -535,14 +514,11 @@ export default function EditCabinetPage() {
               </div>
             </div>
 
-            <div className="mt-4 flex flex-col gap-2">
+            <div className="mt-4 flex flex-col gap-2 max-w-[250px]">
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-100 transition-all duration-300"
-                onClick={async () => {
-                  const ok = await handleDeleteImage();
-                  if (ok) setOpenUpload(true);
-                }}
+                onClick={() => setOpenUpload(true)}
               >
                 <HiOutlinePencilAlt size={16} /> Edit Image
               </button>
@@ -562,8 +538,8 @@ export default function EditCabinetPage() {
 
             <div
               onClick={() => setOpenUploadOrganigram(true)}
-              className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full"
-              style={{ aspectRatio: "4/3" }}
+              className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full max-w-[600px]"
+              style={{ aspectRatio: "3/2" }}
             >
               {organigram ? (
                 <img
@@ -580,14 +556,11 @@ export default function EditCabinetPage() {
               </div>
             </div>
 
-            <div className="mt-4 flex flex-col gap-2">
+            <div className="mt-4 flex flex-col gap-2 max-w-[600px]">
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-100 transition"
-                onClick={() => {
-                  handleDeleteOrganigram();
-                  setOpenUploadOrganigram(true);
-                }}
+                onClick={() => setOpenUploadOrganigram(true)}
               >
                 <HiOutlinePencilAlt size={16} /> Edit Organigram
               </button>
@@ -626,7 +599,7 @@ export default function EditCabinetPage() {
               </button>
             </div>
 
-            <button disabled={isSubmitting}>
+            <button type="button" disabled={isSubmitting}>
               <Link
                 href="/admin#manage-cabinet"
                 className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden"
@@ -637,135 +610,35 @@ export default function EditCabinetPage() {
           </div>
         </div>
       </div>
-      {/* Upload image modal */}
+      {/* Media Selector Modals */}
       {openUpload && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
-            <h2 className="text-lg font-semibold mb-4">Upload Image</h2>
-
-            <div
-              onClick={() => {
-                if (uploading) return;
-                document.getElementById("upload-input")?.click();
-              }}
-              onDragOver={(e) => !uploading && e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                if (uploading) return;
-                const file = e.dataTransfer.files?.[0];
-                if (file) handleUpload(file);
-              }}
-              className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all
-          ${
-            uploading || deletingLogo
-              ? "cursor-not-allowed opacity-60 bg-gray-100"
-              : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
-          }
-        `}
-            >
-              <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
-                <FaCloudUploadAlt />
-              </div>
-
-              <p className="text-sm font-medium">
-                {uploading ? "Uploading..." : "Klik atau drag file ke sini"}
-              </p>
-
-              <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
-
-              <input
-                id="upload-input"
-                type="file"
-                accept="image/*"
-                hidden
-                disabled={uploading}
-                onChange={(e) => {
-                  if (uploading) return;
-                  if (e.target.files?.[0]) {
-                    handleUpload(e.target.files[0]);
-                  }
-                }}
-              />
-            </div>
-
-            <div className="flex gap-2 pt-6">
-              <button
-                type="button"
-                onClick={() => setOpenUpload(false)}
-                className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
-                disabled={uploading}
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
+        <MediaSelector
+          title="Select Headline Image"
+          onClose={() => setOpenUpload(false)}
+          onSelect={(img) => {
+            setLogo(img);
+            setValue("logo_id", img.id, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+            setOpenUpload(false);
+          }}
+        />
       )}
 
       {openUploadOrganigram && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
-            <h2 className="text-lg font-semibold mb-4">Upload Organigram</h2>
-
-            <div
-              onClick={() => {
-                if (uploadingOrganigram) return;
-                document.getElementById("upload-organigram")?.click();
-              }}
-              onDragOver={(e) => !uploadingOrganigram && e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                if (uploadingOrganigram) return;
-                const file = e.dataTransfer.files?.[0];
-                if (file) handleUploadOrganigram(file);
-              }}
-              className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all
-          ${
-            uploadingOrganigram
-              ? "cursor-not-allowed opacity-60 bg-gray-100"
-              : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
-          }
-        `}
-            >
-              <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
-                <FaCloudUploadAlt />
-              </div>
-
-              <p className="text-sm font-medium">
-                {uploadingOrganigram
-                  ? "Uploading..."
-                  : "Klik atau drag file ke sini"}
-              </p>
-
-              <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
-
-              <input
-                id="upload-organigram"
-                type="file"
-                accept="image/*"
-                hidden
-                disabled={uploadingOrganigram}
-                onChange={(e) => {
-                  if (uploadingOrganigram) return;
-                  if (e.target.files?.[0]) {
-                    handleUploadOrganigram(e.target.files[0]);
-                  }
-                }}
-              />
-            </div>
-
-            <div className="flex gap-2 pt-6">
-              <button
-                type="button"
-                onClick={() => setOpenUploadOrganigram(false)}
-                className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
-                disabled={uploadingOrganigram}
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
+        <MediaSelector
+          title="Select Organigram"
+          onClose={() => setOpenUploadOrganigram(false)}
+          onSelect={(img) => {
+            setOrganigram(img);
+            setValue("organigram_id", img.id, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+            setOpenUploadOrganigram(false);
+          }}
+        />
       )}
     </form>
   );

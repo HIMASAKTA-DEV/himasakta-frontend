@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FaChevronLeft, FaCloudUploadAlt } from "react-icons/fa";
+import { FaChevronLeft } from "react-icons/fa";
 import {
   HiOutlinePencilAlt,
   HiOutlineTrash,
@@ -44,9 +44,7 @@ export default function AddGalleryPage() {
   const [progendaDD, setProgendaDD] = useState<ProgendaDD[]>([]);
   const [cabinetDD, setCabinetDD] = useState<CabinetDD[]>([]);
   const [logo, setLogo] = useState<PhotoData | null>(null);
-  const [openUpload, setOpenUpload] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [deletingLogo, setDeletingLogo] = useState(false);
+  const [openMedia, setOpenMedia] = useState(false);
   const [isRestored, setIsRestored] = useState(false);
 
   const LOCAL_KEY = "add_gallery_draft";
@@ -151,49 +149,10 @@ export default function AddGalleryPage() {
     setIsRestored(true);
   }, [reset]);
 
-  /* ================= UPLOAD IMAGE ================= */
-  const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("image", file);
-    try {
-      setUploading(true);
-      const resp = await api.post("/gallery", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      const uploaded: PhotoData = resp.data.data;
-      setLogo(uploaded);
-      setValue("image_url", uploaded.image_url, { shouldValidate: true });
-      setOpenUpload(false);
-      alert("Berhasil upload gambar");
-    } catch (err) {
-      console.error(err);
-      alert(`Gagal upload gambar: ${getApiErrorMessage(err)}`);
-    } finally {
-      setUploading(false);
-    }
-  };
-
   /* ================= DELETE IMAGE ================= */
-  const handleDeleteImage = async (): Promise<boolean> => {
-    if (!logo?.id) return true; // tidak ada gambar → langsung boleh upload
-
-    const confirmDelete = confirm("Yakin ingin menghapus gambar ini?");
-    if (!confirmDelete) return false;
-
-    try {
-      setDeletingLogo(true);
-      await api.delete(`/gallery/${logo.id}`);
-      setLogo(null);
-      setValue("image_url", "");
-      alert("Gambar berhasil dihapus");
-      return true;
-    } catch (err) {
-      console.error(err);
-      alert(`Gagal menghapus gambar: ${getApiErrorMessage(err)}`);
-      return false;
-    } finally {
-      setDeletingLogo(false);
-    }
+  const handleDeleteImage = () => {
+    setLogo(null);
+    setValue("image_url", "");
   };
 
   /* ================= SUBMIT FORM ================= */
@@ -222,7 +181,7 @@ export default function AddGalleryPage() {
     });
 
     setLogo(null);
-    setOpenUpload(false);
+    setOpenMedia(false);
     localStorage.removeItem(LOCAL_KEY);
   };
 
@@ -321,78 +280,71 @@ export default function AddGalleryPage() {
               </select>
             </div>
 
-            <button disabled={isSubmitting}>
+            <div className="mt-8">
               <Link
                 href="/admin#manage-gallery"
-                className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 max-lg:hidden"
+                className="flex w-fit items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-slate-800 hover:shadow-lg active:scale-95"
               >
                 <FaChevronLeft size={12} /> Back
               </Link>
-            </button>
+            </div>
           </div>
 
-          {/* RIGHT IMAGE */}
-          <div className="flex-1 flex flex-col">
-            <label className="mb-2 font-semibold">Photo</label>
+          <div className="flex-1">
+            <label className="block font-semibold mb-3">Photo Gallery</label>
             <div
-              onClick={async () => {
-                const ok = await handleDeleteImage();
-                if (ok) setOpenUpload(true);
-              }}
-              className="relative cursor-pointer overflow-hidden rounded-xl border"
-              style={{ aspectRatio: "4/3" }}
+              onClick={() => setOpenMedia(true)}
+              className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 transition-all hover:border-primaryPink hover:bg-pink-50"
             >
               {logo ? (
                 <img
                   src={logo.image_url}
-                  className="h-full w-full object-cover"
+                  alt="Gallery"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               ) : (
-                <div className="flex h-full items-center justify-center italic text-gray-400">
-                  No image
+                <div className="flex h-full flex-col items-center justify-center gap-3 text-gray-400">
+                  <div className="rounded-full bg-white p-4 shadow-sm transition-transform group-hover:scale-110">
+                    <HiOutlineUpload size={24} className="text-primaryPink" />
+                  </div>
+                  <span className="text-sm font-medium">
+                    Click to select image
+                  </span>
                 </div>
               )}
-              <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition">
-                <HiOutlinePencilAlt className="text-white text-2xl" />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                <HiOutlinePencilAlt className="text-3xl text-white" />
               </div>
             </div>
 
-            <div className="mt-4 flex flex-col gap-2">
+            <div className="mt-6 flex flex-col gap-3">
               <button
                 type="button"
-                onClick={async () => {
-                  const ok = await handleDeleteImage();
-                  if (ok) setOpenUpload(true);
-                }}
-                className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-100 transition-all duration-300"
+                onClick={() => setOpenMedia(true)}
+                className="flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-600 transition-all hover:bg-blue-100 hover:text-blue-700 active:scale-[0.98]"
               >
-                <HiOutlineUpload /> Change Image
+                <HiOutlineUpload size={18} />
+                {logo ? "Change Image" : "Select Image"}
               </button>
 
               {logo && (
                 <button
                   type="button"
                   onClick={handleDeleteImage}
-                  disabled={deletingLogo}
-                  className="flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-500 hover:text-red-600 hover:bg-red-100 transition-all duration-300"
+                  className="flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-500 transition-all hover:bg-red-100 hover:text-red-600 active:scale-[0.98]"
                 >
-                  <HiOutlineTrash /> Delete Image
+                  <HiOutlineTrash size={18} />
+                  Delete Image
                 </button>
-              )}
-              {logo && (
-                <small className="text-red-600 mt-4 bg-red-100 px-2">
-                  ⚠️ WARNING: Kosongkan Departemen, Kabinet, dan Progenda sebelum
-                  edit/hapus gambar!
-                </small>
               )}
             </div>
 
-            <div className="mt-12 flex justify-end gap-4">
+            <div className="mt-12 flex items-center justify-end gap-4">
               <button
                 type="button"
                 onClick={handleResetForm}
                 disabled={isSubmitting}
-                className="px-8 py-3 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 transition disabled:opacity-50"
+                className="px-8 py-3 rounded-xl border border-gray-200 font-semibold text-gray-600 transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-50"
               >
                 Reset
               </button>
@@ -400,69 +352,84 @@ export default function AddGalleryPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-primaryPink px-8 py-3 text-white rounded-lg hover:opacity-80 transition"
+                className="bg-primaryPink px-10 py-3 text-white rounded-xl font-semibold shadow-lg shadow-pink-200 transition-all hover:opacity-90 hover:shadow-pink-300 active:scale-95 disabled:opacity-50"
               >
                 {isSubmitting ? "Adding..." : "Add Gallery"}
               </button>
             </div>
           </div>
-
-          <button disabled={isSubmitting}>
-            <Link
-              href="/admin#manage-gallery"
-              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden hover:opacity-80 transition-all duration-300"
-            >
-              <FaChevronLeft size={12} /> Back
-            </Link>
-          </button>
         </div>
       </div>
 
       {/* UPLOAD MODAL */}
-      {openUpload && (
+      {openMedia && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
-            <h2 className="text-lg font-semibold mb-4">Upload Photo</h2>
-
+            <h2 className="text-lg font-semibold mb-4">Upload Gallery Image</h2>
             <div
-              onClick={() => document.getElementById("upload-input")?.click()}
+              onClick={() =>
+                document.getElementById("gallery-upload-input")?.click()
+              }
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
                 e.preventDefault();
                 const file = e.dataTransfer.files?.[0];
-                if (file) handleUpload(file);
+                if (file) {
+                  const formData = new FormData();
+                  formData.append("image", file);
+                  api
+                    .post("/gallery", formData, {
+                      headers: { "Content-Type": "multipart/form-data" },
+                    })
+                    .then((resp) => {
+                      const uploaded = resp.data.data;
+                      setLogo(uploaded);
+                      setValue("image_url", uploaded.image_url, {
+                        shouldValidate: true,
+                      });
+                      setOpenMedia(false);
+                    })
+                    .catch(() => alert("Gagal upload gambar"));
+                }
               }}
-              className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all ${
-                uploading || deletingLogo
-                  ? "opacity-60 cursor-not-allowed bg-gray-100"
-                  : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
-              }`}
+              className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 cursor-pointer hover:border-primaryPink hover:bg-pink-50 transition-all"
             >
               <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
-                <FaCloudUploadAlt />
+                <HiOutlineUpload size={20} />
               </div>
-              <p>
-                {uploading ? "Uploading..." : "Klik atau drag file ke sini"}
-              </p>
+              <p className="text-sm font-medium">Klik atau drag file ke sini</p>
               <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
               <input
-                id="upload-input"
+                id="gallery-upload-input"
                 type="file"
                 accept="image/*"
                 hidden
-                disabled={uploading}
-                onChange={(e) =>
-                  e.target.files?.[0] && handleUpload(e.target.files[0])
-                }
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const formData = new FormData();
+                  formData.append("image", file);
+                  api
+                    .post("/gallery", formData, {
+                      headers: { "Content-Type": "multipart/form-data" },
+                    })
+                    .then((resp) => {
+                      const uploaded = resp.data.data;
+                      setLogo(uploaded);
+                      setValue("image_url", uploaded.image_url, {
+                        shouldValidate: true,
+                      });
+                      setOpenMedia(false);
+                    })
+                    .catch(() => alert("Gagal upload gambar"));
+                }}
               />
             </div>
-
             <div className="flex gap-2 pt-6">
               <button
                 type="button"
-                onClick={() => setOpenUpload(false)}
-                className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
-                disabled={uploading}
+                onClick={() => setOpenMedia(false)}
+                className="flex-1 border py-2 rounded-lg hover:bg-gray-200 transition-all"
               >
                 Tutup
               </button>

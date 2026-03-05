@@ -1,7 +1,7 @@
 import NextImage from "@/components/NextImage";
 import Link from "next/link";
+import { configuration } from "../../../config";
 import { footerLink } from "./footerLinks";
-import { socmedLinks } from "./socmedLinks";
 
 export default function MobileFooter() {
   return (
@@ -32,7 +32,7 @@ export default function MobileFooter() {
 
       {/* Social */}
       <div className="flex gap-4 mb-6">
-        {socmedLinks.map(({ name, url, icon: Icon }) => (
+        {configuration.SocmedLinks.map(({ name, url, icon: Icon }) => (
           <Link
             key={name}
             href={url}

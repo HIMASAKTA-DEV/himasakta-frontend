@@ -50,7 +50,7 @@ function ManageAnggota() {
   const [currMemberPg, setCurrMemberPg] = useState(1);
   const [totalMemberPage, setTotalMemberPage] = useState(0);
   const [totalDataMembers, setTotalDataMembers] = useState(0);
-  const limitMembers = 10;
+  const [limitMembers, setLimitMembers] = useState(10);
   const [members, setMembers] = useState<MemberType[]>([]);
   const [showDd, setShowDd] = useState(false);
   const fetchAnggotaByDept = async () => {
@@ -75,7 +75,7 @@ function ManageAnggota() {
 
   useEffect(() => {
     fetchAnggotaByDept();
-  }, [currMemberPg, selectedDept]);
+  }, [currMemberPg, selectedDept, limitMembers]);
 
   // handle delete anggota
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -199,9 +199,31 @@ function ManageAnggota() {
               </div>
             )}
           </div>
-          <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90  active:opacity-80 duration-300 transition-all max-lg:text-sm">
-            <Link href={"/admin/anggota/add"}>+ Add Member</Link>
-          </button>
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700 font-libertine">
+              Show
+            </label>
+            <select
+              value={limitMembers}
+              onChange={(e) => {
+                setLimitMembers(Number(e.target.value));
+                setCurrMemberPg(1);
+              }}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+            >
+              {[5, 10, 15, 20].map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+          <Link
+            href="/admin/anggota/add"
+            className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
+          >
+            + Add Member
+          </Link>
         </div>
       </div>
       <div className="lg:mt-6 mt-2 w-full flex flex-col gap-4">
@@ -267,43 +289,17 @@ function ManageAnggota() {
       </div>
       <div className="flex w-full items-center lg:justify-between flex-col lg:flex-row gap-4">
         <p className="font-libertine text-sm text-primaryPink">
-          Showing {Math.min(currPg * limitMembers, totalDataMembers)} of{" "}
+          Showing{" "}
+          {Math.min((currMemberPg - 1) * limitMembers + 1, totalDataMembers)} to{" "}
+          {Math.min(currMemberPg * limitMembers, totalDataMembers)} of{" "}
           {totalDataMembers} in current selection
         </p>
 
-        {/* Pagination controls */}
-        <div className="flex items-center gap-3">
-          {/* Prev page */}
-          <button
-            disabled={currMemberPg === 1 || loadingMain}
-            onClick={() => setCurrMemberPg((p) => p - 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 
-            hover:bg-gray-100 transition flex items-center gap-4
-            ${currMemberPg === 1 || loadingMain ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            {/* icon kiri */}
-            &lt;
-          </button>
-
-          {/* Page numbers */}
-          <RenderPagination
-            currPage={currMemberPg}
-            totPage={totalMemberPage}
-            onChange={setCurrMemberPg}
-          />
-
-          {/* Next page */}
-          <button
-            disabled={currMemberPg === totalMemberPage || loadingMain}
-            onClick={() => setCurrMemberPg((p) => p + 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 
-            hover:bg-gray-100 transition flex items-center gap-4
-            ${currMemberPg === totalMemberPage || loadingMain ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            {/* icon kanan */}
-            &gt;
-          </button>
-        </div>
+        <RenderPagination
+          currPage={currMemberPg}
+          totPage={totalMemberPage}
+          onChange={setCurrMemberPg}
+        />
       </div>
 
       {/* Show delete modal */}

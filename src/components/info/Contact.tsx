@@ -1,5 +1,5 @@
-import { socmedLinks } from "@/layouts/_footer/socmedLinks";
 import Link from "next/link";
+import { configuration } from "../../../config";
 import HeaderSection from "../commons/HeaderSection";
 
 function Contact() {
@@ -14,7 +14,7 @@ function Contact() {
         to contact us.
       </p>
       <div className="flex gap-4">
-        {socmedLinks.map(({ name, url, icon: Icon }) => (
+        {configuration.SocmedLinks.map(({ name, url, icon: Icon }) => (
           <Link
             key={name}
             href={url}
