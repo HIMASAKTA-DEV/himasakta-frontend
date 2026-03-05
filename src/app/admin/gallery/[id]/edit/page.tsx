@@ -389,12 +389,14 @@ export default function EditGalleryPage() {
               </div>
             </Field>
 
-            <Link
-              href="/admin#manage-gallery"
-              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 max-lg:hidden"
-            >
-              <FaChevronLeft size={12} /> Back
-            </Link>
+            <button disabled={isSubmitting}>
+              <Link
+                href="/admin#manage-gallery"
+                className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 max-lg:hidden"
+              >
+                <FaChevronLeft size={12} /> Back
+              </Link>
+            </button>
           </div>
 
           {/* RIGHT IMAGE */}
@@ -468,12 +470,14 @@ export default function EditGalleryPage() {
               </button>
             </div>
           </div>
-          <Link
-            href="/admin#manage-gallery"
-            className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300 lg:hidden"
-          >
-            <FaChevronLeft size={12} /> Back
-          </Link>
+          <button disabled={isSubmitting}>
+            <Link
+              href="/admin#manage-gallery"
+              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden hover:opacity-80 transition-all duration-300"
+            >
+              <FaChevronLeft size={12} /> Back
+            </Link>
+          </button>
         </div>
       </div>
 
@@ -521,6 +525,7 @@ export default function EditGalleryPage() {
                 type="button"
                 onClick={() => setOpenUpload(false)}
                 className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
+                disabled={uploading}
               >
                 Tutup
               </button>

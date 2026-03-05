@@ -116,18 +116,14 @@ function ManageCabinet() {
           <Link href={"/admin/cabinet/add"}>+ Add Cabinet</Link>
         </button>
       </div>
-
-      {/* Table */}
-      {loadData && (
-        <div
-          className={`w-full overflow-hidden rounded-2xl p-6 flex items-center justify-center`}
-        >
-          <SkeletonPleaseWait />
+      {_errData && !loadData && (
+        <div className="flex w-full items-center justify-center py-20">
+          <p className="text-red-500">
+            Gagal memuat data departemen. Silakan coba lagi.
+          </p>
         </div>
       )}
-      <div
-        className={`${loadData ? "hidden" : "flex"} w-full overflow-x-auto rounded-2xl border border-gray-200`}
-      >
+      <div className="flex w-full overflow-x-auto rounded-2xl border border-gray-200 flex-col">
         <table className="w-full min-w-[500px] border-collapse">
           <thead>
             <tr className="bg-[#F8E8EA]">
@@ -146,117 +142,127 @@ function ManageCabinet() {
             </tr>
           </thead>
           <tbody>
-            {activeCabinets.map((cabinet) => (
-              <tr
-                key={cabinet.id}
-                className="border-t border-gray-100 transition-colors hover:bg-gray-50/60"
-              >
-                <td
-                  className={`px-6 py-4 font-medium ${cabinet.is_active ? "text-green-500" : "text-red-600"} lg:text-gray-800`}
-                  title="active"
+            {!loadData &&
+              activeCabinets.map((cabinet) => (
+                <tr
+                  key={cabinet.id}
+                  className="border-t border-gray-100 transition-colors hover:bg-gray-50/60"
                 >
-                  {cabinet.tagline}
-                </td>
-                <td className="px-6 py-4 flex justify-center items-center max-lg:hidden">
-                  <span
-                    className={`inline-flex items-center justify-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
-                      cabinet.is_active === true
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-600"
-                    }`}
+                  <td
+                    className={`px-6 py-4 font-medium ${
+                      cabinet.is_active ? "text-green-500" : "text-red-600"
+                    } lg:text-gray-800`}
+                    title="active"
                   >
-                    {cabinet.is_active === true ? "Aktif" : "Purnatugas"}
+                    {cabinet.tagline}
+                  </td>
+
+                  <td className="px-6 py-4 flex justify-center items-center max-lg:hidden">
                     <span
-                      className={`inline-block h-1.5 w-1.5 rounded-full ${
-                        cabinet.is_active === true
-                          ? "bg-green-500"
-                          : "bg-red-500"
+                      className={`inline-flex items-center justify-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
+                        cabinet.is_active
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-600"
                       }`}
-                    />
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-gray-600 text-center max-lg:hidden">
-                  {new Date(cabinet.period_start).getFullYear()} -{" "}
-                  {new Date(cabinet.period_end).getFullYear()}
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center justify-center gap-2">
-                    <Link
-                      href={`/admin/cabinet/${cabinet.id}/edit`}
-                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
                     >
-                      <HiOutlinePencilAlt size={16} />
-                    </Link>
-                  </div>
-                  {/* For development only, remind everyone to delete this in production */}
-                  {/* <button
-                    onClick={() => {
-                      setSelectedCabinetId(cabinet.id);
-                      setShowDeleteModal(true);
-                    }}
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-red-50 hover:text-red-600"
-                  >
-                    <HiOutlineTrash size={16} />
-                  </button> */}
-                </td>
-              </tr>
-            ))}
-            {cabinets.map((cabinet) => (
-              <tr
-                key={cabinet.id}
-                className="border-t border-gray-100 transition-colors hover:bg-gray-50/60"
-              >
-                <td
-                  className={`px-6 py-4 font-medium ${cabinet.is_active ? "text-green-500" : "text-red-600"} lg:text-gray-800`}
-                  title="inactive"
+                      {cabinet.is_active ? "Aktif" : "Purnatugas"}
+                      <span
+                        className={`inline-block h-1.5 w-1.5 rounded-full ${
+                          cabinet.is_active ? "bg-green-500" : "bg-red-500"
+                        }`}
+                      />
+                    </span>
+                  </td>
+
+                  <td className="px-6 py-4 text-gray-600 text-center max-lg:hidden">
+                    {new Date(cabinet.period_start).getFullYear()} -{" "}
+                    {new Date(cabinet.period_end).getFullYear()}
+                  </td>
+
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-center gap-2">
+                      <Link
+                        href={`/admin/cabinet/${cabinet.id}/edit`}
+                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
+                      >
+                        <HiOutlinePencilAlt size={16} />
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+            {!loadData &&
+              cabinets.map((cabinet) => (
+                <tr
+                  key={cabinet.id}
+                  className="border-t border-gray-100 transition-colors hover:bg-gray-50/60"
                 >
-                  {cabinet.tagline}
-                </td>
-                <td className="px-6 py-4 flex justify-center items-center max-lg:hidden">
-                  <span
-                    className={`inline-flex items-center justify-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
-                      cabinet.is_active === true
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-600"
-                    }`}
+                  <td
+                    className={`px-6 py-4 font-medium ${
+                      cabinet.is_active ? "text-green-500" : "text-red-600"
+                    } lg:text-gray-800`}
+                    title="inactive"
                   >
-                    {cabinet.is_active === true ? "Aktif" : "Purnatugas"}
+                    {cabinet.tagline}
+                  </td>
+
+                  <td className="px-6 py-4 flex justify-center items-center max-lg:hidden">
                     <span
-                      className={`inline-block h-1.5 w-1.5 rounded-full ${
-                        cabinet.is_active === true
-                          ? "bg-green-500"
-                          : "bg-red-500"
+                      className={`inline-flex items-center justify-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
+                        cabinet.is_active
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-600"
                       }`}
-                    />
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-gray-600 text-center max-lg:hidden">
-                  {new Date(cabinet.period_start).getFullYear()} -{" "}
-                  {new Date(cabinet.period_end).getFullYear()}
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center justify-center gap-2">
-                    <Link
-                      href={`/admin/cabinet/${cabinet.id}/edit`}
-                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
                     >
-                      <HiOutlinePencilAlt size={16} />
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setSelectedCabinetId(cabinet.id);
-                        setShowDeleteModal(true);
-                      }}
-                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-red-50 hover:text-red-600"
-                    >
-                      <HiOutlineTrash size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      {cabinet.is_active ? "Aktif" : "Purnatugas"}
+                      <span
+                        className={`inline-block h-1.5 w-1.5 rounded-full ${
+                          cabinet.is_active ? "bg-green-500" : "bg-red-500"
+                        }`}
+                      />
+                    </span>
+                  </td>
+
+                  <td className="px-6 py-4 text-gray-600 text-center max-lg:hidden">
+                    {new Date(cabinet.period_start).getFullYear()} -{" "}
+                    {new Date(cabinet.period_end).getFullYear()}
+                  </td>
+
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-center gap-2">
+                      <Link
+                        href={`/admin/cabinet/${cabinet.id}/edit`}
+                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
+                      >
+                        <HiOutlinePencilAlt size={16} />
+                      </Link>
+
+                      <button
+                        onClick={() => {
+                          setSelectedCabinetId(cabinet.id);
+                          setShowDeleteModal(true);
+                        }}
+                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-red-50 hover:text-red-600"
+                      >
+                        <HiOutlineTrash size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
+        {loadData && (
+          <div className="w-full py-6 flex items-center justify-center">
+            <SkeletonPleaseWait />
+          </div>
+        )}
+        {cabinets.length === 0 && !loadData && (
+          <div className="w-full py-6 flex items-center justify-center text-gray-700">
+            Daftar Kegiatan Kosong
+          </div>
+        )}
       </div>
 
       {/* Footer: Showing X of Y + Pagination + Publish */}
@@ -299,13 +305,6 @@ function ManageCabinet() {
             &gt;
           </button>
         </div>
-      </div>
-
-      {/* Publish Button */}
-      <div className="flex justify-end">
-        <button className="rounded-[10px] bg-primaryPink px-8 py-3 text-[15px] font-medium text-white shadow-sm transition-all hover:bg-opacity-90">
-          Publish Changes
-        </button>
       </div>
 
       {/* Show delete modal */}

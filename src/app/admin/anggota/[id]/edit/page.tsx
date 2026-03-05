@@ -547,12 +547,14 @@ export default function Page() {
           </Field>
 
           <div className="flex gap-3 pt-4">
-            <Link
-              href="/admin/#manage-anggota"
-              className="flex-1 border py-2 rounded-lg text-center bg-black text-white"
-            >
-              Back
-            </Link>
+            <button disabled={isSubmitting}>
+              <Link
+                href="/admin/#manage-anggota"
+                className="flex-1 border py-2 rounded-lg text-center bg-black text-white"
+              >
+                Back
+              </Link>
+            </button>
             <button
               disabled={isSubmitting}
               className="flex-1 bg-primaryPink text-white py-2 rounded-lg active:bg-primaryPink/40 hover:opacity-80 transition-all disabled:bg-gray-300"

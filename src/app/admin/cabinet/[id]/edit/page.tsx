@@ -133,39 +133,37 @@ export default function EditCabinetPage() {
   // handle delete image
   const [deletingLogo, setDeletingLogo] = useState(false);
 
-  const handleDeleteImage = async () => {
-    if (!logo?.id) return;
+  const handleDeleteImage = async (): Promise<boolean> => {
+    if (!logo?.id) return false;
 
     const confirmDelete = confirm(
       "Yakin? Link akan dilepas dan gambar dihapus permanen.",
     );
-    if (!confirmDelete) return;
+    if (!confirmDelete) return false;
 
     setDeletingLogo(true);
 
     try {
-      // unlink by changing the logo_id to empty string
       const currentValues = control._formValues;
+
       const unlinkPayload = {
         ...currentValues,
         logo_id: "",
         is_active: isActive,
       };
 
-      // update by PUT first
       await api.put(`/cabinet-info/${id}`, unlinkPayload);
-
-      // then delete from gallery
       await api.delete(`/gallery/${logo.id}`);
 
-      // update the ui
       setLogo(null);
       setValue("logo_id", "");
 
       alert("Gambar berhasil dihapus dan diupdate!");
+      return true;
     } catch (err) {
       console.error("Delete Flow Error:", err);
       alert("Gagal menghapus gambar :(");
+      return false;
     } finally {
       setDeletingLogo(false);
     }
@@ -208,8 +206,8 @@ export default function EditCabinetPage() {
   // handle delete organigram
   const [deletingOrganigram, setDeletingOrganigram] = useState(false);
 
-  const handleDeleteOrganigram = async () => {
-    if (!organigram?.id) return;
+  const handleDeleteOrganigram = async (): Promise<boolean> => {
+    if (!organigram?.id) return true;
 
     setDeletingOrganigram(true);
 
@@ -235,9 +233,11 @@ export default function EditCabinetPage() {
     } catch (err) {
       console.error(err);
       alert("Gagal menghapus organigram");
+      return false;
     } finally {
       setDeletingOrganigram(false);
     }
+    return true;
   };
 
   // handle markdown desc edit
@@ -491,12 +491,14 @@ export default function EditCabinetPage() {
                 </button>
               </div>
             </div>
-            <Link
-              href="/admin#manage-cabinet"
-              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white max-lg:hidden"
-            >
-              <FaChevronLeft size={12} /> Back
-            </Link>
+            <button disabled={isSubmitting}>
+              <Link
+                href="/admin#manage-cabinet"
+                className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white max-lg:hidden"
+              >
+                <FaChevronLeft size={12} /> Back
+              </Link>
+            </button>
           </div>
           {/* RIGHT SIDE: Uploads & Actions */}
           <div className="flex flex-1 flex-col">
@@ -509,7 +511,10 @@ export default function EditCabinetPage() {
               style={{ aspectRatio: "4/3" }}
             >
               <div
-                onClick={() => setOpenUpload(true)}
+                onClick={async () => {
+                  const ok = await handleDeleteImage();
+                  if (ok) setUploading(true);
+                }}
                 className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full"
                 style={{ aspectRatio: "4/3" }}
               >
@@ -534,9 +539,9 @@ export default function EditCabinetPage() {
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-100 transition-all duration-300"
-                onClick={() => {
-                  handleDeleteImage();
-                  setOpenUpload(true);
+                onClick={async () => {
+                  const ok = await handleDeleteImage();
+                  if (ok) setOpenUpload(true);
                 }}
               >
                 <HiOutlinePencilAlt size={16} /> Edit Image
@@ -590,7 +595,9 @@ export default function EditCabinetPage() {
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-100 transition"
-                onClick={handleDeleteOrganigram}
+                onClick={async () => {
+                  handleDeleteOrganigram();
+                }}
                 disabled={deletingOrganigram}
               >
                 <HiOutlineTrash size={16} /> Delete Organigram
@@ -619,12 +626,14 @@ export default function EditCabinetPage() {
               </button>
             </div>
 
-            <Link
-              href="/admin#manage-cabinet"
-              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden"
-            >
-              <FaChevronLeft size={12} /> Back
-            </Link>
+            <button disabled={isSubmitting}>
+              <Link
+                href="/admin#manage-cabinet"
+                className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden"
+              >
+                <FaChevronLeft size={12} /> Back
+              </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -684,6 +693,7 @@ export default function EditCabinetPage() {
                 type="button"
                 onClick={() => setOpenUpload(false)}
                 className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
+                disabled={uploading}
               >
                 Tutup
               </button>
@@ -749,6 +759,7 @@ export default function EditCabinetPage() {
                 type="button"
                 onClick={() => setOpenUploadOrganigram(false)}
                 className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
+                disabled={uploadingOrganigram}
               >
                 Tutup
               </button>

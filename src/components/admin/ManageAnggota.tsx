@@ -208,25 +208,19 @@ function ManageAnggota() {
         <h1 className="lg:text-lg mb-4 font-lora">
           Menampilkan Anggota Departemen {selectedDeptName}
         </h1>
+        <div className=" flex flex-col gap-4 w-full rounded-3xl overflow-auto border border-gray-200">
+          <table className="w-full min-w-[500px] border-collapse overflow-auto">
+            <thead className="bg-[#F8E8EA] text-gray-700">
+              <tr>
+                <th className="px-4 py-3 text-left">Nama</th>
+                <th className="px-4 py-3 text-left hidden lg:table-cell">
+                  Role
+                </th>
+                <th className="px-4 py-3 text-center">Actions</th>
+              </tr>
+            </thead>
 
-        {loadingMain && (
-          <div className="w-full flex items-center justify-center">
-            <SkeletonPleaseWait />
-          </div>
-        )}
-        {!loadingMain && !errMain && members.length > 0 && (
-          <div className=" flex flex-col gap-4 w-full rounded-3xl overflow-auto border border-gray-200">
-            <table className="w-full min-w-[500px] border-collapse overflow-auto">
-              <thead className="bg-[#F8E8EA] text-gray-700">
-                <tr>
-                  <th className="px-4 py-3 text-left">Nama</th>
-                  <th className="px-4 py-3 text-left hidden lg:table-cell">
-                    Role
-                  </th>
-                  <th className="px-4 py-3 text-left">Actions</th>
-                </tr>
-              </thead>
-
+            {!loadingMain && !errMain && members.length > 0 && (
               <tbody>
                 {members.map((m) => (
                   <tr key={m.id} className="border-t hover:bg-gray-50">
@@ -257,9 +251,19 @@ function ManageAnggota() {
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
-        )}
+            )}
+          </table>
+          {loadingMain && (
+            <div className="w-full py-6 flex items-center justify-center">
+              <SkeletonPleaseWait />
+            </div>
+          )}
+          {members.length === 0 && !loadingMain && (
+            <div className="w-full py-6 flex items-center justify-center text-gray-700">
+              Daftar Kegiatan Kosong
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex w-full items-center lg:justify-between flex-col lg:flex-row gap-4">
         <p className="font-libertine text-sm text-primaryPink">
