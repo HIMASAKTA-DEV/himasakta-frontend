@@ -331,6 +331,7 @@ export default function EditDepartmentPage() {
         </Typography>
 
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
+          {/* LEFT */}
           <div className="flex flex-1 flex-col gap-6 lg:max-w-[55%]">
             <div>
               <label className="mb-2 block text-[15px] font-semibold text-black">
@@ -493,16 +494,19 @@ export default function EditDepartmentPage() {
               </div>
             </div>
 
-            <div className="mt-8 flex gap-4 max-lg:hidden">
+            <button
+              className="mt-8 flex gap-4 max-lg:hidden"
+              disabled={isSubmitting}
+            >
               <Link
                 href="/admin#manage-department"
                 className="flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300"
               >
                 <FaChevronLeft size={12} /> Back
               </Link>
-            </div>
+            </button>
           </div>
-
+          {/* RIGHT */}
           <div className="flex-1 flex flex-col">
             <label className="mb-2 font-semibold text-black">Logo</label>
             <div className="relative overflow-hidden rounded-xl border bg-gray-50 aspect-square">
@@ -561,12 +565,17 @@ export default function EditDepartmentPage() {
                 {isSubmitting ? "Saving..." : "Save Changes"}
               </button>
             </div>
-            <Link
-              href="/admin#manage-department"
-              className="mt-6 flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-sm font-medium text-white lg:hidden hover:opacity-80 transition-all duration-300"
+            <button
+              className="mt-8 flex gap-4 lg:hidden"
+              disabled={isSubmitting}
             >
-              <FaChevronLeft size={12} /> Back
-            </Link>
+              <Link
+                href="/admin#manage-department"
+                className="flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300"
+              >
+                <FaChevronLeft size={12} /> Back
+              </Link>
+            </button>
           </div>
         </div>
 

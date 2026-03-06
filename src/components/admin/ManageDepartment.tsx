@@ -108,9 +108,9 @@ function ManageDepartment() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col gap-8 p-4 lg:p-10">
+    <div className="flex min-h-screen w-full flex-col items-center gap-8 p-4 lg:p-10">
       {/* Header */}
-      <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between justify-center items-center">
         <HeaderSection
           title="Manage Department"
           titleStyle="font-averia text-black"

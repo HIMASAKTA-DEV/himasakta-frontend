@@ -9,7 +9,7 @@ interface BaseEntity {
   id: UUID | string;
 }
 
-interface Timelines extends BaseEntity {
+export interface Timelines extends BaseEntity {
   progenda_id: UUID | string;
   date: string;
   info: string;
