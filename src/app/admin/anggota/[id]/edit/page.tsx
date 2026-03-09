@@ -325,9 +325,11 @@ export default function Page() {
   const { jwtToken, ready } = useAdminAuth();
   if (!ready || loading)
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading Member Data"
+        styling="bg-white text-black"
+      />
     );
   if (!jwtToken) return <Unauthorized_404 />;
 

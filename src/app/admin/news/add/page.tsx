@@ -210,9 +210,11 @@ export default function AddNewsPage() {
 
   if (!isRestored) {
     return (
-      <div className=" flex items-center justify-center p-10 min-h-screen w-full">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading Event Data"
+        styling="bg-white text-black"
+      />
     );
   }
 

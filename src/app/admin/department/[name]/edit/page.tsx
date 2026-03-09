@@ -316,9 +316,11 @@ export default function EditDepartmentPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-10 min-h-screen w-full">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading Department Data"
+        styling="bg-white text-black"
+      />
     );
   }
 

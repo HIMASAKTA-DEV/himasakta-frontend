@@ -211,7 +211,7 @@ export default function EditGalleryPage() {
     return (
       <LoadingFullScreen
         isSubmitting={true}
-        label="Submitting News Data"
+        label="Submitting Gallery Data"
         styling="bg-white text-black"
       />
     );

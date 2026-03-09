@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import VerifToken from "@/components/admin/VerifToken";
 import HeaderSection from "@/components/commons/HeaderSection";
@@ -109,9 +110,18 @@ function page() {
   if (!ready) return <SkeletonPleaseWait />;
   if (!jwtToken) return <Unauthorized_404 />;
 
+  if (loading) {
+    return (
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading NRP Whitelist Data"
+        styling="bg-white text-black"
+      />
+    );
+  }
+
   return (
     <main className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primaryPink/20 via-white to-primaryGreen/20">
-      <VerifToken />
       <div className="w-full max-w-xl bg-white/70 backdrop-blur-xl p-8 rounded-2xl shadow border">
         <HeaderSection title="Edit NRP Whitelist" />
 

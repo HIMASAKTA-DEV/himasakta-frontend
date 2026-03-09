@@ -131,9 +131,11 @@ function page() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading Event Data"
+        styling="bg-white text-black"
+      />
     );
   }
 

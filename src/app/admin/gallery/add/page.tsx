@@ -189,9 +189,11 @@ export default function AddGalleryPage() {
 
   if (!isRestored) {
     return (
-      <div className="flex items-center justify-center p-10 min-h-screen w-full">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading Gallery Data"
+        styling="bg-white text-black"
+      />
     );
   }
 

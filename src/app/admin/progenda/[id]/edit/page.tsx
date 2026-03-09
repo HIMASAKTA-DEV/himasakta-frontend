@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import VerifToken from "@/components/admin/VerifToken";
@@ -526,9 +527,11 @@ function page() {
 
   if (loadData) {
     return (
-      <div className="flex items-center justify-center p-10 min-h-screen w-full">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading Progenda Data"
+        styling="bg-white text-black"
+      />
     );
   }
 
