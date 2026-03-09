@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import VerifToken from "@/components/admin/VerifToken";
 
 type DepartmentLinkType =
   | "social_media_link"
@@ -323,6 +324,7 @@ export default function EditDepartmentPage() {
 
   return (
     <div className="min-h-screen bg-white p-4 lg:p-10">
+      <VerifToken />
       <form className="mx-auto max-w-7xl" onSubmit={handleSubmit(onSubmit)}>
         <Typography
           variant="h1"

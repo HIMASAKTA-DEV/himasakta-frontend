@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import VerifToken from "@/components/admin/VerifToken";
 
 type DepartmentLinkType =
   | "social_media_link"
@@ -240,13 +241,13 @@ export default function AddDepartmentPage() {
   return (
     <div className="min-h-screen bg-white p-4 lg:p-10">
       <form className="mx-auto max-w-7xl" onSubmit={handleSubmit(onSubmit)}>
+        <VerifToken />
         <Typography
           variant="h1"
           className="mb-10 font-averia text-4xl font-bold lg:text-5xl"
         >
           Add Department
         </Typography>
-
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
           <div className="flex flex-1 flex-col gap-6 lg:max-w-[55%]">
             {/* NAME */}
@@ -487,7 +488,6 @@ export default function AddDepartmentPage() {
             </Link>
           </div>
         </div>
-
         {openMedia && (
           <MediaSelector
             onClose={() => setOpenMedia(false)}

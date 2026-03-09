@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import VerifToken from "@/components/admin/VerifToken";
 
 type PhotoData = {
   id: string;
@@ -199,6 +200,7 @@ export default function AddGalleryPage() {
       onSubmit={handleSubmit(onSubmit)}
       className="p-10 bg-white min-h-screen"
     >
+      <VerifToken />
       <div className="max-w-7xl mx-auto">
         <Typography
           variant="h1"
@@ -361,7 +363,6 @@ export default function AddGalleryPage() {
           </div>
         </div>
       </div>
-
       {/* UPLOAD MODAL */}
       {openMedia && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">

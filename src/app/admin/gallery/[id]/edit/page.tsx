@@ -19,6 +19,7 @@ import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
 import { ApiResponse } from "@/types/commons/apiResponse";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import VerifToken from "@/components/admin/VerifToken";
 
 type PhotoData = {
   id: string;
@@ -208,9 +209,11 @@ export default function EditGalleryPage() {
 
   if (!isRestored) {
     return (
-      <div className="flex items-center justify-center p-10 min-h-screen w-full">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Submitting News Data"
+        styling="bg-white text-black"
+      />
     );
   }
 
@@ -219,6 +222,7 @@ export default function EditGalleryPage() {
       onSubmit={handleSubmit(onSubmit)}
       className="p-10 bg-white min-h-screen"
     >
+      <VerifToken />
       <div className="max-w-7xl mx-auto">
         <Typography
           variant="h1"
@@ -428,7 +432,6 @@ export default function EditGalleryPage() {
           </div>
         </div>
       </div>
-
       {/* UPLOAD MODAL */}
       {openMedia && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">

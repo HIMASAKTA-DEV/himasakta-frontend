@@ -8,6 +8,7 @@
 import Typography from "@/components/Typography";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
+import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import api from "@/lib/axios";
 import { CreateCabinetType } from "@/types/admin/CreateCabinet";
@@ -254,6 +255,7 @@ export default function EditCabinetPage() {
       onSubmit={handleSubmit(onSubmit)}
       className="min-h-screen bg-white p-10"
     >
+      <VerifToken />
       <div className="mx-auto max-w-7xl">
         <Typography
           variant="h3"
@@ -626,7 +628,6 @@ export default function EditCabinetPage() {
           }}
         />
       )}
-
       {openUploadOrganigram && (
         <MediaSelector
           title="Select Organigram"
@@ -641,7 +642,6 @@ export default function EditCabinetPage() {
           }}
         />
       )}
-
       <LoadingFullScreen
         isSubmitting={isSubmitting}
         label="Submitting Cabinet Data"

@@ -16,6 +16,7 @@ import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 import MediaSelector from "@/components/admin/MediaSelector";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import VerifToken from "@/components/admin/VerifToken";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
   is_active: string;
@@ -239,6 +240,7 @@ export default function AddCabinetPage() {
       onSubmit={handleSubmit(onSubmit)}
       className="min-h-screen bg-white p-10"
     >
+      <VerifToken />
       <div className="mx-auto max-w-7xl">
         <Typography
           variant="h3"
@@ -679,7 +681,6 @@ export default function AddCabinetPage() {
           }}
         />
       )}
-
       {openUploadOrganigram && (
         <MediaSelector
           title="Select Organigram"
@@ -694,7 +695,6 @@ export default function AddCabinetPage() {
           }}
         />
       )}
-
       <LoadingFullScreen
         isSubmitting={isSubmitting}
         label="Submitting Cabinet Data"

@@ -2,6 +2,7 @@
 
 import MediaSelector from "@/components/admin/MediaSelector";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
+import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import Typography from "@/components/Typography";
@@ -415,13 +416,13 @@ function page() {
   return (
     <div className="min-h-screen bg-white p-4 lg:p-10">
       <form className="mx-auto max-w-7xl" onSubmit={handleSubmit(onSubmit)}>
+        <VerifToken />
         <Typography
           variant="h1"
           className="mb-10 font-averia text-4xl font-bold text-black lg:text-5xl"
         >
           Add Progenda
         </Typography>
-
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
           {/* LEFT */}
           <div className="flex flex-1 flex-col gap-6 lg:max-w-[55%]">

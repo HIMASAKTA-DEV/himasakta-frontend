@@ -9,7 +9,7 @@ function LoadingFullScreen({
 }: {
   isSubmitting: boolean;
   label: string;
-  styling?: "bg-black/50";
+  styling?: string | "bg-black/50 text-white";
 }) {
   // prevent scrolling when modal opened
   useEffect(() => {
@@ -32,7 +32,7 @@ function LoadingFullScreen({
     >
       <div className="flex flex-col items-center gap-4">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-primaryPink border-t-transparent" />
-        <p className="font-averia text-lg text-white">{label}</p>
+        <p className="font-averia text-lg">{label}</p>
       </div>
     </div>
   );

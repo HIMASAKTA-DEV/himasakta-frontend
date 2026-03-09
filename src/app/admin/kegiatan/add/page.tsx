@@ -20,6 +20,7 @@ import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWai
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import VerifToken from "@/components/admin/VerifToken";
 
 type FormValues = {
   title: string;
@@ -161,6 +162,7 @@ function page() {
         onSubmit={handleSubmit(onSubmit)}
         className="min-h-screen bg-white p-10"
       >
+        <VerifToken />
         <div className="mx-auto max-w-7xl">
           <Typography
             variant="h3"
