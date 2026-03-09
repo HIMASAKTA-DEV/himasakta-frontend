@@ -17,6 +17,7 @@ import { ApiResponse } from "@/types/commons/apiResponse";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 
 type PhotoData = {
   id: string;
@@ -437,6 +438,10 @@ export default function AddGalleryPage() {
           </div>
         </div>
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Gallery Data"
+      />
     </form>
   );
 }

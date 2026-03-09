@@ -16,6 +16,7 @@ import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 
 type FormValues = {
   title: string;
@@ -630,6 +631,10 @@ export default function AddNewsPage() {
           </div>
         </div>
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting News Data"
+      />
     </form>
   );
 }

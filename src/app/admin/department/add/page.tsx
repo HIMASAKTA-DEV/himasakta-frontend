@@ -19,6 +19,7 @@ import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 
 type DepartmentLinkType =
   | "social_media_link"
@@ -497,6 +498,10 @@ export default function AddDepartmentPage() {
             }}
           />
         )}
+        <LoadingFullScreen
+          isSubmitting={isSubmitting}
+          label="Submitting Department Data"
+        />
       </form>
     </div>
   );

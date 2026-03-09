@@ -15,6 +15,7 @@ import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 import MediaSelector from "@/components/admin/MediaSelector";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
   is_active: string;
@@ -693,6 +694,11 @@ export default function AddCabinetPage() {
           }}
         />
       )}
+
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Cabinet Data"
+      />
     </form>
   );
 }

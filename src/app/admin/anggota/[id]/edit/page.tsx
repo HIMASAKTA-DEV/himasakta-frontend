@@ -23,6 +23,7 @@ import { Controller, useForm } from "react-hook-form";
 import { FaEdit, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineUpload } from "react-icons/hi";
 import Select, { StylesConfig } from "react-select";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 
 type FormValues = CreateMemberType;
 type RoleForm = CreateRoleType;
@@ -672,6 +673,10 @@ export default function Page() {
           </div>
         </div>
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Member Data"
+      />
     </main>
   );
 }

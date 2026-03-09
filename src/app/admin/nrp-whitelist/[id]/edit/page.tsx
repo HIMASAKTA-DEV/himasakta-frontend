@@ -90,6 +90,21 @@ function page() {
     }
   };
 
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const isModalOpen = isSubmitting;
+
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isSubmitting]);
+
   if (!ready) return <SkeletonPleaseWait />;
   if (!jwtToken) return <Unauthorized_404 />;
 
@@ -143,6 +158,16 @@ function page() {
               </button>
             </div>
           </form>
+        )}
+        {isSubmitting && (
+          <div className="flex w-full min-h-screen items-center justify-center bg-black/50 backdrop-blur-sm fixed inset-0 cursor-not-allowed">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-12 w-12 animate-spin rounded-full border-4 border-primaryPink border-t-transparent" />
+              <p className="font-averia text-lg text-white">
+                Submitting NRP Whitelist Data...
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </main>

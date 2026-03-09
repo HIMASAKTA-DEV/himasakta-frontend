@@ -273,7 +273,7 @@ function ManageProgenda() {
                     </div>
                   )}
                   <div className="p-8">
-                    <h2 className="text-2xl font-bold font-averia mb-2">
+                    <h2 className="text-2xl font-bold font-averia mb-4">
                       {viewProgenda.name}
                     </h2>
                     <p className="text-sm text-gray-400 mb-6">
@@ -281,7 +281,7 @@ function ManageProgenda() {
                         "id-ID",
                       )}
                     </p>
-                    <div className="prose prose-sm max-w-none">
+                    <div className="prose prose-sm max-w-none mb-4">
                       <HeaderSection title={viewProgenda.name} />
                       <MarkdownRenderer>
                         {viewProgenda.description}
@@ -290,6 +290,32 @@ function ManageProgenda() {
                     <div className="prose prose-sm max-w-none">
                       <HeaderSection title={"Tujuan"} />
                       <MarkdownRenderer>{viewProgenda.goal}</MarkdownRenderer>
+                    </div>
+                    {/* Gallery Section di dalam Modal Preview */}
+                    <div className="mt-8">
+                      <h3 className="text-xl font-bold font-averia mb-4 border-b pb-2">
+                        Gallery
+                      </h3>
+                      {viewProgenda.feeds && viewProgenda.feeds.length > 0 ? (
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                          {viewProgenda.feeds.map((feed) => (
+                            <div
+                              key={feed.id}
+                              className="aspect-square rounded-xl overflow-hidden border border-gray-100 shadow-sm"
+                            >
+                              <img
+                                src={feed.image_url}
+                                alt="Gallery feed"
+                                className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-gray-500 italic text-sm">
+                          Tidak ada foto dalam galeri.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </>

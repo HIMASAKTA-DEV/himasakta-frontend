@@ -6,6 +6,7 @@
 "use client";
 
 import Typography from "@/components/Typography";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import api from "@/lib/axios";
@@ -222,7 +223,7 @@ export default function EditCabinetPage() {
 
   // prevent scrolling when modal opened
   useEffect(() => {
-    const isModalOpen = openUpload || openUploadOrganigram;
+    const isModalOpen = openUpload || openUploadOrganigram || isSubmitting;
 
     if (isModalOpen) {
       document.body.style.overflow = "hidden";
@@ -233,7 +234,7 @@ export default function EditCabinetPage() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [openUpload, openUploadOrganigram]);
+  }, [openUpload, openUploadOrganigram, isSubmitting]);
 
   if (isFetching) {
     return (
@@ -640,6 +641,11 @@ export default function EditCabinetPage() {
           }}
         />
       )}
+
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Cabinet Data"
+      />
     </form>
   );
 }

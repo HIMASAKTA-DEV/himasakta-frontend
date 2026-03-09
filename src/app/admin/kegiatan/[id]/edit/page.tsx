@@ -20,6 +20,7 @@ import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWai
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { MonthlyEvent } from "@/types/data/GetToKnow";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 
 type FormValues = {
   title: string;
@@ -416,6 +417,10 @@ function page() {
           onClose={() => setOpenMedia(false)}
         />
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Event Data"
+      />
     </main>
   );
 }

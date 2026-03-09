@@ -21,6 +21,7 @@ import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 
 type DepartmentLinkType =
   | "social_media_link"
@@ -589,6 +590,10 @@ export default function EditDepartmentPage() {
             }}
           />
         )}
+        <LoadingFullScreen
+          isSubmitting={isSubmitting}
+          label="Submitting Department Data"
+        />
       </form>
     </div>
   );

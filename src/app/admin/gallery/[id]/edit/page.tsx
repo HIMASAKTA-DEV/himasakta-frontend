@@ -18,6 +18,7 @@ import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
 import { ApiResponse } from "@/types/commons/apiResponse";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 
 type PhotoData = {
   id: string;
@@ -504,6 +505,10 @@ export default function EditGalleryPage() {
           </div>
         </div>
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Gallery Data"
+      />
     </form>
   );
 }

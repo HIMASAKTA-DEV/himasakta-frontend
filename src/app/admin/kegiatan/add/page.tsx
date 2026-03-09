@@ -19,6 +19,7 @@ import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 
 type FormValues = {
   title: string;
@@ -459,6 +460,10 @@ function page() {
           onClose={() => setOpenMedia(false)}
         />
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Event Data"
+      />
     </main>
   );
 }

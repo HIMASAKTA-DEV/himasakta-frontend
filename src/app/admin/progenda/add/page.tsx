@@ -1,10 +1,12 @@
 "use client";
 
 import MediaSelector from "@/components/admin/MediaSelector";
+import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import Typography from "@/components/Typography";
 import api from "@/lib/axios";
+import { useAdminAuth } from "@/services/admin/useAdminAuth";
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ApiResponse } from "@/types/api";
@@ -382,6 +384,25 @@ function page() {
     );
     setTimelines(tmps);
   };
+
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const isModalOpen = isSubmitting;
+
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isSubmitting]);
+
+  const { jwtToken, ready } = useAdminAuth();
+  if (!ready) return <SkeletonPleaseWait />;
+  if (!jwtToken) return <Unauthorized_404 />;
 
   if (loadData) {
     return (
@@ -1025,6 +1046,16 @@ function page() {
                 >
                   Close
                 </button>
+              </div>
+            </div>
+          )}
+          {isSubmitting && (
+            <div className="flex w-full min-h-screen items-center justify-center bg-black/50 backdrop-blur-sm fixed inset-0 cursor-not-allowed">
+              <div className="flex flex-col items-center gap-4">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-primaryPink border-t-transparent" />
+                <p className="font-averia text-lg text-white">
+                  Submitting Progenda Data...
+                </p>
               </div>
             </div>
           )}
