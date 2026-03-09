@@ -5,8 +5,10 @@ import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import Typography from "@/components/Typography";
 import api from "@/lib/axios";
+import { GetAllDepts } from "@/services/departments/GetAllDepts";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ApiResponse } from "@/types/api";
+import { DepartmentType } from "@/types/data/DepartmentType";
 import { ProgendaType, Timelines } from "@/types/data/ProgendaType";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -20,8 +22,43 @@ import {
   HiOutlineTrash,
   HiOutlineUpload,
 } from "react-icons/hi";
+import Select, { StylesConfig } from "react-select";
 
-type FormValues = ProgendaType;
+type _FormTimeline = Omit<Timelines, "progenda_id">;
+type FormTimeline = Omit<_FormTimeline, "id">;
+
+type FormValues = Omit<ProgendaType, "timelines"> & {
+  timelines: FormTimeline[];
+};
+
+type ProgendaLinkType =
+  | "website_link"
+  | "instagram_link"
+  | "twitter_link"
+  | "linkedin_link"
+  | "youtube_link";
+
+type LinkProps = {
+  id: string;
+  type: ProgendaLinkType;
+  label: string;
+  url: string;
+};
+
+const linkOpts = [
+  { type: "website_link", label: "Website" },
+  { type: "instagram_link", label: "Instagram" },
+  { type: "twitter_link", label: "Twitter/X" },
+  { type: "linkedin_link", label: "LinkedIn" },
+  { type: "youtube_link", label: "YouTube" },
+] as const;
+
+type PhotoData = {
+  id: string;
+  image_url: string;
+};
+
+type OptionType = { label?: string; value?: string };
 
 function Field({
   label,
@@ -45,31 +82,26 @@ function Field({
   );
 }
 
-type ProgendaLinkType =
-  | "website_link"
-  | "instagram_link"
-  | "twitter_link"
-  | "linkedin_link"
-  | "youtube_link";
-
-type LinkProps = {
-  id: string;
-  type: ProgendaLinkType;
-  label: string;
-  url: string;
-};
-
-const linkOpts = [
-  { type: "website_link", label: "Website" },
-  { type: "instagram_link", label: "Instagram" },
-  { type: "twitter_link", label: "Twitter" },
-  { type: "linkedin_link", label: "LinkedIn" },
-  { type: "youtube_link", label: "YouTube" },
-] as const;
-
-type PhotoData = {
-  id: string;
-  image_url: string;
+const selectStyles: StylesConfig<OptionType, false> = {
+  control: (base, state) => ({
+    ...base,
+    borderRadius: "0.5rem",
+    minHeight: "42px",
+    outline: "none",
+    borderColor: state.isFocused ? "#D58A94" : "#e5e7eb",
+    boxShadow: state.isFocused ? "0 0 0 1px #D58A94" : "none",
+    "&:hover": { borderColor: "#D58A94" },
+  }),
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: state.isSelected
+      ? "#D58A94"
+      : state.isFocused
+        ? "#fce7f3"
+        : "white",
+    color: state.isSelected ? "white" : "#111827",
+    cursor: "pointer",
+  }),
 };
 
 /**
@@ -86,29 +118,67 @@ function page() {
     formState: { errors, isSubmitting, dirtyFields },
     reset,
     setValue,
-  } = useForm<FormValues>();
-  const [timelines, setTimelines] = useState<Timelines[]>([]);
+  } = useForm<FormValues>({
+    defaultValues: {
+      department_id: "",
+      name: "",
+      goal: "",
+      description: "",
+      twitter_link: "",
+      website_link: "",
+      instagram_link: "",
+      linkedin_link: "",
+      youtube_link: "",
+    },
+  });
   const [descVal, setDescVal] = useState("");
   const [descMode, setDescMode] = useState<"edit" | "preview">("edit");
   const [goalVal, setGoalVal] = useState("");
   const [goalMode, setGoalMode] = useState<"edit" | "preview">("edit");
   const descRef = useRef<HTMLTextAreaElement | null>(null);
   const goalRef = useRef<HTMLTextAreaElement | null>(null);
-  const [openTimelineModal, setOpenTimelineModal] = useState(false);
-  const [editingTimeline, setEditingTimeline] = useState<Timelines | null>(
-    null,
-  );
   const [openMedia, setOpenMedia] = useState(false);
   const [thumbnail, setThumbnail] = useState<PhotoData | null>(null);
   const [initThumbnail, setInitThumbnail] = useState<PhotoData | null>(null);
   const [deletingThumbnail, setDeletingThumbnail] = useState(false);
-
-  const [timelineForm, setTimelineForm] = useState({
+  const [links, setLinks] = useState<LinkProps[]>([]);
+  const [depts, setDepts] = useState<DepartmentType[]>([]);
+  const [feeds, setFeeds] = useState<PhotoData[]>([]);
+  const [openFeeds, setOpenFeeds] = useState(false);
+  const [editingFeeds, setEditingFeeds] = useState(false);
+  const [previewImage, setPreviewImage] = useState<PhotoData | null>(null);
+  const [openTimelineModal, setOpenTimelineModal] = useState(false);
+  const [editingTimeline, setEditingTimeline] = useState<FormTimeline | null>(
+    null,
+  );
+  const [timelineForm, setTimelineForm] = useState<FormTimeline>({
+    created_at: "",
+    updated_at: "",
+    DeletedAt: null,
     date: "",
     info: "",
     link: "",
   });
-  const [links, setLinks] = useState<LinkProps[]>([]);
+  const [timelines, setTimelines] = useState<FormTimeline[]>([]);
+
+  const addFeeds = (photo: PhotoData) => {
+    if (feeds.length >= 20) {
+      alert("Maksimal 20 gambar!");
+      return;
+    }
+    const isDuplicate = feeds.some((f) => f.id === photo.id);
+
+    if (isDuplicate) {
+      alert("Gambar ini sudah ada dalam progenda ini!");
+      return;
+    }
+
+    setFeeds((p) => [...p, photo]);
+  };
+
+  const removeFeed = (id: string) => {
+    setFeeds((p) => p.filter((photo) => photo.id !== id));
+  };
 
   const addLink = () => {
     const used = links.map((l) => l.type);
@@ -140,8 +210,15 @@ function page() {
     try {
       const payload = {
         ...data,
+        description: descVal,
+        goal: goalVal,
         thumbnail_id: thumbnail?.id ?? null,
-
+        timelines: timelines.map((t) => ({
+          ...t,
+          created_at: new Date(t.created_at).toISOString(),
+          updated_at: new Date(t.updated_at).toISOString(),
+          date: new Date(t.date).toISOString(),
+        })),
         website_link: links.find((l) => l.type === "website_link")?.url ?? "",
         instagram_link:
           links.find((l) => l.type === "instagram_link")?.url ?? "",
@@ -150,9 +227,31 @@ function page() {
         youtube_link: links.find((l) => l.type === "youtube_link")?.url ?? "",
       };
 
-      await api.post("/progenda", payload);
+      console.log(payload); // DEBUG
 
-      alert("Progenda berhasil dibuat!");
+      const resJson = await api.post<ApiResponse<ProgendaType>>(
+        "/progenda",
+        payload,
+      );
+
+      const newId = resJson.data.data.id;
+
+      alert("Step 1: Progenda berhasil dibuat!");
+
+      if (feeds) {
+        try {
+          await Promise.all(
+            feeds.map((f) => {
+              const payloadWithId = { ...f, progenda_id: newId };
+              console.log("Data yang akan dikirim:", payloadWithId); // DEBUG
+              return api.put(`gallery/${f.id}`, payloadWithId);
+            }),
+          );
+          alert("Step 2: Berhasil menambahkan feeds!");
+        } catch (err) {
+          alert(`Gagal menambahkan semua feeds: ${getApiErrorMessage(err)}`);
+        }
+      }
     } catch (err) {
       alert(`Gagal membuat progenda: ${getApiErrorMessage(err)}`);
     }
@@ -206,8 +305,8 @@ function page() {
 
     setDeletingThumbnail(true);
     try {
-      // 1. Unlink logo from department
-      await api.put(`/department/${initVal.id}`, {
+      // 1. Unlink logo from progenda
+      await api.put(`/progenda/${initVal.id}`, {
         ...initVal,
         logo_id: "",
       });
@@ -230,6 +329,60 @@ function page() {
     }
   };
 
+  useEffect(() => {
+    const fetchDepts = async () => {
+      const d = await GetAllDepts(1, 50);
+      setDepts(d.data);
+    };
+    fetchDepts();
+  }, []);
+
+  // HANDLE SAVING TIMELINE
+  const saveTimeline = () => {
+    // VALIDATION
+    if (!timelineForm.date) {
+      alert("Tanggal wajib diisi");
+      return;
+    }
+
+    if (!timelineForm.info.trim()) {
+      alert("Info timeline wajib diisi");
+      return;
+    }
+
+    if (!editingTimeline) {
+      const tmps: FormTimeline[] = [...timelines];
+      tmps.push({ ...timelineForm });
+      setTimelines(tmps);
+    } else {
+      const updatedTl: FormTimeline[] = timelines.map((t) => {
+        return t.created_at === editingTimeline.created_at
+          ? { ...timelineForm }
+          : t;
+      });
+
+      setTimelines(updatedTl);
+      setEditingTimeline(null);
+    }
+
+    setTimelineForm({
+      created_at: "",
+      updated_at: "",
+      DeletedAt: null,
+      date: "",
+      info: "",
+      link: "",
+    });
+  };
+
+  // HANDLE DEL TIMELINE
+  const deleteTimeline = (crt: string) => {
+    const tmps: FormTimeline[] = [...timelines].filter(
+      (d) => d.created_at !== crt,
+    );
+    setTimelines(tmps);
+  };
+
   if (loadData) {
     return (
       <div className="flex items-center justify-center p-10 min-h-screen w-full">
@@ -245,7 +398,7 @@ function page() {
           variant="h1"
           className="mb-10 font-averia text-4xl font-bold text-black lg:text-5xl"
         >
-          Edit Progenda
+          Add Progenda
         </Typography>
 
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
@@ -523,15 +676,54 @@ function page() {
                 )}
               </div>
             </div>
+            <Field label="Departemen">
+              <Controller
+                control={control}
+                name="department_id"
+                render={({ field }) => (
+                  <Select
+                    placeholder="Pilih Departemen"
+                    styles={selectStyles}
+                    options={depts.map((d) => ({ value: d.id, label: d.name }))}
+                    value={
+                      depts
+                        .map((d) => ({ value: d.id, label: d.name }))
+                        .find((o) => o.value === field.value) || null
+                    }
+                    onChange={(opt) => field.onChange(opt?.value ?? "")}
+                    isClearable
+                  />
+                )}
+              />
+            </Field>
             <div className="mt-10">
               <div className="flex items-center justify-between">
                 <label className="mb-2 block text-[15px] font-semibold text-black">
                   Timeline Progenda
                 </label>
 
-                <div className="mt-2 text-sm italic text-gray-500">
-                  Timeline dapat ditambahkan setelah progenda dibuat.
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpenTimelineModal(true)}
+                  className="bg-primaryPink px-3 py-2 text-white rounded-lg hover:opacity-80 transition"
+                >
+                  Manage Timeline
+                </button>
+              </div>
+              <div className="mt-4 space-y-2 max-h-[240px] overflow-y-auto shadow-inner rounded-lg">
+                {timelines.map((t, idx) => (
+                  <div
+                    key={idx}
+                    className="border rounded-lg p-3 flex justify-between"
+                  >
+                    <div>
+                      <p className="font-medium">{t.info}</p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(t.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
             <button
@@ -539,7 +731,7 @@ function page() {
               disabled={isSubmitting}
             >
               <Link
-                href="/admin#manage-department"
+                href="/admin#manage-progenda"
                 className="flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300"
               >
                 <FaChevronLeft size={12} /> Back
@@ -586,19 +778,95 @@ function page() {
                   <HiOutlineTrash /> Delete Logo
                 </button>
               )}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-primaryPink px-8 py-3 text-white rounded-lg hover:opacity-80 transition"
-              >
-                {isSubmitting ? "Saving..." : "Save Changes"}
-              </button>
+              <div className="flex flex-col gap-4 mt-4 w-full">
+                {/* MANAGE FEEDS */}
+                <div className="w-full flex flex-row justify-between items-center">
+                  <label className="mb-2 font-semibold text-black">
+                    Feeds/Galeri
+                  </label>
+                  <div className="text-sm italic text-gray-500">
+                    Upload maksimum 20 gambar.
+                  </div>
+                </div>
+                <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">
+                  {feeds.length < 20 && (
+                    <button
+                      type="button"
+                      onClick={() => setEditingFeeds(true)}
+                      className="flex items-center justify-between rounded-xl border border-dashed border-gray-300 bg-[#f8fafc] px-4 py-3 text-sm font-medium italic text-[#9BA5B7] hover:border-primaryPink hover:text-primaryPink w-full"
+                    >
+                      Add Image
+                      <span className="text-lg">＋</span>
+                    </button>
+                  )}
+                  {feeds.map((img) => (
+                    <div
+                      key={img.id}
+                      className="flex items-center gap-3 border rounded-lg p-2 w-full justify-between bg-gradient-to-r from-slate-100 to-white"
+                    >
+                      <div className="flex items-center w-full gap-2">
+                        <img
+                          src={img.image_url}
+                          className="w-16 h-16 object-cover rounded-md hover:cursor-pointer"
+                          onClick={() => setPreviewImage(img)}
+                        />
+                        <p className="font-bold font-averia line-clamp-1">
+                          {img.id}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setPreviewImage(img)}
+                          className="text-blue-600 text-sm hover:opacity-60"
+                        >
+                          View
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeFeed(img.id)}
+                          className="text-red-500 text-sm hover:opacity-60"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-8 flex items-center justify-end gap-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      reset();
+                      setDescVal("");
+                      setThumbnail(null);
+                      setFeeds([]);
+                      setGoalVal("");
+                      setLinks([]);
+                      setTimelines([]);
+                    }}
+                    disabled={isSubmitting}
+                    className="px-8 py-3 rounded-xl border border-gray-200 font-semibold text-gray-600 transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-50"
+                  >
+                    Reset
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-primaryPink px-10 py-3 text-white rounded-xl font-semibold shadow-lg shadow-pink-200 transition-all hover:opacity-90 hover:shadow-pink-300 active:scale-95 disabled:opacity-50"
+                  >
+                    {isSubmitting ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
+              </div>
               <button
                 className="mt-8 flex gap-4 lg:hidden"
                 disabled={isSubmitting}
               >
                 <Link
-                  href="/admin#manage-department"
+                  href="/admin#manage-progenda"
                   className="flex w-fit items-center gap-2 rounded-lg bg-[#12182B] px-8 py-3 text-white hover:opacity-80 transition-all duration-300"
                 >
                   <FaChevronLeft size={12} /> Back
@@ -615,6 +883,150 @@ function page() {
                 setOpenMedia(false);
               }}
             />
+          )}
+          {editingFeeds && (
+            <MediaSelector
+              title="Upload Feeds (Beberapa gambar)"
+              onClose={() => setEditingFeeds(false)}
+              onSelect={(p) => {
+                if (feeds.length >= 20) {
+                  alert("Maksimal 20 gambar!");
+                  return;
+                }
+                addFeeds(p);
+              }}
+              onFilter="progenda_id"
+            />
+          )}
+          {/* Image preview modal */}
+          {previewImage && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+              onClick={() => setPreviewImage(null)}
+            >
+              <div
+                className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <img
+                  src={previewImage.image_url}
+                  alt={previewImage.id}
+                  className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+                />
+                <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
+                  {previewImage.id}
+                </p>
+                <button
+                  onClick={() => setPreviewImage(null)}
+                  className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
+          {/* MANAGE TIMELINE MODAL */}
+          {openTimelineModal && (
+            <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+              <div className="bg-white w-[90vw] rounded-xl p-6 space-y-4">
+                <h2 className="text-xl font-bold">Manage Timeline</h2>
+
+                {/* LIST */}
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {timelines.map((t, idx) => (
+                    <div
+                      key={idx}
+                      className="border rounded-lg p-3 flex justify-between items-center"
+                    >
+                      <div>
+                        <p className="font-medium">{t.info}</p>
+                        <p className="text-sm text-gray-500">
+                          {new Date(t.date).toLocaleDateString()}
+                        </p>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            setEditingTimeline(t);
+                            setTimelineForm({
+                              created_at: new Date().toISOString(),
+                              updated_at: new Date().toISOString(),
+                              date: t.date ? t.date.split("T")[0] : "", // Ambil bagian tanggal saja
+                              info: t.info,
+                              link: t.link,
+                              DeletedAt: null,
+                            });
+                          }}
+                          className="text-blue-500 hover:opacity-60 transition"
+                          type="button"
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          onClick={() => deleteTimeline(t.created_at)}
+                          className="text-red-500 hover:opacity-60 transition"
+                          type="button"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* FORM */}
+                <div className="space-y-3 border-t pt-4">
+                  <input
+                    type="date"
+                    value={timelineForm.date}
+                    onChange={(e) =>
+                      setTimelineForm({ ...timelineForm, date: e.target.value })
+                    }
+                    className="w-full border rounded-lg p-2 text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                  />
+
+                  <input
+                    placeholder="Info"
+                    value={timelineForm.info}
+                    onChange={(e) =>
+                      setTimelineForm({ ...timelineForm, info: e.target.value })
+                    }
+                    className="w-full border rounded-lg p-2 text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                  />
+
+                  <input
+                    placeholder="Link"
+                    value={timelineForm.link}
+                    onChange={(e) =>
+                      setTimelineForm({
+                        ...timelineForm,
+                        link: e.target.value,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString(),
+                      })
+                    }
+                    className="w-full border rounded-lg p-2 text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                  />
+
+                  <button
+                    onClick={saveTimeline}
+                    className="bg-primaryPink px-3 py-2 text-white rounded-lg hover:opacity-80 transition w-full"
+                    type="button"
+                  >
+                    {editingTimeline ? "Update Timeline" : "Add Timeline"}
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setOpenTimelineModal(false)}
+                  className="w-full border py-2 rounded-lg hover:bg-gray-200 transition"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </form>

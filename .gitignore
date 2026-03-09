@@ -40,3 +40,6 @@ next-env.d.ts
 
 # all cpp
 *.cpp
+
+# all hidden
+*_hidden/

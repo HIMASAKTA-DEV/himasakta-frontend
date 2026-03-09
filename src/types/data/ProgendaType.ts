@@ -30,4 +30,5 @@ export interface ProgendaType extends BaseEntity {
   department_id?: UUID | string | null;
   department?: DepartmentType | null;
   timelines?: Timelines[] | null;
+  feeds?: Media[];
 }

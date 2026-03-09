@@ -12,12 +12,19 @@ interface MediaSelectorProps {
   onClose: () => void;
   onSelect: (image: { id: string; image_url: string }) => void;
   title?: string;
+  onFilter?:
+    | "progenda_id"
+    | "cabinet_id"
+    | "department_id"
+    | "orphan"
+    | "no-filter";
 }
 
 export default function MediaSelector({
   onClose,
   onSelect,
   title = "Select Media",
+  onFilter = "no-filter",
 }: MediaSelectorProps) {
   const [activeTab, setActiveTab] = useState<"upload" | "gallery">("upload");
 
@@ -41,7 +48,25 @@ export default function MediaSelector({
       const resp = await api.get<ApiResponse<ManageGalleryType[]>>(
         `/gallery?page=${currentPage}&limit=${LIMIT}`,
       );
-      setGalleryData(resp.data.data);
+      const clear = resp.data.data.filter((d) => {
+        switch (onFilter) {
+          case "cabinet_id":
+            return d.cabinet_id === null;
+          case "department_id":
+            return d.department_id === null;
+          case "progenda_id":
+            return d.progenda_id === null;
+          case "orphan":
+            return (
+              d.progenda_id == null &&
+              d.cabinet_id == null &&
+              d.department_id == null
+            );
+          case "no-filter":
+            return d;
+        }
+      });
+      setGalleryData(clear);
       setTotalPages(resp.data.meta.total_page ?? 1);
     } catch (err) {
       console.error("Failed to fetch gallery:", err);
@@ -205,6 +230,12 @@ export default function MediaSelector({
                 </div>
               ) : (
                 <>
+                  {onFilter !== "no-filter" && (
+                    <h1>
+                      Galeri sudah disaring. Gambar yang sudah digunakan tidak
+                      dapat digunakan kembali
+                    </h1>
+                  )}
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                     {galleryData.map((img) => (
                       <div

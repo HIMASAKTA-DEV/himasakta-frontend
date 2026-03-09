@@ -10,5 +10,5 @@ export type Media = {
   cabinet_id?: UUID | null;
   created_at: string;
   updated_at: string;
-  Deleted_at: string;
+  deleted_at: string;
 };
