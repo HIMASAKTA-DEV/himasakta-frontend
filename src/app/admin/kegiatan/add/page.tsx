@@ -14,13 +14,12 @@ import {
 } from "react-icons/hi";
 
 import Typography from "@/components/Typography";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
+import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
-import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
-import VerifToken from "@/components/admin/VerifToken";
 
 type FormValues = {
   title: string;

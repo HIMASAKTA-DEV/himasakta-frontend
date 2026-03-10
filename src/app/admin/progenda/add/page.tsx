@@ -1,21 +1,20 @@
 "use client";
 
+import Typography from "@/components/Typography";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
-import Typography from "@/components/Typography";
 import api from "@/lib/axios";
+import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { useAdminAuth } from "@/services/admin/useAdminAuth";
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
-import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ApiResponse } from "@/types/api";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { ProgendaType, Timelines } from "@/types/data/ProgendaType";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
@@ -113,13 +112,13 @@ const selectStyles: StylesConfig<OptionType, false> = {
  * Because the REST API design is like that
  */
 function page() {
-  const [initVal, setInitVal] = useState<FormValues | null>(null);
-  const [loadData, setLoadData] = useState(false);
+  const [initVal, _setInitVal] = useState<FormValues | null>(null);
+  const [loadData, _setLoadData] = useState(false);
   const {
     handleSubmit,
     register,
     control,
-    formState: { errors, isSubmitting, dirtyFields },
+    formState: { isSubmitting },
     reset,
     setValue,
   } = useForm<FormValues>({
@@ -143,12 +142,11 @@ function page() {
   const goalRef = useRef<HTMLTextAreaElement | null>(null);
   const [openMedia, setOpenMedia] = useState(false);
   const [thumbnail, setThumbnail] = useState<PhotoData | null>(null);
-  const [initThumbnail, setInitThumbnail] = useState<PhotoData | null>(null);
+  const [_initThumbnail, setInitThumbnail] = useState<PhotoData | null>(null);
   const [deletingThumbnail, setDeletingThumbnail] = useState(false);
   const [links, setLinks] = useState<LinkProps[]>([]);
   const [depts, setDepts] = useState<DepartmentType[]>([]);
   const [feeds, setFeeds] = useState<PhotoData[]>([]);
-  const [openFeeds, setOpenFeeds] = useState(false);
   const [editingFeeds, setEditingFeeds] = useState(false);
   const [previewImage, setPreviewImage] = useState<PhotoData | null>(null);
   const [openTimelineModal, setOpenTimelineModal] = useState(false);
@@ -164,6 +162,46 @@ function page() {
     link: "",
   });
   const [timelines, setTimelines] = useState<FormTimeline[]>([]);
+  const STORAGE_KEY = "progenda_draft";
+
+  // LOAD DRAFT
+  useEffect(() => {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+
+    try {
+      const draft = JSON.parse(raw);
+
+      if (draft.descVal) setDescVal(draft.descVal);
+      if (draft.goalVal) setGoalVal(draft.goalVal);
+      if (draft.links) setLinks(draft.links);
+      if (draft.thumbnail) setThumbnail(draft.thumbnail);
+      if (draft.timelines) setTimelines(draft.timelines);
+
+      if (draft.formValues) {
+        reset(draft.formValues);
+      }
+    } catch {
+      console.warn("Draft parse error");
+    }
+  }, [reset]);
+
+  // AUTO SAVE DRAFT
+  useEffect(() => {
+    const draft = {
+      descVal,
+      goalVal,
+      links,
+      thumbnail,
+      timelines,
+      formValues: {
+        department_id: "",
+        name: "",
+      },
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
+  }, [descVal, goalVal, links, thumbnail, timelines]);
 
   const addFeeds = (photo: PhotoData) => {
     if (feeds.length >= 20) {
@@ -231,8 +269,6 @@ function page() {
         youtube_link: links.find((l) => l.type === "youtube_link")?.url ?? "",
       };
 
-      console.log(payload); // DEBUG
-
       const resJson = await api.post<ApiResponse<ProgendaType>>(
         "/progenda",
         payload,
@@ -241,13 +277,12 @@ function page() {
       const newId = resJson.data.data.id;
 
       alert("Step 1: Progenda berhasil dibuat!");
-
+      localStorage.removeItem(STORAGE_KEY);
       if (feeds) {
         try {
           await Promise.all(
             feeds.map((f) => {
               const payloadWithId = { ...f, progenda_id: newId };
-              console.log("Data yang akan dikirim:", payloadWithId); // DEBUG
               return api.put(`gallery/${f.id}`, payloadWithId);
             }),
           );
@@ -810,7 +845,7 @@ function page() {
                     Feeds/Galeri
                   </label>
                   <div className="text-sm italic text-gray-500">
-                    Upload maksimum 20 gambar.
+                    Upload maksimum 20 gambar. Tidak disimpan sementara
                   </div>
                 </div>
                 <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">

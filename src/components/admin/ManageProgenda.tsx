@@ -1,19 +1,18 @@
+import api from "@/lib/axios";
+import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import { ApiResponse } from "@/types/commons/apiResponse";
+import { ProgendaType } from "@/types/data/ProgendaType";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import HeaderSection from "../commons/HeaderSection";
-import api from "@/lib/axios";
-import { ApiResponse } from "@/types/commons/apiResponse";
-import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import {
   HiOutlineEye,
   HiOutlinePencilAlt,
   HiOutlineTrash,
 } from "react-icons/hi";
-import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
-import { PreviewData } from "next";
-import { ProgendaType } from "@/types/data/ProgendaType";
 import RenderPagination from "../_news/RenderPagination";
+import HeaderSection from "../commons/HeaderSection";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
+import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 type ProgendasTable = {
   id: string;
@@ -30,10 +29,10 @@ function ManageProgenda() {
   const [loading, setLoading] = useState(false);
   const [progendas, setProgendas] = useState<ProgendasTable[]>([]);
   const [selectedProgenda, setSelectedProgenda] = useState<string | null>(null);
-  const [selectedProgendaName, setSelectedProgendaName] = useState<
+  const [_selectedProgendaName, setSelectedProgendaName] = useState<
     string | null
   >(null);
-  const [errorPreview, setErrorPreview] = useState(false);
+  const [_errorPreview, setErrorPreview] = useState(false);
   const [loadingPreview, setLoadingPreview] = useState(false);
   const [viewProgenda, setViewProgenda] = useState<ProgendaType | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -82,31 +81,7 @@ function ManageProgenda() {
     setDeleteLoading(true);
     setDeleteError(null);
     try {
-      const res = await api.get<ApiResponse<ProgendaType>>(
-        `/progenda/${selectedProgenda}`,
-      );
-
-      const feeds = res.data.data.feeds;
-
       await api.delete(`/progenda/${selectedProgenda}`);
-      alert("Step 2: Berhasil menghapus data progenda");
-
-      if (feeds) {
-        try {
-          await Promise.all(
-            feeds.map((f) =>
-              api.put(`/gallery/${f.id}`, {
-                ...f,
-                progenda_id: null,
-              }),
-            ),
-          );
-
-          alert("Step 1: Berhasil menghapus feeds progenda");
-        } catch (err) {
-          alert(`Gagal menghapus semua feeds: ${getApiErrorMessage(err)}`);
-        }
-      }
 
       setShowDeleteModal(false);
       setSelectedProgenda(null);

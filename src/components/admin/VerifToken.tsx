@@ -1,5 +1,4 @@
 import { useAdminAuth } from "@/services/admin/useAdminAuth";
-import React from "react";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 import Unauthorized_404 from "./Unauthorized_404";
 

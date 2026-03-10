@@ -12,19 +12,14 @@ interface MediaSelectorProps {
   onClose: () => void;
   onSelect: (image: { id: string; image_url: string }) => void;
   title?: string;
-  onFilter?:
-    | "progenda_id"
-    | "cabinet_id"
-    | "department_id"
-    | "orphan"
-    | "no-filter";
+  onFilter?: "progenda_id" | "cabinet_id" | "department_id" | "orphan" | "";
 }
 
 export default function MediaSelector({
   onClose,
   onSelect,
   title = "Select Media",
-  onFilter = "no-filter",
+  onFilter = "",
 }: MediaSelectorProps) {
   const [activeTab, setActiveTab] = useState<"upload" | "gallery">("upload");
 
@@ -46,27 +41,9 @@ export default function MediaSelector({
     setIsLoadingGallery(true);
     try {
       const resp = await api.get<ApiResponse<ManageGalleryType[]>>(
-        `/gallery?page=${currentPage}&limit=${LIMIT}`,
+        `/gallery?${onFilter ? `filter_by=${onFilter}&filter=null&page=${currentPage}&limit=${LIMIT}` : `page=${currentPage}&limit=${LIMIT}`}`,
       );
-      const clear = resp.data.data.filter((d) => {
-        switch (onFilter) {
-          case "cabinet_id":
-            return d.cabinet_id === null;
-          case "department_id":
-            return d.department_id === null;
-          case "progenda_id":
-            return d.progenda_id === null;
-          case "orphan":
-            return (
-              d.progenda_id == null &&
-              d.cabinet_id == null &&
-              d.department_id == null
-            );
-          case "no-filter":
-            return d;
-        }
-      });
-      setGalleryData(clear);
+      setGalleryData(resp.data.data);
       setTotalPages(resp.data.meta.total_page ?? 1);
     } catch (err) {
       console.error("Failed to fetch gallery:", err);
@@ -230,7 +207,7 @@ export default function MediaSelector({
                 </div>
               ) : (
                 <>
-                  {onFilter !== "no-filter" && (
+                  {onFilter !== "" && (
                     <h1>
                       Galeri sudah disaring. Gambar yang sudah digunakan tidak
                       dapat digunakan kembali

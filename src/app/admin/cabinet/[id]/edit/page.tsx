@@ -11,6 +11,7 @@ import MediaSelector from "@/components/admin/MediaSelector";
 import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import api from "@/lib/axios";
+import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { CreateCabinetType } from "@/types/admin/CreateCabinet";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation"; // Gunakan next/navigation untuk App Router
@@ -32,6 +33,7 @@ type PhotoData = {
 
 export default function EditCabinetPage() {
   const [initVal, setInitVal] = useState<FormValues | null>(null);
+  const [initValGallery, setInitValGallery] = useState<PhotoData[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -76,6 +78,8 @@ export default function EditCabinetPage() {
         // Set state tambahan
         setDescVal(data.description);
         setIsActive(data.is_active);
+        setInitValGallery(data.feeds);
+        setGallery(data.feeds);
         setInitVal({
           ...data,
           period_start: formatDate(data.period_start),
@@ -104,7 +108,38 @@ export default function EditCabinetPage() {
       };
 
       await api.put(`/cabinet-info/${id}`, payload);
-      alert("Berhasil memperbarui kabinet!");
+      alert("Step 1: Berhasil memperbarui data kabinet!");
+      if (newGallery) {
+        try {
+          await Promise.all(
+            newGallery.map((g) => {
+              const payloadWithId = { ...g, cabinet_id: initVal?.id };
+              return api.put(`gallery/${g.id}`, payloadWithId);
+            }),
+          );
+          alert("Step 2: Berhasil menambah galeri kabinet!");
+        } catch (err) {
+          console.error(err);
+          alert(`Gagal menambahkan semua galeri: ${getApiErrorMessage(err)}`);
+        }
+      }
+
+      if (delGallery) {
+        try {
+          await Promise.all(
+            delGallery.map((g) => {
+              const payloadWithId = { ...g, cabinet_id: null };
+              return api.put(`gallery/${g.id}`, payloadWithId);
+            }),
+          );
+          alert("Step 3: Berhasil menghapus beberapa galeri kabinet!");
+        } catch (err) {
+          console.error(err);
+          alert(
+            `Gagal menghapus semua galeri departemen: ${getApiErrorMessage(err)}`,
+          );
+        }
+      }
 
       // Redirect kembali ke admin management
       router.push("/admin#manage-cabinet");
@@ -236,6 +271,32 @@ export default function EditCabinetPage() {
       document.body.style.overflow = "";
     };
   }, [openUpload, openUploadOrganigram, isSubmitting]);
+
+  const [gallery, setGallery] = useState<PhotoData[]>([]);
+  const [editingGallery, setEditingGallery] = useState(false);
+  const [previewImage, setPreviewImage] = useState<PhotoData | null>(null);
+  const [newGallery, setNewGallery] = useState<PhotoData[]>([]);
+  const [delGallery, setDelGallery] = useState<PhotoData[]>([]);
+  const addGallery = (photo: PhotoData) => {
+    if (gallery.length >= 20) {
+      alert("Maksimal 20 gambar!");
+      return;
+    }
+    const isDuplicate = gallery.some((f) => f.id === photo.id);
+
+    if (isDuplicate) {
+      alert("Gambar ini sudah ada dalam progenda ini!");
+      return;
+    }
+
+    setGallery((p) => [...p, photo]);
+    setNewGallery((p) => [...p, photo]);
+  };
+
+  const removeGallery = (photo: PhotoData) => {
+    setGallery((p) => p.filter((prev) => prev.id !== photo.id));
+    setDelGallery((d) => [...d, photo]);
+  };
 
   if (isFetching) {
     return (
@@ -580,6 +641,62 @@ export default function EditCabinetPage() {
               </button>
             </div>
 
+            <div className="flex flex-col gap-4 mt-8 w-full">
+              {/* MANAGE gallery */}
+              <div className="w-full flex flex-row lg:justify-between lg:items-center mb-0 max-lg:flex-col">
+                <label className="font-semibold text-black">Feeds/Galeri</label>
+                <div className="text-sm italic text-gray-500">
+                  Upload maksimum 20 gambar. Tidak disimpan sementara
+                </div>
+              </div>
+              <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">
+                {gallery.length < 20 && (
+                  <button
+                    type="button"
+                    onClick={() => setEditingGallery(true)}
+                    className="flex items-center justify-between rounded-xl border border-dashed border-gray-300 bg-[#f8fafc] px-4 py-3 text-sm font-medium italic text-[#9BA5B7] hover:border-primaryPink hover:text-primaryPink w-full"
+                  >
+                    Add Image
+                    <span className="text-lg">＋</span>
+                  </button>
+                )}
+                {gallery.map((img) => (
+                  <div
+                    key={img.id}
+                    className="flex items-center gap-3 border rounded-lg p-2 w-full justify-between bg-gradient-to-r from-slate-100 to-white"
+                  >
+                    <div className="flex items-center w-full gap-2">
+                      <img
+                        src={img.image_url}
+                        className="w-16 h-16 object-cover rounded-md hover:cursor-pointer"
+                        onClick={() => setPreviewImage(img)}
+                      />
+                      <p className="font-bold font-averia line-clamp-1">
+                        {img.id}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setPreviewImage(img)}
+                        className="text-blue-600 text-sm hover:opacity-60"
+                      >
+                        View
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeGallery(img)}
+                        className="text-red-500 text-sm hover:opacity-60"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="mt-8 flex justify-end items-center gap-4">
               <button
                 type="button"
@@ -587,6 +704,7 @@ export default function EditCabinetPage() {
                   if (!initVal) return;
                   reset(initVal);
                   setDescVal(initVal?.description ?? "");
+                  setGallery(initValGallery);
                 }}
                 disabled={isSubmitting || deletingLogo || deletingOrganigram}
                 className="px-4 border py-2 rounded-lg hover:bg-gray-50 transition-all"
@@ -641,6 +759,47 @@ export default function EditCabinetPage() {
             setOpenUploadOrganigram(false);
           }}
         />
+      )}
+      {editingGallery && (
+        <MediaSelector
+          title="Upload gallery (Beberapa gambar)"
+          onClose={() => setEditingGallery(false)}
+          onSelect={(p) => {
+            if (gallery.length >= 20) {
+              alert("Maksimal 20 gambar!");
+              return;
+            }
+            addGallery(p);
+          }}
+          onFilter="cabinet_id"
+        />
+      )}
+      {/* Image preview modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={previewImage.image_url}
+              alt={previewImage.id}
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+            />
+            <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
+              {previewImage.id}
+            </p>
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
       )}
       <LoadingFullScreen
         isSubmitting={isSubmitting}

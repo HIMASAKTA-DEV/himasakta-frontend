@@ -11,21 +11,19 @@ import {
 } from "react-icons/hi";
 
 import Typography from "@/components/Typography";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
+import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
-import { ApiResponse } from "@/types/commons/apiResponse";
+import { GetGalleryByDeptId } from "@/services/departments/GetGalleryByDept";
+import { GetMemberByDeptId } from "@/services/departments/GetMemberByDeptId";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
-import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
-import VerifToken from "@/components/admin/VerifToken";
-import { GetGalleryByDeptId } from "@/services/departments/GetGalleryByDept";
 import Select, { StylesConfig } from "react-select";
-import { GetMemberByDeptId } from "@/services/departments/GetMemberByDeptId";
 
 type DepartmentLinkType =
   | "social_media_link"
@@ -123,7 +121,7 @@ export default function EditDepartmentPage() {
   const [editingGallery, setEditingGallery] = useState(false);
   const [previewImage, setPreviewImage] = useState<PhotoData | null>(null);
   const [newGallery, setNewGallery] = useState<PhotoData[]>([]);
-  const [leaderId, setLeaderId] = useState("");
+  const [_leaderId, setLeaderId] = useState("");
   const [members, setMembers] = useState<{ id: string; name: string }[]>([]);
 
   const addGallery = (photo: PhotoData) => {
@@ -398,17 +396,16 @@ export default function EditDepartmentPage() {
       };
 
       await api.put(`/department/${payload.id}`, payload);
-      route.push("/admin#manage-department");
 
       if (newGallery) {
         try {
           await Promise.all(
             newGallery.map((g) => {
               const payloadWithId = { ...g, department_id: initVal?.id };
-              console.log("Data yang akan dikirim:", payloadWithId); // DEBUG
               return api.put(`gallery/${g.id}`, payloadWithId);
             }),
           );
+          alert("Step 2: Berhasil menambah galeri kabinet!");
         } catch (err) {
           console.error(err);
           alert(`Gagal menambahkan semua galeri: ${getApiErrorMessage(err)}`);
@@ -420,10 +417,10 @@ export default function EditDepartmentPage() {
           await Promise.all(
             delGallery.map((g) => {
               const payloadWithId = { ...g, department_id: null };
-              console.log("Data yang akan dikirim:", payloadWithId); // DEBUG
               return api.put(`gallery/${g.id}`, payloadWithId);
             }),
           );
+          alert("Step 3: Berhasil menghapus beberapa galeri kabinet!");
         } catch (err) {
           console.error(err);
           alert(
@@ -431,6 +428,8 @@ export default function EditDepartmentPage() {
           );
         }
       }
+
+      route.push("/admin#manage-department");
     } catch (err) {
       alert(`Gagal menyimpan perubahan: ${getApiErrorMessage(err)}`);
     } finally {
@@ -712,14 +711,12 @@ export default function EditDepartmentPage() {
                 </button>
               )}
             </div>
-            <div className="flex flex-col gap-4 mt-4 w-full">
-              {/* MANAGE GALERI */}
-              <div className="w-full flex flex-row justify-between items-center">
-                <label className="mb-2 font-semibold text-black">
-                  Feeds/Galeri
-                </label>
+            <div className="flex flex-col gap-4 mt-8 w-full">
+              {/* MANAGE gallery */}
+              <div className="w-full flex flex-row lg:justify-between lg:items-center mb-0 max-lg:flex-col">
+                <label className="font-semibold text-black">Feeds/Galeri</label>
                 <div className="text-sm italic text-gray-500">
-                  Upload maksimum 20 gambar.
+                  Upload maksimum 20 gambar. Tidak disimpan sementara
                 </div>
               </div>
               <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">

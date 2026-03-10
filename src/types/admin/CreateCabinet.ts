@@ -1,6 +1,7 @@
 import { UUID } from "crypto";
 
 export type CreateCabinetType = {
+  id?: string;
   visi: string;
   misi: string;
   description: string;

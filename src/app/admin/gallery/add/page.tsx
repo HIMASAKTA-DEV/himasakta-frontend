@@ -9,7 +9,8 @@ import {
 } from "react-icons/hi";
 
 import Typography from "@/components/Typography";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import VerifToken from "@/components/admin/VerifToken";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
@@ -17,8 +18,6 @@ import { ApiResponse } from "@/types/commons/apiResponse";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
-import VerifToken from "@/components/admin/VerifToken";
 
 type PhotoData = {
   id: string;

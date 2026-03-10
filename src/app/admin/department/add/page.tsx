@@ -11,18 +11,17 @@ import {
 } from "react-icons/hi";
 
 import Typography from "@/components/Typography";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
+import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import { ApiResponse } from "@/types/commons/apiResponse";
+import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
-import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
-import VerifToken from "@/components/admin/VerifToken";
-import { ApiResponse } from "@/types/commons/apiResponse";
-import { DepartmentType } from "@/types/data/DepartmentType";
 
 type DepartmentLinkType =
   | "social_media_link"
@@ -53,7 +52,7 @@ type PhotoData = {
 };
 
 export default function AddDepartmentPage() {
-  const route = useRouter();
+  const _route = useRouter();
   const descRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [logo, setLogo] = useState<PhotoData | null>(null);
@@ -217,7 +216,6 @@ export default function AddDepartmentPage() {
           await Promise.all(
             gallery.map((f) => {
               const payloadWithId = { ...f, department_id: newId };
-              console.log("Data yang akan dikirim:", payloadWithId); // DEBUG
               return api.put(`gallery/${f.id}`, payloadWithId);
             }),
           );
@@ -527,7 +525,7 @@ export default function AddDepartmentPage() {
                   gallery/Galeri
                 </label>
                 <div className="text-sm italic text-gray-500">
-                  Upload maksimum 20 gambar.
+                  Upload maksimum 20 gambar. Tidak disimpan sementara
                 </div>
               </div>
               <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">

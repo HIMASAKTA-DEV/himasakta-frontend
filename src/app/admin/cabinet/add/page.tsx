@@ -14,9 +14,12 @@ import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
 import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
-import MediaSelector from "@/components/admin/MediaSelector";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import MediaSelector from "@/components/admin/MediaSelector";
 import VerifToken from "@/components/admin/VerifToken";
+import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import { ApiResponse } from "@/types/commons/apiResponse";
+import { DepartmentType } from "@/types/data/DepartmentType";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
   is_active: string;
@@ -50,6 +53,13 @@ export default function AddCabinetPage() {
     },
   });
 
+  const handleResetForms = () => {
+    setGallery([]);
+    setLogo(null);
+    setOrganigram(null);
+    setDescVal("");
+  };
+
   // Inside your component
   const [isActive, setIsActive] = useState<boolean>(false);
 
@@ -60,7 +70,28 @@ export default function AddCabinetPage() {
         is_active: isActive, // Use the state directly
       };
 
-      await api.post("/cabinet-info", payload);
+      const resp = await api.post<ApiResponse<DepartmentType>>(
+        "/cabinet-info",
+        payload,
+      );
+
+      const newId = resp.data.data.id;
+
+      alert("Step 1: Berhasil menambahkan kabinet baru!");
+
+      if (gallery) {
+        try {
+          await Promise.all(
+            gallery.map((f) => {
+              const payloadWithId = { ...f, cabinet_id: newId };
+              return api.put(`gallery/${f.id}`, payloadWithId);
+            }),
+          );
+          alert("Step 2: Berhasil menambahkan gallery!");
+        } catch (err) {
+          alert(`Gagal menambahkan semua gallery: ${getApiErrorMessage(err)}`);
+        }
+      }
 
       // Reset everything
       localStorage.removeItem("cabinet_form_draft"); // Clear the draft
@@ -69,10 +100,10 @@ export default function AddCabinetPage() {
       setIsActive(false);
       setLogo(null);
       setOrganigram(null);
-      alert("Berhasil menambahkan kabinet baru!");
+      setGallery([]);
     } catch (err) {
       console.error("API ERROR: ", err);
-      alert("Gagal menambahkan kabinet baru.");
+      alert(`Gagal menambahkan kabinet baru: ${getApiErrorMessage(err)}`);
     }
   };
 
@@ -85,14 +116,14 @@ export default function AddCabinetPage() {
   const handleDeleteImage = async (): Promise<boolean> => {
     if (!logo?.id) return true;
     const confirmDelete = confirm(
-      "Yakin? Link akan dilepas dan gambar dihapus permanen.",
+      "Yakin? Thumbnail akan dilepas. Gambar masih ada di galeri",
     );
     if (!confirmDelete) return false;
 
     setDeletingLogo(true);
 
     try {
-      await api.delete(`/gallery/${logo.id}`);
+      // await api.delete(`/gallery/${logo.id}`);
 
       setLogo(null);
       setValue("logo_id", "", {
@@ -100,7 +131,7 @@ export default function AddCabinetPage() {
         shouldValidate: true,
       });
 
-      alert("Gambar berhasil dihapus");
+      // alert("Gambar berhasil dihapus");
     } catch (err) {
       console.error(err);
       alert("Gagal menghapus gambar");
@@ -121,12 +152,12 @@ export default function AddCabinetPage() {
     if (!organigram?.id) return true;
 
     const confirmDelete = confirm(
-      "Yakin? Thumbnail akan dilepas dan gambar dihapus permanen.",
+      "Yakin? Thumbnail akan dilepas. Gambar masih ada di galeri",
     );
     if (!confirmDelete) return false;
 
     try {
-      await api.delete(`/gallery/${organigram.id}`);
+      // await api.delete(`/gallery/${organigram.id}`);
 
       setDeletingOrganigram(true);
 
@@ -136,7 +167,7 @@ export default function AddCabinetPage() {
         shouldValidate: true,
       });
 
-      alert("Organigram berhasil dihapus");
+      // alert("Organigram berhasil dihapus");
     } catch (err) {
       console.error(err);
       alert("Gagal menghapus organigram");
@@ -226,6 +257,28 @@ export default function AddCabinetPage() {
       document.body.style.overflow = "";
     };
   }, [openUpload, openUploadOrganigram]);
+
+  const [gallery, setGallery] = useState<PhotoData[]>([]);
+  const [editingGallery, setEditingGallery] = useState(false);
+  const [previewImage, setPreviewImage] = useState<PhotoData | null>(null);
+  const addGallery = (photo: PhotoData) => {
+    if (gallery.length >= 20) {
+      alert("Maksimal 20 gambar!");
+      return;
+    }
+    const isDuplicate = gallery.some((f) => f.id === photo.id);
+
+    if (isDuplicate) {
+      alert("Gambar ini sudah ada dalam progenda ini!");
+      return;
+    }
+
+    setGallery((p) => [...p, photo]);
+  };
+
+  const removeGallery = (id: string) => {
+    setGallery((p) => p.filter((photo) => photo.id !== id));
+  };
 
   if (!isRestored) {
     return (
@@ -634,12 +687,69 @@ export default function AddCabinetPage() {
               </button>
             </div>
 
+            <div className="flex flex-col gap-4 mt-8 w-full">
+              {/* MANAGE gallery */}
+              <div className="w-full flex flex-row lg:justify-between lg:items-center mb-0 max-lg:flex-col">
+                <label className="font-semibold text-black">Feeds/Galeri</label>
+                <div className="text-sm italic text-gray-500">
+                  Upload maksimum 20 gambar. Tidak disimpan sementara
+                </div>
+              </div>
+              <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">
+                {gallery.length < 20 && (
+                  <button
+                    type="button"
+                    onClick={() => setEditingGallery(true)}
+                    className="flex items-center justify-between rounded-xl border border-dashed border-gray-300 bg-[#f8fafc] px-4 py-3 text-sm font-medium italic text-[#9BA5B7] hover:border-primaryPink hover:text-primaryPink w-full"
+                  >
+                    Add Image
+                    <span className="text-lg">＋</span>
+                  </button>
+                )}
+                {gallery.map((img) => (
+                  <div
+                    key={img.id}
+                    className="flex items-center gap-3 border rounded-lg p-2 w-full justify-between bg-gradient-to-r from-slate-100 to-white"
+                  >
+                    <div className="flex items-center w-full gap-2">
+                      <img
+                        src={img.image_url}
+                        className="w-16 h-16 object-cover rounded-md hover:cursor-pointer"
+                        onClick={() => setPreviewImage(img)}
+                      />
+                      <p className="font-bold font-averia line-clamp-1">
+                        {img.id}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setPreviewImage(img)}
+                        className="text-blue-600 text-sm hover:opacity-60"
+                      >
+                        View
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeGallery(img.id)}
+                        className="text-red-500 text-sm hover:opacity-60"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="mt-8 flex justify-end items-center gap-4">
               <button
                 type="button"
                 onClick={() => {
                   reset();
                   handleDeleteImage();
+                  handleResetForms();
                 }}
                 disabled={isSubmitting || deletingLogo || deletingOrganigram}
                 className="px-4 border py-2 rounded-lg hover:bg-gray-50 transition-all"
@@ -694,6 +804,47 @@ export default function AddCabinetPage() {
             setOpenUploadOrganigram(false);
           }}
         />
+      )}
+      {editingGallery && (
+        <MediaSelector
+          title="Upload gallery (Beberapa gambar)"
+          onClose={() => setEditingGallery(false)}
+          onSelect={(p) => {
+            if (gallery.length >= 20) {
+              alert("Maksimal 20 gambar!");
+              return;
+            }
+            addGallery(p);
+          }}
+          onFilter="cabinet_id"
+        />
+      )}
+      {/* Image preview modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={previewImage.image_url}
+              alt={previewImage.id}
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+            />
+            <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
+              {previewImage.id}
+            </p>
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
       )}
       <LoadingFullScreen
         isSubmitting={isSubmitting}

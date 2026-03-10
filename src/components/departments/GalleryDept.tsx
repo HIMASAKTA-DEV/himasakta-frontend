@@ -113,7 +113,7 @@ function GalleryDept({ ...dept }: DepartmentType) {
           <span>
             {Math.min(metaData?.total_data ?? 1, currentPage * LimitGallery)}
           </span>{" "}
-          news of <span>{metaData?.total_data}</span> news
+          images of <span>{metaData?.total_data}</span> images
         </p>
 
         {/* Navigation */}
