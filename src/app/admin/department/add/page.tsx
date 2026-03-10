@@ -21,6 +21,8 @@ import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import VerifToken from "@/components/admin/VerifToken";
+import { ApiResponse } from "@/types/commons/apiResponse";
+import { DepartmentType } from "@/types/data/DepartmentType";
 
 type DepartmentLinkType =
   | "social_media_link"
@@ -60,6 +62,9 @@ export default function AddDepartmentPage() {
 
   const [deletingLogo, setDeletingLogo] = useState(false);
   const [openMedia, setOpenMedia] = useState(false);
+  const [gallery, setGallery] = useState<PhotoData[]>([]);
+  const [editingGallery, setEditingGallery] = useState(false);
+  const [previewImage, setPreviewImage] = useState<PhotoData | null>(null);
 
   const {
     register,
@@ -80,6 +85,25 @@ export default function AddDepartmentPage() {
       bank_ref_link: "",
     },
   });
+
+  const addGallery = (photo: PhotoData) => {
+    if (gallery.length >= 20) {
+      alert("Maksimal 20 gambar!");
+      return;
+    }
+    const isDuplicate = gallery.some((f) => f.id === photo.id);
+
+    if (isDuplicate) {
+      alert("Gambar ini sudah ada dalam progenda ini!");
+      return;
+    }
+
+    setGallery((p) => [...p, photo]);
+  };
+
+  const removeGallery = (id: string) => {
+    setGallery((p) => p.filter((photo) => photo.id !== id));
+  };
 
   const watchedValues = watch();
 
@@ -179,21 +203,52 @@ export default function AddDepartmentPage() {
         bank_ref_link: links.find((l) => l.type === "bank_ref_link")?.url || "",
       };
 
-      await api.post("/department", payload);
+      const resp = await api.post<ApiResponse<DepartmentType>>(
+        "/department",
+        payload,
+      );
 
-      alert("Departemen berhasil ditambahkan!");
+      const newId = resp.data.data.id;
+
+      alert("Step 1: Departemen berhasil ditambahkan!");
+
+      if (gallery) {
+        try {
+          await Promise.all(
+            gallery.map((f) => {
+              const payloadWithId = { ...f, department_id: newId };
+              console.log("Data yang akan dikirim:", payloadWithId); // DEBUG
+              return api.put(`gallery/${f.id}`, payloadWithId);
+            }),
+          );
+          alert("Step 2: Berhasil menambahkan gallery!");
+        } catch (err) {
+          alert(`Gagal menambahkan semua gallery: ${getApiErrorMessage(err)}`);
+        }
+      }
+
       localStorage.removeItem("department_form_draft");
-      route.push("/admin#manage-department");
     } catch (err) {
       alert(`Gagal menambahkan departemen: ${getApiErrorMessage(err)}`);
+    } finally {
+      handleResetForm();
     }
   };
 
   const handleResetForm = () => {
-    reset();
-    setLinks([]);
+    reset({
+      name: "",
+      description: "",
+      logo_id: "",
+      social_media_link: "",
+      silabus_link: "",
+      bank_soal_link: "",
+      bank_ref_link: "",
+    });
     setDescVal("");
     setLogo(null);
+    setGallery([]);
+    setLinks([]);
     localStorage.removeItem("department_form_draft");
   };
 
@@ -406,9 +461,10 @@ export default function AddDepartmentPage() {
                   <button
                     type="button"
                     onClick={addLink}
-                    className="border border-dashed rounded-xl py-3 hover:bg-gray-50 transition"
+                    className="flex w-full items-center justify-between rounded-xl border border-dashed border-gray-300 bg-[#f8fafc] px-4 py-3 text-sm font-medium italic text-[#9BA5B7] transition-all hover:border-primaryPink hover:bg-pink-50/30 hover:text-primaryPink"
                   >
                     Add Link
+                    <span className="text-lg">＋</span>
                   </button>
                 )}
               </div>
@@ -464,6 +520,63 @@ export default function AddDepartmentPage() {
                 </button>
               )}
             </div>
+            <div className="flex flex-col gap-4 mt-4 w-full">
+              {/* MANAGE gallery */}
+              <div className="w-full flex flex-row justify-between items-center">
+                <label className="mb-2 font-semibold text-black">
+                  gallery/Galeri
+                </label>
+                <div className="text-sm italic text-gray-500">
+                  Upload maksimum 20 gambar.
+                </div>
+              </div>
+              <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">
+                {gallery.length < 20 && (
+                  <button
+                    type="button"
+                    onClick={() => setEditingGallery(true)}
+                    className="flex items-center justify-between rounded-xl border border-dashed border-gray-300 bg-[#f8fafc] px-4 py-3 text-sm font-medium italic text-[#9BA5B7] hover:border-primaryPink hover:text-primaryPink w-full"
+                  >
+                    Add Image
+                    <span className="text-lg">＋</span>
+                  </button>
+                )}
+                {gallery.map((img) => (
+                  <div
+                    key={img.id}
+                    className="flex items-center gap-3 border rounded-lg p-2 w-full justify-between bg-gradient-to-r from-slate-100 to-white"
+                  >
+                    <div className="flex items-center w-full gap-2">
+                      <img
+                        src={img.image_url}
+                        className="w-16 h-16 object-cover rounded-md hover:cursor-pointer"
+                        onClick={() => setPreviewImage(img)}
+                      />
+                      <p className="font-bold font-averia line-clamp-1">
+                        {img.id}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setPreviewImage(img)}
+                        className="text-blue-600 text-sm hover:opacity-60"
+                      >
+                        View
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeGallery(img.id)}
+                        className="text-red-500 text-sm hover:opacity-60"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div className="mt-12 flex justify-end gap-4">
               <button
@@ -499,6 +612,47 @@ export default function AddDepartmentPage() {
               setOpenMedia(false);
             }}
           />
+        )}
+        {editingGallery && (
+          <MediaSelector
+            title="Upload gallery (Beberapa gambar)"
+            onClose={() => setEditingGallery(false)}
+            onSelect={(p) => {
+              if (gallery.length >= 20) {
+                alert("Maksimal 20 gambar!");
+                return;
+              }
+              addGallery(p);
+            }}
+            onFilter="department_id"
+          />
+        )}
+        {/* Image preview modal */}
+        {previewImage && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+            onClick={() => setPreviewImage(null)}
+          >
+            <div
+              className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={previewImage.image_url}
+                alt={previewImage.id}
+                className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+              />
+              <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
+                {previewImage.id}
+              </p>
+              <button
+                onClick={() => setPreviewImage(null)}
+                className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
         )}
         <LoadingFullScreen
           isSubmitting={isSubmitting}

@@ -154,7 +154,7 @@ function ManageGallery() {
         {galleryData.map((gallery) => (
           <div
             key={gallery.id}
-            className="flex flex-col rounded-[24px] overflow-hidden shadow-sm transition-transform hover:scale-[1.02] duration-300 border border-gray-200"
+            className="flex flex-col rounded-[24px] overflow-hidden shadow-lg transition-transform hover:scale-[1.02] duration-300 border border-gray-200"
           >
             <div
               className="relative w-full overflow-hidden"

@@ -116,6 +116,10 @@ function ManageAnggota() {
             subStyle="text-black font-libertine"
           />
         </div>
+        <small className="mt-4 text-yellow-700 bg-yellow-200 px-2">
+          ℹ️ NOTICE: Harap memastikan tiap departemen memiliki anggota sebagai
+          kepala departemen lalu tambahkan informasinya di edit departemen.
+        </small>
         <div className="flex items-center justify-center gap-6">
           <div className="relative w-36 font-libertine">
             <button
@@ -281,8 +285,8 @@ function ManageAnggota() {
             </div>
           )}
           {members.length === 0 && !loadingMain && (
-            <div className="w-full py-6 flex items-center justify-center text-gray-700">
-              Daftar Kegiatan Kosong
+            <div className="w-full py-6 flex items-center justify-center text-gray-300">
+              👻 Daftar anggota kosong 👻
             </div>
           )}
         </div>

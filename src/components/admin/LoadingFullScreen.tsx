@@ -5,11 +5,11 @@ import { useEffect } from "react";
 function LoadingFullScreen({
   isSubmitting,
   label,
-  styling,
+  styling = "bg-black/50 text-white",
 }: {
   isSubmitting: boolean;
   label: string;
-  styling?: string | "bg-black/50 text-white";
+  styling?: string;
 }) {
   // prevent scrolling when modal opened
   useEffect(() => {

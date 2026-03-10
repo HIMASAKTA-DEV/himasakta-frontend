@@ -82,7 +82,32 @@ function ManageProgenda() {
     setDeleteLoading(true);
     setDeleteError(null);
     try {
+      const res = await api.get<ApiResponse<ProgendaType>>(
+        `/progenda/${selectedProgenda}`,
+      );
+
+      const feeds = res.data.data.feeds;
+
       await api.delete(`/progenda/${selectedProgenda}`);
+      alert("Step 2: Berhasil menghapus data progenda");
+
+      if (feeds) {
+        try {
+          await Promise.all(
+            feeds.map((f) =>
+              api.put(`/gallery/${f.id}`, {
+                ...f,
+                progenda_id: null,
+              }),
+            ),
+          );
+
+          alert("Step 1: Berhasil menghapus feeds progenda");
+        } catch (err) {
+          alert(`Gagal menghapus semua feeds: ${getApiErrorMessage(err)}`);
+        }
+      }
+
       setShowDeleteModal(false);
       setSelectedProgenda(null);
       await fetchProgendaTable();

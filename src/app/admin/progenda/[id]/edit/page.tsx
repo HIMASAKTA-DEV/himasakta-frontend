@@ -155,6 +155,14 @@ function page() {
       alert("Maksimal 20 gambar!");
       return;
     }
+
+    const isDuplicate = feeds.some((f) => f.id === photo.id);
+
+    if (isDuplicate) {
+      alert("Gambar ini sudah ada dalam progenda ini!");
+      return;
+    }
+
     setFeeds((p) => [...p, photo]);
     setNewFeeds((p) => [...p, photo]);
   };

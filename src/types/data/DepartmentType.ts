@@ -11,6 +11,7 @@ export type DepartmentType = {
   description?: string;
   logo?: Media;
   logo_id?: string;
+  leader_id?: string | null;
   leader?: MemberType | null;
   social_media_link?: string;
   silabus_link?: string;
