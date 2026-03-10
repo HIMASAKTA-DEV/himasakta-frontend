@@ -328,7 +328,7 @@ function ManageCabinet() {
         )}
         {cabinets.length === 0 && !loadData && (
           <div className="w-full py-6 flex items-center justify-center text-gray-700">
-            Daftar Kegiatan Kosong
+            👻 Daftar kabinet Kosong 👻
           </div>
         )}
       </div>

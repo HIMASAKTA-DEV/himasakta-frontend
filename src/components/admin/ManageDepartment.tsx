@@ -108,9 +108,9 @@ function ManageDepartment() {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col gap-8 p-4 lg:p-10">
+    <div className="flex min-h-screen w-full flex-col items-center gap-8 p-4 lg:p-10">
       {/* Header */}
-      <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between justify-center items-center">
         <HeaderSection
           title="Manage Department"
           titleStyle="font-averia text-black"
@@ -118,6 +118,11 @@ function ManageDepartment() {
           sub={"Atur data departemen di website"}
           subStyle="text-black font-libertine"
         />
+        <small className="mt-4 text-yellow-700 bg-yellow-200 px-2">
+          ℹ️ NOTICE: Harap menambah anggota sebagai ketua departemen setelah
+          membuat departemen baru dan edit informasi kepala departemen di edit
+          departemen.
+        </small>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-gray-700 font-libertine">

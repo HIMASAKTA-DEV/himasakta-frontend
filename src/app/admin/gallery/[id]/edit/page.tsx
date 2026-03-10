@@ -13,7 +13,8 @@ import {
 import Select, { StylesConfig } from "react-select";
 
 import Typography from "@/components/Typography";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import VerifToken from "@/components/admin/VerifToken";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
@@ -207,9 +208,11 @@ export default function EditGalleryPage() {
 
   if (!isRestored) {
     return (
-      <div className="flex items-center justify-center p-10 min-h-screen w-full">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Submitting Gallery Data"
+        styling="bg-white text-black"
+      />
     );
   }
 
@@ -218,6 +221,7 @@ export default function EditGalleryPage() {
       onSubmit={handleSubmit(onSubmit)}
       className="p-10 bg-white min-h-screen"
     >
+      <VerifToken />
       <div className="max-w-7xl mx-auto">
         <Typography
           variant="h1"
@@ -427,7 +431,6 @@ export default function EditGalleryPage() {
           </div>
         </div>
       </div>
-
       {/* UPLOAD MODAL */}
       {openMedia && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -504,6 +507,10 @@ export default function EditGalleryPage() {
           </div>
         </div>
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Gallery Data"
+      />
     </form>
   );
 }

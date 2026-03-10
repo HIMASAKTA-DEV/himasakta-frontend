@@ -9,7 +9,8 @@ import {
 } from "react-icons/hi";
 
 import Typography from "@/components/Typography";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import VerifToken from "@/components/admin/VerifToken";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
@@ -187,9 +188,11 @@ export default function AddGalleryPage() {
 
   if (!isRestored) {
     return (
-      <div className="flex items-center justify-center p-10 min-h-screen w-full">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading Gallery Data"
+        styling="bg-white text-black"
+      />
     );
   }
 
@@ -198,6 +201,7 @@ export default function AddGalleryPage() {
       onSubmit={handleSubmit(onSubmit)}
       className="p-10 bg-white min-h-screen"
     >
+      <VerifToken />
       <div className="max-w-7xl mx-auto">
         <Typography
           variant="h1"
@@ -360,7 +364,6 @@ export default function AddGalleryPage() {
           </div>
         </div>
       </div>
-
       {/* UPLOAD MODAL */}
       {openMedia && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -437,6 +440,10 @@ export default function AddGalleryPage() {
           </div>
         </div>
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Gallery Data"
+      />
     </form>
   );
 }

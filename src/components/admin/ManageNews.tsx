@@ -72,7 +72,7 @@ function ManageNews() {
       setTotPage(json.meta.total_page ?? 1);
     } catch (err) {
       console.error(err);
-      setDeleteError("Gagal menghapus berita");
+      setDeleteError(`Gagal menghapus berita: ${getApiErrorMessage(err)}`);
     } finally {
       setDeleteLoading(false);
     }
@@ -312,6 +312,7 @@ function ManageNews() {
                 onClick={() => {
                   setShowDeleteModal(false);
                   setSelectedNewsId(null);
+                  setDeleteError(null);
                 }}
                 disabled={deleteLoading}
                 className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"

@@ -12,12 +12,14 @@ interface MediaSelectorProps {
   onClose: () => void;
   onSelect: (image: { id: string; image_url: string }) => void;
   title?: string;
+  onFilter?: "progenda_id" | "cabinet_id" | "department_id" | "orphan" | "";
 }
 
 export default function MediaSelector({
   onClose,
   onSelect,
   title = "Select Media",
+  onFilter = "",
 }: MediaSelectorProps) {
   const [activeTab, setActiveTab] = useState<"upload" | "gallery">("upload");
 
@@ -39,7 +41,7 @@ export default function MediaSelector({
     setIsLoadingGallery(true);
     try {
       const resp = await api.get<ApiResponse<ManageGalleryType[]>>(
-        `/gallery?page=${currentPage}&limit=${LIMIT}`,
+        `/gallery?${onFilter ? `filter_by=${onFilter}&filter=null&page=${currentPage}&limit=${LIMIT}` : `page=${currentPage}&limit=${LIMIT}`}`,
       );
       setGalleryData(resp.data.data);
       setTotalPages(resp.data.meta.total_page ?? 1);
@@ -205,6 +207,12 @@ export default function MediaSelector({
                 </div>
               ) : (
                 <>
+                  {onFilter !== "" && (
+                    <h1>
+                      Galeri sudah disaring. Gambar yang sudah digunakan tidak
+                      dapat digunakan kembali
+                    </h1>
+                  )}
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                     {galleryData.map((img) => (
                       <div

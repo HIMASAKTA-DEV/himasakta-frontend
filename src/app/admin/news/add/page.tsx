@@ -8,8 +8,9 @@ import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 import { UUID } from "crypto";
 import Typography from "@/components/Typography";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { useEffect, useRef, useState } from "react";
@@ -208,9 +209,11 @@ export default function AddNewsPage() {
 
   if (!isRestored) {
     return (
-      <div className=" flex items-center justify-center p-10 min-h-screen w-full">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading Event Data"
+        styling="bg-white text-black"
+      />
     );
   }
 
@@ -219,6 +222,7 @@ export default function AddNewsPage() {
       onSubmit={handleSubmit(onSubmit)}
       className="p-10 bg-white min-h-screen"
     >
+      <VerifToken />
       <div className="max-w-7xl mx-auto">
         <Typography
           variant="h1"
@@ -578,6 +582,10 @@ export default function AddNewsPage() {
           </div>
         </div>
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting News Data"
+      />
     </form>
   );
 }

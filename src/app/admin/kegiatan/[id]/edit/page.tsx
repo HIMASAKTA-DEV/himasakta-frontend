@@ -14,9 +14,10 @@ import {
 } from "react-icons/hi";
 
 import Typography from "@/components/Typography";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
+import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { MonthlyEvent } from "@/types/data/GetToKnow";
@@ -129,9 +130,11 @@ function page() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading Event Data"
+        styling="bg-white text-black"
+      />
     );
   }
 
@@ -142,6 +145,7 @@ function page() {
         onSubmit={handleSubmit(onSubmit)}
         className="min-h-screen bg-white p-10"
       >
+        <VerifToken />
         <div className="mx-auto max-w-7xl">
           <Typography
             variant="h3"
@@ -416,6 +420,10 @@ function page() {
           onClose={() => setOpenMedia(false)}
         />
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Event Data"
+      />
     </main>
   );
 }

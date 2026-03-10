@@ -1,10 +1,10 @@
 "use client";
 
 import { UUID } from "crypto";
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import HeaderSection from "@/components/commons/HeaderSection";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { GetAllCabinets } from "@/services/admin/GetAllCabinets";
 import { GetAllRole } from "@/services/admin/GetAllRole";
@@ -315,9 +315,11 @@ export default function Page() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <SkeletonPleaseWait />
-      </div>
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading Member Data"
+        styling="bg-white text-black"
+      />
     );
   }
 
@@ -692,6 +694,10 @@ export default function Page() {
           </div>
         </div>
       )}
+      <LoadingFullScreen
+        isSubmitting={isSubmitting}
+        label="Submitting Member Data"
+      />
     </main>
   );
 }

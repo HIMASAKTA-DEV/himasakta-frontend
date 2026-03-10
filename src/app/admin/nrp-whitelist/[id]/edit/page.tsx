@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
@@ -90,8 +91,33 @@ function page() {
     }
   };
 
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const isModalOpen = isSubmitting;
+
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isSubmitting]);
+
   if (!ready) return <SkeletonPleaseWait />;
   if (!jwtToken) return <Unauthorized_404 />;
+
+  if (loading) {
+    return (
+      <LoadingFullScreen
+        isSubmitting={true}
+        label="Loading NRP Whitelist Data"
+        styling="bg-white text-black"
+      />
+    );
+  }
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primaryPink/20 via-white to-primaryGreen/20">
@@ -143,6 +169,16 @@ function page() {
               </button>
             </div>
           </form>
+        )}
+        {isSubmitting && (
+          <div className="flex w-full min-h-screen items-center justify-center bg-black/50 backdrop-blur-sm fixed inset-0 cursor-not-allowed">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-12 w-12 animate-spin rounded-full border-4 border-primaryPink border-t-transparent" />
+              <p className="font-averia text-lg text-white">
+                Submitting NRP Whitelist Data...
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </main>
