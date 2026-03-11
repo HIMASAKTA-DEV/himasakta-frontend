@@ -104,8 +104,8 @@ export default function CabinetPreviewDialog({
               {cabinet.tagline}
             </h2>
             <p className="text-gray-500 font-libertine">
-              Periode: {new Date(cabinet.period_start).getFullYear()} -{" "}
-              {new Date(cabinet.period_end).getFullYear()} • {memberCount}{" "}
+              Periode: {new Date(cabinet.period_start ?? "").getFullYear()} -{" "}
+              {new Date(cabinet.period_end ?? "").getFullYear()} • {memberCount}{" "}
               Anggota
             </p>
           </div>

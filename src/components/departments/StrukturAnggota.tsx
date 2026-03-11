@@ -25,7 +25,7 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
 
   const handleResize = () => {
     if (window.innerWidth < 1024) {
-      setItemsPerSlide(2); // mobile & tablet
+      setItemsPerSlide(1); // mobile & tablet
     } else {
       setItemsPerSlide(3); // desktop
     }
@@ -114,12 +114,12 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {slides.map((slide, idx) => (
-              <div key={idx} className="min-w-full flex gap-4">
+              <div
+                key={idx}
+                className="min-w-full grid grid-cols-1 grid-rows-1 lg:grid-cols-3 lg:grid-rows-1 lg:gap-4"
+              >
                 {slide.map((member, i) => (
-                  <div
-                    key={i}
-                    className="basis-1/2 max-w-1/2 lg:basis-1/3 lg:max-w-1/3 flex flex-col gap-3 items-center"
-                  >
+                  <div key={i} className="w-full flex-col flex max-lg:pb-10">
                     <div className="w-full aspect-square lg:h-[500px] relative rounded-lg shadow">
                       <ImageFallback
                         isFill

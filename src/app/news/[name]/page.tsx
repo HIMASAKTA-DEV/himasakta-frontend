@@ -88,7 +88,7 @@ function page() {
                     hour12: false,
                   })
                 : ""}{" "}
-              &middot; By {news?.slug}
+              &middot; By HIMASAKTA
             </p>
 
             <div className="flex flex-col items-center justify-center mb-10">

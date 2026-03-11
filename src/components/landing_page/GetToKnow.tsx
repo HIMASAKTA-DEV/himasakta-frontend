@@ -1,13 +1,13 @@
 "use client";
 
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
-import truncate from "@/lib/truncated";
 import { getEventThisMonth } from "@/services/landing_page/GetToKnow";
 import { MonthlyEvent } from "@/types/data/GetToKnow";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FiExternalLink } from "react-icons/fi";
 import ImageFallback from "../commons/ImageFallback";
+import MarkdownRenderer from "../commons/MarkdownRenderer";
 
 export default function GetToKnow() {
   // const eventsThisMonth = eventsThisMo.slice(0, 5);
@@ -52,11 +52,11 @@ export default function GetToKnow() {
       {loading ? (
         <SkeletonGrid
           withDesc
-          className="grid grid-cols-2 lg:grid-cols-5 gap-6 w-full"
+          className="grid grid-cols-1 lg:grid-cols-5 gap-6 w-full"
           count={5}
         />
       ) : (
-        <div className="w-full grid grid-cols-2 gap-6 lg:flex lg:flex-nowrap lg:justify-center lg:overflow-x-auto pb-4">
+        <div className="w-full grid grid-cols-1 gap-6 lg:flex lg:flex-nowrap lg:justify-center lg:overflow-x-auto pb-4">
           {events.length > 0 ? (
             events.map((event) => (
               <div
@@ -90,9 +90,16 @@ export default function GetToKnow() {
                       {event.title}
                     </h2>
                   </Link>
-                  <p className="font-libertine text-sm text-gray-600 line-clamp-3">
-                    {truncate({ text: event.description })}
-                  </p>
+                  <Link href={event.link} target="_blank">
+                    <div className="relative group text-sm text-gray-600 h-[50px] lg:h-[80px] overflow-hidden">
+                      <MarkdownRenderer>{event.description}</MarkdownRenderer>
+                      <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-24 bg-gradient-to-t from-white to-transparent transition-all duration-300 flex items-end justify-center">
+                        <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-2">
+                          Baca selengkapnya
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
               </div>
             ))

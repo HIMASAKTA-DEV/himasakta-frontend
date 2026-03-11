@@ -96,7 +96,7 @@ export default function InformasiBerita() {
 
       {loading ? (
         <SkeletonGrid
-          className="grid-cols-2 grid-rows-2 lg:grid-rows-1 lg:grid-cols-4 gap-6"
+          className="grid-cols-1 grid-rows-4 lg:grid-rows-1 lg:grid-cols-4 gap-6"
           count={4}
           withDesc
         />
@@ -114,7 +114,7 @@ export default function InformasiBerita() {
             {slides.map((slide, idx) => (
               <div
                 key={idx}
-                className="min-w-full grid grid-cols-2 grid-rows-2 lg:grid-cols-4 lg:grid-rows-1 gap-6"
+                className="min-w-full grid grid-cols-1 grid-rows-4 lg:grid-cols-4 lg:grid-rows-1 gap-6"
               >
                 {slide.map((news) => (
                   <NewsComps key={news.id} {...news} />
@@ -139,7 +139,7 @@ export default function InformasiBerita() {
                 <FaChevronRight />
               </button>
 
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2">
                 {slides.map((_, idx) => (
                   <span
                     key={idx}

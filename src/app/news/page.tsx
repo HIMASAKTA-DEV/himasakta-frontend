@@ -262,7 +262,7 @@ export default function Page() {
               ref={inputReference}
               onChange={handleInputChange}
               onFocus={() => setShowDd(true)}
-              placeholder="Cari berita... e.g. Penerimaan anggota baru"
+              placeholder="Cari berita..."
               className="w-full shadow-lg p-2 lg:p-4 border border-gray-200 rounded-full bg-slate-50 pl-12 lg:pl-16"
               onKeyDown={handleSearchKeyDown}
             />
