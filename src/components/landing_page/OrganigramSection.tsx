@@ -35,7 +35,7 @@ export default function OrganigramSection() {
   // }, []);
 
   return (
-    <section className="w-full flex flex-col gap-6">
+    <section className="w-full flex flex-col gap-6 px-4">
       <HeaderSection
         title="Struktur Organisasi HIMASAKTA"
         sub="Organigram kepengurusan HIMASAKTA"
