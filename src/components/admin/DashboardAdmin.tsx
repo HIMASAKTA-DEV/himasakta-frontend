@@ -1,4 +1,5 @@
 import HeaderSection from "../commons/HeaderSection";
+import WebStats from "./WebStats";
 
 type Props = {
   usr: string;
@@ -7,7 +8,7 @@ type Props = {
 
 function DashboardAdmin({ usr, onLogout }: Props) {
   return (
-    <section className="flex flex-col gap-10">
+    <section className="flex flex-col gap-10 lg:p-10">
       <div className="flex flex-col gap-4">
         <HeaderSection title="Dashboard" />
 
@@ -23,6 +24,8 @@ function DashboardAdmin({ usr, onLogout }: Props) {
         </div>
 
         <p>How are you today?</p>
+        <p>Here I give you our website statistic</p>
+        <WebStats />
       </div>
       <main className="flex flex-col gap-4 w-full lg:p-4">
         <h1 className="font-inter font-bold text-3xl lg:text-4xl text-center">
