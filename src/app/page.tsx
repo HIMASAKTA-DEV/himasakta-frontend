@@ -1,3 +1,5 @@
+"use client";
+
 import DepartemenSection from "@/components/landing_page/DepartemenSection";
 import GetToKnow from "@/components/landing_page/GetToKnow";
 import HeroSection from "@/components/landing_page/HeroSection";
@@ -6,10 +8,13 @@ import InformasiKabinet from "@/components/landing_page/InformasiKabinet";
 import OrganigramSection from "@/components/landing_page/OrganigramSection";
 import ProfilHimpunan from "@/components/landing_page/ProfilHimpunan";
 import Layout from "@/layouts/Layout";
-
-export const revalidate = 60;
+import { trackVisit } from "@/lib/analytic";
+import { useEffect } from "react";
 
 export default async function Home() {
+  useEffect(() => {
+    trackVisit();
+  }, []);
   return (
     <>
       {/* TODO: Add hover effect in each section */}
@@ -21,7 +26,7 @@ export default async function Home() {
           </div>
 
           {/* Normal content area */}
-          <div className="max-w-8xl flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32">
+          <div className="max-w-7xl flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32">
             <ProfilHimpunan />
             <InformasiKabinet />
             <OrganigramSection />

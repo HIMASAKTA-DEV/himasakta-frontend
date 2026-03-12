@@ -10,6 +10,8 @@ import {
 } from "@/styles/global-fonts";
 import type { Metadata } from "next";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: {
     default: "HIMASAKTA ITS | Himpunan Mahasiswa Aktuaria ITS",
