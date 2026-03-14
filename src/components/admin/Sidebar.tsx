@@ -9,6 +9,7 @@ import { LuClipboardList, LuScroll, LuUsers } from "react-icons/lu";
 import { MdDashboard } from "react-icons/md";
 import NextImage from "../NextImage";
 import ButtonLink from "../links/ButtonLink";
+import { IoIosSettings } from "react-icons/io";
 
 type Menu = {
   label: string;
@@ -34,6 +35,7 @@ const menus: Menu[] = [
     hash: "manage-nrp-whitelist",
     icon: FiCheckSquare,
   },
+  { label: "Global Settings", hash: "global-settings", icon: IoIosSettings },
 ];
 
 export default function Sidebar({ active }: { active: string }) {

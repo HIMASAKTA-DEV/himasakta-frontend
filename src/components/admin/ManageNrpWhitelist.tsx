@@ -114,7 +114,7 @@ function ManageNrpWhitelist() {
             </select>
           </div>
           <Link
-            href="/admin/nrp-whitelist/add"
+            href="/cp/nrp-whitelist/add"
             className="px-5 py-2.5 bg-primaryPink text-white font-libertine rounded-xl hover:opacity-90 active:scale-95 duration-300 transition-all shadow-lg shadow-pink-200 flex items-center gap-2"
           >
             + Add NRP
@@ -151,7 +151,7 @@ function ManageNrpWhitelist() {
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">
                       <Link
-                        href={`/admin/nrp-whitelist/${entry.id}/edit`}
+                        href={`/cp/nrp-whitelist/${entry.id}/edit`}
                         className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
                       >
                         <HiOutlinePencilAlt size={16} />

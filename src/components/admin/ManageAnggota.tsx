@@ -223,7 +223,7 @@ function ManageAnggota() {
             </select>
           </div>
           <Link
-            href="/admin/anggota/add"
+            href="/cp/anggota/add"
             className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
           >
             + Add Member
@@ -258,7 +258,7 @@ function ManageAnggota() {
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
                         <Link
-                          href={`/admin/anggota/${m.id}/edit`}
+                          href={`/cp/anggota/${m.id}/edit`}
                           className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
                         >
                           <HiOutlinePencilAlt size={16} />

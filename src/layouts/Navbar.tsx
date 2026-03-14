@@ -38,7 +38,7 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
           ? "bg-transparent border-transparent shadow-none text-white"
           : open
             ? "bg-white/80 border-b border-neutral-300 shadow-md text-black"
-            : "bg-white/90 border-b border-neutral-300 shadow-md text-black backdrop-blur-md",
+            : "bg-white/70 border-b border-neutral-300 shadow-md text-black backdrop-blur-3xl",
       )}
     >
       {/* Logo */}

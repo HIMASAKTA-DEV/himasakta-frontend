@@ -57,60 +57,54 @@ function WebStats() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="relative overflow-hidden rounded-3xl p-10 bg-gradient-to-br from-[#D58A94] via-pink-400 to-primaryPink shadow-xl">
-          <div className="absolute w-72 h-72 bg-white/20 rounded-full blur-3xl top-[-50px] right-[-50px]" />
+        <div className="absolute w-72 h-72 bg-white/20 rounded-full blur-3xl top-[-50px] right-[-50px]" />
 
-          <div className="bg-white p-6 rounded-3xl shadow-lg ring-1 ring-gray-200 text-center lg:h-[290px] flex items-center justify-center flex-col">
-            <p className="text-gray-600 text-xl tracking-widest">
-              TOTAL VISITORS
-            </p>
+        <div className="bg-white p-6 rounded-3xl shadow-lg ring-1 ring-gray-200 text-center lg:h-[290px] flex items-center justify-center flex-col">
+          <p className="text-gray-600 text-xl tracking-widest">
+            TOTAL VISITORS
+          </p>
 
-            <h1 className="text-7xl font-bold mt-2 text-[#D58A94]">
-              {data?.VisitorCount ?? "-"}
-            </h1>
-          </div>
+          <h1 className="text-7xl font-bold mt-2 text-[#D58A94]">
+            {data?.VisitorCount ?? "-"}
+          </h1>
         </div>
 
         {/* Graph */}
-        <div className="relative overflow-hidden rounded-3xl p-10 text-white bg-gradient-to-br from-primaryGreen/80 via-green-400/70 to-primaryGreen/80 backdrop-blur-xl shadow-xl">
-          <div className="bg-white p-6 rounded-3xl shadow-lg ring-1 ring-gray-200">
-            <p className="text-gray-600 text-sm mb-4">Visitor Growth</p>
+        <div className="bg-white p-6 rounded-3xl shadow-lg ring-1 ring-gray-200">
+          <p className="text-gray-600 text-sm mb-4">Visitor Growth</p>
 
-            <div className="max-lg:overflow-x-auto">
-              <div className="min-w-[600px] h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={data?.NewVisitorsGraph ?? []}>
-                    <CartesianGrid strokeDasharray="3 3" />
+          <div className="max-lg:overflow-x-auto">
+            <div className="min-w-[600px] h-[200px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={data?.NewVisitorsGraph ?? []}>
+                  <CartesianGrid strokeDasharray="3 3" />
 
-                    <XAxis
-                      dataKey="timestamp"
-                      tickFormatter={(value) =>
-                        new Date(value).toLocaleDateString("id-ID", {
-                          day: "2-digit",
-                          month: "short",
-                        })
-                      }
-                    />
+                  <XAxis
+                    dataKey="timestamp"
+                    tickFormatter={(value) =>
+                      new Date(value).toLocaleDateString("id-ID", {
+                        day: "2-digit",
+                        month: "short",
+                      })
+                    }
+                  />
 
-                    <YAxis />
+                  <YAxis />
 
-                    <Tooltip
-                      labelFormatter={(v) =>
-                        new Date(v).toLocaleString("id-ID")
-                      }
-                    />
+                  <Tooltip
+                    labelFormatter={(v) => new Date(v).toLocaleString("id-ID")}
+                  />
 
-                    <Line
-                      type="monotone"
-                      dataKey="count"
-                      stroke="#22C55E"
-                      strokeWidth={3}
-                      dot={false}
-                      activeDot={{ r: 6 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+                  <Line
+                    type="monotone"
+                    dataKey="count"
+                    stroke="#22C55E"
+                    strokeWidth={3}
+                    dot={false}
+                    activeDot={{ r: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>

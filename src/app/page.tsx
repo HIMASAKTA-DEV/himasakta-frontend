@@ -26,7 +26,7 @@ export default async function Home() {
           </div>
 
           {/* Normal content area */}
-          <div className="max-w-7xl flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32">
+          <div className="max-w-full flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32">
             <ProfilHimpunan />
             <InformasiKabinet />
             <OrganigramSection />
