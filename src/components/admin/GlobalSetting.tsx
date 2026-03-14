@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import HeaderSection from "../commons/HeaderSection";
-import { GlobalSettings } from "@/types/data/GlobalSettings";
-import { Controller, useForm } from "react-hook-form";
 import api from "@/lib/axios";
-import { ApiResponse } from "@/types/commons/apiResponse";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import { ApiResponse } from "@/types/commons/apiResponse";
+import { GlobalSettings } from "@/types/data/GlobalSettings";
+import { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import HeaderSection from "../commons/HeaderSection";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 type FormValues = Omit<GlobalSettings, "SocialMedia"> & {
@@ -26,10 +26,8 @@ const SOCIAL_KEYS = [
   "linktree",
 ] as const;
 
-type SocialKey = (typeof SOCIAL_KEYS)[number];
-
 function GlobalSetting() {
-  const [data, setData] = useState<GlobalSettings | null>(null);
+  const [_data, setData] = useState<GlobalSettings | null>(null);
   const [loading, setLoading] = useState(false);
   const [descVal, setDescVal] = useState("");
   const descRef = useRef<HTMLTextAreaElement | null>(null);
@@ -38,9 +36,8 @@ function GlobalSetting() {
   const {
     register,
     reset,
-    formState: { isSubmitting, dirtyFields },
+    formState: { isSubmitting },
     handleSubmit,
-    setValue,
     control,
   } = useForm<FormValues>();
 

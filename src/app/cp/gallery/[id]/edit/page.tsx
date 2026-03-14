@@ -14,7 +14,6 @@ import Select, { StylesConfig } from "react-select";
 
 import Typography from "@/components/Typography";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
-import VerifToken from "@/components/admin/VerifToken";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";

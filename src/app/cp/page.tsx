@@ -14,6 +14,7 @@ import ManageGallery from "@/components/admin/ManageGallery";
 import ManageNews from "@/components/admin/ManageNews";
 import ManageProgenda from "@/components/admin/ManageProgenda";
 
+import GlobalSetting from "@/components/admin/GlobalSetting";
 import ManageEvent from "@/components/admin/ManageEvent";
 import ManageNrpWhitelist from "@/components/admin/ManageNrpWhitelist";
 import ImageFallback from "@/components/commons/ImageFallback";
@@ -22,7 +23,6 @@ import ButtonLink from "@/components/links/ButtonLink";
 import api from "@/lib/axios";
 import { ApiResponse } from "@/types/api";
 import { FaChevronLeft } from "react-icons/fa";
-import GlobalSetting from "@/components/admin/GlobalSetting";
 
 type LoginForm = {
   username: string;

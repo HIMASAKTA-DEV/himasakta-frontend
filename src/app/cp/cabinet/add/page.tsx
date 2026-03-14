@@ -16,7 +16,6 @@ import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
-import VerifToken from "@/components/admin/VerifToken";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ApiResponse } from "@/types/commons/apiResponse";
 import { DepartmentType } from "@/types/data/DepartmentType";

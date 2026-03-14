@@ -13,7 +13,6 @@ import {
 import Typography from "@/components/Typography";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
-import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";

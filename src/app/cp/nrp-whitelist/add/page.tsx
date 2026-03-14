@@ -1,6 +1,5 @@
 "use client";
 
-import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
