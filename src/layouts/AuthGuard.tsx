@@ -8,7 +8,7 @@ export default function AuthGuard() {
 
   useEffect(() => {
     // kalau keluar dari /admin → logout
-    if (!pathname.startsWith("/admin")) {
+    if (!pathname.startsWith("/cp")) {
       localStorage.removeItem("jwt_token");
       localStorage.removeItem("admin_username");
     }

@@ -97,7 +97,7 @@ function ManageEvent() {
             </select>
           </div>
           <Link
-            href="/admin/kegiatan/add"
+            href="/cp/kegiatan/add"
             className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
           >
             + Add Event
@@ -134,7 +134,7 @@ function ManageEvent() {
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-start gap-2 -translate-x-2">
                       <Link
-                        href={`/admin/kegiatan/${e.id}/edit`}
+                        href={`/cp/kegiatan/${e.id}/edit`}
                         className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
                       >
                         <HiOutlinePencilAlt size={16} />

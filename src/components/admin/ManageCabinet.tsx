@@ -168,7 +168,7 @@ function ManageCabinet() {
           </div>
 
           <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
-            <Link href={"/admin/cabinet/add"}>+ Add Cabinet</Link>
+            <Link href={"/cp/cabinet/add"}>+ Add Cabinet</Link>
           </button>
         </div>
       </div>
@@ -244,7 +244,7 @@ function ManageCabinet() {
                         <HiOutlineEye size={18} />
                       </button>
                       <Link
-                        href={`/admin/cabinet/${cabinet.id}/edit`}
+                        href={`/cp/cabinet/${cabinet.id}/edit`}
                         className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
                       >
                         <HiOutlinePencilAlt size={16} />
@@ -300,7 +300,7 @@ function ManageCabinet() {
                         <HiOutlineEye size={18} />
                       </button>
                       <Link
-                        href={`/admin/cabinet/${cabinet.id}/edit`}
+                        href={`/cp/cabinet/${cabinet.id}/edit`}
                         className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
                       >
                         <HiOutlinePencilAlt size={16} />

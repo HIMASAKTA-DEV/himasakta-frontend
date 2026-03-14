@@ -4,6 +4,7 @@ import clsx from "clsx";
 import type { IconType } from "react-icons";
 import { FaChevronLeft, FaRegBuilding, FaRegUser } from "react-icons/fa";
 import { FiCheckSquare, FiEdit3 } from "react-icons/fi";
+import { IoIosSettings } from "react-icons/io";
 import { IoImagesOutline } from "react-icons/io5";
 import { LuClipboardList, LuScroll, LuUsers } from "react-icons/lu";
 import { MdDashboard } from "react-icons/md";
@@ -34,6 +35,7 @@ const menus: Menu[] = [
     hash: "manage-nrp-whitelist",
     icon: FiCheckSquare,
   },
+  { label: "Global Settings", hash: "global-settings", icon: IoIosSettings },
 ];
 
 export default function Sidebar({ active }: { active: string }) {

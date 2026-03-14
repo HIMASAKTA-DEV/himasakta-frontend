@@ -142,7 +142,7 @@ function ManageGallery() {
             </select>
           </div>
           <Link
-            href="/admin/gallery/add"
+            href="/cp/gallery/add"
             className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
           >
             + Add Gallery
@@ -194,7 +194,7 @@ function ManageGallery() {
                     </span>
                   )}
                   <Link
-                    href={`/admin/gallery/${gallery.id}/edit`}
+                    href={`/cp/gallery/${gallery.id}/edit`}
                     className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
                   >
                     <HiOutlinePencilAlt size={16} />
