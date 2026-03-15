@@ -10,7 +10,7 @@ import MarkdownRenderer from "../commons/MarkdownRenderer";
 
 export default function NewsComps({ ...news }: NewsType) {
   // wajib normalize tags ke string[]
-  const tags = normalizeHashtags(news.hashtags);
+  const tags = normalizeHashtags(news.tags || news.hashtags);
 
   return (
     <div

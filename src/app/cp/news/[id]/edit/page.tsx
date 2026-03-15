@@ -72,10 +72,14 @@ export default function AddNewsPage() {
         const resp = await api.get(`/news/${id}`);
         const data = resp.data.data;
 
+        const hashtags = data.tags
+          ? data.tags.map((t: { name: string }) => t.name).join(", ")
+          : data.hashtags ?? "";
+
         reset({
           title: data.title ?? "",
           tagline: data.tagline ?? "",
-          hashtags: data.hashtags ?? "",
+          hashtags: hashtags,
           content: data.content ?? "",
           thumbnail_id: data.thumbnail_id ?? "",
           published_at: data.published_at ? data.published_at.slice(0, 10) : "",
