@@ -1,12 +1,11 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import Link from "next/link";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   HiOutlineEye,
   HiOutlinePencilAlt,
   HiOutlineTrash,
 } from "react-icons/hi";
 import RenderPagination from "../_news/RenderPagination";
-import MarkdownRenderer from "../commons/MarkdownRenderer";
-import Link from "next/link";
 
 type HelpModalProps = {
   children: React.ReactNode;

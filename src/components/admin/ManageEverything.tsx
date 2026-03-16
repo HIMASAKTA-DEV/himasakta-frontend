@@ -1,44 +1,44 @@
 "use client";
 
 import api from "@/lib/axios";
+import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import { GetManageCabinet } from "@/services/admin/GetManageCabinets";
+import { GetManageEvents } from "@/services/admin/GetManageEvent";
+import { GetManageNews } from "@/services/admin/GetManageNews";
 import { GetMemberByDeptIdPaginated } from "@/services/admin/GetMemberByIdPaginated";
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
+import type { ManageCabinet } from "@/types/admin/ManageCabinetType";
+import { ManageEventsType } from "@/types/admin/ManageEvents";
+import { ManageGalleryType } from "@/types/admin/ManageGallery";
+import { ManageNewsType } from "@/types/admin/ManageNewsType";
+import { ApiResponse } from "@/types/commons/apiResponse";
 import { DepartmentType } from "@/types/data/DepartmentType";
+import { GlobalSettings } from "@/types/data/GlobalSettings";
 import { MemberType } from "@/types/data/MemberType";
+import { ProgendaType } from "@/types/data/ProgendaType";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { FaChevronUp } from "react-icons/fa";
 import {
   HiOutlineEye,
   HiOutlinePencilAlt,
   HiOutlineTrash,
 } from "react-icons/hi";
+import { IoIosHelpCircle } from "react-icons/io";
+import Typography from "../Typography";
 import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
+import ImageFallback from "../commons/ImageFallback";
+import MarkdownRenderer from "../commons/MarkdownRenderer";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
-import { GetManageCabinet } from "@/services/admin/GetManageCabinets";
-import type { ManageCabinet } from "@/types/admin/ManageCabinetType";
 import CabinetPreviewDialog from "./CabinetPreviewDialog";
-import { IoIosHelpCircle } from "react-icons/io";
 import {
   HelpModal,
   ManageCabinetHelp,
   ManageDepartmentHelp,
 } from "./HelpModal";
-import { GetManageEvents } from "@/services/admin/GetManageEvent";
-import { ManageEventsType } from "@/types/admin/ManageEvents";
-import { getApiErrorMessage } from "@/services/GetApiErrMessage";
-import { ManageGalleryType } from "@/types/admin/ManageGallery";
-import { ApiResponse } from "@/types/commons/apiResponse";
-import Typography from "../Typography";
-import ImageFallback from "../commons/ImageFallback";
-import { GetManageNews } from "@/services/admin/GetManageNews";
-import { ManageNewsType } from "@/types/admin/ManageNewsType";
-import MarkdownRenderer from "../commons/MarkdownRenderer";
-import { ProgendaType } from "@/types/data/ProgendaType";
 import WebStats from "./WebStats";
-import { GlobalSettings } from "@/types/data/GlobalSettings";
-import { Controller, useForm } from "react-hook-form";
 
 // SEO: manage anggota, Manage Anggota, ManageAggota
 export function ManageAnggota() {
@@ -157,8 +157,8 @@ export function ManageAnggota() {
               className="flex w-full px-3 py-2 border rounded-lg bg-slate-100 text-left items-center justify-between text-sm"
             >
               {selectedDept
-                ? (depts.find((d) => d.id === selectedDept)?.name ??
-                  "Pilih Departemen")
+                ? depts.find((d) => d.id === selectedDept)?.name ??
+                  "Pilih Departemen"
                 : "Pilih Departemen"}
               <FaChevronUp
                 className={`

@@ -15,7 +15,6 @@ import {
   FaCheck,
   FaChevronDown,
   FaChevronLeft,
-  FaChevronRight,
   FaFilter,
   FaSearch,
   FaSortAmountUpAlt,
@@ -41,7 +40,7 @@ function NewsPage() {
 
   const [news, setNews] = useState<NewsType[] | []>([]);
   const [loading, setLoading] = useState(true);
-  const [hasNext, setHasNext] = useState(false);
+  const [_hasNext, setHasNext] = useState(false);
   const [error, setError] = useState(false);
 
   // global news data fetching
