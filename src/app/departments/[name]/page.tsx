@@ -52,6 +52,14 @@ function page() {
   return (
     <Layout withFooter withNavbar={false} transparentOnTop>
       <main className="min-h-screen px-4 flex flex-col lg:px-40 gap-4 mb-20 py-10 lg:py-16">
+        <ButtonLink
+          href="/"
+          className="w-28 flex gap-4 items-center mb-10"
+          variant="black"
+        >
+          <FaChevronLeft />
+          <p>Home</p>
+        </ButtonLink>
         <NavbarDept />
         <section className="bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.08)] mb-10 flex flex-col gap-8 p-5 lg:p-12 overflow-hidden">
           {loading ? (
@@ -75,15 +83,6 @@ function page() {
           <ProgendaDept {...dept} />
           <GalleryDept {...dept} />
         </section>
-
-        <ButtonLink
-          href="/"
-          className="w-28 flex gap-4 items-center mb-10"
-          variant="black"
-        >
-          <FaChevronLeft />
-          <p>Home</p>
-        </ButtonLink>
       </main>
     </Layout>
   );

@@ -27,6 +27,10 @@ function GalleryDept({ ...dept }: DepartmentType) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [_cntItems, setCntItems] = useState(3);
+  const [previewImage, setPreviewImage] = useState<{
+    url: string;
+    caption?: string;
+  } | null>(null);
   const handleResize = () => {
     if (window.innerWidth < 1024) {
       setCntItems(2); // mobile & tablet
@@ -65,6 +69,15 @@ function GalleryDept({ ...dept }: DepartmentType) {
     fetchGallery(dept.id);
   }, [dept?.id]);
 
+  useEffect(() => {
+    const isModalOpen = !!previewImage;
+    if (isModalOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [previewImage]);
+
   if (loading) {
     return (
       <div className="flex flex-col gap-8 items-center">
@@ -95,6 +108,11 @@ function GalleryDept({ ...dept }: DepartmentType) {
             <div
               className="group relative aspect-square overflow-hidden bg-gray-100 w-full lg:h-[400px] rounded-lg"
               key={idx}
+              onClick={() =>
+                setPreviewImage({
+                  url: g.imageUrl,
+                })
+              }
             >
               <ImageFallback
                 isFill
@@ -107,7 +125,7 @@ function GalleryDept({ ...dept }: DepartmentType) {
       )}
 
       {/* Pagination & navigation */}
-      <div className="flex items-center justify-between gap-6 py-10">
+      <div className="flex max-lg:flex-col-reverse items-center justify-between gap-6 py-10">
         <p className="font-libertine text-gray-500">
           Showing{" "}
           <span>
@@ -144,6 +162,33 @@ function GalleryDept({ ...dept }: DepartmentType) {
           </button>
         </div>
       </div>
+      {/* Image preview modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="relative lg:max-w-[50vw] lg:max-h-[70vh] max-h-[80vh] max-w-[80vw] flex flex-col items-center gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={previewImage.url}
+              alt={previewImage.caption}
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+            />
+            <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
+              {previewImage.caption}
+            </p>
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -94,7 +94,6 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
         <h1 className="text-2xl font-libertine font-semibold">
           Galeri Kabinet
         </h1>
-        <small>Klik untuk memperbesar gambar</small>
       </div>
       {galleries.length <= 0 ? (
         <div className="w-full flex items-center">

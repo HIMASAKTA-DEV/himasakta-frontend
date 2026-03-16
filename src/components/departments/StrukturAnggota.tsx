@@ -22,6 +22,19 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
   const [error, setError] = useState(false);
 
   const [itemsPerSlide, setItemsPerSlide] = useState(3);
+  const [previewImage, setPreviewImage] = useState<{
+    url: string;
+    caption?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const isModalOpen = !!previewImage;
+    if (isModalOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [previewImage]);
 
   const handleResize = () => {
     if (window.innerWidth < 1024) {
@@ -120,11 +133,18 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
               >
                 {slide.map((member, i) => (
                   <div key={i} className="w-full flex-col flex max-lg:pb-10">
-                    <div className="w-full aspect-square lg:h-[500px] relative rounded-lg shadow">
+                    <div
+                      className="w-full aspect-square lg:h-[500px] relative rounded-lg shadow"
+                      onClick={() =>
+                        setPreviewImage({
+                          url: member.photoUrl ?? "",
+                        })
+                      }
+                    >
                       <ImageFallback
                         isFill
                         src={member.photoUrl}
-                        imgStyle="rounded-lg object-cover"
+                        imgStyle="rounded-lg object-cover hover:cursor-pointer"
                       />
                     </div>
 
@@ -175,6 +195,33 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
           </>
         )}
       </div>
+      {/* Image preview modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="relative lg:max-w-[50vw] lg:max-h-[70vh] max-h-[80vh] max-w-[80vw] flex flex-col items-center gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={previewImage.url}
+              alt={previewImage.caption}
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+            />
+            <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
+              {previewImage.caption}
+            </p>
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
