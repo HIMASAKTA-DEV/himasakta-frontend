@@ -270,7 +270,7 @@ export default function useProgendaEdit() {
           );
         }
       }
-      route.push("/admin#manage-progenda");
+      route.push("/cp#manage-progenda");
     } catch (err) {
       alert(`Gagal update progenda: ${getApiErrorMessage(err)}`);
     }

@@ -10,7 +10,7 @@ import MarkdownRenderer from "../commons/MarkdownRenderer";
 
 export default function CardNews({ ...news }: NewsType) {
   // wajib normalize tags ke string[]
-  const tags = normalizeHashtags(news.hashtags);
+  const tags = normalizeHashtags(news.tags || news.hashtags);
 
   return (
     <div
@@ -56,22 +56,22 @@ export default function CardNews({ ...news }: NewsType) {
 
       {/* Text */}
       <div className="flex flex-col gap-2">
-        <Link href={`/news/${news.id}`}>
+        <Link href={`/news/${news.slug}`}>
           <h3 className="font-semibold text-base lg:text-lg line-clamp-2 hover:underline active:text-primaryGreen transition-colors">
             {news.title}
           </h3>
         </Link>
 
-        {tags && <HashTags tags={tags} />}
+        {tags && <HashTags tags={tags} clickable />}
 
         <div className="space-y-1">
-          <Link href={`/news/${news.id}`}>
+          <Link href={`/news/${news.slug}`}>
             <p className="text-sm text-gray-500 line-clamp-1 italic hover:text-gray-700 transition active:text-primaryGreen">
               {news.tagline}
             </p>
           </Link>
 
-          <Link href={`/news/${news.id}`}>
+          <Link href={`/news/${news.slug}`}>
             <div className="relative group text-sm text-gray-600 h-[72px] lg:h-[96px] overflow-hidden">
               <MarkdownRenderer>{news.content}</MarkdownRenderer>
               <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-24 bg-gradient-to-t from-white to-transparent transition-all duration-300 flex items-end justify-center">

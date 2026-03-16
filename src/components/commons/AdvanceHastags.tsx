@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 interface HashTagsProps {
@@ -29,18 +30,19 @@ export default function AdvanceHashTags({
         const cleanTag = normalizeTag(tag);
 
         return (
-          <span
+          <Link
             key={idx}
-            className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600"
+            href={`/news?tags=${encodeURIComponent(cleanTag)}`}
+            className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors z-50 cursor-pointer"
           >
             #{cleanTag}
-          </span>
+          </Link>
         );
       })}
 
       {remaining > 0 && (
         <span
-          className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-600"
+          className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors cursor-pointer"
           onClick={() => setShowAll(true)}
         >
           +{remaining}

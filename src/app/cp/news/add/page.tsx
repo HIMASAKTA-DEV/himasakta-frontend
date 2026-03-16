@@ -3,18 +3,21 @@
 import Link from "next/link";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
-import { FaChevronLeft, FaCloudUploadAlt } from "react-icons/fa";
+import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 import { UUID } from "crypto";
 import Typography from "@/components/Typography";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import MediaSelector from "@/components/admin/MediaSelector";
+import TagInput from "@/components/admin/TagInput";
 import VerifToken from "@/components/admin/VerifToken";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 type FormValues = {
   title: string;
@@ -31,6 +34,7 @@ type PhotoData = {
 };
 
 export default function AddNewsPage() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -38,6 +42,7 @@ export default function AddNewsPage() {
     reset,
     setValue,
     watch,
+    control,
   } = useForm<FormValues>({
     defaultValues: {
       title: "",
@@ -54,8 +59,6 @@ export default function AddNewsPage() {
   const [descVal, setDescVal] = useState("");
   const [logo, setLogo] = useState<PhotoData | null>(null);
   const [openUpload, setOpenUpload] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [deletingLogo, setDeletingLogo] = useState(false);
   const watchedValues = watch();
   const [isRestored, setIsRestored] = useState(false);
 
@@ -97,67 +100,17 @@ export default function AddNewsPage() {
       setDescVal("");
       setLogo(null);
       localStorage.removeItem("add_event_draft");
+      router.push("/cp#manage-news");
     } catch (err) {
       console.error(err);
       alert(`Gagal menambahkan berita: ${getApiErrorMessage(err)}`);
     }
   };
 
-  // handle image upload
-  const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      setUploading(true);
-
-      const resp = await api.post("/gallery", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      const uploaded: PhotoData = resp.data.data;
-
-      setLogo(uploaded);
-      setValue("thumbnail_id", uploaded.id as string, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-
-      setOpenUpload(false);
-      alert("Berhasil upload gambar");
-    } catch (err) {
-      console.error(err);
-      alert(`Gagal upload gambar: ${getApiErrorMessage(err)}`);
-    } finally {
-      setUploading(false);
-    }
-  };
-
   // handle delete image
-  const handleDeleteImage = async (): Promise<boolean> => {
-    if (!logo?.id) return true;
-
-    const confirmDelete = confirm(
-      "Yakin? Link akan dilepas dan gambar dihapus permanen.",
-    );
-    if (!confirmDelete) return false;
-
-    try {
-      setDeletingLogo(true);
-
-      await api.delete(`/gallery/${logo.id}`);
-
-      setLogo(null);
-      setValue("thumbnail_id", "");
-      alert("Gambar berhasil dihapus");
-    } catch (err) {
-      console.error(err);
-      alert(`Gagal menghapus gambar: ${getApiErrorMessage(err)}`);
-      return false;
-    } finally {
-      setDeletingLogo(false);
-    }
-    return true;
+  const handleDeleteImage = () => {
+    setLogo(null);
+    setValue("thumbnail_id", "");
   };
 
   // temp storage
@@ -211,7 +164,7 @@ export default function AddNewsPage() {
     return (
       <LoadingFullScreen
         isSubmitting={true}
-        label="Loading Event Data"
+        label="Loading Post Data"
         styling="bg-white text-black"
       />
     );
@@ -284,20 +237,20 @@ export default function AddNewsPage() {
             {/* TAGS */}
             <div>
               <label className="block font-semibold mb-2">Tags</label>
-              <input
-                {...register("hashtags", {
-                  validate: (value) =>
-                    value.split(/\s+/).every((tag) => tag.startsWith("#")) ||
-                    "Setiap hashtag harus diawali dengan #",
-                })}
-                placeholder="E.g. #its,#himasakta,..."
-                className="w-full bg-[#f8fafc] border border-gray-200 rounded-xl px-4 py-3 placeholder:text-[#9BA5B7] placeholder:italic text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-medium"
+              <Controller
+                name="hashtags"
+                control={control}
+                rules={{
+                  required: "At least one tag is required",
+                }}
+                render={({ field, fieldState }) => (
+                  <TagInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={fieldState.error?.message}
+                  />
+                )}
               />
-              {errors.hashtags && (
-                <p className="text-sm text-red-500">
-                  {errors.hashtags.message}
-                </p>
-              )}
             </div>
 
             {/* CONTENT */}
@@ -432,10 +385,7 @@ export default function AddNewsPage() {
             >
               <div
                 className="group relative h-full w-full overflow-hidden rounded-2xl"
-                onClick={async () => {
-                  const ok = await handleDeleteImage();
-                  if (ok) setOpenUpload(true);
-                }}
+                onClick={() => setOpenUpload(true)}
               >
                 {logo ? (
                   <img
@@ -458,10 +408,7 @@ export default function AddNewsPage() {
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-300"
-                onClick={async () => {
-                  const ok = await handleDeleteImage();
-                  if (ok) setOpenUpload(true);
-                }}
+                onClick={() => setOpenUpload(true)}
               >
                 <HiOutlinePencilAlt size={16} /> Edit Image
               </button>
@@ -470,7 +417,6 @@ export default function AddNewsPage() {
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-100 hover:text-red-600 transition-all duration-300"
                 onClick={handleDeleteImage}
-                disabled={deletingLogo}
               >
                 <HiOutlineTrash size={16} /> Delete Image
               </button>
@@ -492,7 +438,7 @@ export default function AddNewsPage() {
                   setLogo(null);
                   localStorage.removeItem("add_event_draft");
                 }}
-                disabled={isSubmitting || deletingLogo}
+                disabled={isSubmitting}
                 className="rounded-lg border px-4 py-2 hover:bg-gray-50 transition-all"
               >
                 Reset
@@ -519,68 +465,18 @@ export default function AddNewsPage() {
         </div>
       </div>
       {openUpload && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
-            <h2 className="text-lg font-semibold mb-4">
-              Upload Headline Image
-            </h2>
-
-            <div
-              onClick={() => {
-                if (uploading) return;
-                document.getElementById("upload-input")?.click();
-              }}
-              onDragOver={(e) => !uploading && e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                if (uploading) return;
-                const file = e.dataTransfer.files?.[0];
-                if (file) handleUpload(file);
-              }}
-              className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 transition-all
-          ${
-            uploading || deletingLogo
-              ? "cursor-not-allowed opacity-60 bg-gray-100"
-              : "cursor-pointer hover:border-primaryPink hover:bg-pink-50"
-          }
-        `}
-            >
-              <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
-                <FaCloudUploadAlt />
-              </div>
-
-              <p className="text-sm font-medium">
-                {uploading ? "Uploading..." : "Klik atau drag file ke sini"}
-              </p>
-
-              <p className="text-xs text-gray-500">PNG, JPG, JPEG</p>
-
-              <input
-                id="upload-input"
-                type="file"
-                accept="image/*"
-                hidden
-                disabled={uploading}
-                onChange={(e) => {
-                  if (uploading) return;
-                  if (e.target.files?.[0]) {
-                    handleUpload(e.target.files[0]);
-                  }
-                }}
-              />
-            </div>
-
-            <div className="flex gap-2 pt-6">
-              <button
-                type="button"
-                onClick={() => setOpenUpload(false)}
-                className="flex-1 border py-2 rounded-lg hover:bg-gray-200"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
+        <MediaSelector
+          onClose={() => setOpenUpload(false)}
+          onSelect={(img) => {
+            setLogo(img);
+            setValue("thumbnail_id", img.id, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+            setOpenUpload(false);
+          }}
+          title="Select Headline Image"
+        />
       )}
       <LoadingFullScreen
         isSubmitting={isSubmitting}

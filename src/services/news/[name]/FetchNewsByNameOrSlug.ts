@@ -6,7 +6,7 @@ import { NewsType } from "@/types/data/InformasiBerita";
 import { baseURL } from "@/lib/axios";
 
 export const GetNewsByNameOrSlug = async (slug: string) => {
-  const resp = await fetch(`${baseURL}/news/${slug}`);
+  const resp = await fetch(`${baseURL}/news/s/${slug}`);
 
   if (!resp.ok) {
     throw new Error("Failed to load recent News");

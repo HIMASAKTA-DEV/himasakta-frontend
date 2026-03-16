@@ -6,10 +6,11 @@ import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
-import { STATIC_TAGS } from "@/lib/_dummy_db/_tags/StaticTags";
 import { GetAllNews } from "@/services/news/FetchAllNews";
+import { FetchTags, TagType } from "@/services/news/FetchTags";
 import { NewsType } from "@/types/data/InformasiBerita";
-import React, { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import {
   FaCheck,
   FaChevronDown,
@@ -23,7 +24,17 @@ import {
 const NEWS_PER_PAGE = 9;
 const MIN_LOADING_TIME = 1000;
 
-export default function Page() {
+function NewsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Initialize state from URL params
+  const initialQuery = searchParams.get("s") || "";
+  const initialSortBy = searchParams.get("sort_by") || "id";
+  const initialTags = searchParams.get("tags")
+    ? searchParams.get("tags")!.split(",")
+    : [];
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [totalData, setTotalData] = useState(1);
@@ -46,8 +57,6 @@ export default function Page() {
     const startTime = Date.now();
 
     try {
-      const start = (currentPage - 1) * NEWS_PER_PAGE;
-      const end = start + NEWS_PER_PAGE;
       const params = {
         limit: NEWS_PER_PAGE,
         page: currentPage,
@@ -60,7 +69,7 @@ export default function Page() {
 
       const AllData = await GetAllNews(params);
 
-      const data = AllData.data.slice(start, end);
+      const data = AllData.data;
 
       setNews(data);
       setTotalPage(AllData.meta.total_page ?? 1);
@@ -82,11 +91,50 @@ export default function Page() {
   };
 
   useEffect(() => {
-    fetchNews();
+    const s = searchParams.get("s") || "";
+    const sort_by = searchParams.get("sort_by") || "id";
+    const tagsStr = searchParams.get("tags") || "";
+    const tagsArray = tagsStr ? tagsStr.split(",") : [];
+
+    setQuery(s);
+    setSortBy(sort_by);
+    setSelectedTags(tagsArray);
+    setCurrentPage(1); // Reset page on filter change
+
+    const tagsWithHash = tagsArray.map((t) =>
+      t.startsWith("#") ? t : `#${t}`,
+    );
+    fetchNews(s, sort_by, tagsWithHash.join(","));
+  }, [searchParams]);
+
+  useEffect(() => {
+    const tagsWithHash = selectedTags.map((t) =>
+      t.startsWith("#") ? t : `#${t}`,
+    );
+    fetchNews(query, sortBy, tagsWithHash.join(","));
   }, [currentPage]);
 
+  // URL Sync helper
+  const updateUrl = (
+    newQuery: string,
+    newSortBy: string,
+    newTags: string[],
+  ) => {
+    const params = new URLSearchParams();
+    if (newQuery) params.set("s", newQuery);
+    if (newSortBy && newSortBy !== "id") params.set("sort_by", newSortBy);
+    params.set("sort", "asc"); // API requirement based on initial task
+    if (newTags.length > 0) {
+      params.set("tags", newTags.join(","));
+    } else {
+      params.delete("tags");
+    }
+
+    router.push(`/news?${params.toString()}`, { scroll: false });
+  };
+
   // search bar handler
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [dropdown, setDropdown] = useState<string[]>([]);
   // dd = drop down
   const [showDd, setShowDd] = useState(false);
@@ -125,17 +173,24 @@ export default function Page() {
     ev.preventDefault();
     setShowDd(false);
     setCurrentPage(1);
-    fetchNews(query);
+    const tagsWithHash = selectedTags.map((t) =>
+      t.startsWith("#") ? t : `#${t}`,
+    );
+    updateUrl(query, sortBy, selectedTags);
+    fetchNews(query, sortBy, tagsWithHash.join(","));
   };
 
   const handleInputChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const value = ev.target.value;
-    // biar dd hilang kalo no input
     if (!value.trim()) {
       setDropdown([]);
       setShowDd(false);
       setQuery("");
-      fetchNews();
+      const tagsWithHash = selectedTags.map((t) =>
+        t.startsWith("#") ? t : `#${t}`,
+      );
+      updateUrl("", sortBy, selectedTags);
+      fetchNews("", sortBy, tagsWithHash.join(","));
       return;
     }
     setQuery(value);
@@ -147,7 +202,11 @@ export default function Page() {
     setQuery(val);
     setShowDd(false);
     setCurrentPage(1);
-    fetchNews(val);
+    const tagsWithHash = selectedTags.map((t) =>
+      t.startsWith("#") ? t : `#${t}`,
+    );
+    updateUrl(val, sortBy, selectedTags);
+    fetchNews(val, sortBy, tagsWithHash.join(","));
   };
 
   const handleSearchKeyDown = (ev: React.KeyboardEvent<HTMLInputElement>) => {
@@ -177,7 +236,7 @@ export default function Page() {
   };
 
   // sort handler
-  const [sortBy, setSortBy] = useState("id");
+  const [sortBy, setSortBy] = useState(initialSortBy);
   const [showSortDd, setShowSortDd] = useState(false);
 
   const sortOpts = [
@@ -199,30 +258,61 @@ export default function Page() {
     setSortBy(val);
     setShowSortDd(false);
     setCurrentPage(1);
-    fetchNews(query, val); // urutan perhatikan kocak, jir ngebug gara2 harus pakai val dong
+    const tagsWithHash = selectedTags.map((t) =>
+      t.startsWith("#") ? t : `#${t}`,
+    );
+    updateUrl(query, val, selectedTags);
+    fetchNews(query, val, tagsWithHash.join(","));
   };
 
   // filter handler
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>(initialTags);
   const [showFilterDd, setShowFilterDd] = useState(false);
   const [tagQuery, setTagQuery] = useState("");
 
-  // filter only searched tags
-  // Filter tags berdasarkan input user (case-insensitive)
-  const [filteredTags, setFilteredTags] = useState<string[]>(STATIC_TAGS);
+  const [filteredTags, setFilteredTags] = useState<TagType[]>([]);
+  const [tagPage, setTagPage] = useState(1);
+  const [hasMoreTags, setHasMoreTags] = useState(true);
+  const [loadingTags, setLoadingTags] = useState(false);
 
-  const filterTheTags = () => {
-    const tmp = STATIC_TAGS.filter((tag) =>
-      tag.toLowerCase().includes(tagQuery.toLowerCase()),
-    );
-    setFilteredTags(tmp);
+  const fetchTheTags = async (page = 1, isLoadMore = false) => {
+    setLoadingTags(true);
+    try {
+      const resp = await FetchTags({ search: tagQuery, page });
+      const newTags = resp.data ?? [];
+
+      if (isLoadMore) {
+        setFilteredTags((prev) => [...prev, ...newTags]);
+      } else {
+        setFilteredTags(newTags);
+      }
+
+      // If we got fewer tags than the limit (15), there are no more tags
+      setHasMoreTags(newTags.length === 15);
+      setTagPage(page);
+    } catch (err) {
+      console.error("Failed to fetch tags", err);
+      if (!isLoadMore) setFilteredTags([]);
+    } finally {
+      setLoadingTags(false);
+    }
   };
 
   useEffect(() => {
-    filterTheTags();
+    // Initial fetch of news matching URL params
+    const tagsWithHash = initialTags.map((t) =>
+      t.startsWith("#") ? t : `#${t}`,
+    );
+    fetchNews(initialQuery, initialSortBy, tagsWithHash.join(","));
+  }, []); // Only on mount
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      fetchTheTags();
+    }, 300);
+    return () => clearTimeout(delayDebounce);
   }, [tagQuery]);
 
-  // Handler pilih tag
   const handleToggleTag = (tag: string) => {
     let newTags: string[];
     if (selectedTags.includes(tag)) {
@@ -232,7 +322,17 @@ export default function Page() {
     }
     setSelectedTags(newTags);
     setCurrentPage(1);
-    fetchNews(query, sortBy, newTags.join(",")); // misal backend expect tags=tag1,tag2
+
+    // sync URL
+    updateUrl(query, sortBy, newTags);
+
+    const tagsWithHash = newTags.map((t) => (t.startsWith("#") ? t : `#${t}`));
+    fetchNews(query, sortBy, tagsWithHash.join(","));
+  };
+
+  const handleLoadMoreTags = () => {
+    if (loadingTags || !hasMoreTags) return;
+    fetchTheTags(tagPage + 1, true);
   };
 
   return (
@@ -365,13 +465,18 @@ export default function Page() {
                       >
                         {tag}
                         <button
+                          type="button"
                           onClick={() => {
                             const newTags = selectedTags.filter(
                               (t) => t !== tag,
                             );
                             setSelectedTags(newTags);
                             setCurrentPage(1);
-                            fetchNews(query, sortBy, newTags.join(","));
+                            const tagsWithHash = newTags.map((t) =>
+                              t.startsWith("#") ? t : `#${t}`,
+                            );
+                            updateUrl(query, sortBy, newTags);
+                            fetchNews(query, sortBy, tagsWithHash.join(","));
                           }}
                         >
                           x
@@ -382,22 +487,44 @@ export default function Page() {
                 )}
 
                 <ul className="max-h-60 overflow-auto">
-                  {filteredTags.map((tag) => (
+                  {filteredTags.map((tagObj) => (
                     <li
-                      key={tag}
+                      key={tagObj.id}
                       className={`px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center justify-between ${
-                        selectedTags.includes(tag)
+                        selectedTags.includes(tagObj.name)
                           ? "bg-gray-100 font-semibold"
                           : ""
                       }`}
-                      onClick={() => handleToggleTag(tag)}
+                      onClick={() => handleToggleTag(tagObj.name)}
                     >
-                      {tag}
-                      {selectedTags.includes(tag) && (
+                      {tagObj.name}
+                      {selectedTags.includes(tagObj.name) && (
                         <FaCheck className="text-green-500 ml-2" />
                       )}
                     </li>
                   ))}
+
+                  {hasMoreTags && (
+                    <li className="p-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLoadMoreTags();
+                        }}
+                        disabled={loadingTags}
+                        className="w-full text-center py-2 text-xs text-primaryPink hover:underline disabled:opacity-50"
+                      >
+                        {loadingTags ? "Loading..." : "Load More"}
+                      </button>
+                    </li>
+                  )}
+
+                  {!loadingTags && filteredTags.length === 0 && (
+                    <li className="px-4 py-2 text-center text-xs text-gray-500 italic">
+                      No tags found
+                    </li>
+                  )}
                 </ul>
               </div>
             )}
@@ -460,5 +587,19 @@ export default function Page() {
         </div>
       </main>
     </Layout>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center font-bold font-inter text-2xl text-gray-500 animate-pulse">
+          Loading News...
+        </div>
+      }
+    >
+      <NewsPage />
+    </Suspense>
   );
 }
