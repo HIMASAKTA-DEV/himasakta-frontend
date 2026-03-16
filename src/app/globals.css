@@ -30,7 +30,6 @@ body {
 html {
   scroll-padding-top: 130px;
   /* misal navbar 130px lebihi dari h-nav lah */
-  scroll-behavior: smooth;
 }
 
 .dot-anim span {
@@ -82,7 +81,6 @@ html {
 }
 
 @media (min-width: 1024px) {
-
   .markdown-content p,
   .markdown-content ul,
   .markdown-content ol,

@@ -8,7 +8,7 @@ export default function ImageFallback({
   src,
   alt = "No Image",
   isFill = false,
-  imgStyle = "group-hover:scale-105",
+  imgStyle = "group-hover:scale-110",
   fallback, // New optional prop
 }: {
   src?: string;
@@ -33,7 +33,7 @@ export default function ImageFallback({
       src={src}
       alt={alt}
       fill={isFill}
-      className={`object-cover transition-transform duration-300 ${imgStyle}`}
+      className={`object-cover transition-transform duration-500 ${imgStyle}`}
       onError={() => setError(true)}
     />
   );

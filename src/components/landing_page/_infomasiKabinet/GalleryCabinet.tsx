@@ -3,14 +3,12 @@ import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
 import EventSkeleton from "@/components/commons/skeletons/SkeletonGrid";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
+import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
 import { GetGalleryByCabinetId } from "@/services/landing_page/GeGalleryByCabinetId";
 import { ApiMeta } from "@/types/commons/apiMeta";
 import { GalleryType } from "@/types/data/GalleryType";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import { useEffect, useState } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-
-const LimitGallery = 3;
 
 function GalleryCabinet({ ...cabinet }: CabinetInfo) {
   const [loading, setLoading] = useState(false);
@@ -19,6 +17,28 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
   const [currPg, setCurrPg] = useState(1);
   const [error, setError] = useState(false);
   const [metaData, setMetaData] = useState<ApiMeta | null>(null);
+  const [LimitGallery, setLimitGallery] = useState(3);
+  const [previewImage, setPreviewImage] = useState<{
+    url: string;
+    caption?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setLimitGallery(3);
+      } else if (window.innerWidth > 768) {
+        setLimitGallery(2);
+      } else {
+        setLimitGallery(1);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchGalleryByCabinet = async (cabinetId: string) => {
@@ -43,17 +63,23 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
 
     if (!cabinet.id) return;
     fetchGalleryByCabinet(cabinet.id);
-  }, [currPg]);
+  }, [currPg, LimitGallery, cabinet.id]);
+
+  useEffect(() => {
+    const isModalOpen = !!previewImage;
+    if (isModalOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [previewImage]);
 
   if (loading) {
     return (
       <div className="flex flex-col gap-8 items-center">
         <HeaderSection title={"Galeri Departemen"} />
         <div className="w-full">
-          <EventSkeleton
-            className="grid grid-cols-3 grid-rows-3"
-            count={LimitGallery}
-          />
+          <SkeletonSection />
         </div>
         <SkeletonPleaseWait />
       </div>
@@ -64,7 +90,12 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
 
   return (
     <div className="flex flex-col gap-8 px-4 w-full">
-      <h1 className="text-lg font-libertine font-semibold">Galeri Kabinet</h1>
+      <div>
+        <h1 className="text-2xl font-libertine font-semibold">
+          Galeri Kabinet
+        </h1>
+        <small>Klik untuk memperbesar gambar</small>
+      </div>
       {galleries.length <= 0 ? (
         <div className="w-full flex items-center">
           <p>Departemen tidak memiliki progenda</p>
@@ -76,11 +107,17 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
               <div
                 className="group relative aspect-square overflow-hidden bg-gray-100 w-full lg:h-[400px] rounded-lg"
                 key={idx}
+                onClick={() =>
+                  setPreviewImage({
+                    url: g.image_url,
+                    caption: g.caption || g.id,
+                  })
+                }
               >
                 <ImageFallback
                   isFill
                   src={g.image_url}
-                  imgStyle="rounded-lg object-cover group-hover:scale-105 group-hover:cursor-pointer"
+                  imgStyle="rounded-lg object-cover group-hover:scale-110 duration-500 group-hover:cursor-pointer"
                 />
               </div>
             ))}
@@ -99,32 +136,41 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
 
         {/* Navigation */}
         <div className="flex items-center gap-3">
-          {/* Prev page */}
-          <button
-            disabled={currPg === 1 || loading}
-            onClick={() => setCurrPg((p) => p - 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 hover:bg-gray-100 transition flex items-center gap-4 ${currPg === 1 || loading ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            <FaChevronLeft />
-          </button>
-
           {/* Pagination */}
           <RenderPagination
             currPage={currPg}
             onChange={setCurrPg}
             totPage={metaData?.total_page || 1}
           />
-
-          {/* Next page */}
-          <button
-            disabled={!hasNext || loading}
-            onClick={() => setCurrPg((p) => p + 1)}
-            className={`p-2 rounded-md border disabled:opacity-40 hover:bg-gray-100 transition flex items-center gap-4 ${!hasNext || loading ? "cursor-not-allowed" : "cursor-pointer"}`}
-          >
-            <FaChevronRight />
-          </button>
         </div>
       </div>
+      {/* Image preview modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="relative lg:max-w-[50vw] lg:max-h-[70vh] max-h-[80vh] max-w-[80vw] flex flex-col items-center gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={previewImage.url}
+              alt={previewImage.caption}
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+            />
+            <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
+              {previewImage.caption}
+            </p>
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

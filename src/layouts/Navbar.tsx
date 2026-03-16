@@ -34,13 +34,19 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
     <nav
       className={clsx(
         "flex items-center justify-between h-[115px] px-12 sticky top-0 z-[499] transition-all duration-300",
-        isTransparent
-          ? "bg-transparent border-transparent shadow-none text-white"
-          : open
-            ? "bg-white/80 border-b border-neutral-300 shadow-md text-black"
-            : "bg-white/70 border-b border-neutral-300 shadow-md text-black backdrop-blur-3xl",
+        isTransparent ? "text-white" : "text-black",
       )}
     >
+      <div
+        className={clsx(
+          "absolute inset-0 -z-10 transition-all duration-300 transform-gpu shadow-md",
+          isTransparent
+            ? "bg-transparent opacity-0"
+            : open
+              ? "bg-white opacity-100"
+              : "bg-white/70 backdrop-blur-3xl opacity-100",
+        )}
+      />
       {/* Logo */}
       <Link href="/" className="flex items-center gap-[24px]">
         <NextImage
