@@ -62,13 +62,13 @@ export default function MobileNavbar({
           open ? "opacity-100" : "opacity-0 pointer-events-none",
         )}
       >
-        <div className="fixed inset-0 bg-white/80 backdrop-blur-xl" />
+        <div className="fixed inset-0 bg-white" />
 
         <div className="inset-0 fixed z-10 flex flex-col h-full">
           <div className="flex items-center px-12 h-[115px] border-b border-neutral-100">
             <Link
               href="/"
-              className="flex items-center gap-4"
+              className="flex items-center gap-6"
               onClick={() => setOpen(false)}
             >
               <NextImage

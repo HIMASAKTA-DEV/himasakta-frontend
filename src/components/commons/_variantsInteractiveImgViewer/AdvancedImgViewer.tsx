@@ -82,7 +82,7 @@ export default function InteractiveImgViewerV2({
 
   return (
     <div className="flex items-center justify-center w-full">
-      <div className="w-[85vw] lg:w-[95vw] aspect-video max-w-[1200px] bg-neutral-200 rounded-md shadow-lg overflow-hidden">
+      <div className="w-[85vw] lg:w-[95vw] aspect-[9/12] lg:aspect-video max-w-[1200px] bg-neutral-200 rounded-md shadow-lg overflow-hidden">
         <div className="grid grid-rows-[auto_1fr] w-full h-full">
           {/* Toolbar */}
           <div className="w-full bg-gray-100/90 backdrop-blur-md py-1 px-2 lg:px-16 lg:h-[75px] flex items-center justify-between shadow-md z-10">
@@ -162,7 +162,7 @@ export default function InteractiveImgViewerV2({
             ref={containerRef}
             onScroll={updateScrollState}
             className={clsx(
-              "relative w-full h-full bg-black/5",
+              "max-lg:flex relative w-full h-full bg-black/5 justify-center items-center",
               isScrollable ? "overflow-auto" : "overflow-hidden",
             )}
           >

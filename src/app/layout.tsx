@@ -1,3 +1,4 @@
+import LenisWrapper from "@/components/commons/LenisWrapper";
 import "./globals.css";
 import Providers from "@/app/providers";
 import AuthGuard from "@/layouts/AuthGuard";
@@ -37,7 +38,9 @@ export default function RootLayout({
         `}
       >
         <AuthGuard />
-        <Providers>{children}</Providers>
+        <Providers>
+          <LenisWrapper>{children}</LenisWrapper>
+        </Providers>
       </body>
     </html>
   );

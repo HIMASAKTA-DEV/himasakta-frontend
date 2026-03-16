@@ -18,5 +18,5 @@ export const getEventThisMonth = async () => {
     throw new Error(json.message);
   }
 
-  return json.data.slice(0, 5);
+  return json;
 };

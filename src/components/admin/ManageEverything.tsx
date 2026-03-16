@@ -146,11 +146,7 @@ export function ManageAnggota() {
             subStyle="text-black font-libertine"
           />
         </div>
-        <small className="mt-4 text-yellow-700 bg-yellow-200 px-2">
-          ℹ️ NOTICE: Harap memastikan tiap departemen memiliki anggota sebagai
-          kepala departemen lalu tambahkan informasinya di edit departemen.
-        </small>
-        <div className="flex items-center justify-center gap-6">
+        <div className="flex items-center justify-center gap-6 max-lg:flex-col">
           <div className="relative w-36 font-libertine">
             <button
               onClick={() => setShowDd((p) => !p)}
@@ -233,33 +229,43 @@ export function ManageAnggota() {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700 font-libertine">
-              Show
-            </label>
-            <select
-              value={limitMembers}
-              onChange={(e) => {
-                setLimitMembers(Number(e.target.value));
-                setCurrMemberPg(1);
-              }}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+          <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center max-lg:flex-col gap-2">
+              <label className="text-sm font-medium text-gray-700 font-libertine">
+                Show
+              </label>
+              <select
+                value={limitMembers}
+                onChange={(e) => {
+                  setLimitMembers(Number(e.target.value));
+                  setCurrMemberPg(1);
+                }}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+              >
+                {[5, 10, 15, 20].map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Link
+              href="/cp/anggota/add"
+              className="px-4 py-4 lg:py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
             >
-              {[5, 10, 15, 20].map((v) => (
-                <option key={v} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
+              + Add Member
+            </Link>
+            <IoIosHelpCircle
+              className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+              title="help"
+            />
           </div>
-          <Link
-            href="/cp/anggota/add"
-            className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
-          >
-            + Add Member
-          </Link>
         </div>
       </div>
+      <small className="mt-4 text-yellow-700 bg-yellow-200 px-2">
+        ℹ️ NOTICE: Harap memastikan tiap departemen memiliki anggota sebagai
+        kepala departemen lalu tambahkan informasinya di edit departemen.
+      </small>
       <div className="lg:mt-6 mt-2 w-full flex flex-col gap-4">
         <h1 className="lg:text-lg mb-4 font-lora">
           Menampilkan Anggota Departemen {selectedDeptName}
@@ -511,7 +517,7 @@ export function ManageCabinet() {
         />
 
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center max-lg:flex-col gap-2">
             <label className="text-sm font-medium text-gray-700 font-libertine">
               Show
             </label>
@@ -905,13 +911,8 @@ export function ManageDepartment() {
           sub={"Atur data departemen di website"}
           subStyle="text-black font-libertine"
         />
-        <small className="mt-4 text-yellow-700 bg-yellow-200 px-2">
-          ℹ️ NOTICE: Harap menambah anggota sebagai ketua departemen setelah
-          membuat departemen baru dan edit informasi kepala departemen di edit
-          departemen.
-        </small>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center max-lg:flex-col gap-2">
             <label className="text-sm font-medium text-gray-700 font-libertine">
               Show
             </label>
@@ -941,6 +942,11 @@ export function ManageDepartment() {
           />
         </div>
       </div>
+      <small className="mt-4 text-yellow-700 bg-yellow-200 px-2">
+        ℹ️ NOTICE: Harap menambah anggota sebagai ketua departemen setelah
+        membuat departemen baru dan edit informasi kepala departemen di edit
+        departemen.
+      </small>
 
       {error && !loading && (
         <div className="flex w-full items-center justify-center py-20">
@@ -1161,7 +1167,7 @@ export function ManageEvent() {
           subStyle="text-black font-libertine"
         />
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center max-lg:flex-col gap-2">
             <label className="text-sm font-medium text-gray-700 font-libertine">
               Show
             </label>
@@ -1182,10 +1188,14 @@ export function ManageEvent() {
           </div>
           <Link
             href="/cp/kegiatan/add"
-            className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
+            className="px-4 py-4 lg:py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
           >
             + Add Event
           </Link>
+          <IoIosHelpCircle
+            className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+            title="help"
+          />
         </div>
       </div>
 
@@ -1392,7 +1402,7 @@ export function ManageGallery() {
   }
 
   return (
-    <div className="p-10 bg-white min-h-screen">
+    <div className="p-4 lg:p-10 bg-white min-h-screen">
       <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto max-lg:flex-col">
         <div>
           <HeaderSection
@@ -1412,7 +1422,7 @@ export function ManageGallery() {
           </small>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center max-lg:flex-col gap-2">
             <label className="text-sm font-medium text-gray-700 font-libertine">
               Show
             </label>
@@ -1437,6 +1447,10 @@ export function ManageGallery() {
           >
             + Add Gallery
           </Link>
+          <IoIosHelpCircle
+            className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+            title="help"
+          />
         </div>
       </div>
 
@@ -1464,10 +1478,10 @@ export function ManageGallery() {
               >
                 {gallery.caption}
               </Typography>
-              <div className="flex justify-between items-center mt-auto">
+              <div className="flex justify-between max-lg:flex-col lg:items-center mt-auto">
                 <Typography
                   variant="p"
-                  className="text-gray-800 text-[13px] font-medium font-libertine"
+                  className="text-gray-800 mb-4 font-medium font-libertine"
                 >
                   Updated at:
                   <br />
@@ -1694,7 +1708,7 @@ export function ManageNews() {
   }
 
   return (
-    <div className="p-10 bg-white min-h-screen">
+    <div className="p-4 lg:p-10 bg-white min-h-screen">
       <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto">
         <div className="flex items-center lg:justify-between gap-4 max-lg:flex-col w-full">
           <div>
@@ -1711,7 +1725,7 @@ export function ManageNews() {
             </Typography>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center max-lg:flex-col gap-2">
               <label className="text-sm font-medium text-gray-700 font-libertine">
                 Show
               </label>
@@ -1732,10 +1746,14 @@ export function ManageNews() {
             </div>
             <Link
               href="/cp/news/add"
-              className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
+              className="px-4 py-2 max-lg:py-4 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
             >
               + Add Post
             </Link>
+            <IoIosHelpCircle
+              className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+              title="help"
+            />
           </div>
         </div>
       </div>
@@ -1764,16 +1782,16 @@ export function ManageNews() {
               >
                 {news.title}
               </Typography>
-              <div className="flex justify-between items-center mt-auto">
+              <div className="flex justify-between max-lg:flex-col items-start mt-auto">
                 <Typography
                   variant="p"
-                  className="text-gray-800 font-medium font-libertine text-[10px]"
+                  className="text-gray-800 font-medium font-libertine"
                 >
                   Published at:
                   <br />
                   {new Date(news.published_at).toLocaleString("id-ID")}
                 </Typography>
-                <div className="flex gap-[8px]">
+                <div className="flex gap-[8px] max-lg:mt-4">
                   <Link
                     href={`/cp/news/${news.id}/edit`}
                     className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
@@ -1999,7 +2017,7 @@ export function ManageNrpWhitelist() {
           </Typography>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center max-lg:flex-col gap-2">
             <label className="text-sm font-medium text-gray-700 font-libertine">
               Show
             </label>
@@ -2021,10 +2039,14 @@ export function ManageNrpWhitelist() {
           >
             + Add NRP
           </Link>
+          <IoIosHelpCircle
+            className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+            title="help"
+          />
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 w-full rounded-3xl overflow-hidden border border-gray-200">
+      <div className="flex flex-col gap-4 w-full rounded-3xl overflow-x-auto border border-gray-200">
         <table className="w-full min-w-[400px] border-collapse">
           <thead className="bg-[#F8E8EA] text-gray-700">
             <tr>
@@ -2082,7 +2104,7 @@ export function ManageNrpWhitelist() {
         )}
         {!loading && allData.length === 0 && (
           <div className="w-full py-10 flex items-center justify-center text-gray-500">
-            Daftar NRP Whitelist Kosong
+            👻 Daftar NRP Whitelist Kosong 👻
           </div>
         )}
       </div>
@@ -2243,7 +2265,7 @@ export function ManageProgenda() {
           subStyle="text-black font-libertine"
         />
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center max-lg:flex-col gap-2">
             <label className="text-sm font-medium text-gray-700 font-libertine">
               Show
             </label>
@@ -2265,6 +2287,10 @@ export function ManageProgenda() {
           <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
             <Link href={"/cp/progenda/add"}>+ Add Progenda</Link>
           </button>
+          <IoIosHelpCircle
+            className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+            title="help"
+          />
         </div>
       </div>
       {error && !loading && (
@@ -2732,13 +2758,19 @@ export function GlobalSetting() {
     <div className="flex min-h-screen w-full flex-col items-center gap-8 p-4 lg:p-10">
       <div className="flex w-full items-center justify-between gap-4 max-lg:flex-col">
         {/* Header */}
-        <HeaderSection
-          title="Manage Kabinet"
-          titleStyle="font-averia text-black max-lg:text-3xl"
-          className="gap-0"
-          sub="Atur informasi tiap kabinet"
-          subStyle="font-libertine text-black"
-        />
+        <div className="flex justify-between items-center w-full">
+          <HeaderSection
+            title="Manage Kabinet"
+            titleStyle="font-averia text-black max-lg:text-3xl"
+            className="gap-0"
+            sub="Atur informasi tiap kabinet"
+            subStyle="font-libertine text-black"
+          />
+          <IoIosHelpCircle
+            className="w-6 h-6 lg:hidden text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+            title="help"
+          />
+        </div>
         <div className="flex items-center gap-4 max-lg:hidden">
           <div className="flex items-center gap-2">
             <button
@@ -2764,6 +2796,10 @@ export function GlobalSetting() {
             >
               {isSubmitting ? "Menyimpan..." : "Simpan"}
             </button>
+            <IoIosHelpCircle
+              className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+              title="help"
+            />
           </div>
         </div>
       </div>

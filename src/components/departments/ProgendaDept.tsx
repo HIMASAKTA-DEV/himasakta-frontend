@@ -27,7 +27,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
   const [cntItems, setCntItems] = useState(3);
   const handleResize = () => {
     if (window.innerWidth < 1024) {
-      setCntItems(2); // mobile & tablet
+      setCntItems(1); // mobile & tablet
     } else {
       setCntItems(3); // desktop
     }
@@ -90,7 +90,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
         <div className="w-full gap-4">
           <EventSkeleton
             count={cntItems}
-            className={`grid grid-rows-1 grid-cols-${cntItems}`}
+            className={`grid grid-rows-1 lg:grid-cols-3 grid-cols-1`}
             withDesc={true}
           />
         </div>
@@ -128,7 +128,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
           >
             {slides.map((slide, idx) => (
               <div
-                className="min-w-full grid grid-cols-1 grid-rows-2 lg:grid-cols-3 lg:grid-rows-1 lg:gap-4"
+                className="min-w-full grid grid-cols-1 grid-rows-1 lg:grid-cols-3 lg:grid-rows-1 lg:gap-4"
                 key={idx}
               >
                 {slide.map((progenda, i) => (
@@ -183,30 +183,17 @@ function ProgendaDept({ ...dept }: DepartmentType) {
             <>
               <button
                 onClick={prevSlide}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow"
+                className="absolute left-2 top-1/3 bg-white/80 p-3 rounded-full shadow"
               >
                 <FaChevronLeft />
               </button>
 
               <button
                 onClick={nextSlide}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow"
+                className="absolute right-2 top-1/3 bg-white/80 p-3 rounded-full shadow"
               >
                 <FaChevronRight />
               </button>
-
-              {/* DOTS */}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
-                {slides.map((_, idx) => (
-                  <span
-                    key={idx}
-                    onClick={() => setCurrentSlide(idx)}
-                    className={`w-3 h-3 rounded-full cursor-pointer transition ${
-                      idx === currentSlide ? "bg-primaryPink" : "bg-gray-300"
-                    }`}
-                  />
-                ))}
-              </div>
             </>
           )}
         </div>

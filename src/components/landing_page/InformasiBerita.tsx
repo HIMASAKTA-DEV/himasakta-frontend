@@ -17,6 +17,8 @@ export default function InformasiBerita() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slides, setSlides] = useState<NewsType[][]>([]);
+  const [cntNw, setCntNw] = useState(4);
 
   useEffect(() => {
     const startTime = Date.now();
@@ -49,7 +51,24 @@ export default function InformasiBerita() {
   }, []);
 
   // const latestNews = news.length > 0 ? get12LatestNews(news) : [];
-  const slides = news.length > 0 ? divideArray(news, 4) : [];
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width > 1024) setCntNw(4);
+      else if (width > 768) setCntNw(2);
+      else setCntNw(1);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const slidess = news.length > 0 ? divideArray(news, cntNw) : [];
+    setSlides(slidess);
+    setCurrentSlide(0);
+  }, [news, cntNw]);
 
   const prevSlide = () => {
     setCurrentSlide((s) => (s === 0 ? slides.length - 1 : s - 1));
@@ -106,7 +125,7 @@ export default function InformasiBerita() {
           <p className="text-sm">Silakan cek kembali nanti.</p>
         </div>
       ) : (
-        <div className="relative overflow-hidden pb-8">
+        <div className="relative overflow-hidden">
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -114,7 +133,7 @@ export default function InformasiBerita() {
             {slides.map((slide, idx) => (
               <div
                 key={idx}
-                className="min-w-full grid grid-cols-1 grid-rows-4 lg:grid-cols-4 lg:grid-rows-1 gap-6"
+                className="min-w-full grid grid-cols-1 lg:grid-cols-4 gap-6"
               >
                 {slide.map((news) => (
                   <NewsComps key={news.id} {...news} />
@@ -123,29 +142,31 @@ export default function InformasiBerita() {
             ))}
           </div>
 
+          {/* CONTROLS */}
           {slides.length > 1 && (
             <>
               <button
                 onClick={prevSlide}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow"
+                className="absolute left-4 top-1/2 lg:top-1/3 -translate-y-1/2 z-20 bg-white/70 hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 lg:group-hover:opacity-100"
               >
                 <FaChevronLeft />
               </button>
-
               <button
                 onClick={nextSlide}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow"
+                className="absolute right-4 top-1/2 lg:top-1/3 -translate-y-1/2 z-20 bg-white/70 hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 lg:group-hover:opacity-100"
               >
                 <FaChevronRight />
               </button>
 
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2">
+              <div className="mt-4 flex justify-center gap-2 max-lg:hidden">
                 {slides.map((_, idx) => (
-                  <span
+                  <button
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
-                    className={`w-3 h-3 rounded-full cursor-pointer transition ${
-                      idx === currentSlide ? "bg-primaryPink" : "bg-gray-300"
+                    className={`h-2 transition-all duration-300 rounded-full ${
+                      idx === currentSlide
+                        ? "bg-primaryPink w-8"
+                        : "bg-gray-300 w-2"
                     }`}
                   />
                 ))}

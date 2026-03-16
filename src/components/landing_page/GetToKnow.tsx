@@ -4,113 +4,192 @@ import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import { getEventThisMonth } from "@/services/landing_page/GetToKnow";
 import { MonthlyEvent } from "@/types/data/GetToKnow";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { FiExternalLink } from "react-icons/fi";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
+import divideArray from "@/lib/divideArray";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function GetToKnow() {
-  // const eventsThisMonth = eventsThisMo.slice(0, 5);
   const [loading, setLoading] = useState(true);
-  const [events, setEvents] = useState<MonthlyEvent[] | []>([]);
+  const [events, setEvents] = useState<MonthlyEvent[]>([]);
+  const [cntEv, setCntEv] = useState(3);
+  const [slides, setSlides] = useState<MonthlyEvent[][]>([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
+  // Fetch data
   useEffect(() => {
-    // fetch event this month
     const fetchEvThisMonth = async () => {
       try {
         const data = await getEventThisMonth();
-        setEvents(data);
+        setEvents(data.data);
       } catch (err) {
         console.error("Failed to load event this month ", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchEvThisMonth();
   }, []);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => setLoading(false), 1000);
-  //   return () => clearTimeout(timer);
-  // }, []);
+  // Handle Responsive Breakpoints
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width > 1024) setCntEv(4);
+      else if (width > 768) setCntEv(2);
+      else setCntEv(1);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Update Slides when events or count changes
+  useEffect(() => {
+    if (events.length > 0) {
+      setSlides(divideArray(events, cntEv));
+      setCurrentSlide(0); // Reset ke slide awal jika breakpoint berubah
+    }
+  }, [events, cntEv]);
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((s) => (s === slides.length - 1 ? 0 : s + 1));
+  }, [slides.length]);
+
+  const prevSlide = () => {
+    setCurrentSlide((s) => (s === 0 ? slides.length - 1 : s - 1));
+  };
 
   return (
     <section
-      className="w-full flex flex-col items-center gap-8 px-4 lg:px-0"
+      className="w-full flex flex-col gap-10 py-10"
       id="kegiatan-section"
     >
-      <div className="space-y-2 text-center">
-        <h1 className="font-averia text-4xl lg:text-6xl">
+      {/* HEADER */}
+      <div className="space-y-3 text-center px-4">
+        <h1 className="font-averia text-4xl lg:text-6xl text-gray-900">
           Get to Know: What&apos;s on HIMASAKTA
         </h1>
-        <p className="font-libertine lg:text-xl text-gray-600">
+        <p className="font-libertine lg:text-xl text-gray-600 max-w-2xl mx-auto">
           Berbagai acara pada satu bulan terakhir yang diadakan di HIMASAKTA.
         </p>
       </div>
 
       {loading ? (
-        <SkeletonGrid
-          withDesc
-          className="grid grid-cols-1 lg:grid-cols-5 gap-6 w-full"
-          count={5}
-        />
-      ) : (
-        <div className="w-full grid grid-cols-1 gap-6 lg:flex lg:flex-nowrap lg:justify-center lg:overflow-x-auto pb-4">
-          {events.length > 0 ? (
-            events.map((event) => (
+        <div className="px-4">
+          <SkeletonGrid
+            className="grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            count={4}
+            withDesc
+          />
+        </div>
+      ) : events.length > 0 ? (
+        <div className="relative w-full overflow-hidden px-1">
+          {/* SLIDER CONTAINER */}
+          <div
+            className="flex transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {slides.map((slide, idx) => (
               <div
-                key={event.id}
-                className="flex flex-col gap-3 w-full lg:min-w-[280px] lg:max-w-[280px]"
+                key={idx}
+                className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4 lg:px-12"
               >
-                <Link
-                  href={event.link}
-                  target="_blank"
-                  className="group relative w-full aspect-square overflow-hidden rounded-xl bg-gray-100"
-                >
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />
-                  <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300">
-                    <div className="flex items-center gap-2 text-white font-inter font-bold hover:text-[#4ade80]">
-                      <span>View detail</span>
-                      <FiExternalLink className="w-5 h-5" />
+                {slide.map((event) => (
+                  // 1. TAMBAHKAN 'group' DI SINI (Pembungkus tiap satu event)
+                  <div
+                    key={event.id}
+                    className=" flex flex-col gap-3 w-full lg:min-w-[280px] lg:max-w-[280px]"
+                  >
+                    <Link
+                      href={event.link}
+                      target="_blank"
+                      // 2. HAPUS 'group' di sini jika sudah ada di parent atasnya,
+                      // atau biarkan jika ingin hover effect spesifik di gambar saja.
+                      className="group relative w-full aspect-square overflow-hidden rounded-xl bg-gray-100"
+                    >
+                      {/* Overlay - Sekarang hanya muncul jika card ini yang di-hover */}
+                      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />
+                      <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                        <div className="flex items-center gap-2 text-white font-inter font-bold hover:text-[#4ade80]">
+                          <span>View detail</span>
+                          <FiExternalLink className="w-5 h-5" />
+                        </div>
+                      </div>
+
+                      <ImageFallback
+                        isFill
+                        src={event.thumbnail?.image_url}
+                        alt={event.title}
+                        // Tambahkan efek zoom sedikit agar lebih cantik
+                        imgStyle="object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    </Link>
+
+                    <div className="group space-y-1">
+                      <Link href={event.link} target="_blank">
+                        <h2 className="font-libertine text-lg font-bold hover:text-primaryGreen line-clamp-2 transition-colors">
+                          {event.title}
+                        </h2>
+                      </Link>
+                      <Link href={event.link} target="_blank">
+                        <div className="relative text-sm text-gray-600 h-[50px] lg:h-[80px] overflow-hidden">
+                          <MarkdownRenderer>
+                            {event.description}
+                          </MarkdownRenderer>
+                          {/* Baca Selengkapnya Overlay */}
+                          <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-20 bg-gradient-to-t from-white via-white/80 to-transparent transition-all duration-300 flex items-end justify-center">
+                            <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-1">
+                              Baca selengkapnya
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
                     </div>
                   </div>
-
-                  <ImageFallback
-                    isFill
-                    src={event.thumbnail?.image_url}
-                    alt={event.title}
-                  />
-                </Link>
-
-                <div className="space-y-1">
-                  <Link href={event.link} target="_blank">
-                    <h2 className="font-libertine text-lg font-bold hover:text-primaryGreen line-clamp-2">
-                      {event.title}
-                    </h2>
-                  </Link>
-                  <Link href={event.link} target="_blank">
-                    <div className="relative group text-sm text-gray-600 h-[50px] lg:h-[80px] overflow-hidden">
-                      <MarkdownRenderer>{event.description}</MarkdownRenderer>
-                      <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-24 bg-gradient-to-t from-white to-transparent transition-all duration-300 flex items-end justify-center">
-                        <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-2">
-                          Baca selengkapnya
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
+                ))}
               </div>
-            ))
-          ) : (
-            <div className="w-full text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed text-gray-500">
-              <p className="text-lg font-semibold">
-                Tidak ada acara yang tersedia bulan ini.
-              </p>
-              <p className="text-sm">kembali lagi nanti</p>
-            </div>
+            ))}
+          </div>
+
+          {/* CONTROLS */}
+          {slides.length > 1 && (
+            <>
+              <button
+                onClick={prevSlide}
+                className="absolute left-4 lg:top-1/3 top-1/2 -translate-y-1/2 z-20 bg-white/70 hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 lg:group-hover:opacity-100"
+              >
+                <FaChevronLeft />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute right-4 top-1/2 lg:top-1/3 -translate-y-1/2 z-20 bg-white/70 hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 lg:group-hover:opacity-100"
+              >
+                <FaChevronRight />
+              </button>
+
+              <div className="mt-10 flex justify-center gap-2 max-lg:hidden">
+                {slides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`h-2 transition-all duration-300 rounded-full ${
+                      idx === currentSlide
+                        ? "bg-primaryPink w-8"
+                        : "bg-gray-300 w-2"
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
           )}
+        </div>
+      ) : (
+        <div className="mx-4 py-16 text-center bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 text-gray-400">
+          <p className="text-xl font-medium">Belum ada acara bulan ini</p>
         </div>
       )}
     </section>

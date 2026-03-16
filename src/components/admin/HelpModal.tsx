@@ -22,8 +22,8 @@ export function HelpModal({ children, onClose }: HelpModalProps) {
           <div className="mt-4">
             <details>
               <summary>🐞 Laporkan masalah</summary>
-              <p>Fakhrul: +6285385539271</p>
-              <p>Brahmana: +6285100879325</p>
+              <p>Fakhrul: +6285385539271 (WA only, no call)</p>
+              <p>Brahmana: +6285100879325 (WA only, no call)</p>
             </details>
           </div>
         </div>
@@ -157,8 +157,48 @@ export function ManageCabinetHelp({
 
 export function ManageDepartmentHelp() {
   return (
-    <div>
-      <h1>Hello world</h1>
+    <div className="w-full">
+      <h2 className="text-2xl font-semibold mb-4">ℹ️ Manage Kabinet</h2>
+      <h3 className="text-lg font-semibold mt-4">Navigasi halaman:</h3>
+      <ol className="list-decimal pl-8 space-y-4 mt-2">
+        <li>
+          Tombol{" "}
+          <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
+            <Link href={"/cp/department/add"}>+ Add Department</Link>
+          </button>{" "}
+          untuk pindah ke halaman tambah kabinet.
+        </li>
+        <li>
+          Ikon{" "}
+          <button className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600">
+            <HiOutlinePencilAlt size={16} />
+          </button>{" "}
+          untuk pindah ke halaman edit kabinet yang dipilih.
+        </li>
+      </ol>
+      <h3 className="text-lg font-semibold mt-4">Fitur halaman:</h3>
+      <ol className="list-decimal pl-8 space-y-4">
+        <li>
+          Ikon{" "}
+          <button className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-red-50 hover:text-red-600">
+            <HiOutlineTrash size={16} />
+          </button>{" "}
+          untuk menghapus kabinet yang dipilih. Perhatikan bahwa kabinet yang
+          dihapus <b>harus tidak aktif</b>.
+        </li>
+      </ol>
+      <h3 className="text-lg font-semibold mt-4">Info tambahan:</h3>
+      <ol className="list-decimal pl-8 space-y-4">
+        <li>
+          Pastikan untuk mengaktifkan <b>HANYA 1 kabinet</b> untuk ditampilkan
+          di halaman utama. Ini dilakukan untuk menjaga integritas data website
+          ini.
+        </li>
+        <li>
+          Jika ada error, coba cek koneksi internet anda. Jika tidak ada masalah
+          internet laporkan kami.
+        </li>
+      </ol>
     </div>
   );
 }

@@ -3,54 +3,22 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
-
-import { FaChevronLeft, FaChevronRight, FaSearch } from "react-icons/fa";
-
-const LG_BREAKPOINT = 1024;
+import { FaSearch } from "react-icons/fa";
 
 export default function NavbarDept() {
-  // Handle responsiveness
-  const [isLg, setIsLg] = useState(false);
-  const [deptLimit, setDeptLimit] = useState(12);
-
-  useEffect(() => {
-    const mq = window.matchMedia(`(min-width: ${LG_BREAKPOINT}px)`);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsLg(e.matches);
-    };
-
-    setIsLg(mq.matches);
-    mq.addEventListener("change", handleChange);
-
-    return () => mq.removeEventListener("change", handleChange);
-  }, []);
-
-  useEffect(() => {
-    setDeptLimit(isLg ? 12 : 4);
-  }, [isLg]);
-
-  // Handle data fetching
   const [deptName, setDeptName] = useState<DepartmentType[]>([]);
-  const [currPage, setCurrPage] = useState(1);
-  const [totPage, setTotPage] = useState(1);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  // Kita ambil limit yang cukup besar (misal 50) agar semua dept masuk dalam satu barisan scroll
   const fetchAllDept = async () => {
     try {
       setLoading(true);
-      setError(false);
-
-      const json = await GetAllDepts(currPage, deptLimit);
-
+      const json = await GetAllDepts(1, 50);
       setDeptName(json.data ?? []);
-      setTotPage(json.meta?.total_page ?? 1);
     } catch (err) {
       console.error(err);
       setError(true);
@@ -61,9 +29,8 @@ export default function NavbarDept() {
 
   useEffect(() => {
     fetchAllDept();
-  }, [currPage, deptLimit]);
+  }, []);
 
-  // Handle page nav
   const pathname = usePathname();
   const activeDept = decodeURIComponent(pathname.split("/").pop() ?? "");
   const [showSearch, setShowSearch] = useState(false);
@@ -71,107 +38,84 @@ export default function NavbarDept() {
 
   const filteredDept = useMemo(() => {
     if (!keyword.trim()) return deptName;
-
     return deptName.filter((d) =>
       d.name?.toLowerCase().includes(keyword.toLowerCase()),
     );
   }, [deptName, keyword]);
 
-  const prevSlide = () => {
-    setCurrPage((p) => ((p - 2 + totPage) % totPage) + 1);
-  };
-
-  const nextSlide = () => {
-    setCurrPage((p) => (p % totPage) + 1);
-  };
-
-  if (error) {
+  if (error)
     return (
-      <nav className="bg-white p-4 shadow rounded-full">
-        <p className="text-center text-red-500">
-          Unable to fetch data &#40;:&#41;
-        </p>
+      <nav className="bg-white p-4 rounded-full shadow text-red-500 text-center">
+        Gagal memuat data
       </nav>
     );
-  }
-
-  if (loading) {
+  if (loading)
     return (
-      <nav className="bg-white p-4 shadow rounded-full flex items-center justify-center">
+      <nav className="bg-white p-4 rounded-full shadow flex justify-center">
         <SkeletonPleaseWait />
       </nav>
     );
-  }
 
   return (
-    <nav className="relative flex items-center gap-2 bg-white py-1 pr-2 pl-6 shadow-[0px_0px_15px_rgba(0,0,0,0.15)] rounded-full">
-      {/* Dept lists */}
-      <div className="flex-1 relative">
-        <ul className="flex w-full items-center gap-2 rounded-full">
-          {filteredDept.map((d, idx) => (
-            <Link
-              key={d.id ?? idx}
-              href={`/departments/${d.name}`}
-              className="flex-1"
-            >
-              <li
-                className={`flex items-center justify-center p-2 rounded-full transition-all duration-300
-                  ${
-                    activeDept === d.name
-                      ? "bg-primaryPink text-white font-semibold hover:opacity-80"
-                      : "bg-white hover:bg-gray-200 hover:text-primaryPink"
-                  }
-                `}
-              >
-                {d.name}
-              </li>
-            </Link>
-          ))}
-        </ul>
+    <nav className="relative w-full bg-white shadow-md rounded-full">
+      <div className="flex items-center py-1 pr-1 pl-1">
+        {/* CONTAINER SCROLLABLE */}
+        <div className="flex-1 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-proximity overflow-y-hidden ">
+          {/* PENTING: 
+              - Gunakan 'min-w-full' agar container selalu selebar nav.
+              - Gunakan 'justify-between' atau 'justify-around' agar item yang sedikit tersebar merata.
+          */}
+          <ul className="flex items-center min-w-full w-max gap-2 list-none m-0 p-1">
+            {filteredDept.map((d, idx) => {
+              const isActive = activeDept === d.name;
+              return (
+                <li key={d.id ?? idx} className="flex-1 snap-start">
+                  <Link
+                    href={`/departments/${d.name}`}
+                    className={`
+                      block text-center whitespace-nowrap py-2 px-6 rounded-full text-sm transition-all duration-300
+                      ${
+                        isActive
+                          ? "bg-primaryPink text-white font-bold shadow-md"
+                          : "text-gray-600 hover:bg-gray-100 hover:text-primaryPink"
+                      }
+                    `}
+                  >
+                    {d.name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
 
-        {/* Slider */}
-        {totPage > 1 && (
-          <>
-            <button
-              aria-label="Previous"
-              onClick={prevSlide}
-              className="absolute left-2 top-1/2 -translate-y-1/2
-                bg-white/90 hover:bg-white p-3 rounded-full shadow"
-            >
-              <FaChevronLeft />
-            </button>
+        {/* SEARCH TOGGLE */}
+        <div className="flex items-center sticky right-0 bg-white rounded-full pr-2 pl-1">
+          <button
+            onClick={() => setShowSearch(!showSearch)}
+            className={`p-3 rounded-full transition-all duration-300 ${
+              showSearch
+                ? "bg-primaryPink text-white"
+                : "text-gray-500 hover:bg-gray-100"
+            }`}
+          >
+            <FaSearch size={16} />
+          </button>
 
-            <button
-              aria-label="Next"
-              onClick={nextSlide}
-              className="absolute right-2 top-1/2 -translate-y-1/2
-                bg-white/90 hover:bg-white p-3 rounded-full shadow"
-            >
-              <FaChevronRight />
-            </button>
-          </>
-        )}
+          {showSearch && (
+            <div className="absolute right-2 top-full mt-3 w-64 p-2 bg-white rounded-2xl shadow-2xl border border-gray-100 z-[600]">
+              <input
+                autoFocus
+                type="text"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder="Cari..."
+                className="w-full px-4 py-2 text-sm border-none bg-gray-50 rounded-xl focus:ring-2 focus:ring-primaryPink outline-none"
+              />
+            </div>
+          )}
+        </div>
       </div>
-      {/* Search */}
-      {showSearch && (
-        <input
-          type="text"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          placeholder="Search department..."
-          className="absolute right-0 top-full mt-1 w-[50vw] lg:w-[15vw]
-              px-4 py-2 border rounded-full focus:outline-none
-              focus:ring-2 focus:ring-primaryPink shadow-md"
-        />
-      )}
-
-      <button
-        onClick={() => setShowSearch((p) => !p)}
-        className="p-4 rounded-full bg-white hover:bg-gray-100 active:bg-gray-200 transition-all duration-300"
-        aria-label="Search department"
-      >
-        <FaSearch />
-      </button>
     </nav>
   );
 }
