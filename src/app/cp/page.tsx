@@ -5,24 +5,24 @@ import { useForm } from "react-hook-form";
 
 import AdminTopBar from "@/components/admin/AdminTopBar";
 import Sidebar from "@/components/admin/Sidebar";
-
-import DashboardAdmin from "@/components/admin/DashboardAdmin";
-import ManageAnggota from "@/components/admin/ManageAnggota";
-import ManageCabinet from "@/components/admin/ManageCabinet";
-import ManageDepartment from "@/components/admin/ManageDepartment";
-import ManageGallery from "@/components/admin/ManageGallery";
-import ManageNews from "@/components/admin/ManageNews";
-import ManageProgenda from "@/components/admin/ManageProgenda";
-
-import GlobalSetting from "@/components/admin/GlobalSetting";
-import ManageEvent from "@/components/admin/ManageEvent";
-import ManageNrpWhitelist from "@/components/admin/ManageNrpWhitelist";
 import ImageFallback from "@/components/commons/ImageFallback";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import ButtonLink from "@/components/links/ButtonLink";
 import api from "@/lib/axios";
 import { ApiResponse } from "@/types/api";
 import { FaChevronLeft } from "react-icons/fa";
+import {
+  DashboardAdmin,
+  GlobalSetting,
+  ManageAnggota,
+  ManageCabinet,
+  ManageDepartment,
+  ManageEvent,
+  ManageGallery,
+  ManageNews,
+  ManageNrpWhitelist,
+  ManageProgenda,
+} from "@/components/admin/ManageEverything";
 
 type LoginForm = {
   username: string;
