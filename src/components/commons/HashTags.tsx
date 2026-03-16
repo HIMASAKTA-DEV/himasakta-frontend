@@ -1,13 +1,20 @@
 interface HashTagsProps {
   tags?: string[];
   maxShow?: number; // default 2, tampilin semua pakai tags.length
+  clickable?: boolean;
 }
 
 function normalizeTag(tag: string) {
   return tag.trim().replace(/^#+/, "");
 }
 
-export default function HashTags({ tags = [], maxShow = 2 }: HashTagsProps) {
+import Link from "next/link";
+
+export default function HashTags({
+  tags = [],
+  maxShow = 2,
+  clickable = false,
+}: HashTagsProps) {
   if (!tags.length) return null;
 
   const visibleTags = tags.slice(0, maxShow);
@@ -17,6 +24,18 @@ export default function HashTags({ tags = [], maxShow = 2 }: HashTagsProps) {
     <div className="flex flex-wrap gap-2">
       {visibleTags.map((tag, idx) => {
         const cleanTag = normalizeTag(tag);
+
+        if (clickable) {
+          return (
+            <Link
+              key={idx}
+              href={`/news?tags=${encodeURIComponent(cleanTag)}`}
+              className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors z-50 cursor-pointer"
+            >
+              #{cleanTag}
+            </Link>
+          );
+        }
 
         return (
           <span

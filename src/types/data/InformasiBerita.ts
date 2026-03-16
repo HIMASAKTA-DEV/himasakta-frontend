@@ -9,6 +9,7 @@ export type NewsType = {
   slug?: string | null;
   tagline?: string | null;
   hashtags?: string | null;
+  tags?: { id: string; name: string }[] | null;
   content?: string | null;
   thumbnail_id?: UUID | string | null;
   thumbnail?: Media | null;

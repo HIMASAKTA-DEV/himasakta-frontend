@@ -14,6 +14,16 @@
       "#Inovasi",
       "#EraModern"
     ],
+    "tags": [
+      {
+        "id": "tag-1",
+        "name": "Digitalisasi"
+      },
+      {
+        "id": "tag-2",
+        "name": "Transformasi"
+      }
+    ],
     "content": "Transformasi digital telah menjadi kebutuhan utama bagi organisasi mahasiswa di era modern..."
   },
   {
@@ -29,6 +39,16 @@
       "#TimSolid",
       "#Organisasi",
       "#SoftSkill"
+    ],
+    "tags": [
+      {
+        "id": "tag-3",
+        "name": "Leadership"
+      },
+      {
+        "id": "tag-4",
+        "name": "Solid"
+      }
     ],
     "content": "Kepemimpinan memiliki peran sentral dalam menjaga soliditas tim..."
   },
@@ -160,7 +180,6 @@
     ],
     "content": "Motivasi memiliki pengaruh besar terhadap kinerja anggota organisasi..."
   },
-
   {
     "id": "news-011",
     "title": "Tantangan Organisasi Mahasiswa di Era Globalisasi",
@@ -237,7 +256,6 @@
     ],
     "content": "Kegiatan sosial tidak hanya memberikan manfaat bagi masyarakat..."
   },
-
   {
     "id": "news-016",
     "title": "Strategi Pengambilan Keputusan yang Efektif",
@@ -313,7 +331,6 @@
     ],
     "content": "Transparansi keuangan menjadi faktor utama dalam membangun kepercayaan..."
   },
-
   {
     "id": "news-021",
     "title": "Pengembangan Soft Skill Melalui Kepanitiaan",
@@ -389,7 +406,6 @@
     ],
     "content": "Lingkungan kerja yang positif berkontribusi besar terhadap produktivitas..."
   },
-
   {
     "id": "news-026",
     "title": "Optimalisasi Rapat sebagai Media Pengambilan Keputusan",

@@ -49,7 +49,7 @@ function page() {
   if (error) NotFound();
 
   // wajib normalize tags ke string[]
-  const tags = normalizeHashtags(news?.hashtags ?? "");
+  const tags = normalizeHashtags(news?.tags || news?.hashtags);
   return (
     <Layout withFooter withNavbar={false} transparentOnTop>
       <ButtonLink

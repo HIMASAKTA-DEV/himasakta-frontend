@@ -78,11 +78,11 @@ function ManageNews() {
     }
   };
 
-  const handlePreview = async (newsId: string) => {
+  const handlePreview = async (slug: string) => {
     setPreviewLoading(true);
     setPreviewData(null);
     try {
-      const resp = await api.get(`/news/${newsId}`);
+      const resp = await api.get(`/news/s/${slug}`);
       const d = resp.data?.data ?? resp.data;
       setPreviewData({
         title: d.title ?? "",
@@ -204,7 +204,7 @@ function ManageNews() {
                     <HiOutlinePencilAlt size={16} />
                   </Link>
                   <button
-                    onClick={() => handlePreview(news.id as string)}
+                    onClick={() => handlePreview(news.slug)}
                     className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
                   >
                     <HiOutlineEye size={16} />
