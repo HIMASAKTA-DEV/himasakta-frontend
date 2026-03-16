@@ -1,19 +1,22 @@
 import { getPagination } from "@/components/_news/NewsPagination";
+import clsxm from "@/lib/clsxm";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function RenderPagination({
   currPage,
   totPage,
   onChange,
+  styling,
 }: {
   currPage: number;
   totPage: number;
   onChange: (page: number) => void;
+  styling?: string;
 }) {
   const pages = getPagination(currPage, totPage);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={clsxm("flex items-center gap-2", styling)}>
       <button
         type="button"
         disabled={currPage <= 1}

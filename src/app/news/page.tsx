@@ -15,7 +15,6 @@ import {
   FaCheck,
   FaChevronDown,
   FaChevronLeft,
-  FaChevronRight,
   FaFilter,
   FaSearch,
   FaSortAmountUpAlt,
@@ -41,7 +40,7 @@ function NewsPage() {
 
   const [news, setNews] = useState<NewsType[] | []>([]);
   const [loading, setLoading] = useState(true);
-  const [hasNext, setHasNext] = useState(false);
+  const [_hasNext, setHasNext] = useState(false);
   const [error, setError] = useState(false);
 
   // global news data fetching
@@ -559,30 +558,12 @@ function NewsPage() {
 
           {/* Navigation */}
           <div className="flex items-center gap-3">
-            {/* Prev page */}
-            <button
-              disabled={currentPage === 1 || loading}
-              onClick={() => setCurrentPage((p) => p - 1)}
-              className={`p-2 rounded-md border disabled:opacity-40 hover:bg-gray-100 transition flex items-center gap-4 ${currentPage === 1 || loading ? "cursor-not-allowed" : "cursor-pointer"}`}
-            >
-              <FaChevronLeft />
-            </button>
-
             {/* Pagination */}
             <RenderPagination
               currPage={currentPage}
               totPage={totalPage}
               onChange={setCurrentPage}
             />
-
-            {/* Next page */}
-            <button
-              disabled={!hasNext || loading}
-              onClick={() => setCurrentPage((p) => p + 1)}
-              className={`p-2 rounded-md border disabled:opacity-40 hover:bg-gray-100 transition flex items-center gap-4 ${!hasNext || loading ? "cursor-not-allowed" : "cursor-pointer"}`}
-            >
-              <FaChevronRight />
-            </button>
           </div>
         </div>
       </main>
