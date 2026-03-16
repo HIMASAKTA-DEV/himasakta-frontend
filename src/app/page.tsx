@@ -11,7 +11,7 @@ import Layout from "@/layouts/Layout";
 import { trackVisit } from "@/lib/analytic";
 import { useEffect } from "react";
 
-export default async function Home() {
+export default function Home() {
   useEffect(() => {
     trackVisit();
   }, []);
