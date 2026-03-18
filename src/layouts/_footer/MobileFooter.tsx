@@ -47,7 +47,9 @@ export default function MobileFooter() {
         ))}
       </div>
 
-      <p className="font-libertine text-md text-white">&copy; 2026</p>
+      <p className="font-libertine text-sm lg:text-md text-white">
+        &copy; 2026 HIMASAKTA ITS | Flexoo Academny
+      </p>
     </footer>
   );
 }

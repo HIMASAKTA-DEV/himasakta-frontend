@@ -7,6 +7,8 @@ export const normalizeLinks = (input?: unknown): string[] => {
     return input.map((item) => String(item).trim()).filter(Boolean);
   }
 
+  if (typeof input === "string") return [input];
+
   // Jika input adalah string, split berdasarkan koma
   if (typeof input === "string") {
     return input

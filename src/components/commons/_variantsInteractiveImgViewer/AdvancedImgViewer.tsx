@@ -30,7 +30,7 @@ export default function InteractiveImgViewerV2({
     down: false,
   });
 
-  const LIM_ZOOMIN = 5;
+  const LIM_ZOOMIN = 10;
   const LIM_ZOOMOUT = 1;
   const STEPPX = 80;
 
@@ -162,15 +162,17 @@ export default function InteractiveImgViewerV2({
             ref={containerRef}
             onScroll={updateScrollState}
             className={clsx(
-              "max-lg:flex relative w-full h-full bg-black/5 justify-center items-center",
-              isScrollable ? "overflow-auto" : "overflow-hidden",
+              "relative w-full h-full bg-black/5",
+              isScrollable
+                ? "overflow-auto"
+                : "overflow-hidden max-lg:flex relative w-full h-full bg-black/5 justify-center items-center",
             )}
           >
             <img
               src={src}
               alt={alt}
               draggable={false}
-              className="block select-none max-w-none transition-all duration-300"
+              className="block select-none max-w-none transition-all duration-300 shadow-md"
               style={{
                 width: `${scale * 100}%`,
                 height: "auto",
