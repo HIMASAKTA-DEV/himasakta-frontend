@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -74,7 +75,7 @@ function page() {
         setInitVal(data);
       } catch (err) {
         console.error(err);
-        alert(`Gagal mengambil data${getApiErrorMessage(err)}`);
+        toast.error(`Gagal mengambil data${getApiErrorMessage(err)}`);
       } finally {
         setLoading(false);
       }
@@ -115,9 +116,9 @@ function page() {
       };
 
       await api.put(`/monthly-event/${id}`, payload);
-      alert("Berhasil memperbarui kegiatan!");
+      toast.success("Berhasil memperbarui kegiatan!");
     } catch (err) {
-      alert(`Gagal update kegiatan: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal update kegiatan: ${getApiErrorMessage(err)}`);
     }
   };
 

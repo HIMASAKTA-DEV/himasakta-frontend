@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
@@ -62,7 +63,7 @@ function page() {
         }
       } catch (err) {
         console.error(err);
-        alert("Gagal mengambil data NRP whitelist");
+        toast.error("Gagal mengambil data NRP whitelist");
       } finally {
         setLoading(false);
       }
@@ -76,18 +77,18 @@ function page() {
     if (dirtyFields.name) payload.name = data.name;
 
     if (Object.keys(payload).length === 0) {
-      alert("Tidak ada perubahan.");
+      toast("Tidak ada perubahan.");
       return;
     }
 
     try {
       const resp = await api.put(`/nrp-whitelist/${id}`, payload);
       if (resp.status === 200) {
-        alert("Berhasil memperbarui NRP whitelist!");
+        toast.success("Berhasil memperbarui NRP whitelist!");
         router.push("/cp#manage-nrp-whitelist");
       }
     } catch (err) {
-      alert(`Gagal: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal: ${getApiErrorMessage(err)}`);
     }
   };
 

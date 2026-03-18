@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
@@ -25,7 +26,9 @@ import { Controller, useForm } from "react-hook-form";
 import Select, { StylesConfig } from "react-select";
 
 type DepartmentLinkType =
-  | "social_media_link"
+  | "instagram_link"
+  | "youtube_link"
+  | "twitter_link"
   | "silabus_link"
   | "bank_soal_link"
   | "bank_ref_link";
@@ -42,7 +45,9 @@ type FormValues = {
   name: string;
   description: string;
   logo_id: string;
-  social_media_link: string;
+  instagram_link: string;
+  youtube_link: string;
+  twitter_link: string;
   bank_soal_link: string;
   silabus_link: string;
   bank_ref_link: string;
@@ -125,14 +130,14 @@ export default function EditDepartmentPage() {
 
   const addGallery = (photo: PhotoData) => {
     if (gallery.length >= 20) {
-      alert("Maksimal 20 gambar!");
+      toast("Maksimal 20 gambar!");
       return;
     }
 
     const isDuplicate = gallery.some((f) => f.id === photo.id);
 
     if (isDuplicate) {
-      alert("Gambar ini sudah ada dalam progenda ini!");
+      toast("Gambar ini sudah ada dalam progenda ini!");
       return;
     }
 
@@ -177,10 +182,10 @@ export default function EditDepartmentPage() {
       setInitLogo(null);
       setValue("logo_id", "");
 
-      alert("Logo berhasil dihapus");
+      toast.success("Logo berhasil dihapus");
       return true;
     } catch (err) {
-      alert(`Gagal menghapus logo: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menghapus logo: ${getApiErrorMessage(err)}`);
       return false;
     } finally {
       setDeletingLogo(false);
@@ -200,7 +205,9 @@ export default function EditDepartmentPage() {
           name: data.name || "",
           description: data.description || "",
           logo_id: data.logo?.id || "",
-          social_media_link: data.social_media_link || "",
+          instagram_link: data.instagram_link || "",
+          youtube_link: data.youtube_link || "",
+          twitter_link: data.twitter_link || "",
           bank_soal_link: data.bank_soal_link || "",
           bank_ref_link: data.bank_ref_link || "",
           silabus_link: data.silabus_link || "",
@@ -224,12 +231,28 @@ export default function EditDepartmentPage() {
 
         // Handle Links UI
         const mappedLinks: LinkProps[] = [];
-        if (data.social_media_link) {
+        if (data.instagram_link) {
           mappedLinks.push({
             id: crypto.randomUUID(),
-            type: "social_media_link",
-            label: "Social Media",
-            url: data.social_media_link,
+            type: "instagram_link",
+            label: "Instagram",
+            url: data.instagram_link,
+          });
+        }
+        if (data.youtube_link) {
+          mappedLinks.push({
+            id: crypto.randomUUID(),
+            type: "youtube_link",
+            label: "Youtube",
+            url: data.youtube_link,
+          });
+        }
+        if (data.twitter_link) {
+          mappedLinks.push({
+            id: crypto.randomUUID(),
+            type: "twitter_link",
+            label: "Twitter",
+            url: data.twitter_link,
           });
         }
         if (data.silabus_link) {
@@ -262,7 +285,7 @@ export default function EditDepartmentPage() {
         const json = await GetMemberByDeptId(data.id);
         setMembers(json.data);
       } catch (err) {
-        alert(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
+        toast.error(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
       } finally {
         setLoading(false);
       }
@@ -292,7 +315,9 @@ export default function EditDepartmentPage() {
 
   const [links, setLinks] = useState<LinkProps[]>([]);
   const linkOpts = [
-    { type: "social_media_link", label: "Social Media" },
+    { type: "instagram_link", label: "Instagram" },
+    { type: "youtube_link", label: "Youtube" },
+    { type: "twitter_link", label: "Twitter" },
     { type: "silabus_link", label: "Silabus" },
     { type: "bank_soal_link", label: "Bank Soal" },
     { type: "bank_ref_link", label: "Bank Referensi" },
@@ -331,7 +356,9 @@ export default function EditDepartmentPage() {
       name: initVal.name || "",
       description: initVal.description || "",
       logo_id: initVal.logo?.id || "",
-      social_media_link: initVal.social_media_link || "",
+      instagram_link: initVal.instagram_link || "",
+      youtube_link: initVal.youtube_link || "",
+      twitter_link: initVal.twitter_link || "",
       bank_soal_link: initVal.bank_soal_link || "",
       bank_ref_link: initVal.bank_ref_link || "",
       silabus_link: initVal.silabus_link || "",
@@ -347,12 +374,28 @@ export default function EditDepartmentPage() {
 
     // Reset links
     const mappedLinks: LinkProps[] = [];
-    if (initVal.social_media_link) {
+    if (initVal.instagram_link) {
       mappedLinks.push({
         id: crypto.randomUUID(),
-        type: "social_media_link",
-        label: "Social Media",
-        url: initVal.social_media_link,
+        type: "instagram_link",
+        label: "Instagram",
+        url: initVal.instagram_link,
+      });
+    }
+    if (initVal.youtube_link) {
+      mappedLinks.push({
+        id: crypto.randomUUID(),
+        type: "youtube_link",
+        label: "Youtube",
+        url: initVal.youtube_link,
+      });
+    }
+    if (initVal.twitter_link) {
+      mappedLinks.push({
+        id: crypto.randomUUID(),
+        type: "twitter_link",
+        label: "Twitter",
+        url: initVal.twitter_link,
       });
     }
     if (initVal.silabus_link) {
@@ -386,8 +429,10 @@ export default function EditDepartmentPage() {
     try {
       const payload = {
         ...data,
-        social_media_link:
-          links.find((l) => l.type === "social_media_link")?.url || "",
+        instagram_link:
+          links.find((l) => l.type === "instagram_link")?.url || "",
+        youtube_link: links.find((l) => l.type === "youtube_link")?.url || "",
+        twitter_link: links.find((l) => l.type === "twitter_link")?.url || "",
         silabus_link: links.find((l) => l.type === "silabus_link")?.url || "",
         bank_soal_link:
           links.find((l) => l.type === "bank_soal_link")?.url || "",
@@ -404,10 +449,12 @@ export default function EditDepartmentPage() {
               return api.put(`gallery/${g.id}`, payloadWithId);
             }),
           );
-          alert("Step 2: Berhasil menambah galeri kabinet!");
+          toast.success("Step 2: Berhasil menambah galeri kabinet!");
         } catch (err) {
           console.error(err);
-          alert(`Gagal menambahkan semua galeri: ${getApiErrorMessage(err)}`);
+          toast.error(
+            `Gagal menambahkan semua galeri: ${getApiErrorMessage(err)}`,
+          );
         }
       }
 
@@ -419,10 +466,10 @@ export default function EditDepartmentPage() {
               return api.put(`gallery/${g.id}`, payloadWithId);
             }),
           );
-          alert("Step 3: Berhasil menghapus beberapa galeri kabinet!");
+          toast.success("Step 3: Berhasil menghapus beberapa galeri kabinet!");
         } catch (err) {
           console.error(err);
-          alert(
+          toast.error(
             `Gagal menghapus semua galeri departemen: ${getApiErrorMessage(err)}`,
           );
         }
@@ -430,9 +477,9 @@ export default function EditDepartmentPage() {
 
       route.push("/cp#manage-department");
     } catch (err) {
-      alert(`Gagal menyimpan perubahan: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menyimpan perubahan: ${getApiErrorMessage(err)}`);
     } finally {
-      alert("Berhasil menyimpan semua perubahan!");
+      toast.success("Berhasil menyimpan semua perubahan!");
     }
   };
 
@@ -633,7 +680,7 @@ export default function EditDepartmentPage() {
                         name="leader_id"
                         render={({ field }) => (
                           <Select
-                            placeholder="Pilih Jabatan"
+                            placeholder="Pilih Kepala Departemen"
                             styles={selectStyles}
                             isLoading={loading}
                             options={members.map((d) => ({
@@ -811,7 +858,7 @@ export default function EditDepartmentPage() {
             onClose={() => setEditingGallery(false)}
             onSelect={(p) => {
               if (gallery.length >= 20) {
-                alert("Maksimal 20 gambar!");
+                toast("Maksimal 20 gambar!");
                 return;
               }
               addGallery(p);

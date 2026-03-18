@@ -8,6 +8,7 @@ import api from "@/lib/axios";
 import { GetAllCabinets } from "@/services/admin/GetAllCabinets";
 import { GetAllRole } from "@/services/admin/GetAllRole";
 import { PostCreateRole } from "@/services/admin/PostCreateRole";
+import { PutUpdateMember } from "@/services/admin/PutUpdateMember";
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
 import { CreateMemberType } from "@/types/data/CreateMember";
 import { CreateRoleType } from "@/types/data/CreateRole";
@@ -18,6 +19,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { FaEdit, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineUpload } from "react-icons/hi";
 import Select, { StylesConfig } from "react-select";
@@ -96,7 +98,8 @@ export default function Page() {
   const fetchRoles = useCallback(async () => {
     try {
       const r = await GetAllRole(1, 50);
-      setRoles(r.data);
+      const sorted = [...r.data].sort((a, b) => b.level - a.level);
+      setRoles(sorted);
     } catch (err) {
       console.error("Failed to fetch roles", err);
     }
@@ -135,7 +138,7 @@ export default function Page() {
         }
       } catch (err) {
         console.error(err);
-        alert("Gagal mengambil data anggota");
+        toast.error("Gagal mengambil data anggota");
       } finally {
         setLoading(false);
       }
@@ -145,46 +148,46 @@ export default function Page() {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const formData = new FormData();
+      const payload: Partial<CreateMemberType> = {};
       let hasUpdates = false;
 
       // Only append dirty (changed) fields
       if (dirtyFields.name) {
-        formData.append("name", data.name);
+        payload.name = data.name;
         hasUpdates = true;
       }
       if (dirtyFields.nrp) {
-        formData.append("nrp", data.nrp);
+        payload.nrp = data.nrp;
         hasUpdates = true;
       }
       if (dirtyFields.role_id) {
-        formData.append("role_id", data.role_id);
+        payload.role_id = data.role_id;
         hasUpdates = true;
       }
       if (dirtyFields.cabinet_id) {
-        formData.append("cabinet_id", data.cabinet_id);
+        payload.cabinet_id = data.cabinet_id;
         hasUpdates = true;
       }
       if (dirtyFields.department_id) {
-        formData.append("department_id", data.department_id || "");
+        payload.department_id = data.department_id || "";
         hasUpdates = true;
       }
       if (dirtyFields.photo_id) {
-        formData.append("photo_id", data.photo_id as string);
+        payload.photo_id = data.photo_id as string;
         hasUpdates = true;
       }
 
       if (!hasUpdates) {
-        alert("Tidak ada perubahan yang disimpan. Silahkan kembali");
+        toast("Tidak ada perubahan yang disimpan. Silahkan kembali");
         return;
       }
 
-      await api.put(`/member/${id}`, formData);
-      alert("Berhasil memperbarui anggota!");
+      await PutUpdateMember(id as string, payload);
+      toast.success("Berhasil memperbarui anggota!");
       router.push("/cp#manage-anggota");
     } catch (err) {
       console.error("API ERROR: ", err);
-      alert("Gagal memperbarui anggota.");
+      toast.error("Gagal memperbarui anggota.");
     }
   };
 
@@ -212,15 +215,23 @@ export default function Page() {
       description: data.description?.trim() || undefined,
     };
 
+    // Check for duplicate level
+    const duplicate = roles.find((r) => r.level === data.level);
+    if (duplicate) {
+      toast.error(
+        `Peringatan: Level ${data.level} sudah digunakan oleh jabatan "${duplicate.name}".`,
+      );
+    }
+
     try {
       await PostCreateRole(payload);
       await fetchRoles();
       setOpenRoleModal(false);
       resetRoleForm();
-      alert("Jabatan berhasil ditambahkan!");
+      toast.success("Jabatan berhasil ditambahkan!");
     } catch (err) {
       console.error("API ERROR:", err);
-      alert("Gagal menambahkan jabatan.");
+      toast.error("Gagal menambahkan jabatan.");
     }
   };
 
@@ -232,6 +243,76 @@ export default function Page() {
   const [deleteRoleLoading, setDeleteRoleLoading] = useState(false);
   const [deleteRoleError, setDeleteRoleError] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+    setDraggedItemIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDragEnd = () => {
+    setDraggedItemIndex(null);
+  };
+
+  const handleDrop = async (index: number) => {
+    if (draggedItemIndex === null || draggedItemIndex === index) {
+      setDraggedItemIndex(null);
+      return;
+    }
+
+    const newRoles = [...roles];
+    const draggedItem = { ...newRoles[draggedItemIndex] };
+    newRoles.splice(draggedItemIndex, 1);
+    newRoles.splice(index, 0, draggedItem);
+
+    const originalLevels = roles.map((r) => r.level).sort((a, b) => b - a);
+    const updatedRoles = newRoles.map((role, idx) => ({
+      ...role,
+      level:
+        originalLevels[idx] ??
+        originalLevels[originalLevels.length - 1] -
+          (idx - originalLevels.length + 1),
+    }));
+
+    // Find roles that actually changed levels
+    const changedRoles = updatedRoles.filter(
+      (role) => role.level !== roles.find((r) => r.id === role.id)?.level,
+    );
+
+    if (changedRoles.length === 0) {
+      setDraggedItemIndex(null);
+      return;
+    }
+
+    setRoles(updatedRoles);
+    setDraggedItemIndex(null);
+
+    const updatePromise = Promise.all(
+      changedRoles.map((role) =>
+        api.put(`/role/${role.id}`, { level: role.level }),
+      ),
+    );
+
+    toast.promise(updatePromise, {
+      loading: "Memperbarui urutan jabatan...",
+      success: "Urutan jabatan diperbarui!",
+      error: "Gagal memperbarui urutan ke server.",
+    });
+
+    try {
+      await updatePromise;
+      await fetchRoles(); // Refresh to ensure backend consistency
+    } catch (err) {
+      console.error("Failed to sync role hierarchy:", err);
+      await fetchRoles(); // Revert to server state on failure
+    }
+  };
 
   const handleDeleteRole = (role: RoleType) => {
     setRoleToDelete(role);
@@ -290,6 +371,16 @@ export default function Page() {
     if (roleDirtyFields.level && data.level !== undefined) {
       payload.level = data.level;
       hasUpdates = true;
+
+      // Check for duplicate level
+      const duplicate = roles.find(
+        (r) => r.level === data.level && r.id !== editingRoleId,
+      );
+      if (duplicate) {
+        toast.error(
+          `Peringatan: Level ${data.level} sudah digunakan oleh jabatan "${duplicate.name}".`,
+        );
+      }
     }
 
     if (roleDirtyFields.description) {
@@ -298,18 +389,18 @@ export default function Page() {
     }
 
     if (!hasUpdates) {
-      alert("Tidak ada perubahan pada jabatan.");
+      toast("Tidak ada perubahan pada jabatan.");
       return;
     }
 
     try {
       await api.put(`/role/${editingRoleId}`, payload);
-      alert("Jabatan berhasil diperbarui!");
+      toast.success("Jabatan berhasil diperbarui!");
       await fetchRoles();
       closeRoleModal();
     } catch (err) {
       console.error(err);
-      alert("Gagal memperbarui jabatan.");
+      toast.error("Gagal memperbarui jabatan.");
     }
   };
 
@@ -439,12 +530,21 @@ export default function Page() {
                   >
                     + Tambah Jabatan Baru
                   </button>
-                  {roles.map((role) => (
+                  {roles.map((role, index) => (
                     <div
                       key={role.id}
-                      className="flex items-center justify-between bg-white p-2 rounded border shadow-sm"
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragOver={handleDragOver}
+                      onDrop={() => handleDrop(index)}
+                      onDragEnd={handleDragEnd}
+                      className={`flex items-center justify-between bg-white p-2 rounded border shadow-sm cursor-move select-none ${
+                        draggedItemIndex === index
+                          ? "opacity-30 border-primaryPink"
+                          : "opacity-100 hover:border-primaryPink/50"
+                      }`}
                     >
-                      <span className="text-sm font-medium">
+                      <span className="text-sm font-medium pointer-events-none">
                         {role.name}{" "}
                         <span className="text-xs text-gray-400">
                           (Lv. {role.level})
@@ -457,14 +557,14 @@ export default function Page() {
                             handleEditRoleClick(role);
                             setIsCreating(false);
                           }}
-                          className="text-blue-500 hover:text-blue-700"
+                          className="text-blue-500 hover:text-blue-700 p-1"
                         >
                           <FaRegEdit size={14} />
                         </button>
                         <button
                           type="button"
                           onClick={() => handleDeleteRole(role)}
-                          className="text-red-500 hover:text-red-700"
+                          className="text-red-500 hover:text-red-700 p-1"
                         >
                           <FaRegTrashAlt size={14} />
                         </button>

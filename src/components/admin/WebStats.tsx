@@ -16,7 +16,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { Building, Calendar, Newspaper, UserCheck } from "lucide-react";
+import { Building, Calendar, Image, Newspaper, UserCheck } from "lucide-react";
 
 type TimeStampAnalytic = {
   timestamp: string;
@@ -30,6 +30,7 @@ type analyticData = {
   ActiveProgendaCount: number;
   ActiveMonthlyEventCount: number;
   ActiveAnggotaCount: number;
+  ActiveGalleryCount: number;
   NewVisitorsGraph: TimeStampAnalytic[];
 };
 
@@ -81,12 +82,11 @@ function WebStats() {
 
                   <XAxis
                     dataKey="timestamp"
-                    tickFormatter={(value) =>
-                      new Date(value).toLocaleDateString("id-ID", {
-                        day: "2-digit",
-                        month: "short",
-                      })
-                    }
+                    tickFormatter={(value) => {
+                      const d = new Date(value);
+                      return `${d.getDate()} ${d.toLocaleString("id-ID", { month: "short" })} ${d.getHours().toString().padStart(2, "0")}:00`;
+                    }}
+                    minTickGap={30}
                   />
 
                   <YAxis />
@@ -136,6 +136,12 @@ function WebStats() {
           label="Members"
           value={data?.ActiveAnggotaCount}
           icon={<UserCheck />}
+        />
+
+        <StatCard
+          label="Gallery"
+          value={data?.ActiveGalleryCount}
+          icon={<Image />}
         />
       </div>
     </div>

@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -131,10 +132,10 @@ function page() {
       setDescVal("");
       setLogo(null);
 
-      alert("Berhasil menambahkan kegiatan baru!");
+      toast.success("Berhasil menambahkan kegiatan baru!");
       router.push("/cp#manage-kegiatan");
     } catch (err) {
-      alert(
+      toast.error(
         `Gagal menambahkan kegiatan baru karena ${getApiErrorMessage(err)}`,
       );
     }

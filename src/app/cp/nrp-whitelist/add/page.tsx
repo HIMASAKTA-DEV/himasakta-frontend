@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
@@ -46,11 +47,11 @@ function page() {
     try {
       const resp = await api.post("/nrp-whitelist/add", data);
       if (resp.status === 201 || resp.status === 200) {
-        alert("Berhasil menambahkan NRP whitelist!");
+        toast.success("Berhasil menambahkan NRP whitelist!");
         reset();
       }
     } catch (err) {
-      alert(`Gagal: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal: ${getApiErrorMessage(err)}`);
     }
   };
 

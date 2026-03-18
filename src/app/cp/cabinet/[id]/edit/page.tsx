@@ -4,6 +4,7 @@
  */
 
 "use client";
+import toast from "react-hot-toast";
 
 import Typography from "@/components/Typography";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
@@ -88,7 +89,7 @@ export default function EditCabinetPage() {
         if (data.organigram) setOrganigram(data.organigram);
       } catch (err) {
         console.error("Failed to fetch cabinet:", err);
-        alert("Gagal mengambil data kabinet.");
+        toast.error("Gagal mengambil data kabinet.");
       } finally {
         setIsFetching(false);
       }
@@ -107,7 +108,7 @@ export default function EditCabinetPage() {
       };
 
       await api.put(`/cabinet-info/${id}`, payload);
-      alert("Step 1: Berhasil memperbarui data kabinet!");
+      toast.success("Step 1: Berhasil memperbarui data kabinet!");
       if (newGallery) {
         try {
           await Promise.all(
@@ -116,10 +117,12 @@ export default function EditCabinetPage() {
               return api.put(`gallery/${g.id}`, payloadWithId);
             }),
           );
-          alert("Step 2: Berhasil menambah galeri kabinet!");
+          toast.success("Step 2: Berhasil menambah galeri kabinet!");
         } catch (err) {
           console.error(err);
-          alert(`Gagal menambahkan semua galeri: ${getApiErrorMessage(err)}`);
+          toast.error(
+            `Gagal menambahkan semua galeri: ${getApiErrorMessage(err)}`,
+          );
         }
       }
 
@@ -131,10 +134,10 @@ export default function EditCabinetPage() {
               return api.put(`gallery/${g.id}`, payloadWithId);
             }),
           );
-          alert("Step 3: Berhasil menghapus beberapa galeri kabinet!");
+          toast.success("Step 3: Berhasil menghapus beberapa galeri kabinet!");
         } catch (err) {
           console.error(err);
-          alert(
+          toast.error(
             `Gagal menghapus semua galeri departemen: ${getApiErrorMessage(err)}`,
           );
         }
@@ -144,7 +147,7 @@ export default function EditCabinetPage() {
       router.push("/cp#manage-cabinet");
     } catch (err) {
       console.error("API ERROR: ", err);
-      alert("Gagal memperbarui kabinet.");
+      toast.error("Gagal memperbarui kabinet.");
     }
   };
 
@@ -180,11 +183,11 @@ export default function EditCabinetPage() {
       setLogo(null);
       setValue("logo_id", "");
 
-      alert("Gambar berhasil dihapus dan diupdate!");
+      toast.success("Gambar berhasil dihapus dan diupdate!");
       return true;
     } catch (err) {
       console.error("Delete Flow Error:", err);
-      alert("Gagal menghapus gambar :(");
+      toast.error("Gagal menghapus gambar :(");
       return false;
     } finally {
       setDeletingLogo(false);
@@ -221,10 +224,10 @@ export default function EditCabinetPage() {
       setOrganigram(null);
       setValue("organigram_id", "");
 
-      alert("Gambar berhasil dihapus dan diupdate!");
+      toast.success("Gambar berhasil dihapus dan diupdate!");
     } catch (err) {
       console.error(err);
-      alert("Gagal menghapus organigram");
+      toast.error("Gagal menghapus organigram");
       return false;
     } finally {
       setDeletingOrganigram(false);
@@ -278,13 +281,13 @@ export default function EditCabinetPage() {
   const [delGallery, setDelGallery] = useState<PhotoData[]>([]);
   const addGallery = (photo: PhotoData) => {
     if (gallery.length >= 20) {
-      alert("Maksimal 20 gambar!");
+      toast("Maksimal 20 gambar!");
       return;
     }
     const isDuplicate = gallery.some((f) => f.id === photo.id);
 
     if (isDuplicate) {
-      alert("Gambar ini sudah ada dalam progenda ini!");
+      toast("Gambar ini sudah ada dalam progenda ini!");
       return;
     }
 
@@ -764,7 +767,7 @@ export default function EditCabinetPage() {
           onClose={() => setEditingGallery(false)}
           onSelect={(p) => {
             if (gallery.length >= 20) {
-              alert("Maksimal 20 gambar!");
+              toast("Maksimal 20 gambar!");
               return;
             }
             addGallery(p);

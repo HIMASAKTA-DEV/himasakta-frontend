@@ -14,6 +14,9 @@ export type DepartmentType = {
   leader_id?: string | null;
   leader?: MemberType | null;
   social_media_link?: string;
+  instagram_link?: string;
+  youtube_link?: string;
+  twitter_link?: string;
   silabus_link?: string;
   bank_soal_link?: string;
   bank_ref_link?: string;

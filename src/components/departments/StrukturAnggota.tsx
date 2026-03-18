@@ -13,6 +13,7 @@ import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 type MemberCard = {
   name: string;
   role: string;
+  level: number;
   photoUrl?: string;
 };
 
@@ -57,8 +58,11 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
       const cards: MemberCard[] = json.data.map((m: MemberType) => ({
         name: m.name,
         role: m.role?.name ?? "-",
+        level: m.role?.level ?? 0,
         photoUrl: m.photo?.image_url,
       }));
+
+      cards.sort((a, b) => b.level - a.level);
 
       setMemberCards(cards);
     } catch (err) {

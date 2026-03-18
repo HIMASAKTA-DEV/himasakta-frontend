@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import { UUID } from "crypto";
 import api from "@/lib/axios";
@@ -59,14 +60,14 @@ export default function useProgendaEdit() {
 
   const addFeeds = (photo: PhotoData) => {
     if (feeds.length >= 20) {
-      alert("Maksimal 20 gambar!");
+      toast("Maksimal 20 gambar!");
       return;
     }
 
     const isDuplicate = feeds.some((f) => f.id === photo.id);
 
     if (isDuplicate) {
-      alert("Gambar ini sudah ada dalam progenda ini!");
+      toast("Gambar ini sudah ada dalam progenda ini!");
       return;
     }
 
@@ -188,7 +189,7 @@ export default function useProgendaEdit() {
         setGoalVal(mappedData.goal);
       } catch (err) {
         console.error(err);
-        alert(`Gagal memuat data: ${getApiErrorMessage(err)}`);
+        toast.error(`Gagal memuat data: ${getApiErrorMessage(err)}`);
       } finally {
         setLoadData(false);
       }
@@ -235,12 +236,12 @@ export default function useProgendaEdit() {
       }));
 
       if (Object.keys(payload).length === 0) {
-        alert("Tidak ada perubahan.");
+        toast("Tidak ada perubahan.");
         return;
       }
 
       await api.put(`/progenda/${id}`, payload);
-      alert("Step 1: Progenda berhasil diupdate!");
+      toast.success("Step 1: Progenda berhasil diupdate!");
       if (newFeeds) {
         try {
           await Promise.all(
@@ -249,9 +250,11 @@ export default function useProgendaEdit() {
               return api.put(`gallery/${f.id}`, payloadWithId);
             }),
           );
-          alert("Step 2: Berhasil menambahkan feeds!");
+          toast.success("Step 2: Berhasil menambahkan feeds!");
         } catch (err) {
-          alert(`Gagal menambahkan semua feeds: ${getApiErrorMessage(err)}`);
+          toast.error(
+            `Gagal menambahkan semua feeds: ${getApiErrorMessage(err)}`,
+          );
         }
       }
 
@@ -263,16 +266,16 @@ export default function useProgendaEdit() {
               return api.put(`gallery/${f.id}`, payloadWithId);
             }),
           );
-          alert("Step 3: Berhasil menambahkan perubahan feeds!");
+          toast.success("Step 3: Berhasil menambahkan perubahan feeds!");
         } catch (err) {
-          alert(
+          toast.error(
             `Gagal menambahkan semua perubahan feeds: ${getApiErrorMessage(err)}`,
           );
         }
       }
       route.push("/cp#manage-progenda");
     } catch (err) {
-      alert(`Gagal update progenda: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal update progenda: ${getApiErrorMessage(err)}`);
     }
   };
 
@@ -318,12 +321,12 @@ export default function useProgendaEdit() {
   const saveTimeline = async () => {
     // VALIDATION
     if (!timelineForm.date) {
-      alert("Tanggal wajib diisi");
+      toast("Tanggal wajib diisi");
       return;
     }
 
     if (!timelineForm.info.trim()) {
-      alert("Info timeline wajib diisi");
+      toast("Info timeline wajib diisi");
       return;
     }
 
@@ -335,7 +338,7 @@ export default function useProgendaEdit() {
 
     if (!editingTimeline && lastDate) {
       if (new Date(timelineForm.date) <= new Date(lastDate)) {
-        alert("Tanggal timeline harus urut");
+        toast("Tanggal timeline harus urut");
         return;
       }
     }
@@ -370,7 +373,7 @@ export default function useProgendaEdit() {
 
       setTimelineForm({ date: "", info: "", link: "" });
     } catch (err) {
-      alert(`Gagal memperbarui data: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal memperbarui data: ${getApiErrorMessage(err)}`);
     }
   };
 
@@ -383,7 +386,7 @@ export default function useProgendaEdit() {
 
       setTimelines((prev) => prev.filter((t) => t.id !== timelineId));
     } catch (err) {
-      alert(getApiErrorMessage(err));
+      toast.error(getApiErrorMessage(err));
     }
   };
 
@@ -406,10 +409,10 @@ export default function useProgendaEdit() {
       setInitThumbnail(null);
       setValue("thumbnail_id", "");
 
-      alert("Logo berhasil dihapus");
+      toast.success("Logo berhasil dihapus");
       return true;
     } catch (err) {
-      alert(`Gagal menghapus logo: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menghapus logo: ${getApiErrorMessage(err)}`);
       return false;
     } finally {
       setDeletingThumbnail(false);

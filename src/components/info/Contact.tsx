@@ -1,45 +1,40 @@
-"use client";
-
-import api from "@/lib/axios";
-import { SettingsWebType } from "@/types/SettingsWebType";
-import { ApiResponse } from "@/types/commons/apiResponse";
+import { GlobalSettings } from "@/types/data/GlobalSettings";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { IconType } from "react-icons";
-import { FaInstagram, FaTiktok } from "react-icons/fa";
-import { FiLink, FiLinkedin, FiYoutube } from "react-icons/fi";
+import { FiLink } from "react-icons/fi";
+import { configuration } from "../../../config";
 import HeaderSection from "../commons/HeaderSection";
 
-type ThisSocmedLinkArr = {
-  name: string;
-  link: string;
-};
+interface ContactProps {
+  data: GlobalSettings | null;
+}
 
-function Contact() {
-  const [links, setLinks] = useState<ThisSocmedLinkArr[]>([]);
-
-  useEffect(() => {
-    const fetchSocialMedia = async () => {
-      try {
-        const json =
-          await api.get<ApiResponse<SettingsWebType>>("/settings/web");
-        const dt = json.data.data;
-        setLinks(dt.SocialMedia);
-      } catch (err) {
-        console.error(err);
-      }
+function Contact({ data }: ContactProps) {
+  // Merge backend social media with config fallbacks
+  const mergedSocmed = configuration.SocmedLinks.map((staticSocmed) => {
+    const backendMatch = data?.SocialMedia.find(
+      (s) => s.name.toLowerCase() === staticSocmed.name.toLowerCase(),
+    );
+    return {
+      ...staticSocmed,
+      url: backendMatch ? backendMatch.link : staticSocmed.url,
     };
+  });
 
-    fetchSocialMedia();
-  }, []);
+  // Also include any unknown social media from backend
+  const extraSocmed = (data?.SocialMedia || [])
+    .filter(
+      (s) =>
+        !configuration.SocmedLinks.some(
+          (staticS) => staticS.name.toLowerCase() === s.name.toLowerCase(),
+        ),
+    )
+    .map((s) => ({
+      name: s.name,
+      url: s.link,
+      icon: FiLink, // Default icon for unknown socmed
+    }));
 
-  const icons: Record<string, IconType> = {
-    instagram: FaInstagram,
-    linkedin: FiLinkedin,
-    youtube: FiYoutube,
-    tiktok: FaTiktok,
-    linktree: FiLink,
-  };
+  const allSocmed = [...mergedSocmed, ...extraSocmed];
 
   return (
     <section className="flex flex-col gap-4" id="contact">
@@ -51,25 +46,23 @@ function Contact() {
         If you have any questions or need further discussion, please feel free
         to contact us.
       </p>
-      <div className="flex gap-4">
-        {links.map(({ name, link }) => {
-          const Icon = icons[name.toLocaleLowerCase()] || FiLink;
-          return (
-            <Link
-              key={name}
-              href={link ?? "/"}
-              target="_blank"
-              className="
+      <div className="flex gap-4 flex-wrap">
+        {allSocmed.map(({ name, url, icon: Icon }) => (
+          <Link
+            key={name}
+            href={url}
+            target="_blank"
+            className="
                 p-3 rounded-2xl
                 bg-black text-white
                 hover:bg-neutral-800
                 transition
               "
-            >
-              <Icon className="text-xl" />
-            </Link>
-          );
-        })}
+            title={name}
+          >
+            <Icon className="text-xl" />
+          </Link>
+        ))}
       </div>
     </section>
   );

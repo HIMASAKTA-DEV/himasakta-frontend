@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -100,7 +101,7 @@ export default function EditNewsPage() {
         }
       } catch (err) {
         console.error(err);
-        alert("Gagal mengambil data berita");
+        toast.error("Gagal mengambil data berita");
       } finally {
         setIsApiLoaded(true);
       }
@@ -143,14 +144,14 @@ export default function EditNewsPage() {
       };
       // Use currentId for updates as it's guaranteed to be the UUID
       await api.put(`/news/${currentId}`, payload);
-      alert("Berhasil memperbarui berita!");
+      toast.success("Berhasil memperbarui berita!");
       reset();
       setDescVal("");
       localStorage.removeItem(`edit_news_${id}`);
       setLogo(null);
     } catch (err) {
       console.error(err);
-      alert(`Gagal menambahkan berita: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menambahkan berita: ${getApiErrorMessage(err)}`);
     } finally {
       route.push("/cp#manage-news");
     }

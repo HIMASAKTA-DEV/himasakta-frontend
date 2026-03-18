@@ -14,6 +14,8 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 function GalleryCabinet({ ...cabinet }: CabinetInfo) {
   const [loading, setLoading] = useState(true);
   const [galleries, setGalleries] = useState<GalleryType[]>([]);
+  const [_hasNext, setHasNext] = useState(false);
+  const [currPg, setCurrPg] = useState(1);
   const [error, setError] = useState(false);
   const [limitGallery, setLimitGallery] = useState(3);
   const [slides, setSlides] = useState<GalleryType[][]>([]);

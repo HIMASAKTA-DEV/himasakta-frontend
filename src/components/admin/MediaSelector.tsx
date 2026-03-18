@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import api from "@/lib/axios";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
@@ -81,7 +82,7 @@ export default function MediaSelector({
       onSelect({ id: uploaded.id, image_url: uploaded.image_url });
     } catch (err) {
       console.error("Upload failed:", err);
-      alert("Failed to upload image");
+      toast.error("Failed to upload image");
     } finally {
       setIsUploading(false);
     }

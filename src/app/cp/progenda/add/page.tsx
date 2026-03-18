@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import Typography from "@/components/Typography";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
@@ -205,13 +206,13 @@ function page() {
 
   const addFeeds = (photo: PhotoData) => {
     if (feeds.length >= 20) {
-      alert("Maksimal 20 gambar!");
+      toast("Maksimal 20 gambar!");
       return;
     }
     const isDuplicate = feeds.some((f) => f.id === photo.id);
 
     if (isDuplicate) {
-      alert("Gambar ini sudah ada dalam progenda ini!");
+      toast("Gambar ini sudah ada dalam progenda ini!");
       return;
     }
 
@@ -276,7 +277,7 @@ function page() {
 
       const newId = resJson.data.data.id;
 
-      alert("Step 1: Progenda berhasil dibuat!");
+      toast.success("Step 1: Progenda berhasil dibuat!");
       localStorage.removeItem(STORAGE_KEY);
       if (feeds) {
         try {
@@ -286,13 +287,15 @@ function page() {
               return api.put(`gallery/${f.id}`, payloadWithId);
             }),
           );
-          alert("Step 2: Berhasil menambahkan feeds!");
+          toast.success("Step 2: Berhasil menambahkan feeds!");
         } catch (err) {
-          alert(`Gagal menambahkan semua feeds: ${getApiErrorMessage(err)}`);
+          toast.error(
+            `Gagal menambahkan semua feeds: ${getApiErrorMessage(err)}`,
+          );
         }
       }
     } catch (err) {
-      alert(`Gagal membuat progenda: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal membuat progenda: ${getApiErrorMessage(err)}`);
     }
   };
 
@@ -358,10 +361,10 @@ function page() {
       setInitThumbnail(null);
       setValue("thumbnail_id", "");
 
-      alert("Logo berhasil dihapus");
+      toast.success("Logo berhasil dihapus");
       return true;
     } catch (err) {
-      alert(`Gagal menghapus logo: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menghapus logo: ${getApiErrorMessage(err)}`);
       return false;
     } finally {
       setDeletingThumbnail(false);
@@ -380,12 +383,12 @@ function page() {
   const saveTimeline = () => {
     // VALIDATION
     if (!timelineForm.date) {
-      alert("Tanggal wajib diisi");
+      toast("Tanggal wajib diisi");
       return;
     }
 
     if (!timelineForm.info.trim()) {
-      alert("Info timeline wajib diisi");
+      toast("Info timeline wajib diisi");
       return;
     }
 
@@ -950,7 +953,7 @@ function page() {
               onClose={() => setEditingFeeds(false)}
               onSelect={(p) => {
                 if (feeds.length >= 20) {
-                  alert("Maksimal 20 gambar!");
+                  toast("Maksimal 20 gambar!");
                   return;
                 }
                 addFeeds(p);

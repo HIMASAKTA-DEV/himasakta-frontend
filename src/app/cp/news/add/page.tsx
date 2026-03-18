@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import Link from "next/link";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
@@ -95,7 +96,7 @@ export default function AddNewsPage() {
           : null,
       };
       await api.post("/news", payload);
-      alert("Berhasil menambahkan berita!");
+      toast.success("Berhasil menambahkan berita!");
       reset();
       setDescVal("");
       setLogo(null);
@@ -103,7 +104,7 @@ export default function AddNewsPage() {
       router.push("/cp#manage-news");
     } catch (err) {
       console.error(err);
-      alert(`Gagal menambahkan berita: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menambahkan berita: ${getApiErrorMessage(err)}`);
     }
   };
 

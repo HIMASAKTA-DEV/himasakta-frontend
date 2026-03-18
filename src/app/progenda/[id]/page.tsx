@@ -50,7 +50,9 @@ function page() {
     fetchProgendaInfo(inp);
   }, [id]);
 
-  if (error) NotFound();
+  if (error) {
+    return <NotFound />;
+  }
 
   if (loading) {
     return (
