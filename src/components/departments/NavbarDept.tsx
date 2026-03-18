@@ -1,12 +1,12 @@
 "use client";
 
+import { GetAllDepts } from "@/services/departments/GetAllDepts";
+import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { GetAllDepts } from "@/services/departments/GetAllDepts";
-import { DepartmentType } from "@/types/data/DepartmentType";
-import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 import { FaSearch } from "react-icons/fa";
+import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 export default function NavbarDept() {
   const [deptName, setDeptName] = useState<DepartmentType[]>([]);
@@ -60,7 +60,10 @@ export default function NavbarDept() {
     <nav className="relative w-full bg-white shadow-md rounded-full">
       <div className="flex items-center py-1 pr-1 pl-1">
         {/* CONTAINER SCROLLABLE */}
-        <div className="flex-1 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-proximity overflow-y-hidden ">
+        <div
+          className="flex-1 overflow-x-auto max-lg:no-scrollbar scroll-smooth snap-x snap-proximity overflow-y-hidden "
+          data-lenis-prevent
+        >
           {/* PENTING: 
               - Gunakan 'min-w-full' agar container selalu selebar nav.
               - Gunakan 'justify-between' atau 'justify-around' agar item yang sedikit tersebar merata.
