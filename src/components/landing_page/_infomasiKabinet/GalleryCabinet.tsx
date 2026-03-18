@@ -1,58 +1,38 @@
-import RenderPagination from "@/components/_news/RenderPagination";
+"use client";
+
 import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
-import EventSkeleton from "@/components/commons/skeletons/SkeletonGrid";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
+import divideArray from "@/lib/divideArray"; // Pastikan path ini benar
 import { GetGalleryByCabinetId } from "@/services/landing_page/GeGalleryByCabinetId";
-import { ApiMeta } from "@/types/commons/apiMeta";
 import { GalleryType } from "@/types/data/GalleryType";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 function GalleryCabinet({ ...cabinet }: CabinetInfo) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [galleries, setGalleries] = useState<GalleryType[]>([]);
-  const [hasNext, setHasNext] = useState(false);
-  const [currPg, setCurrPg] = useState(1);
   const [error, setError] = useState(false);
-  const [metaData, setMetaData] = useState<ApiMeta | null>(null);
-  const [LimitGallery, setLimitGallery] = useState(3);
+  const [limitGallery, setLimitGallery] = useState(3);
+  const [slides, setSlides] = useState<GalleryType[][]>([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     caption?: string;
   } | null>(null);
 
+  // 1. Fetch SEMUA data galeri (atau limit yang besar) untuk dijadikan slider
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 1024) {
-        setLimitGallery(3);
-      } else if (window.innerWidth > 768) {
-        setLimitGallery(2);
-      } else {
-        setLimitGallery(1);
-      }
-    };
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    const fetchGalleryByCabinet = async (cabinetId: string) => {
+    const fetchAllGallery = async (cabinetId: string) => {
       setLoading(true);
       setError(false);
       try {
-        const json = await GetGalleryByCabinetId(
-          cabinetId,
-          currPg,
-          LimitGallery,
-        );
+        // Kita ambil data dalam jumlah banyak sekaligus untuk slider
+        // Jika API kamu mendukung, hilangkan pagination atau set limit tinggi
+        const json = await GetGalleryByCabinetId(cabinetId, 1, 50);
         setGalleries(json.data);
-        setMetaData(json.meta);
-        setHasNext(json.data.length === LimitGallery);
       } catch (err) {
         console.error(err);
         setError(true);
@@ -61,14 +41,42 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
       }
     };
 
-    if (!cabinet.id) return;
-    fetchGalleryByCabinet(cabinet.id);
-  }, [currPg, LimitGallery, cabinet.id]);
+    if (cabinet.id) fetchAllGallery(cabinet.id);
+  }, [cabinet.id]);
 
+  // 2. Handle Responsive Breakpoints untuk jumlah item per slide
   useEffect(() => {
-    const isModalOpen = !!previewImage;
-    if (isModalOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width > 1024) setLimitGallery(3);
+      else if (width > 768) setLimitGallery(2);
+      else setLimitGallery(1);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // 3. Update Slides saat data atau ukuran layar berubah
+  useEffect(() => {
+    if (galleries.length > 0) {
+      setSlides(divideArray(galleries, limitGallery));
+      setCurrentSlide(0);
+    }
+  }, [galleries, limitGallery]);
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((s) => (s === slides.length - 1 ? 0 : s + 1));
+  }, [slides.length]);
+
+  const prevSlide = () => {
+    setCurrentSlide((s) => (s === 0 ? slides.length - 1 : s - 1));
+  };
+
+  // Lock body scroll saat modal buka
+  useEffect(() => {
+    document.body.style.overflow = previewImage ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
@@ -76,9 +84,9 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-8 items-center">
+      <div className="flex flex-col gap-8 items-center py-10">
         <HeaderSection title={"Galeri Departemen"} />
-        <div className="w-full">
+        <div className="w-full px-12">
           <SkeletonSection />
         </div>
         <SkeletonPleaseWait />
@@ -86,84 +94,116 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
     );
   }
 
-  if (error) return <p>&#9940; Gagal memuat data :&#40;</p>;
+  if (error)
+    return <p className="text-center py-10">Gagal memuat data galeri</p>;
 
   return (
-    <div className="flex flex-col gap-8 px-4 w-full">
-      <div>
-        <h1 className="text-2xl font-libertine font-semibold">
+    <div className="flex flex-col gap-8 px-4 w-full py-10">
+      <div className="text-center">
+        <h1 className="text-3xl lg:text-5xl font-libertine font-semibold">
           Galeri Kabinet
         </h1>
       </div>
+
       {galleries.length <= 0 ? (
-        <div className="w-full flex items-center">
-          <p>Departemen tidak memiliki progenda</p>
+        <div className="w-full flex items-center justify-center py-20 bg-gray-50 rounded-xl border-2 border-dashed">
+          <p className="text-gray-400">Departemen belum memiliki dokumentasi</p>
         </div>
       ) : (
-        <div className="flex items-center justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:w-[70vw] w-full">
-            {galleries.map((g, idx) => (
+        <div className="relative w-full overflow-hidden group">
+          {/* SLIDER CONTAINER */}
+          <div
+            className="flex transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {slides.map((slide, idx) => (
               <div
-                className="group relative aspect-square overflow-hidden bg-gray-100 w-full lg:h-[400px] rounded-lg"
                 key={idx}
-                onClick={() =>
-                  setPreviewImage({
-                    url: g.image_url,
-                    caption: g.caption || g.id,
-                  })
-                }
+                className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 lg:px-12"
               >
-                <ImageFallback
-                  isFill
-                  src={g.image_url}
-                  imgStyle="rounded-lg object-cover group-hover:scale-110 duration-500 group-hover:cursor-pointer"
-                />
+                {slide.map((g, gIdx) => (
+                  <div
+                    key={gIdx}
+                    className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"
+                    onClick={() =>
+                      setPreviewImage({
+                        url: g.image_url,
+                        caption: g.caption || g.id,
+                      })
+                    }
+                  >
+                    <ImageFallback
+                      isFill
+                      src={g.image_url}
+                      imgStyle="rounded-lg object-cover group-hover/item:scale-110 duration-500"
+                    />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center text-white font-medium">
+                      Lihat Foto
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
+
+          {/* CONTROLS (Hanya muncul jika slide > 1) */}
+          {slides.length > 1 && (
+            <>
+              <button
+                onClick={prevSlide}
+                className="absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-all"
+              >
+                <FaChevronLeft size={20} />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-all"
+              >
+                <FaChevronRight size={20} />
+              </button>
+
+              {/* DOTS INDICATOR */}
+              <div className="mt-8 flex justify-center gap-2">
+                {slides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 max-lg:hidden ${
+                      idx === currentSlide
+                        ? "bg-primaryPink w-8"
+                        : "bg-gray-300 w-2"
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
-      {/* PAGINATION */}
-      <div className="flex items-center justify-between gap-6 py-10 max-lg:flex-col">
-        <p className="font-libertine text-gray-500 max-lg:order-2">
-          Showing{" "}
-          <span>
-            {Math.min(metaData?.total_data ?? 1, currPg * LimitGallery)}
-          </span>{" "}
-          images of <span>{metaData?.total_data}</span> images
-        </p>
 
-        {/* Navigation */}
-        <div className="flex items-center gap-3">
-          {/* Pagination */}
-          <RenderPagination
-            currPage={currPg}
-            onChange={setCurrPg}
-            totPage={metaData?.total_page || 1}
-          />
-        </div>
-      </div>
-      {/* Image preview modal */}
+      {/* MODAL PREVIEW (Tetap dipertahankan karena fitur yang bagus) */}
       {previewImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
           onClick={() => setPreviewImage(null)}
         >
           <div
-            className="relative lg:max-w-[50vw] lg:max-h-[70vh] max-h-[80vh] max-w-[80vw] flex flex-col items-center gap-4"
+            className="relative max-w-4xl w-full flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={previewImage.url}
-              alt={previewImage.caption}
-              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+              alt="Preview"
+              className="max-h-[80vh] object-contain rounded-lg"
             />
-            <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
-              {previewImage.caption}
-            </p>
+            {previewImage.caption && (
+              <p className="mt-4 text-white bg-black/50 px-4 py-2 rounded-full text-sm">
+                {previewImage.caption}
+              </p>
+            )}
             <button
               onClick={() => setPreviewImage(null)}
-              className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
+              className="absolute -top-10 right-0 text-white text-3xl hover:text-gray-300"
             >
               ✕
             </button>

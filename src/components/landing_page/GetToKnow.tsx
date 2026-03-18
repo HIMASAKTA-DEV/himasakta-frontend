@@ -1,15 +1,15 @@
 "use client";
 
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
+import divideArray from "@/lib/divideArray";
 import { getEventThisMonth } from "@/services/landing_page/GetToKnow";
 import { MonthlyEvent } from "@/types/data/GetToKnow";
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
-import divideArray from "@/lib/divideArray";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function GetToKnow() {
   const [loading, setLoading] = useState(true);
@@ -99,7 +99,6 @@ export default function GetToKnow() {
                 className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4 lg:px-12"
               >
                 {slide.map((event) => (
-                  // 1. TAMBAHKAN 'group' DI SINI (Pembungkus tiap satu event)
                   <div
                     key={event.id}
                     className=" flex flex-col gap-3 w-full lg:min-w-[280px] lg:max-w-[280px]"
@@ -107,11 +106,8 @@ export default function GetToKnow() {
                     <Link
                       href={event.link}
                       target="_blank"
-                      // 2. HAPUS 'group' di sini jika sudah ada di parent atasnya,
-                      // atau biarkan jika ingin hover effect spesifik di gambar saja.
                       className="group relative w-full aspect-square overflow-hidden rounded-xl bg-gray-100"
                     >
-                      {/* Overlay - Sekarang hanya muncul jika card ini yang di-hover */}
                       <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />
                       <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300 translate-y-2 group-hover:translate-y-0">
                         <div className="flex items-center gap-2 text-white font-inter font-bold hover:text-[#4ade80]">

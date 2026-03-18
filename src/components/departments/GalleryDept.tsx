@@ -106,7 +106,7 @@ function GalleryDept({ ...dept }: DepartmentType) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           {galleries.map((g, idx) => (
             <div
-              className="group relative aspect-square overflow-hidden bg-gray-100 w-full lg:h-[400px] rounded-lg"
+              className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"
               key={idx}
               onClick={() =>
                 setPreviewImage({
@@ -117,8 +117,11 @@ function GalleryDept({ ...dept }: DepartmentType) {
               <ImageFallback
                 isFill
                 src={g.imageUrl}
-                imgStyle="rounded-lg object-cover group-hover:scale-105 group-hover:cursor-pointer"
+                imgStyle="rounded-lg object-cover group-hover/item:scale-110 duration-500"
               />
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/item:opacity-100 flex items-center justify-center text-white font-medium transition-all duration-500">
+                Lihat Foto
+              </div>
             </div>
           ))}
         </div>

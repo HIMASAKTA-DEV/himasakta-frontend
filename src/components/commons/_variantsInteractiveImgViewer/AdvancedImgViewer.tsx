@@ -30,7 +30,7 @@ export default function InteractiveImgViewerV2({
     down: false,
   });
 
-  const LIM_ZOOMIN = 5;
+  const LIM_ZOOMIN = 10;
   const LIM_ZOOMOUT = 1;
   const STEPPX = 80;
 
@@ -82,7 +82,10 @@ export default function InteractiveImgViewerV2({
 
   return (
     <div className="flex items-center justify-center w-full">
-      <div className="w-[85vw] lg:w-[95vw] aspect-[9/12] lg:aspect-video max-w-[1200px] bg-neutral-200 rounded-md shadow-lg overflow-hidden">
+      <div
+        className="w-[85vw] lg:w-[95vw] aspect-[9/12] lg:aspect-video max-w-[1200px] bg-neutral-200 rounded-md shadow-lg overflow-hidden"
+        data-lenis-prevent
+      >
         <div className="grid grid-rows-[auto_1fr] w-full h-full">
           {/* Toolbar */}
           <div className="w-full bg-gray-100/90 backdrop-blur-md py-1 px-2 lg:px-16 lg:h-[75px] flex items-center justify-between shadow-md z-10">
@@ -162,15 +165,18 @@ export default function InteractiveImgViewerV2({
             ref={containerRef}
             onScroll={updateScrollState}
             className={clsx(
-              "max-lg:flex relative w-full h-full bg-black/5 justify-center items-center",
-              isScrollable ? "overflow-auto" : "overflow-hidden",
+              "relative w-full h-full bg-black/5",
+              isScrollable
+                ? "overflow-auto"
+                : "overflow-hidden max-lg:flex relative w-full h-full bg-black/5 justify-center items-center",
             )}
+            data-lenis-prevent
           >
             <img
               src={src}
               alt={alt}
               draggable={false}
-              className="block select-none max-w-none transition-all duration-300"
+              className="block select-none max-w-none transition-all duration-300 shadow-md"
               style={{
                 width: `${scale * 100}%`,
                 height: "auto",

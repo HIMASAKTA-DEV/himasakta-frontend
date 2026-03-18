@@ -1,5 +1,8 @@
 "use client";
 
+import api from "@/lib/axios";
+import { SettingsWebType } from "@/types/SettingsWebType";
+import { ApiResponse } from "@/types/commons/apiResponse";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getWebSettings } from "@/services/landing_page/WebSettings";

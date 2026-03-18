@@ -138,7 +138,7 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
                 {slide.map((member, i) => (
                   <div key={i} className="w-full flex-col flex max-lg:pb-10">
                     <div
-                      className="w-full aspect-square lg:h-[500px] relative rounded-lg shadow"
+                      className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"
                       onClick={() =>
                         setPreviewImage({
                           url: member.photoUrl ?? "",
@@ -148,8 +148,11 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
                       <ImageFallback
                         isFill
                         src={member.photoUrl}
-                        imgStyle="rounded-lg object-cover hover:cursor-pointer"
+                        imgStyle="rounded-lg object-cover group-hover/item:scale-110 duration-500"
                       />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/item:opacity-100 flex items-center justify-center text-white font-medium transition-all duration-500">
+                        Lihat Foto
+                      </div>
                     </div>
 
                     <div className="flex flex-col gap-1">

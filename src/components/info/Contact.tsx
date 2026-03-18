@@ -1,5 +1,13 @@
+"use client";
+
+import api from "@/lib/axios";
+import { SettingsWebType } from "@/types/SettingsWebType";
+import { ApiResponse } from "@/types/commons/apiResponse";
 import Link from "next/link";
-import { configuration } from "../../../config";
+import { useEffect, useState } from "react";
+import { IconType } from "react-icons";
+import { FaInstagram, FaTiktok } from "react-icons/fa";
+import { FiLink, FiLinkedin, FiYoutube } from "react-icons/fi";
 import HeaderSection from "../commons/HeaderSection";
 import { GlobalSettings } from "@/types/data/GlobalSettings";
 import { FiLink } from "react-icons/fi";
