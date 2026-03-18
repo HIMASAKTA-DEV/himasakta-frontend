@@ -1,15 +1,15 @@
 "use client";
 
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
+import divideArray from "@/lib/divideArray";
 import { getEventThisMonth } from "@/services/landing_page/GetToKnow";
 import { MonthlyEvent } from "@/types/data/GetToKnow";
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
-import divideArray from "@/lib/divideArray";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function GetToKnow() {
   const [loading, setLoading] = useState(true);

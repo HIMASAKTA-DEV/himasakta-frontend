@@ -7,7 +7,6 @@ import { GetManageEvents } from "@/services/admin/GetManageEvent";
 import { GetManageNews } from "@/services/admin/GetManageNews";
 import { GetMemberByDeptIdPaginated } from "@/services/admin/GetMemberByIdPaginated";
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
-import toast from "react-hot-toast";
 import type { ManageCabinet } from "@/types/admin/ManageCabinetType";
 import { ManageEventsType } from "@/types/admin/ManageEvents";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
@@ -18,8 +17,9 @@ import { GlobalSettings } from "@/types/data/GlobalSettings";
 import { MemberType } from "@/types/data/MemberType";
 import { ProgendaType } from "@/types/data/ProgendaType";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { FaChevronUp } from "react-icons/fa";
 import {
   HiOutlineEye,
@@ -38,18 +38,17 @@ import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 import CabinetPreviewDialog from "./CabinetPreviewDialog";
 import {
   HelpModal,
+  ManageAnggotaHelp,
   ManageCabinetHelp,
   ManageDepartmentHelp,
   ManageEventHelp,
   ManageGalleryHelp,
-  ManageNewsHelp,
-  ManageNRPWhitelistHelp,
-  ManageProgendaHelp,
   ManageGlobalSettingHelp,
-  ManageAnggotaHelp,
+  ManageNRPWhitelistHelp,
+  ManageNewsHelp,
+  ManageProgendaHelp,
 } from "./HelpModal";
 import WebStats from "./WebStats";
-import { UUID } from "crypto";
 
 /* ================= REUSABLE DELETE MODAL ================= */
 interface DeleteConfirmModalProps {
@@ -2636,7 +2635,6 @@ export function GlobalSetting() {
   const [_data, setData] = useState<GlobalSettings | null>(null);
   const [loading, setLoading] = useState(false);
   const [descVal, setDescVal] = useState("");
-  const descRef = useRef<HTMLTextAreaElement | null>(null);
   const [initVal, setInitVal] = useState<FormValues | null>(null);
   const [isMaintenance, setIsMaintenance] = useState(false);
   const [openHelp, setOpenHelp] = useState(false);

@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
 import { getWebSettings } from "@/services/landing_page/WebSettings";
 import { GlobalSettings } from "@/types/data/GlobalSettings";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import HeaderSection from "../commons/HeaderSection";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
 import SkeletonProfilHimpunan from "./skeletons/SkeletonProfilHimpunan";

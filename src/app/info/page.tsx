@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import About from "@/components/info/About";
 import Contact from "@/components/info/Contact";
 import HeroSection from "@/components/info/HeroSection";
 import MediaPartner from "@/components/info/MediaPartner";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
-import { FaChevronLeft } from "react-icons/fa";
-import { getWebSettings } from "@/services/landing_page/WebSettings";
 import { getCurrentCabinetInfo } from "@/services/landing_page/InformasiKabinet";
+import { getWebSettings } from "@/services/landing_page/WebSettings";
 import { GlobalSettings } from "@/types/data/GlobalSettings";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
+import { useEffect, useState } from "react";
+import { FaChevronLeft } from "react-icons/fa";
 
 function InfoPage() {
   const [loading, setLoading] = useState(true);

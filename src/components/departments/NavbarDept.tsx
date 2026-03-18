@@ -1,12 +1,12 @@
 "use client";
 
+import { GetAllDepts } from "@/services/departments/GetAllDepts";
+import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { GetAllDepts } from "@/services/departments/GetAllDepts";
-import { DepartmentType } from "@/types/data/DepartmentType";
-import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 import { FaSearch } from "react-icons/fa";
+import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 export default function NavbarDept() {
   const [deptName, setDeptName] = useState<DepartmentType[]>([]);

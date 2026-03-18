@@ -1,7 +1,6 @@
 import RenderPagination from "@/components/_news/RenderPagination";
 import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
-import EventSkeleton from "@/components/commons/skeletons/SkeletonGrid";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
 import { GetGalleryByCabinetId } from "@/services/landing_page/GeGalleryByCabinetId";
@@ -13,7 +12,7 @@ import { useEffect, useState } from "react";
 function GalleryCabinet({ ...cabinet }: CabinetInfo) {
   const [loading, setLoading] = useState(false);
   const [galleries, setGalleries] = useState<GalleryType[]>([]);
-  const [hasNext, setHasNext] = useState(false);
+  const [_hasNext, setHasNext] = useState(false);
   const [currPg, setCurrPg] = useState(1);
   const [error, setError] = useState(false);
   const [metaData, setMetaData] = useState<ApiMeta | null>(null);

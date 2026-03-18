@@ -1,6 +1,6 @@
+import { baseURL } from "@/lib/axios";
 import { ApiResponse } from "@/types/commons/apiResponse";
 import { GlobalSettings } from "@/types/data/GlobalSettings";
-import { baseURL } from "@/lib/axios";
 
 export const getWebSettings = async (): Promise<GlobalSettings> => {
   const resp = await fetch(`${baseURL}/settings/web`);

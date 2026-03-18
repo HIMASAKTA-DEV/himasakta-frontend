@@ -1,5 +1,4 @@
 "use client";
-import toast from "react-hot-toast";
 
 import api from "@/lib/axios";
 import { mediaToImages } from "@/lib/mediaToImages";

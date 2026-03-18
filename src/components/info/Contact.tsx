@@ -1,8 +1,8 @@
+import { GlobalSettings } from "@/types/data/GlobalSettings";
 import Link from "next/link";
+import { FiLink } from "react-icons/fi";
 import { configuration } from "../../../config";
 import HeaderSection from "../commons/HeaderSection";
-import { GlobalSettings } from "@/types/data/GlobalSettings";
-import { FiLink } from "react-icons/fi";
 
 interface ContactProps {
   data: GlobalSettings | null;

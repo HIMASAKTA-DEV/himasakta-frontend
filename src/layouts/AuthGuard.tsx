@@ -1,8 +1,8 @@
 "use client";
 
+import api from "@/lib/axios";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import api from "@/lib/axios";
 
 export default function AuthGuard() {
   const pathname = usePathname();

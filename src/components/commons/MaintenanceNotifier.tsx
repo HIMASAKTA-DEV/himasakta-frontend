@@ -1,8 +1,8 @@
 "use client";
 
+import { getWebSettings } from "@/services/landing_page/WebSettings";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { getWebSettings } from "@/services/landing_page/WebSettings";
 
 /**
  * MaintenanceNotifier handles alerting visitors once when the site is in maintenance mode.
