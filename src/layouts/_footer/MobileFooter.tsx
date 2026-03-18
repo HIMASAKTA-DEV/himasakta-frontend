@@ -1,9 +1,46 @@
+"use client";
+
 import NextImage from "@/components/NextImage";
+import api from "@/lib/axios";
+import { SettingsWebType } from "@/types/SettingsWebType";
+import { ApiResponse } from "@/types/commons/apiResponse";
 import Link from "next/link";
-import { configuration } from "../../../config";
+import { useEffect, useState } from "react";
+import { IconType } from "react-icons";
+import { FaInstagram, FaTiktok } from "react-icons/fa";
+import { FiLink, FiLinkedin, FiYoutube } from "react-icons/fi";
 import { footerLink } from "./footerLinks";
 
+type ThisSocmed = {
+  name: string;
+  link: string;
+};
+
 export default function MobileFooter() {
+  const [links, setLinks] = useState<ThisSocmed[]>([]);
+
+  useEffect(() => {
+    const fetchSocialMedia = async () => {
+      try {
+        const json =
+          await api.get<ApiResponse<SettingsWebType>>("/settings/web");
+        const dt = json.data.data;
+        setLinks(dt.SocialMedia);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchSocialMedia();
+  }, []);
+
+  const icons: Record<string, IconType> = {
+    instagram: FaInstagram,
+    linkedin: FiLinkedin,
+    youtube: FiYoutube,
+    tiktok: FaTiktok,
+    linktree: FiLink,
+  };
   return (
     <footer className="px-[60px] py-8 bg-black text-white">
       {/* Logo */}
@@ -32,19 +69,22 @@ export default function MobileFooter() {
 
       {/* Social */}
       <div className="flex gap-4 mb-6">
-        {configuration.SocmedLinks.map(({ name, url, icon: Icon }) => (
-          <Link
-            key={name}
-            href={url}
-            target="_blank"
-            className="
+        {links.map(({ name, link }) => {
+          const Icon = icons[name.toLocaleLowerCase()] || FiLink;
+          return (
+            <Link
+              key={name}
+              href={link ?? "/"}
+              target="_blank"
+              className="
               p-3 rounded-xl
               bg-neutral-100 text-black
             "
-          >
-            <Icon className="text-md" />
-          </Link>
-        ))}
+            >
+              <Icon className="text-md" />
+            </Link>
+          );
+        })}
       </div>
 
       <p className="font-libertine text-sm lg:text-md text-white">

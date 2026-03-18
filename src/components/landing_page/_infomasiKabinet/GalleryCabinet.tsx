@@ -2,13 +2,13 @@
 
 import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
-import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
+import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
+import divideArray from "@/lib/divideArray"; // Pastikan path ini benar
 import { GetGalleryByCabinetId } from "@/services/landing_page/GeGalleryByCabinetId";
 import { GalleryType } from "@/types/data/GalleryType";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
-import divideArray from "@/lib/divideArray"; // Pastikan path ini benar
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 function GalleryCabinet({ ...cabinet }: CabinetInfo) {
