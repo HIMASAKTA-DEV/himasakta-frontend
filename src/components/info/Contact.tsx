@@ -1,8 +1,41 @@
 import Link from "next/link";
 import { configuration } from "../../../config";
 import HeaderSection from "../commons/HeaderSection";
+import { GlobalSettings } from "@/types/data/GlobalSettings";
+import { FiLink } from "react-icons/fi";
 
-function Contact() {
+interface ContactProps {
+  data: GlobalSettings | null;
+}
+
+function Contact({ data }: ContactProps) {
+  // Merge backend social media with config fallbacks
+  const mergedSocmed = configuration.SocmedLinks.map((staticSocmed) => {
+    const backendMatch = data?.SocialMedia.find(
+      (s) => s.name.toLowerCase() === staticSocmed.name.toLowerCase(),
+    );
+    return {
+      ...staticSocmed,
+      url: backendMatch ? backendMatch.link : staticSocmed.url,
+    };
+  });
+
+  // Also include any unknown social media from backend
+  const extraSocmed = (data?.SocialMedia || [])
+    .filter(
+      (s) =>
+        !configuration.SocmedLinks.some(
+          (staticS) => staticS.name.toLowerCase() === s.name.toLowerCase(),
+        ),
+    )
+    .map((s) => ({
+      name: s.name,
+      url: s.link,
+      icon: FiLink, // Default icon for unknown socmed
+    }));
+
+  const allSocmed = [...mergedSocmed, ...extraSocmed];
+
   return (
     <section className="flex flex-col gap-4" id="contact">
       <HeaderSection
@@ -13,8 +46,8 @@ function Contact() {
         If you have any questions or need further discussion, please feel free
         to contact us.
       </p>
-      <div className="flex gap-4">
-        {configuration.SocmedLinks.map(({ name, url, icon: Icon }) => (
+      <div className="flex gap-4 flex-wrap">
+        {allSocmed.map(({ name, url, icon: Icon }) => (
           <Link
             key={name}
             href={url}
@@ -25,6 +58,7 @@ function Contact() {
                 hover:bg-neutral-800
                 transition
               "
+            title={name}
           >
             <Icon className="text-xl" />
           </Link>

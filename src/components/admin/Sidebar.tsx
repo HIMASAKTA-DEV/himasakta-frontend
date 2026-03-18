@@ -137,12 +137,10 @@ export default function Sidebar({ active }: { active: string }) {
           "
         >
           <FaChevronLeft />
-          <p className="text-sm hidden lg:inline-block">
-            Back to Landing Page (Logout)
-          </p>
+          <p className="text-sm hidden lg:inline-block">Back to Landing Page</p>
         </ButtonLink>
         <small className="text-gray-400 font-medium mb-4 lg:inline-block hidden">
-          &copy; HIMASAKTA 2026
+          &copy; HIMASAKTA 2026 | Flexoo Academy
         </small>
       </div>
     </aside>

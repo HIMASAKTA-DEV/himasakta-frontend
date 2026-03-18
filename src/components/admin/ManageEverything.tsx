@@ -7,6 +7,7 @@ import { GetManageEvents } from "@/services/admin/GetManageEvent";
 import { GetManageNews } from "@/services/admin/GetManageNews";
 import { GetMemberByDeptIdPaginated } from "@/services/admin/GetMemberByIdPaginated";
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
+import toast from "react-hot-toast";
 import type { ManageCabinet } from "@/types/admin/ManageCabinetType";
 import { ManageEventsType } from "@/types/admin/ManageEvents";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
@@ -18,11 +19,13 @@ import { MemberType } from "@/types/data/MemberType";
 import { ProgendaType } from "@/types/data/ProgendaType";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { FaChevronUp } from "react-icons/fa";
 import {
   HiOutlineEye,
+  HiOutlineEyeOff,
   HiOutlinePencilAlt,
+  HiOutlinePlus,
   HiOutlineTrash,
 } from "react-icons/hi";
 import { IoIosHelpCircle } from "react-icons/io";
@@ -37,8 +40,85 @@ import {
   HelpModal,
   ManageCabinetHelp,
   ManageDepartmentHelp,
+  ManageEventHelp,
+  ManageGalleryHelp,
+  ManageNewsHelp,
+  ManageNRPWhitelistHelp,
+  ManageProgendaHelp,
+  ManageGlobalSettingHelp,
+  ManageAnggotaHelp,
 } from "./HelpModal";
 import WebStats from "./WebStats";
+import { UUID } from "crypto";
+
+/* ================= REUSABLE DELETE MODAL ================= */
+interface DeleteConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  itemName: string;
+  loading: boolean;
+  error?: string | null;
+}
+
+const DeleteConfirmModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  itemName,
+  loading,
+  error,
+}: DeleteConfirmModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[99] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl border border-gray-100 animate-in fade-in zoom-in duration-200">
+        <h2 className="text-xl font-bold mb-2 font-averia text-gray-800">
+          {title} <span className="text-primaryPink">"{itemName}"</span>
+        </h2>
+
+        <p className="text-sm text-gray-600 mb-4 font-libertine leading-relaxed">
+          Apakah Anda yakin ingin menghapus data ini?{" "}
+          <b className="text-red-500">Tindakan ini tidak dapat dibatalkan.</b>
+        </p>
+
+        {error && (
+          <div className="bg-red-50 border border-red-100 rounded-lg p-3 mb-4">
+            <p className="text-xs text-red-600 font-medium">{error}</p>
+          </div>
+        )}
+
+        <div className="flex justify-end gap-3 font-libertine mt-2">
+          <button
+            onClick={onClose}
+            disabled={loading}
+            className="px-5 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-600 transition-all duration-200 disabled:opacity-50"
+          >
+            Batal
+          </button>
+
+          <button
+            onClick={onConfirm}
+            disabled={loading}
+            className="px-6 py-2 rounded-xl bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-100 transition-all duration-200 disabled:opacity-50 flex items-center gap-2"
+          >
+            {loading ? (
+              <>
+                <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Menghapus...
+              </>
+            ) : (
+              "Hapus"
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // SEO: manage anggota, Manage Anggota, ManageAggota
 export function ManageAnggota() {
@@ -83,6 +163,7 @@ export function ManageAnggota() {
   const [limitMembers, setLimitMembers] = useState(10);
   const [members, setMembers] = useState<MemberType[]>([]);
   const [showDd, setShowDd] = useState(false);
+  const [openHelp, setOpenHelp] = useState(false);
   const fetchAnggotaByDept = async () => {
     setLoadingMain(true);
     setErrMain(false);
@@ -110,6 +191,7 @@ export function ManageAnggota() {
   // handle delete anggota
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  const [selectedMemberName, setSelectedMemberName] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -130,7 +212,7 @@ export function ManageAnggota() {
       fetchAnggotaByDept();
     } catch (err) {
       console.error(err);
-      setDeleteError("Gagal menghapus anggota");
+      setDeleteError(`Gagal menghapus anggota: ${getApiErrorMessage(err)}`);
     } finally {
       setDeleteLoading(false);
     }
@@ -258,6 +340,7 @@ export function ManageAnggota() {
             <IoIosHelpCircle
               className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
               title="help"
+              onClick={() => setOpenHelp(true)}
             />
           </div>
         </div>
@@ -293,6 +376,24 @@ export function ManageAnggota() {
                     {/* Actions */}
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (m.department?.name) {
+                              window.open(
+                                `/departments/${m.department.name}`,
+                                "_blank",
+                              );
+                            } else {
+                              toast.error(
+                                "Anggota ini belum tertaut dengan departemen apapun",
+                              );
+                            }
+                          }}
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-pink-50 hover:text-primaryPink"
+                        >
+                          <HiOutlineEye size={18} />
+                        </button>
                         <Link
                           href={`/cp/anggota/${m.id}/edit`}
                           className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
@@ -302,6 +403,7 @@ export function ManageAnggota() {
                         <button
                           onClick={() => {
                             setSelectedMemberId(m.id);
+                            setSelectedMemberName(m.name);
                             setShowDeleteModal(true);
                           }}
                           className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-red-50 hover:text-red-600"
@@ -343,42 +445,23 @@ export function ManageAnggota() {
       </div>
 
       {/* Show delete modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
-            <h2 className="text-lg font-semibold mb-2">Hapus Anggota</h2>
-
-            <p className="text-sm text-gray-600 mb-4">
-              Apakah Anda yakin ingin menghapus anggota ini? Tindakan ini tidak
-              dapat dibatalkan.
-            </p>
-
-            {deleteError && (
-              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
-            )}
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setSelectedMemberId(null);
-                }}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
-              >
-                Batal
-              </button>
-
-              <button
-                onClick={handleDelete}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:opacity-90 disabled:opacity-50"
-              >
-                {deleteLoading ? "Menghapus..." : "Hapus"}
-              </button>
-            </div>
-          </div>
-        </div>
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedMemberId(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleDelete}
+        title="Hapus Anggota"
+        itemName={selectedMemberName}
+        loading={deleteLoading}
+        error={deleteError}
+      />
+      {openHelp && (
+        <HelpModal onClose={setOpenHelp}>
+          <ManageAnggotaHelp />
+        </HelpModal>
       )}
     </div>
   );
@@ -464,6 +547,7 @@ export function ManageCabinet() {
   const [selectedCabinetId, setSelectedCabinetId] = useState<string | null>(
     null,
   );
+  const [selectedCabinetName, setSelectedCabinetName] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -484,7 +568,7 @@ export function ManageCabinet() {
       fetchAllCabinets();
     } catch (err) {
       console.error(err);
-      setDeleteError("Gagal menghapus anggota");
+      setDeleteError(`Gagal menghapus kabinet: ${getApiErrorMessage(err)}`);
     } finally {
       setDeleteLoading(false);
     }
@@ -686,6 +770,7 @@ export function ManageCabinet() {
                       <button
                         onClick={() => {
                           setSelectedCabinetId(cabinet.id);
+                          setSelectedCabinetName(cabinet.tagline);
                           setShowDeleteModal(true);
                         }}
                         className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-red-50 hover:text-red-600"
@@ -727,43 +812,19 @@ export function ManageCabinet() {
       </div>
 
       {/* Show delete modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
-            <h2 className="text-lg font-semibold mb-2">Hapus Anggota</h2>
-
-            <p className="text-sm text-gray-600 mb-4">
-              Apakah Anda yakin ingin menghapus kabinet ini?{" "}
-              <b>Tindakan ini tidak dapat dibatalkan.</b>
-            </p>
-
-            {deleteError && (
-              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
-            )}
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setSelectedCabinetId(null);
-                }}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50 duration-200 transition-all"
-              >
-                Batal
-              </button>
-
-              <button
-                onClick={handleDelete}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:opacity-90 disabled:opacity-50 duration-200 transition-all"
-              >
-                {deleteLoading ? "Menghapus..." : "Hapus"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedCabinetId(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleDelete}
+        title="Hapus Kabinet"
+        itemName={selectedCabinetName}
+        loading={deleteLoading}
+        error={deleteError}
+      />
 
       {/* Preview Dialog */}
       {selectedPreviewId && (
@@ -880,7 +941,7 @@ export function ManageDepartment() {
       fetchDepartments(); // refetch data
     } catch (err) {
       console.error(err);
-      setDeleteError("Gagal menghapus departemen");
+      setDeleteError(`Gagal menghapus departemen: ${getApiErrorMessage(err)}`);
     } finally {
       setDeleteLoading(false);
     }
@@ -1002,6 +1063,22 @@ export function ManageDepartment() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (dept.name) {
+                              window.open(
+                                `/departments/${dept.name}`,
+                                "_blank",
+                              );
+                            } else {
+                              toast.error("Nama departemen tidak ditemukan");
+                            }
+                          }}
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-pink-50 hover:text-primaryPink"
+                        >
+                          <HiOutlineEye size={18} />
+                        </button>
                         <Link
                           href={`/cp/department/${dept.name}/edit`}
                           className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
@@ -1051,45 +1128,20 @@ export function ManageDepartment() {
           onChange={setCurrPage}
         />
       </div>
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
-            <h2 className="text-lg font-semibold mb-2">Hapus Departemen</h2>
-
-            <p className="text-sm text-gray-600 mb-4">
-              Apakah Anda yakin ingin menghapus departemen
-              <span className="font-semibold"> "{selectedDeptName}"</span>?
-              Tindakan ini tidak dapat dibatalkan.
-            </p>
-
-            {deleteError && (
-              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
-            )}
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setSelectedDeptId(null);
-                  setSelectedDeptName(null);
-                }}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
-              >
-                Batal
-              </button>
-
-              <button
-                onClick={handleDelete}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:opacity-90 disabled:opacity-50"
-              >
-                {deleteLoading ? "Menghapus..." : "Hapus"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedDeptId(null);
+          setSelectedDeptName(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleDelete}
+        title="Hapus Departemen"
+        itemName={selectedDeptName ?? ""}
+        loading={deleteLoading}
+        error={deleteError}
+      />
       {openHelp && (
         <HelpModal onClose={setOpenHelp}>
           <ManageDepartmentHelp />
@@ -1109,6 +1161,7 @@ export function ManageEvent() {
   const [totData, setTotData] = useState(1);
   const [totPg, setTotPg] = useState(1);
   const [limData, setLimData] = useState(5);
+  const [openHelp, setOpenHelp] = useState(false);
   const fetchAllEvents = async () => {
     setLoadingData(true);
     setErrMainData(false);
@@ -1132,6 +1185,7 @@ export function ManageEvent() {
   // handle delete event
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [selectedEventTitle, setSelectedEventTitle] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -1152,7 +1206,7 @@ export function ManageEvent() {
       fetchAllEvents();
     } catch (err) {
       console.error(err);
-      setDeleteError("Gagal menghapus anggota");
+      setDeleteError(`Gagal menghapus kegiatan: ${getApiErrorMessage(err)}`);
     } finally {
       setDeleteLoading(false);
     }
@@ -1195,6 +1249,7 @@ export function ManageEvent() {
           <IoIosHelpCircle
             className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
             title="help"
+            onClick={() => setOpenHelp(true)}
           />
         </div>
       </div>
@@ -1227,6 +1282,21 @@ export function ManageEvent() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-start gap-2 -translate-x-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (e.link) {
+                            window.open(e.link, "_blank");
+                          } else {
+                            toast.error(
+                              "Pratinjau link tidak tersedia untuk kegiatan ini",
+                            );
+                          }
+                        }}
+                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-pink-50 hover:text-primaryPink"
+                      >
+                        <HiOutlineEye size={18} />
+                      </button>
                       <Link
                         href={`/cp/kegiatan/${e.id}/edit`}
                         className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
@@ -1236,6 +1306,7 @@ export function ManageEvent() {
                       <button
                         onClick={() => {
                           setSelectedEventId(e.id);
+                          setSelectedEventTitle(e.title);
                           setShowDeleteModal(true);
                         }}
                         className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-red-50 hover:text-red-600"
@@ -1273,42 +1344,24 @@ export function ManageEvent() {
         />
       </div>
       {/* Show delete modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
-            <h2 className="text-lg font-semibold mb-2">Hapus Anggota</h2>
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedEventId(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleDelete}
+        title="Hapus Kegiatan"
+        itemName={selectedEventTitle}
+        loading={deleteLoading}
+        error={deleteError}
+      />
 
-            <p className="text-sm text-gray-600 mb-4">
-              Apakah Anda yakin ingin menghapus kegiatan ini?{" "}
-              <b>Tindakan ini tidak dapat dibatalkan.</b>
-            </p>
-
-            {deleteError && (
-              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
-            )}
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setSelectedEventId(null);
-                }}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
-              >
-                Batal
-              </button>
-
-              <button
-                onClick={handleDelete}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:opacity-90 disabled:opacity-50"
-              >
-                {deleteLoading ? "Menghapus..." : "Hapus"}
-              </button>
-            </div>
-          </div>
-        </div>
+      {openHelp && (
+        <HelpModal onClose={setOpenHelp}>
+          <ManageEventHelp />
+        </HelpModal>
       )}
     </main>
   );
@@ -1326,8 +1379,10 @@ export function ManageGallery() {
   const [selectedGalleryId, setSelectedGalleryId] = useState<string | null>(
     null,
   );
+  const [selectedGalleryCaption, setSelectedGalleryCaption] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [openHelp, setOpenHelp] = useState(false);
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     caption: string;
@@ -1349,7 +1404,7 @@ export function ManageGallery() {
       setTotPg(data.meta.total_page ?? 1);
     } catch (err) {
       console.error(err);
-      alert(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
     } finally {
       setLoadData(false);
     }
@@ -1370,7 +1425,7 @@ export function ManageGallery() {
       fetchGalleryData();
     } catch (err) {
       console.error(err);
-      setDeleteError("Gagal menghapus gambar");
+      setDeleteError(`Gagal menghapus gambar: ${getApiErrorMessage(err)}`);
     } finally {
       setDeleteLoading(false);
     }
@@ -1450,6 +1505,7 @@ export function ManageGallery() {
           <IoIosHelpCircle
             className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
             title="help"
+            onClick={() => setOpenHelp(true)}
           />
         </div>
       </div>
@@ -1517,6 +1573,7 @@ export function ManageGallery() {
                   <button
                     onClick={() => {
                       setSelectedGalleryId(gallery.id as string);
+                      setSelectedGalleryCaption(gallery.caption);
                       setShowDeleteModal(true);
                     }}
                     className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
@@ -1571,38 +1628,23 @@ export function ManageGallery() {
       )}
 
       {/* Delete modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
-            <h2 className="text-lg font-semibold mb-2">Hapus Gambar</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Apakah Anda yakin ingin menghapus gambar ini?{" "}
-              <b>Tindakan ini tidak dapat dibatalkan.</b>
-            </p>
-            {deleteError && (
-              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
-            )}
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setSelectedGalleryId(null);
-                }}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
-              >
-                Batal
-              </button>
-              <button
-                onClick={handleDeleteGallery}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:opacity-90 disabled:opacity-50"
-              >
-                {deleteLoading ? "Menghapus..." : "Hapus"}
-              </button>
-            </div>
-          </div>
-        </div>
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedGalleryId(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleDeleteGallery}
+        title="Hapus Gambar"
+        itemName={selectedGalleryCaption}
+        loading={deleteLoading}
+        error={deleteError}
+      />
+      {openHelp && (
+        <HelpModal onClose={setOpenHelp}>
+          <ManageGalleryHelp />
+        </HelpModal>
       )}
     </div>
   );
@@ -1619,6 +1661,7 @@ export function ManageNews() {
   const [limNews, setLimNews] = useState(6);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null);
+  const [selectedNewsTitle, setSelectedNewsTitle] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -1630,6 +1673,7 @@ export function ManageNews() {
     published_at: string;
   } | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
+  const [openHelp, setOpenHelp] = useState(false);
 
   useEffect(() => {
     const fetchManageNews = async () => {
@@ -1641,7 +1685,7 @@ export function ManageNews() {
         setTotPage(json.meta.total_page ?? 1);
       } catch (err) {
         console.error(err);
-        alert(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
+        toast.error(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
       } finally {
         setLoadData(false);
       }
@@ -1683,7 +1727,7 @@ export function ManageNews() {
       });
     } catch (err) {
       console.error(err);
-      alert("Gagal memuat preview berita");
+      toast.error("Gagal memuat preview berita");
       setPreviewLoading(false);
       return;
     }
@@ -1753,6 +1797,7 @@ export function ManageNews() {
             <IoIosHelpCircle
               className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
               title="help"
+              onClick={() => setOpenHelp(true)}
             />
           </div>
         </div>
@@ -1807,6 +1852,7 @@ export function ManageNews() {
                   <button
                     onClick={() => {
                       setSelectedNewsId(news.id as string);
+                      setSelectedNewsTitle(news.title);
                       setShowDeleteModal(true);
                     }}
                     className="bg-white w-9 h-9 flex items-center justify-center rounded-[8px] shadow-sm text-black hover:text-primaryPink hover:bg-pink-50 transition-all"
@@ -1891,39 +1937,23 @@ export function ManageNews() {
       )}
 
       {/* Delete modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
-            <h2 className="text-lg font-semibold mb-2">Hapus Berita</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Apakah Anda yakin ingin menghapus berita ini?{" "}
-              <b>Tindakan ini tidak dapat dibatalkan.</b>
-            </p>
-            {deleteError && (
-              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
-            )}
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setSelectedNewsId(null);
-                  setDeleteError(null);
-                }}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
-              >
-                Batal
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:opacity-90 disabled:opacity-50"
-              >
-                {deleteLoading ? "Menghapus..." : "Hapus"}
-              </button>
-            </div>
-          </div>
-        </div>
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedNewsId(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleDelete}
+        title="Hapus Berita"
+        itemName={selectedNewsTitle}
+        loading={deleteLoading}
+        error={deleteError}
+      />
+      {openHelp && (
+        <HelpModal onClose={setOpenHelp}>
+          <ManageNewsHelp />
+        </HelpModal>
       )}
     </div>
   );
@@ -1949,6 +1979,7 @@ export function ManageNrpWhitelist() {
   const [selectedName, setSelectedName] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [openHelp, setOpenHelp] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -2042,6 +2073,7 @@ export function ManageNrpWhitelist() {
           <IoIosHelpCircle
             className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
             title="help"
+            onClick={() => setOpenHelp(true)}
           />
         </div>
       </div>
@@ -2121,41 +2153,26 @@ export function ManageNrpWhitelist() {
         />
       </div>
 
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
-            <h2 className="text-lg font-semibold mb-2">Hapus NRP</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Hapus NRP{" "}
-              <span className="font-mono font-semibold">{selectedNrp}</span>
-              {selectedName && <> ({selectedName})</>}?{" "}
-              <b>Tindakan ini tidak dapat dibatalkan.</b>
-            </p>
-            {deleteError && (
-              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
-            )}
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setSelectedNrp(null);
-                  setDeleteError(null);
-                }}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
-              >
-                Batal
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:opacity-90 disabled:opacity-50"
-              >
-                {deleteLoading ? "Menghapus..." : "Hapus"}
-              </button>
-            </div>
-          </div>
-        </div>
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedNrp(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleDelete}
+        title="Hapus NRP"
+        itemName={
+          selectedName ? `${selectedNrp} (${selectedName})` : selectedNrp ?? ""
+        }
+        loading={deleteLoading}
+        error={deleteError}
+      />
+
+      {openHelp && (
+        <HelpModal onClose={setOpenHelp}>
+          <ManageNRPWhitelistHelp />
+        </HelpModal>
       )}
     </main>
   );
@@ -2177,7 +2194,7 @@ export function ManageProgenda() {
   const [loading, setLoading] = useState(false);
   const [progendas, setProgendas] = useState<ProgendasTable[]>([]);
   const [selectedProgenda, setSelectedProgenda] = useState<string | null>(null);
-  const [_selectedProgendaName, setSelectedProgendaName] = useState<
+  const [selectedProgendaName, setSelectedProgendaName] = useState<
     string | null
   >(null);
   const [_errorPreview, setErrorPreview] = useState(false);
@@ -2186,6 +2203,7 @@ export function ManageProgenda() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [openHelp, setOpenHelp] = useState(false);
 
   const fetchProgendaTable = async () => {
     setLoading(true);
@@ -2199,7 +2217,7 @@ export function ManageProgenda() {
       setTotalData(json.data.meta.total_data ?? 1);
     } catch (err) {
       setError(true);
-      alert(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
       console.error("API ERROR: ", err);
     } finally {
       setLoading(false);
@@ -2218,7 +2236,7 @@ export function ManageProgenda() {
       setViewProgenda(json.data.data);
     } catch (err) {
       console.error(err);
-      alert(`Gagal memuat data: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal memuat data: ${getApiErrorMessage(err)}`);
     } finally {
       setLoadingPreview(false);
     }
@@ -2236,7 +2254,7 @@ export function ManageProgenda() {
       await fetchProgendaTable();
     } catch (err) {
       console.error(err);
-      setDeleteError(`Gagal menghapus berita: ${getApiErrorMessage(err)}`);
+      setDeleteError(`Gagal menghapus progenda: ${getApiErrorMessage(err)}`);
     } finally {
       setDeleteLoading(false);
     }
@@ -2290,6 +2308,7 @@ export function ManageProgenda() {
           <IoIosHelpCircle
             className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
             title="help"
+            onClick={() => setOpenHelp(true)}
           />
         </div>
       </div>
@@ -2485,39 +2504,24 @@ export function ManageProgenda() {
         </div>
       )}
       {/* Delete modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md shadow-xl">
-            <h2 className="text-lg font-semibold mb-2">Hapus Berita</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Apakah Anda yakin ingin menghapus progenda ini?{" "}
-              <b>Tindakan ini tidak dapat dibatalkan.</b>
-            </p>
-            {deleteError && (
-              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
-            )}
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setSelectedProgenda(null);
-                  setDeleteError(null);
-                }}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
-              >
-                Batal
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={deleteLoading}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:opacity-90 disabled:opacity-50"
-              >
-                {deleteLoading ? "Menghapus..." : "Hapus"}
-              </button>
-            </div>
-          </div>
-        </div>
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedProgenda(null);
+          setSelectedProgendaName(null);
+          setDeleteError(null);
+        }}
+        onConfirm={handleDelete}
+        title="Hapus Progenda"
+        itemName={selectedProgendaName ?? ""}
+        loading={deleteLoading}
+        error={deleteError}
+      />
+      {openHelp && (
+        <HelpModal onClose={setOpenHelp}>
+          <ManageProgendaHelp />
+        </HelpModal>
       )}
     </div>
   );
@@ -2626,22 +2630,7 @@ export function DashboardAdmin({ usr, onLogout }: Props) {
 
 // SEO Global Setting
 
-type FormValues = Omit<GlobalSettings, "SocialMedia"> & {
-  instagram: string;
-  tiktok: string;
-  youtube: string;
-  linkedin: string;
-  linktree: string;
-};
-
-// Let AI do the repetitive work
-const SOCIAL_KEYS = [
-  "instagram",
-  "tiktok",
-  "youtube",
-  "linkedin",
-  "linktree",
-] as const;
+type FormValues = GlobalSettings;
 
 export function GlobalSetting() {
   const [_data, setData] = useState<GlobalSettings | null>(null);
@@ -2650,13 +2639,28 @@ export function GlobalSetting() {
   const descRef = useRef<HTMLTextAreaElement | null>(null);
   const [initVal, setInitVal] = useState<FormValues | null>(null);
   const [isMaintenance, setIsMaintenance] = useState(false);
+  const [openHelp, setOpenHelp] = useState(false);
   const {
     register,
     reset,
     formState: { isSubmitting },
     handleSubmit,
     control,
-  } = useForm<FormValues>();
+  } = useForm<FormValues>({
+    defaultValues: {
+      ExternalSOPLink: "",
+      InternalSOPLink: "",
+      DeskripsiHimpunan: "",
+      FotoHimpunan: "",
+      SocialMedia: [],
+      InMaintenance: false,
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "SocialMedia",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -2670,41 +2674,28 @@ export function GlobalSetting() {
           ExternalSOPLink: data.ExternalSOPLink || "",
           InternalSOPLink: data.InternalSOPLink || "",
           DeskripsiHimpunan: data.DeskripsiHimpunan || "",
-          FotoHimpunan: data.FotoHimpunan,
+          FotoHimpunan: data.FotoHimpunan || "",
           InMaintenance: data.InMaintenance,
-          ...Object.fromEntries(
-            SOCIAL_KEYS.map((key) => [key, data.SocialMedia?.[key] || ""]),
-          ),
-        } as FormValues;
+          SocialMedia: data.SocialMedia || [],
+        };
 
         setInitVal(format);
         reset(format);
         setIsMaintenance(data.InMaintenance);
         setDescVal(data.DeskripsiHimpunan);
       } catch (err) {
-        alert(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
+        toast.error(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [reset]);
 
   const handleResetForm = () => {
     if (!initVal) return;
-    reset({
-      ExternalSOPLink: initVal.ExternalSOPLink || "",
-      InternalSOPLink: initVal.InternalSOPLink || "",
-      DeskripsiHimpunan: initVal.DeskripsiHimpunan || "",
-      FotoHimpunan: initVal.FotoHimpunan,
-      instagram: initVal.instagram || "",
-      tiktok: initVal.tiktok || "",
-      youtube: initVal.youtube || "",
-      linkedin: initVal.linkedin || "",
-      linktree: initVal.linktree || "",
-      InMaintenance: initVal.InMaintenance,
-    });
+    reset(initVal);
     setDescVal(initVal.DeskripsiHimpunan);
     setIsMaintenance(initVal.InMaintenance);
   };
@@ -2716,8 +2707,8 @@ export function GlobalSetting() {
       DeskripsiHimpunan: "",
       FotoHimpunan: "",
       InMaintenance: true,
-      ...Object.fromEntries(SOCIAL_KEYS.map((key) => [key, ""])),
-    } as FormValues;
+      SocialMedia: [],
+    };
 
     reset(emptyValues);
     setDescVal("");
@@ -2727,22 +2718,41 @@ export function GlobalSetting() {
   const onSubmit = async (values: FormValues) => {
     try {
       const payload: GlobalSettings = {
-        ExternalSOPLink: values.ExternalSOPLink,
-        InternalSOPLink: values.InternalSOPLink,
-        DeskripsiHimpunan: values.DeskripsiHimpunan,
-        FotoHimpunan: values.FotoHimpunan,
+        ...values,
         InMaintenance: isMaintenance,
-
-        SocialMedia: Object.fromEntries(
-          SOCIAL_KEYS.map((key) => [key, values[key]]),
-        ) as GlobalSettings["SocialMedia"],
       };
 
       await api.put("/settings/web", payload);
-
-      alert("Berhasil menyimpan pengaturan");
+      toast.success("Berhasil menyimpan pengaturan");
     } catch (err) {
-      alert(`Gagal menyimpan: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menyimpan: ${getApiErrorMessage(err)}`);
+    }
+  };
+
+  const [authUsername, setAuthUsername] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [showPwd, setShowPwd] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
+
+  const handleAuthUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!authUsername || !authPassword) {
+      toast.error("Username dan password wajib diisi");
+      return;
+    }
+
+    setAuthLoading(true);
+    try {
+      await api.post("/auth/update", {
+        username: authUsername,
+        password: authPassword,
+      });
+      toast.success("Superadmin credentials updated!");
+      setAuthPassword(""); // clear password after success
+    } catch (err) {
+      toast.error(`Gagal update auth: ${getApiErrorMessage(err)}`);
+    } finally {
+      setAuthLoading(false);
     }
   };
 
@@ -2755,189 +2765,305 @@ export function GlobalSetting() {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center gap-8 p-4 lg:p-10">
-      <div className="flex w-full items-center justify-between gap-4 max-lg:flex-col">
-        {/* Header */}
-        <div className="flex justify-between items-center w-full">
-          <HeaderSection
-            title="Manage Kabinet"
-            titleStyle="font-averia text-black max-lg:text-3xl"
-            className="gap-0"
-            sub="Atur informasi tiap kabinet"
-            subStyle="font-libertine text-black"
-          />
-          <IoIosHelpCircle
-            className="w-6 h-6 lg:hidden text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
-            title="help"
-          />
-        </div>
-        <div className="flex items-center gap-4 max-lg:hidden">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleEmptyReset}
-              disabled={isSubmitting}
-              className="px-8 py-3 rounded-lg border bg-red-600 text-white hover:bg-red-700 transition disabled:opacity-50"
-            >
-              Empty
-            </button>
-            <button
-              type="button"
-              onClick={handleResetForm}
-              disabled={isSubmitting}
-              className="px-8 py-3 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 transition disabled:opacity-50"
-            >
-              Reset
-            </button>
-            <button
-              type="submit"
-              className="px-8 py-3 bg-primaryPink text-white  rounded-lg font-semibold shadow-lg shadow-pink-200 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
-              form="main-form"
-            >
-              {isSubmitting ? "Menyimpan..." : "Simpan"}
-            </button>
+    <div className="flex min-h-screen w-full flex-col items-center gap-12 p-4 lg:p-10 pb-20">
+      {/* Web Settings Section */}
+      <section className="w-full flex flex-col gap-8 bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md">
+        <div className="flex w-full items-center justify-between gap-4 max-lg:flex-col border-b border-gray-100 pb-6">
+          <div className="flex justify-between items-center w-full">
+            <HeaderSection
+              title="Web Settings"
+              titleStyle="font-averia text-black max-lg:text-3xl"
+              className="gap-0"
+              sub="Konfigurasi informasi umum website"
+              subStyle="font-libertine text-black/60"
+            />
             <IoIosHelpCircle
-              className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
-              title="help"
+              className="w-7 h-7 text-blue-400 hover:text-blue-500 transition-all duration-300 hover:cursor-pointer"
+              title="Bantuan"
+              onClick={() => setOpenHelp(true)}
             />
           </div>
         </div>
-      </div>
-      <form id="main-form" onSubmit={handleSubmit(onSubmit)} className="w-full">
-        <div className="flex gap-4 flex-col">
-          <div className="w-full">
-            <label className="mb-2 block text-[15px] font-semibold">
-              Deskripsi Himpuan
-            </label>
-            <div className="overflow-hidden rounded-xl border border-gray-200 bg-[#f8fafc]">
-              <Controller
-                name="DeskripsiHimpunan"
-                control={control}
-                render={({ field }) => (
-                  <textarea
-                    {...field}
-                    ref={(el) => {
-                      field.ref(el);
-                      descRef.current = el;
-                    }}
-                    value={descVal}
-                    onChange={(e) => {
-                      setDescVal(e.target.value);
-                      field.onChange(e.target.value);
-                    }}
-                    className="w-full min-h-[200px] bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 focus:outline-none"
-                    placeholder="Tulis deskripsi himpunan di sini..."
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="w-full flex max-lg:flex-col">
-            <div className="w-full">
-              <label className="mb-2 block text-[15px] font-semibold">
-                Internal SOP Link
-              </label>
-              <input
-                {...register("InternalSOPLink")}
-                className="w-[90%] max-lg:w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
-                placeholder="https://"
-              />
-            </div>
-            <div className="w-full">
-              <label className="mb-2 block text-[15px] font-semibold">
-                External SOP Link
-              </label>
-              <input
-                {...register("ExternalSOPLink")}
-                className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
-                placeholder="https://"
-              />
-            </div>
-          </div>
-          <div className="w-full">
-            <label className="mb-2 block text-[15px] font-semibold">
-              Foto Himpunan (dari web repositori)
-            </label>
-            <input
-              {...register("FotoHimpunan")}
-              className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
-              placeholder="/images/..."
-            />
-          </div>
-          <div className="w-full">
-            <label className="mb-2 block text-[15px] font-semibold">
-              Web Status
-            </label>
-            {/* Status Aktif */}
-            <div className="flex gap-4 max-lg:flex-col">
-              <button
-                type="button"
-                onClick={() => setIsMaintenance(true)}
-                className={`flex-1 py-3 border rounded-xl ${isMaintenance ? "bg-red-50 border-red-500" : ""}`}
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <span
-                    className={`h-2 w-2 rounded-full ${isMaintenance ? "bg-red-500" : "bg-gray-300"}`}
-                  />
-                  Maintenance
-                </div>
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsMaintenance(false)}
-                className={`flex-1 py-3 border rounded-xl ${!isMaintenance ? "bg-green-50 border-green-500" : ""}`}
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <span
-                    className={`h-2 w-2 rounded-full ${!isMaintenance ? "bg-green-500" : "bg-gray-300"}`}
-                  />
-                  Not Maintenance
-                </div>
-              </button>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {SOCIAL_KEYS.map((key) => (
-              <div key={key}>
-                <label className="mb-2 block text-[15px] font-semibold capitalize">
-                  {key}
-                </label>
 
+        <form
+          id="main-form"
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full"
+        >
+          <div className="flex gap-6 flex-col">
+            {/* Himpunan Info */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="lg:col-span-2">
+                <label className="mb-2 block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                  Deskripsi Himpunan
+                </label>
+                <div className="overflow-hidden rounded-2xl border border-gray-200 bg-gray-50/30 transition-all focus-within:ring-2 focus-within:ring-primaryPink/20 focus-within:border-primaryPink/40">
+                  <Controller
+                    name="DeskripsiHimpunan"
+                    control={control}
+                    render={({ field }) => (
+                      <textarea
+                        {...field}
+                        value={descVal}
+                        onChange={(e) => {
+                          setDescVal(e.target.value);
+                          field.onChange(e.target.value);
+                        }}
+                        className="w-full min-h-[160px] bg-transparent px-4 py-3 font-medium text-gray-800 focus:outline-none resize-y"
+                        placeholder="Tulis deskripsi himpunan di sini..."
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                  Internal SOP Link
+                </label>
                 <input
-                  {...register(key)}
-                  className="w-full rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
-                  placeholder={`https://${key}.com/...`}
+                  {...register("InternalSOPLink")}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/30 px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/20 focus:border-primaryPink/40"
+                  placeholder="https://"
                 />
               </div>
-            ))}
+
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                  External SOP Link
+                </label>
+                <input
+                  {...register("ExternalSOPLink")}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/30 px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/20 focus:border-primaryPink/40"
+                  placeholder="https://"
+                />
+              </div>
+
+              <div className="lg:col-span-2 space-y-2">
+                <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                  Foto Himpunan{" "}
+                  <span className="text-xs font-normal lowercase opacity-60">
+                    (URL path dari repositori)
+                  </span>
+                </label>
+                <input
+                  {...register("FotoHimpunan")}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/30 px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/20 focus:border-primaryPink/40"
+                  placeholder="/images/..."
+                />
+              </div>
+            </div>
+
+            {/* Web Status */}
+            <div className="space-y-3 pt-4 border-t border-gray-100">
+              <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                Maintenance Mode
+              </label>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setIsMaintenance(true)}
+                  className={`flex-1 flex items-center justify-center gap-3 py-3 border rounded-2xl transition-all duration-300 ${
+                    isMaintenance
+                      ? "bg-red-50 border-red-500 text-red-700 shadow-inner"
+                      : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+                  }`}
+                >
+                  <span
+                    className={`h-2.5 w-2.5 rounded-full ${isMaintenance ? "bg-red-500 animate-pulse" : "bg-gray-300"}`}
+                  />
+                  Maintenance Aktif
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsMaintenance(false)}
+                  className={`flex-1 flex items-center justify-center gap-3 py-3 border rounded-2xl transition-all duration-300 ${
+                    !isMaintenance
+                      ? "bg-green-50 border-green-500 text-green-700 shadow-inner"
+                      : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+                  }`}
+                >
+                  <span
+                    className={`h-2.5 w-2.5 rounded-full ${!isMaintenance ? "bg-green-500" : "bg-gray-300"}`}
+                  />
+                  Situs Publik
+                </button>
+              </div>
+            </div>
+
+            {/* Social Media Section */}
+            <div className="space-y-4 pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                  Social Media{" "}
+                  <span className="text-xs font-normal lowercase opacity-60">
+                    ({fields.length}/20)
+                  </span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() =>
+                    fields.length < 20 && append({ name: "", link: "" })
+                  }
+                  disabled={fields.length >= 20}
+                  className="flex items-center gap-2 px-4 py-1.5 text-xs font-bold rounded-full bg-primaryPink/10 text-primaryPink border border-primaryPink/20 hover:bg-primaryPink hover:text-white transition-all disabled:opacity-30"
+                >
+                  <HiOutlinePlus /> Tambah
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {fields.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className="group relative flex gap-2 items-start bg-gray-50/50 p-4 rounded-2xl border border-gray-100 hover:border-primaryPink/30 transition-all"
+                  >
+                    <div className="flex-1 space-y-3">
+                      <input
+                        {...register(`SocialMedia.${index}.name` as const, {
+                          required: true,
+                        })}
+                        className="w-full bg-transparent font-bold text-gray-800 placeholder:text-gray-400 focus:outline-none border-b border-transparent focus:border-primaryPink/40 transition-all"
+                        placeholder="Nama Platform (e.g. Instagram)"
+                      />
+                      <input
+                        {...register(`SocialMedia.${index}.link` as const, {
+                          required: true,
+                        })}
+                        className="w-full bg-transparent text-sm text-gray-600 placeholder:text-gray-400 focus:outline-none"
+                        placeholder="URL Link (e.g. https://...)"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => remove(index)}
+                      className="text-gray-300 hover:text-red-500 transition-all p-1"
+                    >
+                      <HiOutlineTrash size={18} />
+                    </button>
+                  </div>
+                ))}
+                {fields.length === 0 && (
+                  <div className="col-span-full py-8 border-2 border-dashed border-gray-100 rounded-2xl flex flex-col items-center justify-center text-gray-400">
+                    <p className="text-sm italic">
+                      Belum ada akun sosial media ditambahkan
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Form Actions */}
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
+              <button
+                type="button"
+                onClick={handleResetForm}
+                disabled={isSubmitting}
+                className="px-6 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 hover:text-gray-900 transition-all disabled:opacity-50"
+              >
+                Reset
+              </button>
+              <button
+                type="button"
+                onClick={handleEmptyReset}
+                disabled={isSubmitting}
+                className="px-6 py-2.5 rounded-xl border border-red-100 bg-red-50/50 text-red-600 font-bold text-sm hover:bg-red-500 hover:text-white transition-all disabled:opacity-50"
+              >
+                Empty
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="px-10 py-2.5 bg-primaryPink text-white rounded-xl font-bold text-sm shadow-xl shadow-pink-100 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+              >
+                {isSubmitting ? "Menyimpan..." : "Simpan Web Settings"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      {/* Auth Settings Section: DANGER ZONE */}
+      <section className="w-full flex flex-col gap-8 bg-red-50/20 backdrop-blur-sm p-6 rounded-3xl border border-red-100 shadow-sm transition-all duration-300 hover:shadow-md hover:border-red-200">
+        <div className="flex w-full items-center justify-between border-b border-red-100/50 pb-6">
+          <div className="flex flex-col gap-3">
+            <span className="w-fit px-3 py-1 text-[11px] font-black uppercase tracking-widest bg-red-500 text-white rounded-lg animate-pulse shadow-sm">
+              Danger Zone
+            </span>
+            <div className="flex flex-col gap-1">
+              <HeaderSection
+                title="Superadmin Access"
+                titleStyle="font-averia text-red-900 max-lg:text-3xl"
+                className="gap-0"
+              />
+              <p className="font-libertine text-red-600/60 text-sm">
+                Ubah kredensial login akun tingkat tinggi. Tindakan ini bersifat
+                sensitif.
+              </p>
+            </div>
           </div>
         </div>
-      </form>
-      <div className="flex items-center gap-2 lg:hidden">
-        <button
-          type="button"
-          onClick={handleEmptyReset}
-          disabled={isSubmitting}
-          className="px-4 py-3 rounded-lg border bg-red-600 text-white hover:bg-red-700 transition disabled:opacity-50"
-        >
-          Empty
-        </button>
-        <button
-          type="button"
-          onClick={handleResetForm}
-          disabled={isSubmitting}
-          className="px-4 py-3 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 transition disabled:opacity-50"
-        >
-          Reset
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-3 bg-primaryPink text-white  rounded-lg font-semibold shadow-lg shadow-pink-200 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
-          form="main-form"
-        >
-          {isSubmitting ? "Menyimpan..." : "Simpan"}
-        </button>
-      </div>
+
+        <form onSubmit={handleAuthUpdate} className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                New Username
+              </label>
+              <input
+                type="text"
+                value={authUsername}
+                onChange={(e) => setAuthUsername(e.target.value)}
+                autoComplete="off"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50/30 px-4 py-3 font-medium text-gray-800 placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/20 focus:border-primaryPink/40"
+                placeholder="Masukkan username baru"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                New Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPwd ? "text" : "password"}
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  autoComplete="off"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/30 px-4 py-3 font-medium text-gray-800 placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/20 focus:border-primaryPink/40"
+                  placeholder="Masukkan password baru"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPwd(!showPwd)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-all"
+                >
+                  {showPwd ? (
+                    <HiOutlineEyeOff size={20} />
+                  ) : (
+                    <HiOutlineEye size={20} />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end pt-4">
+            <button
+              type="submit"
+              disabled={authLoading}
+              className="px-10 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm shadow-xl shadow-slate-100 transition-all hover:bg-slate-900 active:scale-95 disabled:opacity-50"
+            >
+              {authLoading ? "Memperbarui..." : "Update Credentials"}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      {openHelp && (
+        <HelpModal onClose={setOpenHelp}>
+          <ManageGlobalSettingHelp />
+        </HelpModal>
+      )}
     </div>
   );
 }

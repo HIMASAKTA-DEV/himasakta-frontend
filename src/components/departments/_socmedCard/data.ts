@@ -9,28 +9,28 @@ import {
 
 export const socmedLinks = [
   {
-    key: "instagram",
-    baseUrl: "https://instagram.com/",
+    key: "instagram_link",
+    baseUrl: "",
     Icon: FaInstagram,
   },
   {
-    key: "twitter",
-    baseUrl: "https://twitter.com/",
+    key: "twitter_link",
+    baseUrl: "",
     Icon: FaTwitter,
   },
   {
-    key: "linkedin",
-    baseUrl: "https://linkedin.com/",
+    key: "linkedin_link",
+    baseUrl: "",
     Icon: FaLinkedin,
   },
   {
-    key: "youtube",
-    baseUrl: "htpps://youtube.com/",
+    key: "youtube_link",
+    baseUrl: "",
     Icon: FaYoutube,
   },
   {
-    key: "linktree",
-    baseUrl: "https://linktree.com/",
+    key: "linktree_link",
+    baseUrl: "",
     Icon: FaLink,
   },
 ];

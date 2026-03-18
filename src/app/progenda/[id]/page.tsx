@@ -49,7 +49,9 @@ function page() {
     fetchProgendaInfo(inp);
   }, [id]);
 
-  if (error) NotFound();
+  if (error) {
+    return <NotFound />;
+  }
 
   if (loading) {
     <div className="flex min-h-screen w-full">

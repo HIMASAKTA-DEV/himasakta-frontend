@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import About from "@/components/info/About";
 import Contact from "@/components/info/Contact";
 import HeroSection from "@/components/info/HeroSection";
@@ -5,8 +8,35 @@ import MediaPartner from "@/components/info/MediaPartner";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
 import { FaChevronLeft } from "react-icons/fa";
+import { getWebSettings } from "@/services/landing_page/WebSettings";
+import { getCurrentCabinetInfo } from "@/services/landing_page/InformasiKabinet";
+import { GlobalSettings } from "@/types/data/GlobalSettings";
+import { CabinetInfo } from "@/types/data/InformasiKabinet";
 
-function page() {
+function InfoPage() {
+  const [loading, setLoading] = useState(true);
+  const [webData, setWebData] = useState<GlobalSettings | null>(null);
+  const [cabinetData, setCabinetData] = useState<CabinetInfo | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [settings, cabinet] = await Promise.all([
+          getWebSettings(),
+          getCurrentCabinetInfo(),
+        ]);
+        setWebData(settings);
+        setCabinetData(cabinet);
+      } catch (err) {
+        console.error("Failed to fetch info page data ", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Layout withFooter={true} withNavbar={false} transparentOnTop={false}>
       <main>
@@ -15,8 +45,14 @@ function page() {
         </div>
         <div className="max-w-8xl flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32 mb-16">
           <MediaPartner />
-          <About />
-          <Contact />
+          {loading ? (
+            <div className="animate-pulse h-96 bg-gray-100 rounded-3xl" />
+          ) : (
+            <>
+              <About webData={webData} cabinetData={cabinetData} />
+              <Contact data={webData} />
+            </>
+          )}
           <ButtonLink
             href="/"
             className="w-28 flex gap-4 items-center"
@@ -31,4 +67,4 @@ function page() {
   );
 }
 
-export default page;
+export default InfoPage;

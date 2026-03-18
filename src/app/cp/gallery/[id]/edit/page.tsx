@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -89,11 +90,11 @@ export default function EditGalleryPage() {
   const { id } = useParams<{ id: string }>();
   const route = useRouter();
   const [initVal, setInitVal] = useState<ManageGalleryType | null>(null);
-  const [logo, setLogo] = useState<PhotoData | null>(null);
   const [deptData, setDeptData] = useState<DeptName[]>([]);
   const [progendaDD, setProgendaDD] = useState<ProgendaDD[]>([]);
   const [cabinetDD, setCabinetDD] = useState<CabinetDD[]>([]);
   const [loadDept, setLoadDept] = useState(false);
+  const [logo, setLogo] = useState<PhotoData | null>(null);
   const [openMedia, setOpenMedia] = useState(false);
   const [isRestored, setIsRestored] = useState(false);
   const LOCAL_KEY = `edit_gallery_${id}`;
@@ -143,7 +144,7 @@ export default function EditGalleryPage() {
         setProgendaDD(progendaRes.data);
       } catch (err) {
         console.error(err);
-        alert(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
+        toast.error(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
       } finally {
         setLoadDept(false);
         setIsRestored(true);
@@ -184,14 +185,14 @@ export default function EditGalleryPage() {
   const onSubmit = async (data: ManageGalleryType) => {
     try {
       await api.put(`/gallery/${id}`, data);
-      alert("Berhasil memperbarui gallery!");
+      toast.success("Berhasil memperbarui gallery!");
       reset();
       setLogo(null);
       localStorage.removeItem(LOCAL_KEY);
       route.push("/cp#manage-gallery");
     } catch (err) {
       console.error(err);
-      alert(`Gagal memperbarui gallery: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal memperbarui gallery: ${getApiErrorMessage(err)}`);
     }
   };
 
@@ -457,7 +458,7 @@ export default function EditGalleryPage() {
                       });
                       setOpenMedia(false);
                     })
-                    .catch(() => alert("Gagal upload gambar"));
+                    .catch(() => toast.error("Gagal upload gambar"));
                 }
               }}
               className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 cursor-pointer hover:border-primaryPink hover:bg-pink-50 transition-all"
@@ -489,7 +490,7 @@ export default function EditGalleryPage() {
                       });
                       setOpenMedia(false);
                     })
-                    .catch(() => alert("Gagal upload gambar"));
+                    .catch(() => toast.error("Gagal upload gambar"));
                 }}
               />
             </div>

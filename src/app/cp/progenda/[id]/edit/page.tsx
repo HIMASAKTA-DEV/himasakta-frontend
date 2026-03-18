@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import Typography from "@/components/Typography";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
@@ -555,7 +556,7 @@ function page() {
                       setters.setTimelines(state.initVal.timelines ?? []);
                       setters.setGoalVal(state.initVal.goal ?? "");
                       setters.setDelFeed([]);
-                      alert("Berhasil direset!");
+                      toast.success("Berhasil direset!");
                     }}
                     disabled={forms.formState.isSubmitting}
                     className="px-8 py-3 rounded-xl border border-gray-200 font-semibold text-gray-600 transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-50"
@@ -707,7 +708,7 @@ function page() {
               onClose={() => setters.setEditingFeeds(false)}
               onSelect={(p) => {
                 if (state.feeds.length >= 20) {
-                  alert("Maksimal 20 gambar!");
+                  toast("Maksimal 20 gambar!");
                   return;
                 }
                 actions.addFeeds(p);

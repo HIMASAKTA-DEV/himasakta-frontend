@@ -46,7 +46,7 @@ function page() {
     fetchDeptsByName(inp);
   }, [name]);
   if (error) {
-    NotFound();
+    return <NotFound />;
   }
 
   return (

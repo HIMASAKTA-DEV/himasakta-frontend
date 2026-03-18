@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import Link from "next/link";
 import { FaChevronLeft } from "react-icons/fa";
@@ -44,6 +45,7 @@ export default function AddGalleryPage() {
   const [progendaDD, setProgendaDD] = useState<ProgendaDD[]>([]);
   const [cabinetDD, setCabinetDD] = useState<CabinetDD[]>([]);
   const [logo, setLogo] = useState<PhotoData | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [openMedia, setOpenMedia] = useState(false);
   const [isRestored, setIsRestored] = useState(false);
 
@@ -82,7 +84,7 @@ export default function AddGalleryPage() {
         }
       } catch (err) {
         console.error(err);
-        alert("Gagal mengambil daftar departemen");
+        toast.error("Gagal mengambil daftar departemen");
       } finally {
         setIsRestored(true);
       }
@@ -103,7 +105,7 @@ export default function AddGalleryPage() {
         }
       } catch (err) {
         console.error(err);
-        alert("Gagal mengambil daftar progenda");
+        toast.error("Gagal mengambil daftar progenda");
       } finally {
         setIsRestored(true);
       }
@@ -124,7 +126,7 @@ export default function AddGalleryPage() {
         }
       } catch (err) {
         console.error(err);
-        alert("Gagal mengambil daftar cabinet");
+        toast.error("Gagal mengambil daftar cabinet");
       } finally {
         setIsRestored(true);
       }
@@ -152,21 +154,46 @@ export default function AddGalleryPage() {
   /* ================= DELETE IMAGE ================= */
   const handleDeleteImage = () => {
     setLogo(null);
+    setSelectedFile(null);
     setValue("image_url", "");
   };
 
   /* ================= SUBMIT FORM ================= */
   const onSubmit = async (data: ManageGalleryType) => {
     try {
-      await api.post("/gallery", data);
-      alert("Gallery berhasil ditambahkan!");
+      const formData = new FormData();
+
+      if (!selectedFile) {
+        toast.error("File gambar wajib diunggah.");
+        return;
+      }
+
+      formData.append("image", selectedFile);
+      formData.append("caption", data.caption);
+      formData.append("category", data.category || "");
+
+      if (data.department_id) {
+        formData.append("department_id", data.department_id);
+      }
+      if (data.cabinet_id) {
+        formData.append("cabinet_id", data.cabinet_id);
+      }
+      if (data.progenda_id) {
+        formData.append("progenda_id", data.progenda_id);
+      }
+
+      await api.post("/gallery", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success("Gallery berhasil ditambahkan!");
       reset();
       setLogo(null);
+      setSelectedFile(null);
       localStorage.removeItem(LOCAL_KEY);
       router.push("/cp#manage-gallery");
     } catch (err) {
       console.error(err);
-      alert(`Gagal menambahkan gallery: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menambahkan gallery: ${getApiErrorMessage(err)}`);
     }
   };
 
@@ -181,6 +208,7 @@ export default function AddGalleryPage() {
     });
 
     setLogo(null);
+    setSelectedFile(null);
     setOpenMedia(false);
     localStorage.removeItem(LOCAL_KEY);
   };
@@ -376,21 +404,12 @@ export default function AddGalleryPage() {
                 e.preventDefault();
                 const file = e.dataTransfer.files?.[0];
                 if (file) {
-                  const formData = new FormData();
-                  formData.append("image", file);
-                  api
-                    .post("/gallery", formData, {
-                      headers: { "Content-Type": "multipart/form-data" },
-                    })
-                    .then((resp) => {
-                      const uploaded = resp.data.data;
-                      setLogo(uploaded);
-                      setValue("image_url", uploaded.image_url, {
-                        shouldValidate: true,
-                      });
-                      setOpenMedia(false);
-                    })
-                    .catch(() => alert("Gagal upload gambar"));
+                  setSelectedFile(file);
+                  setLogo({ id: "", image_url: URL.createObjectURL(file) });
+                  setValue("image_url", "local-preview", {
+                    shouldValidate: true,
+                  });
+                  setOpenMedia(false);
                 }
               }}
               className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 cursor-pointer hover:border-primaryPink hover:bg-pink-50 transition-all"
@@ -408,21 +427,12 @@ export default function AddGalleryPage() {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
-                  const formData = new FormData();
-                  formData.append("image", file);
-                  api
-                    .post("/gallery", formData, {
-                      headers: { "Content-Type": "multipart/form-data" },
-                    })
-                    .then((resp) => {
-                      const uploaded = resp.data.data;
-                      setLogo(uploaded);
-                      setValue("image_url", uploaded.image_url, {
-                        shouldValidate: true,
-                      });
-                      setOpenMedia(false);
-                    })
-                    .catch(() => alert("Gagal upload gambar"));
+                  setSelectedFile(file);
+                  setLogo({ id: "", image_url: URL.createObjectURL(file) });
+                  setValue("image_url", "local-preview", {
+                    shouldValidate: true,
+                  });
+                  setOpenMedia(false);
                 }}
               />
             </div>

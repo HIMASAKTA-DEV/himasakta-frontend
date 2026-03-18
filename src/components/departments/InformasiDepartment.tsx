@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import api from "@/lib/axios";
 import { mediaToImages } from "@/lib/mediaToImages";
@@ -22,14 +23,16 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
 
   const handleBankRefClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    // If we already have the link (e.g. superadmin), just open it
     if (
-      !dept?.bank_ref_link ||
-      dept.bank_ref_link === "" ||
-      dept.bank_ref_link === "/"
+      dept?.bank_ref_link &&
+      dept.bank_ref_link !== "" &&
+      dept.bank_ref_link !== "/"
     ) {
-      alert("Link Bank Referensi belum tersedia untuk departemen ini.");
+      window.open(dept.bank_ref_link, "_blank", "noopener,noreferrer");
       return;
     }
+    // Otherwise, show modal to verify NRP
     setShowNrpModal(true);
     setNrpInput("");
     setNrpError("");
@@ -41,20 +44,23 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
     setNrpLoading(true);
     setNrpError("");
     try {
-      const resp = await api.post("/nrp-whitelist", { nrp: nrpInput });
+      const resp = await api.post("/nrp-whitelist", {
+        nrp: nrpInput,
+        departmentid: dept.id,
+      });
       if (resp.data.success) {
-        setShowNrpModal(false);
-        window.open(
-          dept?.bank_ref_link ?? "/",
-          "_blank",
-          "noopener,noreferrer",
-        );
+        const bankRef = resp.data.data.department?.bank_ref_link;
+        if (bankRef && bankRef !== "" && bankRef !== "/") {
+          setShowNrpModal(false);
+          window.open(bankRef, "_blank", "noopener,noreferrer");
+        } else {
+          setNrpError("Bank Referensi belum tersedia untuk departemen ini.");
+        }
       } else {
         setNrpError(resp.data.message || "NRP tidak memiliki akses.");
       }
     } catch (err) {
       console.error("NRP Validation error:", err);
-      // Usually axios throws for non-2xx statuses
       let message = "Validasi NRP gagal. Pastikan NRP Anda terdaftar.";
       if (isAxiosError(err) && err.response?.data?.message) {
         message = err.response.data.message;

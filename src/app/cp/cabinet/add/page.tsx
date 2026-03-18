@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import Typography from "@/components/Typography";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
@@ -76,7 +77,7 @@ export default function AddCabinetPage() {
 
       const newId = resp.data.data.id;
 
-      alert("Step 1: Berhasil menambahkan kabinet baru!");
+      toast.success("Step 1: Berhasil menambahkan kabinet baru!");
 
       if (gallery) {
         try {
@@ -86,9 +87,11 @@ export default function AddCabinetPage() {
               return api.put(`gallery/${f.id}`, payloadWithId);
             }),
           );
-          alert("Step 2: Berhasil menambahkan gallery!");
+          toast.success("Step 2: Berhasil menambahkan gallery!");
         } catch (err) {
-          alert(`Gagal menambahkan semua gallery: ${getApiErrorMessage(err)}`);
+          toast.error(
+            `Gagal menambahkan semua gallery: ${getApiErrorMessage(err)}`,
+          );
         }
       }
 
@@ -102,7 +105,7 @@ export default function AddCabinetPage() {
       setGallery([]);
     } catch (err) {
       console.error("API ERROR: ", err);
-      alert(`Gagal menambahkan kabinet baru: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menambahkan kabinet baru: ${getApiErrorMessage(err)}`);
     }
   };
 
@@ -130,10 +133,10 @@ export default function AddCabinetPage() {
         shouldValidate: true,
       });
 
-      // alert("Gambar berhasil dihapus");
+      // toast.success("Gambar berhasil dihapus");
     } catch (err) {
       console.error(err);
-      alert("Gagal menghapus gambar");
+      toast.error("Gagal menghapus gambar");
       return false;
     } finally {
       setDeletingLogo(false);
@@ -166,10 +169,10 @@ export default function AddCabinetPage() {
         shouldValidate: true,
       });
 
-      // alert("Organigram berhasil dihapus");
+      // toast.success("Organigram berhasil dihapus");
     } catch (err) {
       console.error(err);
-      alert("Gagal menghapus organigram");
+      toast.error("Gagal menghapus organigram");
       return false;
     } finally {
       setDeletingOrganigram(false);
@@ -262,13 +265,13 @@ export default function AddCabinetPage() {
   const [previewImage, setPreviewImage] = useState<PhotoData | null>(null);
   const addGallery = (photo: PhotoData) => {
     if (gallery.length >= 20) {
-      alert("Maksimal 20 gambar!");
+      toast("Maksimal 20 gambar!");
       return;
     }
     const isDuplicate = gallery.some((f) => f.id === photo.id);
 
     if (isDuplicate) {
-      alert("Gambar ini sudah ada dalam progenda ini!");
+      toast("Gambar ini sudah ada dalam progenda ini!");
       return;
     }
 
@@ -809,7 +812,7 @@ export default function AddCabinetPage() {
           onClose={() => setEditingGallery(false)}
           onSelect={(p) => {
             if (gallery.length >= 20) {
-              alert("Maksimal 20 gambar!");
+              toast("Maksimal 20 gambar!");
               return;
             }
             addGallery(p);

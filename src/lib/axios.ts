@@ -4,9 +4,6 @@ export const baseURL = `${process.env.NEXT_PUBLIC_API_URL || "https://himasakta-
 
 export const api = axios.create({
   baseURL,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 api.interceptors.request.use((config) => {

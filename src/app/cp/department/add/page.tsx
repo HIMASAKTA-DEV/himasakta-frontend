@@ -1,4 +1,5 @@
 "use client";
+import toast from "react-hot-toast";
 
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
@@ -86,13 +87,13 @@ export default function AddDepartmentPage() {
 
   const addGallery = (photo: PhotoData) => {
     if (gallery.length >= 20) {
-      alert("Maksimal 20 gambar!");
+      toast("Maksimal 20 gambar!");
       return;
     }
     const isDuplicate = gallery.some((f) => f.id === photo.id);
 
     if (isDuplicate) {
-      alert("Gambar ini sudah ada dalam progenda ini!");
+      toast("Gambar ini sudah ada dalam progenda ini!");
       return;
     }
 
@@ -119,9 +120,9 @@ export default function AddDepartmentPage() {
       setLogo(null);
       setValue("logo_id", "");
 
-      alert("Logo berhasil dihapus");
+      toast.success("Logo berhasil dihapus");
     } catch (err) {
-      alert(`Gagal menghapus logo: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menghapus logo: ${getApiErrorMessage(err)}`);
       return false;
     } finally {
       setDeletingLogo(false);
@@ -208,7 +209,7 @@ export default function AddDepartmentPage() {
 
       const newId = resp.data.data.id;
 
-      alert("Step 1: Departemen berhasil ditambahkan!");
+      toast.success("Step 1: Departemen berhasil ditambahkan!");
 
       if (gallery) {
         try {
@@ -218,15 +219,17 @@ export default function AddDepartmentPage() {
               return api.put(`gallery/${f.id}`, payloadWithId);
             }),
           );
-          alert("Step 2: Berhasil menambahkan gallery!");
+          toast.success("Step 2: Berhasil menambahkan gallery!");
         } catch (err) {
-          alert(`Gagal menambahkan semua gallery: ${getApiErrorMessage(err)}`);
+          toast.error(
+            `Gagal menambahkan semua gallery: ${getApiErrorMessage(err)}`,
+          );
         }
       }
 
       localStorage.removeItem("department_form_draft");
     } catch (err) {
-      alert(`Gagal menambahkan departemen: ${getApiErrorMessage(err)}`);
+      toast.error(`Gagal menambahkan departemen: ${getApiErrorMessage(err)}`);
     } finally {
       handleResetForm();
     }
@@ -615,7 +618,7 @@ export default function AddDepartmentPage() {
             onClose={() => setEditingGallery(false)}
             onSelect={(p) => {
               if (gallery.length >= 20) {
-                alert("Maksimal 20 gambar!");
+                toast("Maksimal 20 gambar!");
                 return;
               }
               addGallery(p);

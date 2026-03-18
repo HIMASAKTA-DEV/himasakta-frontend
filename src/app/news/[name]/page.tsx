@@ -46,7 +46,9 @@ function page() {
     fetchSingleNews(inp);
   }, [name]);
 
-  if (error) NotFound();
+  if (error) {
+    return <NotFound />;
+  }
 
   // wajib normalize tags ke string[]
   const tags = normalizeHashtags(news?.tags || news?.hashtags);

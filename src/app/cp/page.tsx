@@ -246,7 +246,7 @@ export default function AdminPage() {
           </button>
 
           <small className="text-gray-400 font-medium mt-4">
-            &copy; HIMASAKTA 2026
+            &copy; HIMASAKTA 2026 | Flexoo Academy
           </small>
         </form>
       </div>
