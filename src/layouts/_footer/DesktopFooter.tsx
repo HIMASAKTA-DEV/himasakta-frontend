@@ -49,7 +49,9 @@ export default function DesktopFooter() {
 
       {/* Bawah */}
       <div className="flex justify-between items-center">
-        <p className="font-libertine text-[24px]">&copy; 2026</p>
+        <p className="font-libertine text-[24px] text-white">
+          &copy; 2026 HIMASAKTA ITS | Flexoo Academny
+        </p>
 
         <div className="flex gap-4">
           {configuration.SocmedLinks.map(({ name, url, icon: Icon }) => (
