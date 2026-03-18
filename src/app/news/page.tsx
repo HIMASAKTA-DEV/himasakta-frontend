@@ -371,6 +371,7 @@ function NewsPage() {
                 className="
               absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md mt-1 shadow-lg z-50 max-h-60 overflow-auto
             "
+                data-lenis-prevent
               >
                 {dropdown.map((data, idx) => (
                   <li
@@ -485,7 +486,7 @@ function NewsPage() {
                   </div>
                 )}
 
-                <ul className="max-h-60 overflow-auto">
+                <ul className="max-h-60 overflow-auto" data-lenis-prevent>
                   {filteredTags.map((tagObj) => (
                     <li
                       key={tagObj.id}

@@ -4,6 +4,7 @@ import NotFound from "@/app/not-found";
 import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
 import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
+import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
 import ButtonLink from "@/components/links/ButtonLink";
 import TimelineComp from "@/components/progenda/TimelineComp";
@@ -54,18 +55,33 @@ function page() {
   }
 
   if (loading) {
-    <div className="flex min-h-screen w-full">
-      <SkeletonHeaderSection />
-      <div className="aspect-video w-[80%]">
-        <SkeletonSection />
-      </div>
-    </div>;
+    return (
+      <>
+        <ButtonLink
+          href={`/departments/${progenda?.department?.name}`}
+          className="w-28 flex gap-4 items-center m-8"
+          variant="black"
+        >
+          <FaChevronLeft />
+          <p>Back</p>
+        </ButtonLink>
+        <main className="min-h-screen px-10 flex flex-col lg:px-40 gap-6 mb-20">
+          <SkeletonHeaderSection />
+          <div className="flex min-h-screen w-full items-center justify-center">
+            <div className="aspect-video w-[80%]">
+              <SkeletonSection />
+            </div>
+          </div>
+          <SkeletonParagraph />
+        </main>
+      </>
+    );
   }
 
   return (
     <Layout withFooter withNavbar={false} transparentOnTop={false}>
       <ButtonLink
-        href="/news"
+        href={`/departments/${progenda?.department?.name}`}
         className="w-28 flex gap-4 items-center m-8"
         variant="black"
       >
