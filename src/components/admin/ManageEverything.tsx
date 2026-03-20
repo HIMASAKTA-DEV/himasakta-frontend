@@ -2540,13 +2540,6 @@ export function DashboardAdmin({ usr, onLogout }: Props) {
 
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold">Hi {usr} 👋</h1>
-
-          <button
-            onClick={onLogout}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-all duration-300"
-          >
-            Logout
-          </button>
         </div>
 
         <p>How are you today?</p>

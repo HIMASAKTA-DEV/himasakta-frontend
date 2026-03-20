@@ -23,6 +23,11 @@ import ButtonLink from "@/components/links/ButtonLink";
 import api from "@/lib/axios";
 import { ApiResponse } from "@/types/api";
 import { FaChevronLeft } from "react-icons/fa";
+import { ChevronRightIcon } from "lucide-react";
+import { navBtnData } from "@/components/info/heroSectionBtn";
+import Image from "next/image";
+import NextImage from "@/components/NextImage";
+import clsx from "clsx";
 
 type LoginForm = {
   username: string;
@@ -170,86 +175,146 @@ export default function AdminPage() {
 
   // login page
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
-      {/* Background + Login */}
-      <div className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primaryPink/20 via-white to-primaryGreen/20">
-        {/* Animated bg */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute -top-40 -left-40 w-[32rem] h-[32rem] bg-primaryPink/40 rounded-full blur-2xl animate-blob" />
-          <div className="absolute top-1/4 -right-40 w-[36rem] h-[36rem] bg-primaryGreen/40 rounded-full blur-2xl animate-blob [animation-delay:3s]" />
-          <div className="absolute bottom-[-10rem] left-1/4 w-[34rem] h-[34rem] bg-pink-300/40 rounded-full blur-2xl animate-blob [animation-delay:6s]" />
+    <div className="relative min-h-screen w-full overflow-hidden flex flex-col">
+      <main className="w-full min-h-screen items-center justify-center flex">
+        <div className="w-full items-center justify-center bg-primaryPink min-h-screen max-lg:hidden relative">
+          <section className="relative w-full min-h-screen overflow-hidden">
+            <Image
+              src="/images/HeroLogin.jpg"
+              alt="hero-image"
+              fill
+              priority
+              className="
+                object-cover
+                object-center
+                [mask-image:linear-gradient(to_bottom,black_30%,transparent_100%)]
+                [-webkit-mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]
+              "
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-primaryPink/100 via-primaryPink/60 to-transparent backdrop-blur-[2px]" />
+
+            {/* Ini bagian Title */}
+            <div className="relative z-499 flex h-full items-center px-12 lg:px-32 font-libertine py-72 justify-center">
+              <div className="flex flex-col gap-6">
+                <h1 className="text-white text-4xl lg:text-5xl font-bold font-inter">
+                  Content Management System
+                </h1>
+                <div className="flex items-center gap-4 mt-10">
+                  <div className="flex flex-col w-full items-center mb-4">
+                    <div className="flex items-center w-full p-2 gap-2 mt-2 justify-center">
+                      <NextImage
+                        src={"/HimasaktaMainWhite.png"}
+                        width={108}
+                        height={108}
+                        alt="Himasakta"
+                      />
+                      <h1
+                        className={clsx(
+                          "font-averia text-[70px] hidden lg:inline-block font-bold transition-colors duration-300",
+                          "text-white",
+                        )}
+                      >
+                        HIMASAKTA
+                      </h1>
+                    </div>
+                    <h1 className="font-inter hidden lg:inline-block text-[50px] font-bold transition-colors duration-300  text-white">
+                      Administrator
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
+        <div className="w-full items-center justify-center">
+          {/* Background + Login */}
+          <div className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br max-lg:from-primaryPink/20 max-lg:via-white max-lg:to-primaryGreen/20">
+            {/* Animated bg */}
+            <div className="absolute inset-0 -z-10 overflow-hidden lg:hidden">
+              <div className="absolute -top-40 -left-40 w-[32rem] h-[32rem] bg-primaryPink/40 rounded-full blur-2xl animate-blob" />
+              <div className="absolute top-1/4 -right-40 w-[36rem] h-[36rem] bg-primaryGreen/40 rounded-full blur-2xl animate-blob [animation-delay:3s]" />
+              <div className="absolute bottom-[-10rem] left-1/4 w-[34rem] h-[34rem] bg-pink-300/40 rounded-full blur-2xl animate-blob [animation-delay:6s]" />
+            </div>
 
-        {/* Login Form */}
-        <form
-          onSubmit={handleSubmit(handleAuth)}
-          className="
-            relative
-            flex flex-col gap-4
-            bg-gray-100/70 backdrop-blur-2xl
-            p-10 rounded-2xl
-            w-full max-w-xl
-            items-center
-            shadow-[0_20px_50px_rgba(0,0,0,0.1)]
-            border border-white/40
-            animate-fade-in
-          "
-        >
-          <h1 className="text-3xl font-bold text-center">
-            Login Admin HIMASAKTA
-          </h1>
-          <div className="w-[70%] relative aspect-video rounded-lg shadow-md">
-            <ImageFallback
-              isFill
-              src={`/images/Logo-Himasakta-Full.png`}
-              imgStyle="object-top rounded-lg"
-            />
+            {/* Login Form */}
+            <form
+              onSubmit={handleSubmit(handleAuth)}
+              className="
+                relative
+                flex flex-col gap-4
+                p-10 rounded-2xl
+                w-full max-w-full
+                items-center
+                animate-fade-in
+              max-lg:bg-gray-100/70
+                max-lg:backdrop-blur-2xl
+                max-lg:shadow-[0_20px_50px_rgba(0,0,0,0.1)]
+                max-lg:border max-lg:border-white/40
+              "
+            >
+              <h1 className="text-3xl font-bold text-center">
+                Login Admin HIMASAKTA
+              </h1>
+              <div className="w-[70%] relative aspect-video rounded-lg shadow-md">
+                <ImageFallback
+                  isFill
+                  src={`/images/Logo-Himasakta-Full.png`}
+                  imgStyle="object-top rounded-lg"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <small className="text-red-600 font-semibold text-center">
+                  Acces Restricted
+                </small>
+                <small className="text-gray-500 font-semibold text-center">
+                  Login untuk akses content management system website
+                </small>
+              </div>
+
+              <div className="w-full">
+                <label className="font-semibold">Username</label>
+                <input
+                  {...register("username", {
+                    required: "Username wajib diisi",
+                  })}
+                  className="w-full mt-1 px-3 py-2 rounded border bg-white/50 focus:bg-white transition-colors outline-none focus:ring-2 ring-primaryGreen/20"
+                  placeholder="e.g. John Doe"
+                />
+                {errors.username && (
+                  <p className="text-red-500 text-sm">
+                    {errors.username.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="w-full">
+                <label className="font-semibold">Password</label>
+                <input
+                  type="password"
+                  {...register("password", {
+                    required: "Password wajib diisi",
+                  })}
+                  className="w-full mt-1 px-3 py-2 rounded border bg-white/50 focus:bg-white transition-colors outline-none focus:ring-2 ring-primaryGreen/20"
+                  placeholder="e.g. 50251234567890"
+                />
+              </div>
+
+              {errMsg && <p className="text-red-500 font-medium">{errMsg}</p>}
+
+              <button
+                disabled={isSubmitting}
+                className="bg-black hover:bg-zinc-800 text-white py-2.5 rounded-lg w-full transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              >
+                {isSubmitting ? "Logging in..." : "Login"}
+              </button>
+
+              <small className="text-gray-400 font-medium mt-4">
+                &copy; HIMASAKTA 2026 | Flexoo Academy
+              </small>
+            </form>
           </div>
-          <div className="flex flex-col gap-2">
-            <small className="text-red-600 font-semibold text-center">
-              Acces Restricted
-            </small>
-            <small className="text-gray-500 font-semibold text-center">
-              Login untuk akses content management system website
-            </small>
-          </div>
-
-          <div className="w-full">
-            <label className="font-semibold">Username</label>
-            <input
-              {...register("username", { required: "Username wajib diisi" })}
-              className="w-full mt-1 px-3 py-2 rounded border bg-white/50 focus:bg-white transition-colors outline-none focus:ring-2 ring-primaryGreen/20"
-              placeholder="e.g. John Doe"
-            />
-            {errors.username && (
-              <p className="text-red-500 text-sm">{errors.username.message}</p>
-            )}
-          </div>
-
-          <div className="w-full">
-            <label className="font-semibold">Password</label>
-            <input
-              type="password"
-              {...register("password", { required: "Password wajib diisi" })}
-              className="w-full mt-1 px-3 py-2 rounded border bg-white/50 focus:bg-white transition-colors outline-none focus:ring-2 ring-primaryGreen/20"
-              placeholder="e.g. 50251234567890"
-            />
-          </div>
-
-          {errMsg && <p className="text-red-500 font-medium">{errMsg}</p>}
-
-          <button
-            disabled={isSubmitting}
-            className="bg-black hover:bg-zinc-800 text-white py-2.5 rounded-lg w-full transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-2"
-          >
-            {isSubmitting ? "Logging in..." : "Login"}
-          </button>
-
-          <small className="text-gray-400 font-medium mt-4">
-            &copy; HIMASAKTA 2026 | Flexoo Academy
-          </small>
-        </form>
-      </div>
+        </div>
+      </main>
 
       {/* Back Home Button */}
       <ButtonLink

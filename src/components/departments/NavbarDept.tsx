@@ -63,7 +63,7 @@ export default function NavbarDept() {
     );
   if (loading)
     return (
-      <nav className="bg-white p-4 rounded-full shadow flex justify-center ring-1 ring-primaryPink/50">
+      <nav className="bg-white rounded-full shadow flex justify-center ring-1 ring-primaryPink/50">
         <SkeletonPleaseWait />
       </nav>
     );

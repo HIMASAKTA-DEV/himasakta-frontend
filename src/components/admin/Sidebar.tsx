@@ -42,18 +42,15 @@ export default function Sidebar({ active }: { active: string }) {
   return (
     <aside
       className="
-      relative
-      w-20 lg:w-80
-      min-h-screen
-      bg-white/70
-      backdrop-blur-xl
-      border-r
-      p-3 lg:p-4
-      transition-all
-      flex flex-col
-      justify-between
-      items-center
-    "
+        sticky top-0
+        w-20 lg:w-80
+        h-screen
+        max-lg:overflow-y-auto
+        bg-white/70 backdrop-blur-xl border-r
+        p-3 lg:p-4
+        flex flex-col justify-between items-center
+      "
+      data-lenis-prevent
     >
       <div>
         {/* Background blob */}
