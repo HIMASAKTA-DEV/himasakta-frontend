@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 function SkeletonParagraph({ className }: { className?: string }) {
   return (
-    <div className={clsx("space-y-2", className)}>
+    <div className={clsx("space-y-2 cursor-wait", className)}>
       <Skeleton className="h-4 w-full" />
       <Skeleton className="h-4 w-full" />
       <Skeleton className="h-4 w-11/12" />

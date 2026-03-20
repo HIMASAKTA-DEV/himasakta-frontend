@@ -1,10 +1,7 @@
 "use client";
 
-import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
-import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
-import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
+import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import divideArray from "@/lib/divideArray"; // Pastikan path ini benar
 import { GetGalleryByCabinetId } from "@/services/landing_page/GeGalleryByCabinetId";
 import { GalleryType } from "@/types/data/GalleryType";
@@ -15,8 +12,8 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 function GalleryCabinet({ ...cabinet }: CabinetInfo) {
   const [loading, setLoading] = useState(true);
   const [galleries, setGalleries] = useState<GalleryType[]>([]);
-  const [_hasNext, setHasNext] = useState(false);
-  const [currPg, setCurrPg] = useState(1);
+  const [_hasNext, _setHasNext] = useState(false);
+  const [_currPg, _setCurrPg] = useState(1);
   const [error, setError] = useState(false);
   const [limitGallery, setLimitGallery] = useState(3);
   const [slides, setSlides] = useState<GalleryType[][]>([]);

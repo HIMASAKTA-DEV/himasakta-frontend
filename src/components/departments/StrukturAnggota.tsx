@@ -8,7 +8,6 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
-import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 type MemberCard = {
   name: string;
@@ -109,7 +108,6 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
             withDesc={true}
           />
         </div>
-        <SkeletonPleaseWait />
       </div>
     );
   }

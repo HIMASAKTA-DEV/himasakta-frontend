@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 export default function SkeletonSection() {
   return (
-    <div className="w-full flex flex-col gap-6">
+    <div className="w-full flex flex-col gap-6 cursor-wait">
       {/* VIEWER PORTION */}
       <div className="flex flex-col gap-3 w-full max-w-5xl mx-auto">
         {/* Frame Placeholder */}

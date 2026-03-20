@@ -3,7 +3,6 @@
 import NotFound from "@/app/not-found";
 import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
 import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
-import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
 import GalleryDept from "@/components/departments/GalleryDept";
 import InformasiDepartment from "@/components/departments/InformasiDepartment";
@@ -63,7 +62,7 @@ function page() {
         <NavbarDept />
         <section className="bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.08)] mb-10 flex flex-col gap-8 p-5 lg:p-12 overflow-hidden ring-1 ring-primaryPink/50">
           {loading ? (
-            <div className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8">
+            <div className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8 cursor-wait">
               {/* Skeleton matches the 40% column */}
               <div className="md:w-[40%] w-full">
                 <SkeletonSection />{" "}

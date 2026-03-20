@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
+import NextImage from "@/components/NextImage";
 import AdminTopBar from "@/components/admin/AdminTopBar";
 import {
   DashboardAdmin,
@@ -22,12 +23,9 @@ import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWai
 import ButtonLink from "@/components/links/ButtonLink";
 import api from "@/lib/axios";
 import { ApiResponse } from "@/types/api";
-import { FaChevronLeft } from "react-icons/fa";
-import { ChevronRightIcon } from "lucide-react";
-import { navBtnData } from "@/components/info/heroSectionBtn";
-import Image from "next/image";
-import NextImage from "@/components/NextImage";
 import clsx from "clsx";
+import Image from "next/image";
+import { FaChevronLeft } from "react-icons/fa";
 
 type LoginForm = {
   username: string;

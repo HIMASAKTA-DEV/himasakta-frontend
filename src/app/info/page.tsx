@@ -46,7 +46,7 @@ function InfoPage() {
         <div className="max-w-8xl flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32 mb-16">
           <MediaPartner />
           {loading ? (
-            <div className="animate-pulse h-96 bg-gray-100 rounded-3xl" />
+            <div className="shimmer-skeleton h-96 bg-gray-100 rounded-3xl cursor-wait" />
           ) : (
             <>
               <About webData={webData} cabinetData={cabinetData} />

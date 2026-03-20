@@ -10,7 +10,6 @@ import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
-import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 type GalleryCard = {
   imageUrl: string;
@@ -88,7 +87,6 @@ function GalleryDept({ ...dept }: DepartmentType) {
             count={LimitGallery}
           />
         </div>
-        <SkeletonPleaseWait />
       </div>
     );
   }

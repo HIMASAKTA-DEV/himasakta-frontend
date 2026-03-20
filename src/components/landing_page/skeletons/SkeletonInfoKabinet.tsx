@@ -5,7 +5,7 @@ import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph"
 
 export default function SkeletonInformasiKabinet() {
   return (
-    <section className="w-full flex flex-col lg:flex-row gap-8 lg:gap-24">
+    <section className="w-full flex flex-col lg:flex-row gap-8 lg:gap-24 cursor-wait">
       {/* Text skeleton */}
       <div className="order-2 lg:order-1 flex flex-col gap-4 w-full">
         <SkeletonHeaderSection />

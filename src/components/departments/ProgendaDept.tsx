@@ -10,7 +10,6 @@ import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
-import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 
 type ProgendaCard = {
   name: string;
@@ -94,7 +93,6 @@ function ProgendaDept({ ...dept }: DepartmentType) {
             withDesc={true}
           />
         </div>
-        <SkeletonPleaseWait />
       </div>
     );
   }

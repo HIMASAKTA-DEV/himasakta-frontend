@@ -19,7 +19,7 @@ export default function EventSkeleton({
     /* 2. Set a default grid layout that matches your actual UI */
     <div
       className={clsx(
-        "w-full grid gap-6",
+        "w-full grid gap-6 cursor-wait",
         className || "grid-cols-2 lg:grid-cols-5",
       )}
     >

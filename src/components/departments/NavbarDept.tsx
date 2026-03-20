@@ -5,9 +5,9 @@ import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
-import { useRef } from "react";
 
 export default function NavbarDept() {
   const [deptName, setDeptName] = useState<DepartmentType[]>([]);
@@ -73,7 +73,7 @@ export default function NavbarDept() {
       <div className="flex items-center py-1 pr-1 pl-1">
         {/* CONTAINER SCROLLABLE */}
         <div
-          className="flex-1 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-proximity overflow-y-hidden"
+          className="flex-1 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-proximity overflow-y-hidden rounded-full"
           data-lenis-prevent
         >
           {/* PENTING: 

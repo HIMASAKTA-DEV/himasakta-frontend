@@ -9,7 +9,12 @@ export default function SkeletonProfilHimpunan({
   className?: string;
 }) {
   return (
-    <section className={clsx("flex flex-col items-center gap-4", className)}>
+    <section
+      className={clsx(
+        "flex flex-col items-center gap-4 cursor-wait",
+        className,
+      )}
+    >
       {/* Image placeholder */}
       <div className="w-[75vw] aspect-[16/5]">
         <Skeleton className="w-full h-full rounded-3xl" />

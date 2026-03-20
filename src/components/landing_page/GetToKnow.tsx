@@ -79,7 +79,7 @@ export default function GetToKnow() {
       </div>
 
       {loading ? (
-        <div className="px-4">
+        <div className="px-4 cursor-wait">
           <SkeletonGrid
             className="grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
             count={4}

@@ -2532,7 +2532,7 @@ type Props = {
   onLogout: () => void;
 };
 
-export function DashboardAdmin({ usr, onLogout }: Props) {
+export function DashboardAdmin({ usr }: Props) {
   return (
     <section className="flex flex-col gap-10 lg:p-10">
       <div className="flex flex-col gap-4">

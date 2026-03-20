@@ -1,6 +1,6 @@
 function SkeletonPleaseWait() {
   return (
-    <div className="flex items-center gap-8 text-gray-500">
+    <div className="flex items-center gap-8 text-gray-500 cursor-wait">
       <div className="loader" />
       <small className="text-gray-500">
         Fetching data please wait
