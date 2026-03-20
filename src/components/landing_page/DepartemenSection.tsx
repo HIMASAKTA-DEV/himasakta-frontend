@@ -57,6 +57,7 @@ function DepartemenSection() {
         <SkeletonGrid
           count={12}
           className="grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8"
+          styleBox="aspect-[8/1]"
         />
       ) : (
         // Guys propsnya jg di-spread kalo setting componentnya di-spread juga

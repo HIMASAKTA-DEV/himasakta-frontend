@@ -144,3 +144,161 @@ html {
     scrollbar-width: none; /* Firefox */
   }
 }
+
+/* HTML: <div class="loader"></div> */
+@layer components {
+  .loader-full-scr {
+    height: 80px;
+    aspect-ratio: 1;
+    padding: 10px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    position: relative;
+    mask:
+      conic-gradient(#000 0 0) content-box exclude,
+      conic-gradient(#000 0 0);
+    filter: blur(12px);
+  }
+
+  .loader-full-scr::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(#0000 35%, #d58a94, #0000 65%);
+    animation: l1 1.5s linear infinite;
+  }
+
+  .loader-full-scr-dark {
+    height: 80px;
+    aspect-ratio: 1;
+    padding: 10px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    position: relative;
+
+    mask:
+      conic-gradient(#000 0 0) content-box exclude,
+      conic-gradient(#000 0 0);
+
+    filter: blur(6px);
+  }
+
+  .loader-full-scr-dark::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: conic-gradient(#0000 30%, #ffffff 50%, #0000 70%);
+
+    animation: l1 1.2s linear infinite;
+  }
+
+  .loader {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: block;
+    margin: 15px auto;
+    position: relative;
+    color: #fff;
+    left: -100px;
+    box-sizing: border-box;
+    animation: shadowRolling 2s linear infinite;
+  }
+}
+
+@keyframes shadowRolling {
+  0% {
+    box-shadow:
+      0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0);
+  }
+  12% {
+    box-shadow:
+      100px 0 gray,
+      0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0);
+  }
+  25% {
+    box-shadow:
+      110px 0 gray,
+      100px 0 gray,
+      0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0);
+  }
+  36% {
+    box-shadow:
+      120px 0 gray,
+      110px 0 gray,
+      100px 0 gray,
+      0px 0 rgba(255, 255, 255, 0);
+  }
+  50% {
+    box-shadow:
+      130px 0 white,
+      120px 0 white,
+      110px 0 white,
+      100px 0 white;
+  }
+  62% {
+    box-shadow:
+      200px 0 rgba(255, 255, 255, 0),
+      130px 0 white,
+      120px 0 white,
+      110px 0 white;
+  }
+  75% {
+    box-shadow:
+      200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0),
+      130px 0 white,
+      120px 0 white;
+  }
+  87% {
+    box-shadow:
+      200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0),
+      130px 0 white;
+  }
+  100% {
+    box-shadow:
+      200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+@keyframes l1 {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@keyframes shimmer-skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@layer utilities {
+  .shimmer-skeleton {
+    background: linear-gradient(
+      90deg,
+      #f3f4f6 0%,
+      /* base */ #e5e7eb 20%,
+      #f9fafb 40%,
+      /* highlight tipis */ #e5e7eb 60%,
+      #f3f4f6 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer-skeleton 5s infinite linear;
+  }
+}

@@ -171,16 +171,11 @@ function page() {
             </div>
           </form>
         )}
-        {isSubmitting && (
-          <div className="flex w-full min-h-screen items-center justify-center bg-black/50 backdrop-blur-sm fixed inset-0 cursor-not-allowed">
-            <div className="flex flex-col items-center gap-4">
-              <div className="h-12 w-12 animate-spin rounded-full border-4 border-primaryPink border-t-transparent" />
-              <p className="font-averia text-lg text-white">
-                Submitting NRP Whitelist Data...
-              </p>
-            </div>
-          </div>
-        )}
+        <LoadingFullScreen
+          isSubmitting={isSubmitting}
+          label="Submitting NRP Whitelist data"
+          loaderStyle="loader-full-scr-dark"
+        />
       </div>
     </main>
   );

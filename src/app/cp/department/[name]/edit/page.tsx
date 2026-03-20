@@ -764,7 +764,10 @@ export default function EditDepartmentPage() {
                   Upload maksimum 20 gambar. Tidak disimpan sementara
                 </div>
               </div>
-              <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">
+              <div
+                className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner"
+                data-lenis-prevent
+              >
                 {gallery.length < 20 && (
                   <button
                     type="button"
@@ -896,6 +899,7 @@ export default function EditDepartmentPage() {
         <LoadingFullScreen
           isSubmitting={isSubmitting}
           label="Submitting Department Data"
+          loaderStyle="loader-full-scr-dark"
         />
       </form>
     </div>

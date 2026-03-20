@@ -451,6 +451,7 @@ export default function AddGalleryPage() {
       <LoadingFullScreen
         isSubmitting={isSubmitting}
         label="Submitting Gallery Data"
+        loaderStyle="loader-full-scr-dark"
       />
     </form>
   );

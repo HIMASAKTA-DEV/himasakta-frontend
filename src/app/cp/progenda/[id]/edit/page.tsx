@@ -489,15 +489,18 @@ function page() {
               </div>
               <div className="flex flex-col gap-4 mt-4 w-full">
                 {/* MANAGE FEEDS */}
-                <div className="w-full flex flex-row justify-between items-center">
-                  <label className="mb-2 font-semibold text-black">
+                <div className="w-full flex flex-row lg:justify-between lg:items-center mb-0 max-lg:flex-col">
+                  <label className="font-semibold text-black">
                     Feeds/Galeri
                   </label>
                   <div className="text-sm italic text-gray-500">
-                    Upload maksimum 20 gambar.
+                    Upload maksimum 20 gambar. Tidak disimpan sementara
                   </div>
                 </div>
-                <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">
+                <div
+                  className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner"
+                  data-lenis-prevent
+                >
                   {state.feeds.length < 20 && (
                     <button
                       type="button"
@@ -743,16 +746,11 @@ function page() {
               </div>
             </div>
           )}
-          {forms.formState.isSubmitting && (
-            <div className="flex w-full min-h-screen items-center justify-center bg-black/50 backdrop-blur-sm fixed inset-0 cursor-not-allowed">
-              <div className="flex flex-col items-center gap-4">
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-primaryPink border-t-transparent" />
-                <p className="font-averia text-lg text-white">
-                  Submitting Progenda Data...
-                </p>
-              </div>
-            </div>
-          )}
+          <LoadingFullScreen
+            isSubmitting={forms.formState.isSubmitting}
+            label="Submitting Progenda Data"
+            loaderStyle="loader-full-scr-dark"
+          />
         </div>
       </form>
     </div>

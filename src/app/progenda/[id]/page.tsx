@@ -56,7 +56,7 @@ function page() {
 
   if (loading) {
     return (
-      <>
+      <Layout withFooter withNavbar={false} transparentOnTop={false}>
         <ButtonLink
           href={`/departments/${progenda?.department?.name}`}
           className="w-28 flex gap-4 items-center m-8"
@@ -65,16 +65,16 @@ function page() {
           <FaChevronLeft />
           <p>Back</p>
         </ButtonLink>
-        <main className="min-h-screen px-10 flex flex-col lg:px-40 gap-6 mb-20">
+        <main className="min-h-screen px-10 flex flex-col lg:px-40 gap-6 mb-4">
           <SkeletonHeaderSection />
-          <div className="flex min-h-screen w-full items-center justify-center">
+          <div className="flex w-full items-center justify-center">
             <div className="aspect-video w-[80%]">
               <SkeletonSection />
             </div>
           </div>
           <SkeletonParagraph />
         </main>
-      </>
+      </Layout>
     );
   }
 

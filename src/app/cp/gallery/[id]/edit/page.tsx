@@ -509,6 +509,7 @@ export default function EditGalleryPage() {
       <LoadingFullScreen
         isSubmitting={isSubmitting}
         label="Submitting Gallery Data"
+        loaderStyle="loader-full-scr-dark"
       />
     </form>
   );

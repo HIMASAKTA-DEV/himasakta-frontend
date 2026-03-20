@@ -7,11 +7,13 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
+import { useRef } from "react";
 
 export default function NavbarDept() {
   const [deptName, setDeptName] = useState<DepartmentType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const activeRef = useRef<HTMLLIElement | null>(null);
 
   // Kita ambil limit yang cukup besar (misal 50) agar semua dept masuk dalam satu barisan scroll
   const fetchAllDept = async () => {
@@ -43,6 +45,16 @@ export default function NavbarDept() {
     );
   }, [deptName, keyword]);
 
+  useEffect(() => {
+    if (activeRef.current) {
+      activeRef.current.scrollIntoView({
+        behavior: "smooth",
+        inline: "center", // ini penting biar ke tengah
+        block: "nearest",
+      });
+    }
+  }, [activeDept, filteredDept]);
+
   if (error)
     return (
       <nav className="bg-white p-4 rounded-full shadow text-red-500 text-center">
@@ -51,17 +63,17 @@ export default function NavbarDept() {
     );
   if (loading)
     return (
-      <nav className="bg-white p-4 rounded-full shadow flex justify-center">
+      <nav className="bg-white rounded-full shadow flex justify-center ring-1 ring-primaryPink/50">
         <SkeletonPleaseWait />
       </nav>
     );
 
   return (
-    <nav className="relative w-full bg-white shadow-md rounded-full">
+    <nav className="relative w-full bg-white shadow-md rounded-full ring-1 ring-primaryPink/50">
       <div className="flex items-center py-1 pr-1 pl-1">
         {/* CONTAINER SCROLLABLE */}
         <div
-          className="flex-1 overflow-x-auto max-lg:no-scrollbar scroll-smooth snap-x snap-proximity overflow-y-hidden "
+          className="flex-1 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-proximity overflow-y-hidden"
           data-lenis-prevent
         >
           {/* PENTING: 
@@ -72,7 +84,11 @@ export default function NavbarDept() {
             {filteredDept.map((d, idx) => {
               const isActive = activeDept === d.name;
               return (
-                <li key={d.id ?? idx} className="flex-1 snap-start">
+                <li
+                  key={d.id ?? idx}
+                  ref={isActive ? activeRef : null}
+                  className="snap-start lg:flex-[0_0_16.666%]"
+                >
                   <Link
                     href={`/departments/${d.name}`}
                     className={`

@@ -1,5 +1,6 @@
 "use client";
 
+import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
@@ -84,20 +85,10 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
     };
   }, [previewImage]);
 
-  if (loading) {
+  if (error && !loading)
     return (
-      <div className="flex flex-col gap-8 items-center py-10">
-        <HeaderSection title={"Galeri Departemen"} />
-        <div className="w-full px-12">
-          <SkeletonSection />
-        </div>
-        <SkeletonPleaseWait />
-      </div>
+      <p className="text-center py-10 text-red-600">Gagal memuat data galeri</p>
     );
-  }
-
-  if (error)
-    return <p className="text-center py-10">Gagal memuat data galeri</p>;
 
   return (
     <div className="flex flex-col gap-8 px-4 w-full py-10">
@@ -107,7 +98,14 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
         </h1>
       </div>
 
-      {galleries.length <= 0 ? (
+      {loading && (
+        <SkeletonGrid
+          className={`grid-cols-1 grid-rows-1 lg:grid-rows-1 lg:grid-cols-3 gap-6`}
+          count={limitGallery}
+        />
+      )}
+
+      {galleries.length <= 0 && !loading ? (
         <div className="w-full flex items-center justify-center py-20 bg-gray-50 rounded-xl border-2 border-dashed">
           <p className="text-gray-400">Departemen belum memiliki dokumentasi</p>
         </div>

@@ -530,6 +530,7 @@ export default function EditNewsPage() {
       <LoadingFullScreen
         isSubmitting={isSubmitting}
         label="Submitting News Data"
+        loaderStyle="loader-full-scr-dark"
       />
     </form>
   );
