@@ -2763,17 +2763,17 @@ export function GlobalSetting() {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center gap-12 p-4 lg:p-10 pb-20">
+    <div className="flex min-h-screen w-full flex-col items-center gap-12 p-0 lg:p-10 pb-20">
       {/* Web Settings Section */}
-      <section className="w-full flex flex-col gap-8 bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md">
+      <section className="w-full flex flex-col gap-8 bg-white/50 backdrop-blur-sm p-4 lg:p-6 rounded-3xl border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md">
         <div className="flex w-full items-center justify-between gap-4 max-lg:flex-col border-b border-gray-100 pb-6">
           <div className="flex justify-between items-center w-full">
             <HeaderSection
               title="Web Settings"
-              titleStyle="font-averia text-black max-lg:text-3xl"
+              titleStyle="font-averia text-black max-lg:text-2xl"
               className="gap-0"
               sub="Konfigurasi informasi umum website"
-              subStyle="font-libertine text-black/60"
+              subStyle="font-libertine text-black/60 max-lg:text-[14px] leading-tight"
             />
             <IoIosHelpCircle
               className="w-7 h-7 text-blue-400 hover:text-blue-500 transition-all duration-300 hover:cursor-pointer"
@@ -2857,7 +2857,7 @@ export function GlobalSetting() {
               <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider">
                 Maintenance Mode
               </label>
-              <div className="flex gap-4">
+              <div className="flex gap-4 max-lg:flex-col">
                 <button
                   type="button"
                   onClick={() => setIsMaintenance(true)}
@@ -2952,12 +2952,12 @@ export function GlobalSetting() {
             </div>
 
             {/* Form Actions */}
-            <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-100 max-lg:flex-col">
               <button
                 type="button"
                 onClick={handleResetForm}
                 disabled={isSubmitting}
-                className="px-6 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 hover:text-gray-900 transition-all disabled:opacity-50"
+                className="px-6 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 hover:text-gray-900 transition-all disabled:opacity-50 max-lg:w-full"
               >
                 Reset
               </button>
@@ -2965,7 +2965,7 @@ export function GlobalSetting() {
                 type="button"
                 onClick={handleEmptyReset}
                 disabled={isSubmitting}
-                className="px-6 py-2.5 rounded-xl border border-red-100 bg-red-50/50 text-red-600 font-bold text-sm hover:bg-red-500 hover:text-white transition-all disabled:opacity-50"
+                className="px-6 py-2.5 rounded-xl border border-red-100 bg-red-50/50 text-red-600 font-bold text-sm hover:bg-red-500 hover:text-white transition-all disabled:opacity-50 max-lg:w-full"
               >
                 Empty
               </button>

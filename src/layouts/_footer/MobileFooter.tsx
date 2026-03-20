@@ -42,9 +42,9 @@ export default function MobileFooter() {
     linktree: FiLink,
   };
   return (
-    <footer className="px-[60px] py-8 bg-black text-white">
+    <footer className="py-8 px-4 bg-black text-white flex flex-col items-center justify-center">
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-4 mb-6">
+      <Link href="/" className="flex items-center gap-4 mb-6 w-full">
         <NextImage
           src="/HimasaktaMainWhite.png"
           width={70}
@@ -55,7 +55,7 @@ export default function MobileFooter() {
       </Link>
 
       {/* Links */}
-      <div className="font-libertine text-lg flex flex-col mb-6">
+      <div className="font-libertine text-lg flex flex-col mb-6 w-full">
         {footerLink.map((item) => (
           <Link
             key={item.label}
@@ -68,7 +68,7 @@ export default function MobileFooter() {
       </div>
 
       {/* Social */}
-      <div className="flex gap-4 mb-6">
+      <div className="flex gap-4 mb-6 w-full">
         {links.map(({ name, link }) => {
           const Icon = icons[name.toLocaleLowerCase()] || FiLink;
           return (
@@ -87,7 +87,7 @@ export default function MobileFooter() {
         })}
       </div>
 
-      <p className="font-libertine text-sm lg:text-md text-white">
+      <p className="font-libertine text-sm lg:text-md text-white w-full">
         &copy; 2026 HIMASAKTA ITS | Flexoo Academny
       </p>
     </footer>

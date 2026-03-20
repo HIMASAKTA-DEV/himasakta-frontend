@@ -482,6 +482,7 @@ export default function AddNewsPage() {
       <LoadingFullScreen
         isSubmitting={isSubmitting}
         label="Submitting News Data"
+        loaderStyle="loader-full-scr-dark"
       />
     </form>
   );

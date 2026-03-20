@@ -302,14 +302,11 @@ export default function EditCabinetPage() {
 
   if (isFetching) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-primaryPink border-t-transparent" />
-          <p className="font-averia text-lg text-gray-600">
-            Loading Cabinet Data...
-          </p>
-        </div>
-      </div>
+      <LoadingFullScreen
+        label="Fetching Cabinet Data"
+        isSubmitting={true}
+        styling="bg-white text-black"
+      />
     );
   }
 
@@ -554,13 +551,13 @@ export default function EditCabinetPage() {
             </label>
 
             <div
-              className="flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] max-w-[250px]"
-              style={{ aspectRatio: "1/1" }}
+              className="flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] max-w-full"
+              style={{ aspectRatio: "3/2" }}
             >
               <div
                 onClick={() => setOpenUpload(true)}
                 className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full"
-                style={{ aspectRatio: "1/1" }}
+                style={{ aspectRatio: "3/2" }}
               >
                 {logo ? (
                   <img
@@ -569,7 +566,9 @@ export default function EditCabinetPage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <p className="italic text-[#9BA5B7]">No image uploaded</p>
+                  <p className="italic text-[#9BA5B7]">
+                    No image uploaded (Recommended 1:1)
+                  </p>
                 )}
 
                 {/* overlay hover */}
@@ -579,7 +578,7 @@ export default function EditCabinetPage() {
               </div>
             </div>
 
-            <div className="mt-4 flex flex-col gap-2 max-w-[250px]">
+            <div className="mt-4 flex flex-col gap-2 max-w-full">
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-100 transition-all duration-300"
@@ -603,7 +602,7 @@ export default function EditCabinetPage() {
 
             <div
               onClick={() => setOpenUploadOrganigram(true)}
-              className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full max-w-[600px]"
+              className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full max-w-full"
               style={{ aspectRatio: "3/2" }}
             >
               {organigram ? (
@@ -613,7 +612,9 @@ export default function EditCabinetPage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <p className="italic text-[#9BA5B7]">No organigram uploaded</p>
+                <p className="italic text-[#9BA5B7]">
+                  No organigram uploaded (Recommended 16:9 &gt;4000px
+                </p>
               )}
 
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center duration-300">
@@ -621,7 +622,7 @@ export default function EditCabinetPage() {
               </div>
             </div>
 
-            <div className="mt-4 flex flex-col gap-2 max-w-[600px]">
+            <div className="mt-4 flex flex-col gap-2 max-w-full">
               <button
                 type="button"
                 className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-100 transition"
@@ -650,7 +651,10 @@ export default function EditCabinetPage() {
                   Upload maksimum 20 gambar. Tidak disimpan sementara
                 </div>
               </div>
-              <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">
+              <div
+                className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner"
+                data-lenis-prevent
+              >
                 {gallery.length < 20 && (
                   <button
                     type="button"
@@ -805,6 +809,7 @@ export default function EditCabinetPage() {
       <LoadingFullScreen
         isSubmitting={isSubmitting}
         label="Submitting Cabinet Data"
+        loaderStyle="loader-full-scr-dark"
       />
     </form>
   );

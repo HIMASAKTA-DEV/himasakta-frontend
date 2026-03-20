@@ -38,7 +38,8 @@ npm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# all cpp
+# all trash
+LoginPageOne.tsx
 *.cpp
 
 # all hidden

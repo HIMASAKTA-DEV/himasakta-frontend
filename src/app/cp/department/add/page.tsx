@@ -521,15 +521,16 @@ export default function AddDepartmentPage() {
             </div>
             <div className="flex flex-col gap-4 mt-4 w-full">
               {/* MANAGE gallery */}
-              <div className="w-full flex flex-row justify-between items-center">
-                <label className="mb-2 font-semibold text-black">
-                  gallery/Galeri
-                </label>
+              <div className="w-full flex flex-row lg:justify-between lg:items-center mb-0 max-lg:flex-col">
+                <label className="font-semibold text-black">Feeds/Galeri</label>
                 <div className="text-sm italic text-gray-500">
                   Upload maksimum 20 gambar. Tidak disimpan sementara
                 </div>
               </div>
-              <div className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner">
+              <div
+                className="max-h-[320px] overflow-y-auto pr-2 space-y-2 rounded-xl p-3 bg-gradient-to-b from-white/70 to-white/40 backdrop-blur-md border border-white/40 shadow-inner"
+                data-lenis-prevent
+              >
                 {gallery.length < 20 && (
                   <button
                     type="button"
@@ -656,6 +657,7 @@ export default function AddDepartmentPage() {
         <LoadingFullScreen
           isSubmitting={isSubmitting}
           label="Submitting Department Data"
+          loaderStyle="loader-full-scr-dark"
         />
       </form>
     </div>

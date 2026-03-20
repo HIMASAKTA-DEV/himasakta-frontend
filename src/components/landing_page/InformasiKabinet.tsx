@@ -31,7 +31,12 @@ export default function InformasiKabinet() {
   }, []);
 
   return loading ? (
-    <SkeletonInformasiKabinet />
+    <>
+      <SkeletonInformasiKabinet />
+      <div>
+        <GalleryCabinet {...cabinet} />
+      </div>
+    </>
   ) : (
     <>
       <section

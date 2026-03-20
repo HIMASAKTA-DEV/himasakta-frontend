@@ -61,7 +61,7 @@ function page() {
           <p>Home</p>
         </ButtonLink>
         <NavbarDept />
-        <section className="bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.08)] mb-10 flex flex-col gap-8 p-5 lg:p-12 overflow-hidden">
+        <section className="bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.08)] mb-10 flex flex-col gap-8 p-5 lg:p-12 overflow-hidden ring-1 ring-primaryPink/50">
           {loading ? (
             <div className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8">
               {/* Skeleton matches the 40% column */}
@@ -74,7 +74,6 @@ function page() {
                 <SkeletonHeaderSection />
                 <SkeletonParagraph />
               </div>
-              <SkeletonPleaseWait />
             </div>
           ) : (
             <InformasiDepartment {...dept} />

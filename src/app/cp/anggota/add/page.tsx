@@ -780,6 +780,7 @@ export default function Page() {
       <LoadingFullScreen
         isSubmitting={isSubmitting}
         label="Submitting Member Data"
+        loaderStyle="loader-full-scr-dark"
       />
     </main>
   );

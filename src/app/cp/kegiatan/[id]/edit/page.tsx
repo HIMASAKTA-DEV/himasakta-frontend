@@ -422,6 +422,7 @@ function page() {
       <LoadingFullScreen
         isSubmitting={isSubmitting}
         label="Submitting Event Data"
+        loaderStyle="loader-full-scr-dark"
       />
     </main>
   );
