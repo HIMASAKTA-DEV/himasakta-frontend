@@ -7,6 +7,7 @@ import { Media } from "../commons/mediaType";
 export type DepartmentInfo = {
   id: UUID | string;
   name: string;
+  slug: string;
   description: string;
   logo?: Media;
   social_media_link?: string;

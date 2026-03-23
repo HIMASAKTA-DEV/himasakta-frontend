@@ -11,7 +11,7 @@ import ProgendaDept from "@/components/departments/ProgendaDept";
 import StrukturAnggota from "@/components/departments/StrukturAnggota";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
-import { GetDeptByName } from "@/services/departments/[name]/GetDepartmentByName";
+import { GetDeptBySlug } from "@/services/departments/[slug]/GetDepartmentBySlug";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -23,11 +23,11 @@ function page() {
   const [dept, setDept] = useState<DepartmentType | null>(null);
   // fetch depts info
   const params = useParams();
-  const { name } = params;
-  const fetchDeptsByName = async (name: string) => {
+  const { slug } = params;
+  const fetchDeptsBySlug = async (slug: string) => {
     setLoading(true);
     try {
-      const data = await GetDeptByName(name);
+      const data = await GetDeptBySlug(slug);
       // console.log(data);
       setDept(data.data);
     } catch (err) {
@@ -40,10 +40,10 @@ function page() {
   };
 
   useEffect(() => {
-    if (!name) return;
-    const inp = Array.isArray(name) ? name[0] : name;
-    fetchDeptsByName(inp);
-  }, [name]);
+    if (!slug) return;
+    const inp = Array.isArray(slug) ? slug[0] : slug;
+    fetchDeptsBySlug(inp);
+  }, [slug]);
   if (error) {
     return <NotFound />;
   }

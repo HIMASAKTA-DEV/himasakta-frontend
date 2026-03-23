@@ -58,7 +58,7 @@ function page() {
     return (
       <Layout withFooter withNavbar={false} transparentOnTop={false}>
         <ButtonLink
-          href={`/departments/${progenda?.department?.name}`}
+          href={`/departments/${progenda?.department?.slug}`}
           className="w-28 flex gap-4 items-center m-8"
           variant="black"
         >
@@ -81,7 +81,7 @@ function page() {
   return (
     <Layout withFooter withNavbar={false} transparentOnTop={false}>
       <ButtonLink
-        href={`/departments/${progenda?.department?.name}`}
+        href={`/departments/${progenda?.department?.slug}`}
         className="w-28 flex gap-4 items-center m-8"
         variant="black"
       >
