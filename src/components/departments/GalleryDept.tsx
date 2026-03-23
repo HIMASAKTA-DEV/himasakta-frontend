@@ -63,9 +63,9 @@ function GalleryDept({ ...dept }: DepartmentType) {
     }
   }, [dept?.feeds]);
 
-  const hasNextPage = useMemo(() => {
-    return currentPage * LimitGallery < galleries.length;
-  }, [currentPage, galleries.length]);
+  // const hasNextPage = useMemo(() => {
+  //   return currentPage * LimitGallery < galleries.length;
+  // }, [currentPage, galleries.length]);
 
   const paginatedGalleries = useMemo(() => {
     return galleries.slice(
