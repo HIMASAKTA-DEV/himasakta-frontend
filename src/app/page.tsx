@@ -1,41 +1,41 @@
-"use client";
-
-import DepartemenSection from "@/components/landing_page/DepartemenSection";
-import GetToKnow from "@/components/landing_page/GetToKnow";
-import HeroSection from "@/components/landing_page/HeroSection";
-import InformasiBerita from "@/components/landing_page/InformasiBerita";
-import InformasiKabinet from "@/components/landing_page/InformasiKabinet";
-import OrganigramSection from "@/components/landing_page/OrganigramSection";
-import ProfilHimpunan from "@/components/landing_page/ProfilHimpunan";
-import Layout from "@/layouts/Layout";
-import { trackVisit } from "@/lib/analytic";
-import { useEffect } from "react";
+import JsonLd from "@/components/seo/JsonLd";
+import HomeClient from "./HomeClient";
 
 export default function Home() {
-  useEffect(() => {
-    trackVisit();
-  }, []);
   return (
     <>
-      {/* TODO: Add hover effect in each section */}
-      <Layout withNavbar={true} withFooter={true} transparentOnTop={true}>
-        <main className="flex flex-col items-center mb-24 lg:mb-32">
-          {/* Full bleed Hero */}
-          <div className="w-full mt-[-115px]">
-            <HeroSection />
-          </div>
-
-          {/* Normal content area */}
-          <div className="max-w-full flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32">
-            <ProfilHimpunan />
-            <InformasiKabinet />
-            <OrganigramSection />
-            <GetToKnow />
-            <DepartemenSection />
-            <InformasiBerita />
-          </div>
-        </main>
-      </Layout>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "HIMASAKTA ITS",
+          alternateName: "Himpunan Mahasiswa Aktuaria ITS",
+          url: "https://himasakta.com",
+          logo: "https://himasakta.com/images/ProfilHimpunan.png",
+          description:
+            "Himpunan Mahasiswa Aktuaria Institut Teknologi Sepuluh Nopember (ITS), Surabaya, Indonesia.",
+          sameAs: [
+            "https://www.instagram.com/himasakta.its/",
+            "https://www.youtube.com/@himasaktaits4262",
+            "https://www.linkedin.com/company/himasaktaits/",
+            "https://www.tiktok.com/@himasakta.its",
+          ],
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "HIMASAKTA ITS",
+          url: "https://himasakta.com",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://himasakta.com/news?s={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }}
+      />
+      <HomeClient />
     </>
   );
 }

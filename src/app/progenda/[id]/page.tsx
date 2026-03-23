@@ -1,184 +1,121 @@
-"use client";
+import JsonLd from "@/components/seo/JsonLd";
+import { baseURL } from "@/lib/axios";
+import type { Metadata } from "next";
+import ProgendaDetailClient from "./ProgendaDetailClient";
 
-import NotFound from "@/app/not-found";
-import HeaderSection from "@/components/commons/HeaderSection";
-import ImageFallback from "@/components/commons/ImageFallback";
-import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
-import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
-import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
-import ButtonLink from "@/components/links/ButtonLink";
-import TimelineComp from "@/components/progenda/TimelineComp";
-import Layout from "@/layouts/Layout";
-import { GetProgendaById } from "@/services/progenda/GetProgendaById";
-import { ProgendaType } from "@/types/data/ProgendaType";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import {
-  FaChevronLeft,
-  FaGlobe,
-  FaInstagram,
-  FaLinkedin,
-  FaTwitter,
-  FaYoutube,
-} from "react-icons/fa";
-import ReactMarkdown from "react-markdown";
+const SITE_URL = "https://himasakta.com";
 
-function page() {
-  const params = useParams();
-  const { id } = params;
-  const [progenda, setProgenda] = useState<ProgendaType | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+type Props = { params: Promise<{ id: string }> };
 
-  const fetchProgendaInfo = async (id: string) => {
-    setLoading(true);
-    setError(false);
-    try {
-      const json = await GetProgendaById(id);
-      setProgenda(json.data);
-    } catch (err) {
-      console.error(err);
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const inp = Array.isArray(id) ? id[0] : id;
-    fetchProgendaInfo(inp);
-  }, [id]);
-
-  if (error) {
-    return <NotFound />;
+async function fetchProgenda(id: string) {
+  try {
+    const res = await fetch(`${baseURL}/progenda/${id}`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.data ?? null;
+  } catch {
+    return null;
   }
-
-  if (loading) {
-    return (
-      <Layout withFooter withNavbar={false} transparentOnTop={false}>
-        <ButtonLink
-          href={`/departments/${progenda?.department?.slug}`}
-          className="w-28 flex gap-4 items-center m-8"
-          variant="black"
-        >
-          <FaChevronLeft />
-          <p>Back</p>
-        </ButtonLink>
-        <main className="min-h-screen px-10 flex flex-col lg:px-40 gap-6 mb-4">
-          <SkeletonHeaderSection />
-          <div className="flex w-full items-center justify-center">
-            <div className="aspect-video w-[80%]">
-              <SkeletonSection />
-            </div>
-          </div>
-          <SkeletonParagraph />
-        </main>
-      </Layout>
-    );
-  }
-
-  return (
-    <Layout withFooter withNavbar={false} transparentOnTop={false}>
-      <ButtonLink
-        href={`/departments/${progenda?.department?.slug}`}
-        className="w-28 flex gap-4 items-center m-8"
-        variant="black"
-      >
-        <FaChevronLeft />
-        <p>Back</p>
-      </ButtonLink>
-
-      <main className="min-h-screen px-10 flex flex-col lg:px-40 gap-6 mb-20">
-        <HeaderSection
-          title={progenda?.name}
-          sub={
-            progenda?.created_at
-              ? new Date(progenda.created_at).toLocaleDateString()
-              : ""
-          }
-          subStyle="font-libertine text-gray-500"
-        />
-        <div className="relative w-full aspect-[21/9] rounded-lg flex flex-col gap-4">
-          <ImageFallback
-            src={progenda?.thumbnail?.image_url}
-            isFill
-            imgStyle="object-cover rounded-lg"
-          />
-          <div className="font-libertine text-md">
-            <ReactMarkdown>{progenda?.description}</ReactMarkdown>
-          </div>
-        </div>
-        <div className="flex w-full gap-4 justify-center">
-          {progenda?.instagram_link && (
-            <>
-              <Link
-                href={progenda.instagram_link}
-                target="_blank"
-                className="p-3 rounded-2xl bg-primaryPink text-white hover:opacity-80 transition-all duration-300"
-              >
-                <FaInstagram className="text-xl" />
-              </Link>
-            </>
-          )}
-          {progenda?.website_link && (
-            <>
-              <Link
-                href={progenda.website_link}
-                target="_blank"
-                className="p-3 rounded-2xl bg-primaryPink text-white hover:opacity-80 transition-all duration-300"
-              >
-                <FaGlobe className="text-xl" />
-              </Link>
-            </>
-          )}
-          {progenda?.twitter_link && (
-            <>
-              <Link
-                href={progenda.twitter_link}
-                target="_blank"
-                className="p-3 rounded-2xl bg-primaryPink text-white hover:opacity-80 transition-all duration-300"
-              >
-                <FaTwitter className="text-xl" />
-              </Link>
-            </>
-          )}
-          {progenda?.linkedin_link && (
-            <>
-              <Link
-                href={progenda.linkedin_link}
-                target="_blank"
-                className="p-3 rounded-2xl bg-primaryPink text-white hover:opacity-80 transition-all duration-300"
-              >
-                <FaLinkedin className="text-xl" />
-              </Link>
-            </>
-          )}
-          {progenda?.youtube_link && (
-            <>
-              <Link
-                href={progenda.youtube_link}
-                target="_blank"
-                className="p-3 rounded-2xl bg-primaryPink text-white hover:opacity-80 transition-all duration-300"
-              >
-                <FaYoutube className="text-xl" />
-              </Link>
-            </>
-          )}
-        </div>
-        <div className="flex flex-col gap-2 w-full">
-          <HeaderSection title={"Tujuan"} />
-          <div className="font-libertine text-md">
-            <ReactMarkdown>{progenda?.goal}</ReactMarkdown>
-          </div>
-        </div>
-
-        <div className="w-full flex flex-col gap-4">
-          <TimelineComp timeline={progenda?.timelines} />
-        </div>
-      </main>
-    </Layout>
-  );
 }
 
-export default page;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const p = await fetchProgenda(id);
+  if (!p) return { title: "Progenda" };
+
+  const title = p.name;
+  const description = p.description
+    ? p.description.slice(0, 160)
+    : `Progenda ${p.name} - HIMASAKTA ITS`;
+  const image = p.thumbnail?.image_url || "/images/ProfilHimpunan.png";
+
+  return {
+    title,
+    description,
+    keywords: [
+      p.name,
+      "Progenda",
+      "HIMASAKTA",
+      "ITS",
+      p.department?.name,
+    ].filter(Boolean),
+    openGraph: {
+      type: "article",
+      title: `${title} | HIMASAKTA ITS`,
+      description,
+      url: `${SITE_URL}/progenda/${id}`,
+      images: [{ url: image, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | HIMASAKTA ITS`,
+      description,
+      images: [image],
+    },
+    alternates: { canonical: `${SITE_URL}/progenda/${id}` },
+  };
+}
+
+export default async function Page({ params }: Props) {
+  const { id } = await params;
+  const p = await fetchProgenda(id);
+
+  return (
+    <>
+      {p && (
+        <>
+          <JsonLd
+            data={{
+              "@context": "https://schema.org",
+              "@type": "Event",
+              name: p.name,
+              description: p.description,
+              image: p.thumbnail?.image_url,
+              organizer: {
+                "@type": "Organization",
+                name: p.department?.name || "HIMASAKTA ITS",
+                url: p.department?.slug
+                  ? `${SITE_URL}/departments/${p.department.slug}`
+                  : SITE_URL,
+              },
+              url: `${SITE_URL}/progenda/${id}`,
+            }}
+          />
+          <JsonLd
+            data={{
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Home",
+                  item: SITE_URL,
+                },
+                ...(p.department?.slug
+                  ? [
+                      {
+                        "@type": "ListItem",
+                        position: 2,
+                        name: p.department.name,
+                        item: `${SITE_URL}/departments/${p.department.slug}`,
+                      },
+                    ]
+                  : []),
+                {
+                  "@type": "ListItem",
+                  position: p.department?.slug ? 3 : 2,
+                  name: p.name,
+                  item: `${SITE_URL}/progenda/${id}`,
+                },
+              ],
+            }}
+          />
+        </>
+      )}
+      <ProgendaDetailClient />
+    </>
+  );
+}
