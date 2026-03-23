@@ -1,89 +1,108 @@
-"use client";
+import JsonLd from "@/components/seo/JsonLd";
+import { baseURL } from "@/lib/axios";
+import type { Metadata } from "next";
+import DepartmentClient from "./DepartmentClient";
 
-import NotFound from "@/app/not-found";
-import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
-import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
-import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
-import GalleryDept from "@/components/departments/GalleryDept";
-import InformasiDepartment from "@/components/departments/InformasiDepartment";
-import NavbarDept from "@/components/departments/NavbarDept";
-import ProgendaDept from "@/components/departments/ProgendaDept";
-import StrukturAnggota from "@/components/departments/StrukturAnggota";
-import ButtonLink from "@/components/links/ButtonLink";
-import Layout from "@/layouts/Layout";
-import { GetDeptBySlug } from "@/services/departments/[slug]/GetDepartmentBySlug";
-import { DepartmentType } from "@/types/data/DepartmentType";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { FaChevronLeft } from "react-icons/fa";
+const SITE_URL = "https://himasakta.com";
 
-function page() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [dept, setDept] = useState<DepartmentType | null>(null);
-  // fetch depts info
-  const params = useParams();
-  const { slug } = params;
-  const fetchDeptsBySlug = async (slug: string) => {
-    setLoading(true);
-    try {
-      const data = await GetDeptBySlug(slug);
-      // console.log(data);
-      setDept(data.data);
-    } catch (err) {
-      console.error(err);
-      setError(true);
-      setDept(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+type Props = { params: Promise<{ slug: string }> };
 
-  useEffect(() => {
-    if (!slug) return;
-    const inp = Array.isArray(slug) ? slug[0] : slug;
-    fetchDeptsBySlug(inp);
-  }, [slug]);
-  if (error) {
-    return <NotFound />;
+async function fetchDept(slug: string) {
+  try {
+    const res = await fetch(`${baseURL}/department/${slug}`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.data ?? null;
+  } catch {
+    return null;
   }
-
-  return (
-    <Layout withFooter withNavbar={false} transparentOnTop>
-      <main className="min-h-screen px-4 flex flex-col lg:px-40 gap-4 mb-20 py-10 lg:py-16">
-        <ButtonLink
-          href="/"
-          className="w-28 flex gap-4 items-center mb-10"
-          variant="black"
-        >
-          <FaChevronLeft />
-          <p>Home</p>
-        </ButtonLink>
-        <NavbarDept />
-        <section className="bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.08)] mb-10 flex flex-col gap-8 p-5 lg:p-12 overflow-hidden ring-1 ring-primaryPink/50">
-          {loading ? (
-            <div className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8 cursor-wait">
-              {/* Skeleton matches the 40% column */}
-              <div className="md:w-[40%] w-full">
-                <SkeletonSection />{" "}
-                {/* Ensure this has a height/aspect ratio inside */}
-              </div>
-              {/* Skeleton matches the 55% column */}
-              <div className="w-full lg:w-[100%] flex flex-col gap-4 lg:mt-8">
-                <SkeletonHeaderSection />
-                <SkeletonParagraph />
-              </div>
-            </div>
-          ) : (
-            <InformasiDepartment {...dept} />
-          )}
-          <StrukturAnggota {...dept} />
-          <ProgendaDept {...dept} />
-          <GalleryDept {...dept} />
-        </section>
-      </main>
-    </Layout>
-  );
 }
 
-export default page;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const dept = await fetchDept(slug);
+  if (!dept) return { title: "Departemen" };
+
+  const title = dept.name;
+  const description = dept.description
+    ? dept.description.slice(0, 160)
+    : `Departemen ${dept.name} - HIMASAKTA ITS`;
+  const image = dept.logo?.image_url || "/images/ProfilHimpunan.png";
+
+  return {
+    title,
+    description,
+    keywords: [dept.name, "HIMASAKTA", "ITS", "Departemen", "Aktuaria"],
+    openGraph: {
+      title: `${title} | HIMASAKTA ITS`,
+      description,
+      url: `${SITE_URL}/departments/${slug}`,
+      images: [{ url: image, alt: dept.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | HIMASAKTA ITS`,
+      description,
+      images: [image],
+    },
+    alternates: { canonical: `${SITE_URL}/departments/${slug}` },
+  };
+}
+
+export default async function Page({ params }: Props) {
+  const { slug } = await params;
+  const dept = await fetchDept(slug);
+
+  return (
+    <>
+      {dept && (
+        <>
+          <JsonLd
+            data={{
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: dept.name,
+              url: `${SITE_URL}/departments/${slug}`,
+              logo: dept.logo?.image_url,
+              description: dept.description,
+              parentOrganization: {
+                "@type": "Organization",
+                name: "HIMASAKTA ITS",
+                url: SITE_URL,
+              },
+            }}
+          />
+          <JsonLd
+            data={{
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Home",
+                  item: SITE_URL,
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: "Departemen",
+                  item: `${SITE_URL}/departments`,
+                },
+                {
+                  "@type": "ListItem",
+                  position: 3,
+                  name: dept.name,
+                  item: `${SITE_URL}/departments/${slug}`,
+                },
+              ],
+            }}
+          />
+        </>
+      )}
+      <DepartmentClient />
+    </>
+  );
+}

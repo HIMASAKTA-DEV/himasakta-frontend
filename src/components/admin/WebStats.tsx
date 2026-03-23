@@ -3,7 +3,7 @@
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ApiResponse } from "@/types/commons/apiResponse";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import HeaderSection from "../commons/HeaderSection";
 
 import {
@@ -34,6 +34,30 @@ type analyticData = {
   NewVisitorsGraph: TimeStampAnalytic[];
 };
 
+function padGraphData(raw: TimeStampAnalytic[]): TimeStampAnalytic[] {
+  if (!raw || raw.length === 0) return [];
+  const sorted = [...raw].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+  );
+  const countMap = new Map<string, number>();
+  for (const item of sorted) {
+    const key = new Date(item.timestamp).toISOString();
+    countMap.set(key, (countMap.get(key) ?? 0) + item.count);
+  }
+  const start = new Date(sorted[0].timestamp);
+  start.setMinutes(0, 0, 0);
+  const end = new Date(sorted[sorted.length - 1].timestamp);
+  end.setMinutes(0, 0, 0);
+  const result: TimeStampAnalytic[] = [];
+  const cursor = new Date(start);
+  while (cursor <= end) {
+    const key = cursor.toISOString();
+    result.push({ timestamp: key, count: countMap.get(key) ?? 0 });
+    cursor.setHours(cursor.getHours() + 1);
+  }
+  return result;
+}
+
 function WebStats() {
   const [data, setData] = useState<analyticData | null>(null);
 
@@ -49,6 +73,17 @@ function WebStats() {
 
     fetchAnalytic();
   }, []);
+
+  const paddedGraph = useMemo(
+    () => padGraphData(data?.NewVisitorsGraph ?? []),
+    [data?.NewVisitorsGraph],
+  );
+
+  const yMax = useMemo(() => {
+    if (paddedGraph.length === 0) return 5;
+    const peak = Math.max(...paddedGraph.map((p) => p.count));
+    return Math.max(Math.ceil(peak * 1.2), peak + 1);
+  }, [paddedGraph]);
 
   return (
     <div className="w-full flex flex-col gap-8 mt-6">
@@ -77,7 +112,7 @@ function WebStats() {
           <div className="max-lg:overflow-x-auto">
             <div className="min-w-[600px] h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data?.NewVisitorsGraph ?? []}>
+                <LineChart data={paddedGraph}>
                   <CartesianGrid strokeDasharray="3 3" />
 
                   <XAxis
@@ -89,14 +124,14 @@ function WebStats() {
                     minTickGap={30}
                   />
 
-                  <YAxis />
+                  <YAxis domain={[0, yMax]} allowDecimals={false} />
 
                   <Tooltip
                     labelFormatter={(v) => new Date(v).toLocaleString("id-ID")}
                   />
 
                   <Line
-                    type="monotone"
+                    type="stepAfter"
                     dataKey="count"
                     stroke="#22C55E"
                     strokeWidth={3}
