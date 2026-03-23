@@ -8,6 +8,7 @@ export type DepartmentType = {
   DeletedAt?: string | null;
   id?: string;
   name?: string;
+  slug?: string;
   description?: string;
   logo?: Media;
   logo_id?: string;
@@ -20,5 +21,6 @@ export type DepartmentType = {
   silabus_link?: string;
   bank_soal_link?: string;
   bank_ref_link?: string;
+  feeds?: Media[];
   meta?: ApiMeta;
 };
