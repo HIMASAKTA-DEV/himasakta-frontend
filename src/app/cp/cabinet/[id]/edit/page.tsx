@@ -566,7 +566,7 @@ export default function EditCabinetPage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <p className="italic text-[#9BA5B7]">
+                  <p className="italic text-[#9BA5B7] text-center">
                     No image uploaded (Recommended 1:1)
                   </p>
                 )}
@@ -612,7 +612,7 @@ export default function EditCabinetPage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <p className="italic text-[#9BA5B7]">
+                <p className="italic text-[#9BA5B7] text-center">
                   No organigram uploaded (Recommended 16:9 &gt;4000px
                 </p>
               )}

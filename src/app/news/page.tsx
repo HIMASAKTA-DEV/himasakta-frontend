@@ -6,6 +6,7 @@ import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
+import clsxm from "@/lib/clsxm";
 import { GetAllNews } from "@/services/news/FetchAllNews";
 import { FetchTags, TagType } from "@/services/news/FetchTags";
 import { NewsType } from "@/types/data/InformasiBerita";
@@ -334,6 +335,34 @@ function NewsPage() {
     fetchTheTags(tagPage + 1, true);
   };
 
+  const [isSticky, setIsSticky] = useState(false);
+  const navRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Jika entry.isIntersecting FALSE, berarti sentinel sudah di atas layar
+        // dan navigasi sudah menempel (sticky).
+        setIsSticky(!entry.isIntersecting);
+      },
+      {
+        // threshold 1 berarti 100% elemen harus terlihat untuk dianggap intersecting
+        threshold: [1],
+        rootMargin: "0px 0px 0px 0px",
+      },
+    );
+
+    if (navRef.current) {
+      observer.observe(navRef.current);
+    }
+
+    return () => {
+      if (navRef.current) {
+        observer.unobserve(navRef.current);
+      }
+    };
+  }, []);
+
   return (
     <Layout withFooter withNavbar={false} transparentOnTop>
       <ButtonLink
@@ -344,17 +373,24 @@ function NewsPage() {
         <FaChevronLeft />
         <p>Home</p>
       </ButtonLink>
-      <main className="min-h-screen px-10 flex flex-col lg:px-20 gap-6">
+      <main className="min-h-screen flex flex-col gap-6">
         <HeaderSection
           title="Informasi Berita"
           sub="Jangan lewatkan berita-berita penting dari HIMASAKTA"
           subStyle="font-libertine text-black"
+          className="px-10 lg:px-20"
         />
 
         {/* Search with autocomplete */}
-        <div className="w-full flex flex-col lg:flex-row items-center gap-6 lg:justify-between">
+        <div className="w-full h-1 -mb-6" ref={navRef} />
+        <div
+          className={clsxm(
+            "w-full flex flex-col lg:flex-row items-center gap-6 lg:justify-between sticky top-0 z-[999] bg-white/80 backdrop-blur-2xl py-8 px-10 lg:px-20",
+            isSticky ? "shadow-md" : "",
+          )}
+        >
           <form className="relative w-full" onSubmit={handleSubmitSearch}>
-            <FaSearch className="absolute top-1/2 left-5 -translate-y-1/2 text-gray-400" />
+            <FaSearch className="absolute top-1/2 left-5 -translate-y-1/2 text-gray-400 z-[1000]" />
             <input
               type="text"
               value={query}
@@ -369,7 +405,7 @@ function NewsPage() {
             {showDd && dropdown.length > 0 && (
               <ul
                 className="
-              absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md mt-1 shadow-lg z-50 max-h-60 overflow-auto
+              absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md mt-1 shadow-lg max-h-60 overflow-auto z-[1000]
             "
                 data-lenis-prevent
               >
@@ -406,9 +442,11 @@ function NewsPage() {
 
             {showSortDd && (
               <ul
-                className={`
-                  absolute top-full right-0 w-[100%] bg-white/90 backdrop-blur-lg border border-gray-200 rounded-md mt-1 shadow-lg z-50 p-4
-                `}
+                className="
+                  absolute top-full right-0 w-full
+                  bg-white
+                  border border-gray-200 rounded-md mt-1 shadow-lg z-[1000] p-4
+                "
               >
                 <h1 className="px-4 py-2 font-semibold">Urut berdasarkan:</h1>
                 {sortOpts.map((sort) => (
@@ -441,7 +479,7 @@ function NewsPage() {
             {showFilterDd && (
               <div
                 className={`
-                  absolute top-full right-0 w-[100%] bg-white/90 backdrop-blur-lg border border-gray-200 rounded-md mt-1 shadow-lg z-50 p-4
+                  absolute top-full right-0 w-[100%] bg-white/90 backdrop-blur-lg border border-gray-200 rounded-md mt-1 shadow-lg z-[1000] p-4
                 `}
               >
                 <h1 className="px-4 py-2 font-semibold">
@@ -535,22 +573,22 @@ function NewsPage() {
           <SkeletonGrid
             count={NEWS_PER_PAGE}
             withDesc
-            className="grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid-cols-2 lg:grid-cols-3 gap-6 px-10 lg:px-20"
           />
         ) : error || news.length === 0 ? (
-          <div className="py-12 text-center text-gray-500">
+          <div className="px-10 lg:px-20 py-12 text-center text-gray-500">
             <p className="text-lg font-semibold">Belum ada berita</p>
             <p className="text-sm">Silakan cek kembali nanti.</p>
           </div>
         ) : (
-          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <section className="px-10 lg:px-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {news.map((n) => (
               <CardNews key={n.id} {...n} />
             ))}
           </section>
         )}
 
-        <div className="flex items-center justify-between gap-6 py-10">
+        <div className="px-10 lg:px-20 flex items-center justify-between gap-6 py-10">
           <p className="font-libertine text-gray-500">
             Showing{" "}
             <span>{Math.min(totalData, currentPage * NEWS_PER_PAGE)}</span> news

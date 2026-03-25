@@ -28,7 +28,7 @@ function AccDropDown({ usr, onLogout }: Props) {
     <div className="relative lg:w-[15vw]" ref={ref}>
       <button
         onClick={() => setOpenDd((p) => !p)}
-        className={`w-6 h-6 lg:w-full lg:h-10 rounded-full lg:rounded-md   text-white flex gap-2 items-center justify-start lg:text-black transition-all duration-300 ${openDd ? "hover:bg-slate-500 lg:hover:bg-slate-300 bg-slate-600 lg:bg-slate-200" : "bg-slate-700 lg:bg-slate-50 hover:bg-slate-600 lg:hover:bg-slate-200"}`}
+        className={`w-6 h-6 lg:w-full lg:h-10 rounded-full lg:rounded-md text-white flex gap-2 items-center justify-start lg:text-black transition-all duration-300 ${openDd ? "hover:bg-slate-500 lg:hover:bg-slate-300 bg-slate-600 lg:bg-slate-200" : "bg-slate-700 lg:bg-white/50 hover:bg-slate-600 lg:hover:bg-slate-200"}`}
       >
         <FaUserCircle className="w-10 h-6" />
         <span className="hidden lg:flex text-sm font-bold">{usr}</span>

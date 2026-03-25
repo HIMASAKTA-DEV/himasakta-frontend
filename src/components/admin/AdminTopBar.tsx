@@ -93,6 +93,15 @@ export default function TopBar({ usr, onLogout }: Props) {
             <p>Atur siapa saja yang dapat mengakses tautan departemen</p>
           </div>
         );
+      case "global-settings":
+        return (
+          <div className="flex gap-2 items-center">
+            <h1 className="text-md lg:text-lg font-semibold">
+              Global Settings:
+            </h1>
+            <p>Atur pengaturan lanjutan dan info umum web</p>
+          </div>
+        );
       default:
         return (
           <div className="flex gap-2 items-center">

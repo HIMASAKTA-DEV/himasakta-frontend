@@ -504,7 +504,10 @@ export default function Page() {
 
               {/* Collapsible Role Manager List */}
               {isManagingRoles && (
-                <div className="mt-1 p-3 border rounded-lg bg-gray-50/50 flex flex-col gap-2 max-h-40 overflow-y-auto">
+                <div
+                  className="mt-1 p-3 border rounded-lg bg-gray-50/50 flex flex-col gap-2 max-h-40 overflow-y-auto"
+                  data-lenis-prevent
+                >
                   <p className="text-[10px] font-bold uppercase text-gray-400">
                     Daftar Jabatan (Klik untuk Edit/Hapus)
                   </p>

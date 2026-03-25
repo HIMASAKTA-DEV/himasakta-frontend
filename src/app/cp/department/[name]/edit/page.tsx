@@ -106,7 +106,11 @@ function Field({
 }
 
 export default function EditDepartmentPage() {
-  const { name: deptNameId } = useParams<{ name: string }>();
+  const { name } = useParams<{ name: string }>();
+  const deptNameId = name
+    ? decodeURIComponent(name).trimEnd().toLowerCase().replace(/\s+/g, "-")
+    : "";
+
   const route = useRouter();
   const descRef = useRef<HTMLTextAreaElement | null>(null);
 

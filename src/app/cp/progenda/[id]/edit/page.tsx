@@ -416,7 +416,10 @@ function page() {
                 </button>
               </div>
 
-              <div className="mt-4 space-y-2 max-h-[240px] overflow-y-auto shadow-inner rounded-lg">
+              <div
+                className="mt-4 space-y-2 max-h-[240px] overflow-y-auto shadow-inner rounded-lg"
+                data-lenis-prevent
+              >
                 {state.timelines.map((t) => (
                   <div
                     key={t.id}
@@ -598,7 +601,10 @@ function page() {
                 <h2 className="text-xl font-bold">Manage Timeline</h2>
 
                 {/* LIST */}
-                <div className="space-y-2 max-h-60 overflow-y-auto">
+                <div
+                  className="space-y-2 max-h-60 overflow-y-auto"
+                  data-lenis-prevent
+                >
                   {state.timelines.map((t) => (
                     <div
                       key={t.id}

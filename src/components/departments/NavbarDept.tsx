@@ -69,7 +69,7 @@ export default function NavbarDept() {
     );
 
   return (
-    <nav className="relative w-full bg-white shadow-md rounded-full ring-1 ring-primaryPink/50">
+    <nav className="sticky top-8 w-full bg-white/80 backdrop-blur-2xl shadow-md rounded-full ring-1 ring-primaryPink/50 z-[600]">
       <div className="flex items-center py-1 pr-1 pl-1">
         {/* CONTAINER SCROLLABLE */}
         <div
@@ -82,7 +82,7 @@ export default function NavbarDept() {
           */}
           <ul className="flex items-center min-w-full w-max gap-2 list-none m-0 p-1">
             {filteredDept.map((d, idx) => {
-              const isActive = activeDept === d.name;
+              const isActive = activeDept === d.slug; // oh my f**king brain thinking it's d.name
               return (
                 <li
                   key={d.id ?? idx}
@@ -90,7 +90,7 @@ export default function NavbarDept() {
                   className="snap-start lg:flex-[0_0_16.666%]"
                 >
                   <Link
-                    href={`/departments/${d.name}`}
+                    href={`/departments/${d.slug}`}
                     className={`
                       block text-center whitespace-nowrap py-2 px-6 rounded-full text-sm transition-all duration-300
                       ${
@@ -109,7 +109,7 @@ export default function NavbarDept() {
         </div>
 
         {/* SEARCH TOGGLE */}
-        <div className="flex items-center sticky right-0 bg-white rounded-full pr-2 pl-1">
+        <div className="flex items-center sticky right-0 bg-none rounded-full pr-2 pl-1">
           <button
             onClick={() => setShowSearch(!showSearch)}
             className={`p-3 rounded-full transition-all duration-300 ${
@@ -122,14 +122,14 @@ export default function NavbarDept() {
           </button>
 
           {showSearch && (
-            <div className="absolute right-2 top-full mt-3 w-64 p-2 bg-white rounded-2xl shadow-2xl border border-gray-100 z-[600]">
+            <div className="absolute right-2 top-full mt-3 w-64 p-2 bg-white/75 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-100 z-[900]">
               <input
                 autoFocus
                 type="text"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 placeholder="Cari..."
-                className="w-full px-4 py-2 text-sm border-none bg-gray-50 rounded-xl focus:ring-2 focus:ring-primaryPink outline-none"
+                className="w-full px-4 py-2 text-sm border-none bg-gray-50/75 backdrop-blur-sm rounded-xl focus:ring-2 focus:ring-primaryPink outline-none z-[900]"
               />
             </div>
           )}

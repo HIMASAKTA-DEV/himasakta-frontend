@@ -664,7 +664,7 @@ export default function AddCabinetPage() {
                 />
               ) : (
                 <>
-                  <p className="italic text-[#9BA5B7]">
+                  <p className="italic text-[#9BA5B7] text-center">
                     No organigram uploaded (Recommended 16:9 &gt;4000px)
                   </p>
                 </>

@@ -143,7 +143,10 @@ export default function AdminPage() {
   // if authed
   if (jwt) {
     return (
-      <div className="flex min-h-screen sticky top-0 overflow-x-clip">
+      <div
+        className="flex min-h-screen sticky top-0 overflow-x-clip"
+        data-lenis-prevent
+      >
         {/* SIDEBAR */}
         <aside
           className="
@@ -160,7 +163,10 @@ export default function AdminPage() {
         >
           <Sidebar active={active} />
         </aside>
-        <main className="flex-1 bg-white ml-20 lg:ml-80 overflow-auto">
+        <main
+          className="flex-1 bg-white ml-20 lg:ml-80 overflow-auto"
+          data-lenis-prevent
+        >
           {/* Sesuaikan ml sesuai ukuran sidebar */}
           <div className="border-b px-4 py-4 fixed top-0 bg-white/70 backdrop-blur-md shadow-md z-40 w-[83vw]">
             <AdminTopBar usr={usr} onLogout={handleLogout} />

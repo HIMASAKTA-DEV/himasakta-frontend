@@ -773,7 +773,10 @@ function page() {
                   Manage Timeline
                 </button>
               </div>
-              <div className="mt-4 space-y-2 max-h-[240px] overflow-y-auto shadow-inner rounded-lg">
+              <div
+                className="mt-4 space-y-2 max-h-[240px] overflow-y-auto shadow-inner rounded-lg"
+                data-lenis-prevent
+              >
                 {timelines.map((t, idx) => (
                   <div
                     key={idx}
@@ -998,7 +1001,10 @@ function page() {
                 <h2 className="text-xl font-bold">Manage Timeline</h2>
 
                 {/* LIST */}
-                <div className="space-y-2 max-h-60 overflow-y-auto">
+                <div
+                  className="space-y-2 max-h-60 overflow-y-auto"
+                  data-lenis-prevent
+                >
                   {timelines.map((t, idx) => (
                     <div
                       key={idx}

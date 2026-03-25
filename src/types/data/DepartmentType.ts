@@ -8,6 +8,7 @@ export type DepartmentType = {
   DeletedAt?: string | null;
   id?: string;
   name?: string;
+  slug?: string;
   description?: string;
   logo?: Media;
   logo_id?: string;
