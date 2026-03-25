@@ -378,9 +378,9 @@ export function ManageAnggota() {
                         <button
                           type="button"
                           onClick={() => {
-                            if (m.department?.name) {
+                            if (m.department?.slug) {
                               window.open(
-                                `/departments/${m.department.name}`,
+                                `/departments/${m.department.slug}`,
                                 "_blank",
                               );
                             } else {
@@ -1065,13 +1065,13 @@ export function ManageDepartment() {
                         <button
                           type="button"
                           onClick={() => {
-                            if (dept.name) {
+                            if (dept.slug) {
                               window.open(
-                                `/departments/${dept.name}`,
+                                `/departments/${dept.slug}`,
                                 "_blank",
                               );
                             } else {
-                              toast.error("Nama departemen tidak ditemukan");
+                              toast.error("Slug departemen tidak ditemukan");
                             }
                           }}
                           className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-pink-50 hover:text-primaryPink"
@@ -1079,7 +1079,7 @@ export function ManageDepartment() {
                           <HiOutlineEye size={18} />
                         </button>
                         <Link
-                          href={`/cp/department/${dept.name}/edit`}
+                          href={`/cp/department/${dept.slug}/edit`}
                           className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm transition-all hover:bg-blue-50 hover:text-blue-600"
                         >
                           <HiOutlinePencilAlt size={16} />

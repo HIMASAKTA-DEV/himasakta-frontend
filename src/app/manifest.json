@@ -1,6 +1,7 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "HIMASAKTA ITS - Himpunan Mahasiswa Aktuaria",
+  "short_name": "HIMASAKTA",
+  "description": "Website resmi Himpunan Mahasiswa Aktuaria Institut Teknologi Sepuluh Nopember",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +16,9 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#ffffff",
+  "theme_color": "#E91E63",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/"
 }

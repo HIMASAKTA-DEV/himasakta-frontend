@@ -11,27 +11,22 @@ import ProgendaDept from "@/components/departments/ProgendaDept";
 import StrukturAnggota from "@/components/departments/StrukturAnggota";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
-import { GetDeptByName } from "@/services/departments/[name]/GetDepartmentByName";
+import { GetDeptBySlug } from "@/services/departments/[slug]/GetDepartmentBySlug";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaChevronLeft } from "react-icons/fa";
 
-function page() {
+export default function DepartmentClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [dept, setDept] = useState<DepartmentType | null>(null);
-  // fetch depts info
-  const { name } = useParams<{ name: string }>();
-  const deptNameId = name
-    ? decodeURIComponent(name).trimEnd().toLowerCase().replace(/\s+/g, "-")
-    : "";
-
-  const fetchDeptsByName = async (name: string) => {
+  const params = useParams();
+  const { slug } = params;
+  const fetchDeptsBySlug = async (slug: string) => {
     setLoading(true);
     try {
-      const data = await GetDeptByName(name);
-      // console.log(data);
+      const data = await GetDeptBySlug(slug);
       setDept(data.data);
     } catch (err) {
       console.error(err);
@@ -43,10 +38,10 @@ function page() {
   };
 
   useEffect(() => {
-    if (!deptNameId) return;
-    const inp = Array.isArray(deptNameId) ? deptNameId[0] : deptNameId;
-    fetchDeptsByName(inp);
-  }, [deptNameId]);
+    if (!slug) return;
+    const inp = Array.isArray(slug) ? slug[0] : slug;
+    fetchDeptsBySlug(inp);
+  }, [slug]);
   if (error) {
     return <NotFound />;
   }
@@ -67,12 +62,9 @@ function page() {
         <section className="bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.08)] mb-10 flex flex-col gap-8 p-5 lg:p-12 overflow-hidden ring-1 ring-primaryPink/50">
           {loading ? (
             <div className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8 cursor-wait">
-              {/* Skeleton matches the 40% column */}
               <div className="md:w-[40%] w-full">
                 <SkeletonSection />{" "}
-                {/* Ensure this has a height/aspect ratio inside */}
               </div>
-              {/* Skeleton matches the 55% column */}
               <div className="w-full lg:w-[100%] flex flex-col gap-4 lg:mt-8">
                 <SkeletonHeaderSection />
                 <SkeletonParagraph />
@@ -89,5 +81,3 @@ function page() {
     </Layout>
   );
 }
-
-export default page;

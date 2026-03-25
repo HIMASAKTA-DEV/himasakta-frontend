@@ -1,0 +1,24 @@
+# HIMASAKTA ITS
+
+> Website resmi Himpunan Mahasiswa Aktuaria Institut Teknologi Sepuluh Nopember (ITS), Surabaya, Indonesia.
+
+## About
+
+HIMASAKTA (Himpunan Mahasiswa Aktuaria) is the official student association for the Department of Actuarial Science at Institut Teknologi Sepuluh Nopember (ITS). The organization serves as a platform for actuarial science students to develop their academic, professional, and social skills.
+
+## Sections
+
+- **Home** (`/`): Landing page with organization profile, cabinet info, departments overview, and latest news.
+- **Departments** (`/departments/[slug]`): Individual department pages with structure, members, progenda, and gallery.
+- **News** (`/news`): News articles and announcements from HIMASAKTA.
+- **Progenda** (`/progenda/[id]`): Programs and agendas of each department including timelines and goals.
+- **Info** (`/info`): About page, media partners, and contact information.
+- **Academic Calendar** (`/kalender-akademik`): ITS academic calendar reference.
+
+## Contact
+
+- Instagram: https://www.instagram.com/himasakta.its/
+- YouTube: https://www.youtube.com/@himasaktaits4262
+- LinkedIn: https://www.linkedin.com/company/himasaktaits/
+- TikTok: https://www.tiktok.com/@himasakta.its
+- Linktree: https://himasaktaits.carrd.co/

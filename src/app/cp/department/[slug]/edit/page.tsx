@@ -17,7 +17,6 @@ import MediaSelector from "@/components/admin/MediaSelector";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
-import { GetGalleryByDeptId } from "@/services/departments/GetGalleryByDept";
 import { GetMemberByDeptId } from "@/services/departments/GetMemberByDeptId";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
@@ -106,11 +105,7 @@ function Field({
 }
 
 export default function EditDepartmentPage() {
-  const { name } = useParams<{ name: string }>();
-  const deptNameId = name
-    ? decodeURIComponent(name).trimEnd().toLowerCase().replace(/\s+/g, "-")
-    : "";
-
+  const { slug: deptSlug } = useParams<{ slug: string }>();
   const route = useRouter();
   const descRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -200,9 +195,8 @@ export default function EditDepartmentPage() {
     const fetchDept = async () => {
       setLoading(true);
       try {
-        const resp = await api.get(`/department/${deptNameId}`);
+        const resp = await api.get(`/department/${deptSlug}`);
         const data = resp.data.data;
-        const glr = await GetGalleryByDeptId(data.id, 1, 20);
 
         const initialFormValues: FormValues = {
           id: data.id || "",
@@ -221,8 +215,8 @@ export default function EditDepartmentPage() {
         reset(initialFormValues);
         setDescVal(data.description || "");
         setInitVal(data);
-        setGallery(glr.data);
-        setInitGallery(glr.data);
+        setGallery(data.feeds || []);
+        setInitGallery(data.feeds || []);
 
         if (data.logo?.id && data.logo?.image_url) {
           const photoData = {
@@ -296,7 +290,7 @@ export default function EditDepartmentPage() {
     };
 
     fetchDept();
-  }, [deptNameId, reset]);
+  }, [deptSlug, reset]);
 
   const applyFormat = (before: string, after = before) => {
     if (!descRef.current) return;

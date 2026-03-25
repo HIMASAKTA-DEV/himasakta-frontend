@@ -21,5 +21,6 @@ export type DepartmentType = {
   silabus_link?: string;
   bank_soal_link?: string;
   bank_ref_link?: string;
+  feeds?: Media[];
   meta?: ApiMeta;
 };

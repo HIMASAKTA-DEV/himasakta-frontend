@@ -34,7 +34,7 @@ export default function NavbarDept() {
   }, []);
 
   const pathname = usePathname();
-  const activeDept = decodeURIComponent(pathname.split("/").pop() ?? "");
+  const activeDeptSlug = decodeURIComponent(pathname.split("/").pop() ?? "");
   const [showSearch, setShowSearch] = useState(false);
   const [keyword, setKeyword] = useState("");
 
@@ -53,7 +53,7 @@ export default function NavbarDept() {
         block: "nearest",
       });
     }
-  }, [activeDept, filteredDept]);
+  }, [activeDeptSlug, filteredDept]);
 
   if (error)
     return (
@@ -82,7 +82,7 @@ export default function NavbarDept() {
           */}
           <ul className="flex items-center min-w-full w-max gap-2 list-none m-0 p-1">
             {filteredDept.map((d, idx) => {
-              const isActive = activeDept === d.slug; // oh my f**king brain thinking it's d.name
+              const isActive = activeDeptSlug === d.slug;
               return (
                 <li
                   key={d.id ?? idx}
