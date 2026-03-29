@@ -88,7 +88,7 @@ export default function InteractiveImgViewerV2({
       >
         <div className="grid grid-rows-[auto_1fr] w-full h-full">
           {/* Toolbar */}
-          <div className="w-full bg-gray-100/90 backdrop-blur-md py-1 px-2 lg:px-16 lg:h-[75px] flex items-center justify-between shadow-md z-10">
+          <div className="w-full bg-primaryPinkLight backdrop-blur-md py-1 px-2 lg:px-16 lg:h-[75px] flex items-center justify-between shadow-md shadow-primaryPink/30 z-10">
             <div className="flex items-center gap-1 sm:gap-2">
               <div className="flex items-center border-r border-slate-300 pr-1 sm:pr-4">
                 <button

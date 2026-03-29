@@ -7,15 +7,22 @@ import { FaArrowRight } from "react-icons/fa6";
 import HashTags from "../commons/HashTags";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
+import clsxm from "@/lib/clsxm";
 
-export default function CardNews({ ...news }: NewsType) {
+export default function CardNews({
+  idx = 0,
+  ...news
+}: NewsType & { idx?: number }) {
   // wajib normalize tags ke string[]
   const tags = normalizeHashtags(news.tags || news.hashtags);
 
   return (
     <div
-      key={news.id}
-      className="flex flex-col gap-3 group/card rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 p-3"
+      className={`
+        flex flex-col gap-3 group/card rounded-xl shadow-md hover:shadow-lg 
+        transition-all duration-300 p-3
+        ${idx % 2 === 0 ? "bg-primaryPinkLight" : "bg-white"}
+      `}
     >
       <Link
         href={`/news/${news.slug}`}
@@ -74,7 +81,14 @@ export default function CardNews({ ...news }: NewsType) {
           <Link href={`/news/${news.slug}`}>
             <div className="relative group text-sm text-gray-600 h-[72px] lg:h-[96px] overflow-hidden">
               <MarkdownRenderer>{news.content}</MarkdownRenderer>
-              <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-24 bg-gradient-to-t from-white to-transparent transition-all duration-300 flex items-end justify-center">
+              <div
+                className={clsxm(
+                  "pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-24 bg-gradient-to-t transition-all duration-300 flex items-end justify-center",
+                  idx % 2 === 0
+                    ? "from-primaryPinkLight to-transparent"
+                    : "from-white to-transparent",
+                )}
+              >
                 <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-2">
                   Baca selengkapnya
                 </p>

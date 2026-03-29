@@ -130,10 +130,13 @@ function ProgendaDept({ ...dept }: DepartmentType) {
                 key={idx}
               >
                 {slide.map((progenda, i) => (
-                  <div className="w-full flex-col flex" key={i}>
+                  <div
+                    className="w-full flex-col flex bg-primaryPinkLight"
+                    key={i}
+                  >
                     <Link
                       href={`/progenda/${progenda.progendaId}`}
-                      className="group relative aspect-square overflow-hidden bg-gray-100 w-full lg:h-[400px] rounded-lg"
+                      className="group relative aspect-square overflow-hidden bg-gray-100 w-full lg:h-[460px] rounded-t-lg"
                     >
                       {/* Overlay */}
                       <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />
@@ -146,7 +149,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
                       <ImageFallback
                         isFill
                         src={progenda.thumbnailUrl}
-                        imgStyle="rounded-lg object-cover group-hover:scale-105"
+                        imgStyle="rounded-t-lg object-cover group-hover:scale-105"
                       />
                     </Link>
                     <div className="flex flex-col gap-0">
@@ -154,14 +157,14 @@ function ProgendaDept({ ...dept }: DepartmentType) {
                         <Link
                           href={`/progenda/${progenda.progendaId}`}
                           target="_blank"
-                          className="group relative lg:aspect-square overflow-hidden flex flex-col lg:gap-2 pb-16"
+                          className="group relative lg:aspect-square overflow-hidden flex flex-col lg:gap-2 pb-8"
                         >
                           <h1 className="font-bold font-libertine hover:underline">
                             {progenda.name}
                           </h1>
-                          <div className="relative group text-sm text-gray-600 h-[50px] lg:h-[80px] overflow-hidden">
+                          <div className="relative group text-sm text-gray-600 h-[30px] lg:h-[50px] overflow-hidden">
                             <MarkdownRenderer>{progenda.desc}</MarkdownRenderer>
-                            <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-24 bg-gradient-to-t from-white to-transparent transition-all duration-300 flex items-end justify-center">
+                            <div className="pointer-events-none absolute bottom-0 left-0 w-full h-5 group-hover:h-10 bg-gradient-to-t from-primaryPinkLight to-transparent transition-all duration-300 flex items-end justify-center">
                               <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-2">
                                 Baca selengkapnya
                               </p>

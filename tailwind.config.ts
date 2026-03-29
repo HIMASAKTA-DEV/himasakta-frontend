@@ -24,6 +24,7 @@ const config: Config = {
       colors: {
         primaryPink: "#D58A94",
         primaryGreen: "#22C55E",
+        primaryPinkLight: "#F8E4E7",
       },
       keyframes: {
         blob: {
