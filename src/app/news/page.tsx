@@ -389,18 +389,39 @@ function NewsPage() {
             isSticky ? "shadow-md" : "",
           )}
         >
-          <form className="relative w-full" onSubmit={handleSubmitSearch}>
-            <FaSearch className="absolute top-1/2 left-5 -translate-y-1/2 text-gray-400 z-[1000]" />
-            <input
-              type="text"
-              value={query}
-              ref={inputReference}
-              onChange={handleInputChange}
-              onFocus={() => setShowDd(true)}
-              placeholder="Cari berita..."
-              className="w-full shadow-lg p-2 lg:p-4 border border-gray-200 rounded-full bg-slate-50 pl-12 lg:pl-16"
-              onKeyDown={handleSearchKeyDown}
-            />
+          <form
+            className="relative w-full flex flex-row gap-2"
+            onSubmit={handleSubmitSearch}
+          >
+            <ButtonLink
+              href="/"
+              className={clsxm(
+                "items-center gap-2 lg:px-4 py-1 rounded-full shrink-0 transition-all duration-300",
+                isSticky ? "opacity-100 flex" : "opacity-0 hidden",
+              )}
+              variant="black"
+            >
+              <FaChevronLeft />
+              <span className="text-sm max-lg:hidden">Home</span>
+            </ButtonLink>
+            <div className="w-full">
+              <FaSearch
+                className={clsxm(
+                  "absolute top-1/2 -translate-y-1/2 text-gray-400 z-[1000]",
+                  isSticky ? "lg:left-32 left-16" : "left-5",
+                )}
+              />
+              <input
+                type="text"
+                value={query}
+                ref={inputReference}
+                onChange={handleInputChange}
+                onFocus={() => setShowDd(true)}
+                placeholder="Cari berita..."
+                className="w-full shadow-lg p-2 lg:p-4 border border-gray-200 rounded-full bg-slate-50 pl-12 lg:pl-16"
+                onKeyDown={handleSearchKeyDown}
+              />
+            </div>
 
             {showDd && dropdown.length > 0 && (
               <ul
@@ -573,7 +594,7 @@ function NewsPage() {
           <SkeletonGrid
             count={NEWS_PER_PAGE}
             withDesc
-            className="grid-cols-2 lg:grid-cols-3 gap-6 px-10 lg:px-20"
+            className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-10 lg:px-20"
           />
         ) : error || news.length === 0 ? (
           <div className="px-10 lg:px-20 py-12 text-center text-gray-500">
@@ -582,8 +603,8 @@ function NewsPage() {
           </div>
         ) : (
           <section className="px-10 lg:px-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {news.map((n) => (
-              <CardNews key={n.id} {...n} />
+            {news.map((n, idx) => (
+              <CardNews key={n.id} {...n} idx={idx} />
             ))}
           </section>
         )}

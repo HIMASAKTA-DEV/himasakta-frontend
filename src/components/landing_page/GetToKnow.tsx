@@ -87,7 +87,7 @@ export default function GetToKnow() {
           />
         </div>
       ) : events.length > 0 ? (
-        <div className="relative w-full overflow-hidden px-1">
+        <div className="relative w-full overflow-hidden px-1 flex items-center justify-center flex-col">
           {/* SLIDER CONTAINER */}
           <div
             className="flex transition-transform duration-500 ease-out"
@@ -101,7 +101,7 @@ export default function GetToKnow() {
                 {slide.map((event) => (
                   <div
                     key={event.id}
-                    className=" flex flex-col gap-3 w-full lg:min-w-[280px] lg:max-w-[280px]"
+                    className=" flex flex-col gap-3 w-full lg:min-w-[280px] lg:max-w-full bg-primaryPinkLight p-4 rounded-lg"
                   >
                     <Link
                       href={event.link}
@@ -137,7 +137,7 @@ export default function GetToKnow() {
                             {event.description}
                           </MarkdownRenderer>
                           {/* Baca Selengkapnya Overlay */}
-                          <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-20 bg-gradient-to-t from-white via-white/80 to-transparent transition-all duration-300 flex items-end justify-center">
+                          <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-20 bg-gradient-to-t from-primaryPinkLight/100 via-primaryPinkLight/80 to-transparent transition-all duration-300 flex items-end justify-center">
                             <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-1">
                               Baca selengkapnya
                             </p>
