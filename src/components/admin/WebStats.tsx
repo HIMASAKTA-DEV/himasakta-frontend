@@ -131,7 +131,7 @@ function WebStats() {
                   />
 
                   <Line
-                    type="stepAfter"
+                    type="monotone"
                     dataKey="count"
                     stroke="#22C55E"
                     strokeWidth={3}
