@@ -16,13 +16,13 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG NODE_ENV
-ARG API_URL
-ARG SITE_URL
+# ARG NODE_ENV
+# ARG API_URL
+# ARG SITE_URL
 
-ENV NODE_ENV=$NODE_ENV
-ENV NEXT_PUBLIC_API_URL=$API_URL
-ENV SITE_URL=$SITE_URL
+# ENV NODE_ENV=$NODE_ENV
+# ENV NEXT_PUBLIC_API_URL=$API_URL
+# ENV SITE_URL=$SITE_URL
 
 RUN pnpm build
 
@@ -35,7 +35,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-EXPOSE 3000
+EXPOSE 8011
 ENV HOSTNAME "0.0.0.0"
 
 CMD ["server.js"]
