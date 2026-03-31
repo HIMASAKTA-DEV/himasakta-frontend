@@ -35,6 +35,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+ENV PORT=8011
 EXPOSE 8011
 ENV HOSTNAME "0.0.0.0"
 
