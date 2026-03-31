@@ -87,13 +87,15 @@ function GalleryCabinet({ ...cabinet }: ModCabinetInfo) {
   useEffect(() => {
     const lenis = (globalThis as LenisWindow).lenis;
 
+    if (!lenis) return;
+
     if (previewImage) {
       document.body.style.overflow = "hidden";
       document.documentElement.style.overflow = "hidden";
       lenis?.stop();
     } else {
       document.body.style.overflow = "";
-      document.documentElement.style.overflow = "hidden";
+      document.documentElement.style.overflow = "";
       lenis?.start();
     }
 
