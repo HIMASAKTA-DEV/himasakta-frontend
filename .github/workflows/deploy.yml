@@ -22,7 +22,7 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
 
-            APP_DIR=$HOME/himasakta-frontend
+            APP_DIR=$HOME/himasakta-app/frontend
 
             if [ ! -d "$APP_DIR" ]; then
               git clone https://github.com/HIMASAKTA-DEV/himasakta-frontend.git $APP_DIR
@@ -31,6 +31,8 @@ jobs:
             cd $APP_DIR
 
             git pull origin main
+
+            cd "$HOME/himasakta-app"
 
             sudo docker compose -p group2 down
             sudo docker compose -p group2 up -d --build

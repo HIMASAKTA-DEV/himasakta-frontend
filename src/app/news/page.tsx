@@ -11,6 +11,7 @@ import { GetAllNews } from "@/services/news/FetchAllNews";
 import { FetchTags, TagType } from "@/services/news/FetchTags";
 import { NewsType } from "@/types/data/InformasiBerita";
 import { useRouter, useSearchParams } from "next/navigation";
+import { baseURL } from "@/lib/axios";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import {
   FaCheck,
@@ -149,10 +150,9 @@ function NewsPage() {
 
     try {
       // config for api, use from env later
-      const BASE_URL = "https://himasakta-backend.vercel.app/api/v1";
       const params = new URLSearchParams({ search: query });
       const resp = await fetch(
-        `${BASE_URL}/news/autocompletion?${params.toString()}`,
+        `${baseURL}/news/autocompletion?${params.toString()}`,
         {
           cache: "no-store",
         },

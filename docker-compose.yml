@@ -1,11 +1,12 @@
 version: "3.9"
 
-services:
+# docker compose bundled in single file to run both frontend and backend in himasakta-app folder
+services: 
   app:
     build: .
     container_name: himasakta-frontend
     restart: always
     ports:
-      - "8011:3000"
+      - "8011:8011"
     environment:
       - NODE_ENV=production

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { baseURL } from "@/lib/axios";
 
 const getVisitorId = () => {
   const STORAGE_KEY = "v_uuid";
@@ -27,7 +28,7 @@ export const trackVisit = async () => {
     const visitorId = getVisitorId();
 
     await axios.post(
-      "https://himasakta-backend.vercel.app/api/v1/analytics/visit",
+      `${baseURL}/analytics/visit`,
       {},
       {
         headers: {
