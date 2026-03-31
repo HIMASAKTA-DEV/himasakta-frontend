@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import api from "@/lib/axios";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
 import { ApiResponse } from "@/types/commons/apiResponse";
-import { useEffect, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useState } from "react";
 import { FaCloudUploadAlt, FaImages, FaTimes } from "react-icons/fa";
 import RenderPagination from "../_news/RenderPagination";
 import ImageFallback from "../commons/ImageFallback";
@@ -26,6 +26,7 @@ export default function MediaSelector({
 
   // Upload State
   const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -97,6 +98,35 @@ export default function MediaSelector({
     }
   };
 
+  const handleFile = (file: File | null) => {
+    if (!file) return;
+
+    setUploadFile(file);
+    setUploadPreview(URL.createObjectURL(file));
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0] || null;
+    handleFile(file);
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    handleFile(file);
+  };
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-white w-full max-w-4xl rounded-2xl flex flex-col max-h-[90vh] shadow-2xl overflow-hidden">
@@ -146,6 +176,9 @@ export default function MediaSelector({
             <div className="flex flex-col items-center justify-center h-full gap-6">
               <div
                 onClick={() => document.getElementById("media-upload")?.click()}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
                 className={`w-full max-w-lg aspect-video border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-4 transition-all overflow-hidden ${
                   uploadPreview
                     ? "border-primaryPink bg-pink-50/20"
