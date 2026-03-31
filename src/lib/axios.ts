@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const baseURL = `${process.env.NEXT_PUBLIC_API_URL || "https://himasakta-backend.vercel.app"}/api/v1`;
+export const baseURL = `${process.env.NEXT_PUBLIC_API_URL || process.env.APP_URL || "https://himasakta-backend.vercel.app"}/api/v1`;
 
 export const api = axios.create({
   baseURL,
