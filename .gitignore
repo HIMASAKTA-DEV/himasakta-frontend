@@ -44,3 +44,6 @@ LoginPageOne.tsx
 
 # all hidden
 *_hidden/
+
+.ssh
+skey
