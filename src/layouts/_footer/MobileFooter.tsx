@@ -88,7 +88,7 @@ export default function MobileFooter() {
       </div>
 
       <p className="font-libertine text-sm lg:text-md text-white w-full">
-        &copy; 2026 HIMASAKTA ITS | Flexoo Academny
+        &copy; 2026 HIMASAKTA ITS | Flexoo Academy
       </p>
     </footer>
   );

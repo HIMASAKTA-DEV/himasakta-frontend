@@ -87,7 +87,7 @@ export default function DesktopFooter() {
       {/* Bawah */}
       <div className="flex justify-between items-center">
         <p className="font-libertine text-[24px] text-white">
-          &copy; 2026 HIMASAKTA ITS | Flexoo Academny
+          &copy; 2026 HIMASAKTA ITS | Flexoo Academy
         </p>
 
         <div className="flex gap-4">
