@@ -7,14 +7,23 @@ import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
+import Lenis from "@studio-freight/lenis/types";
 
 type GalleryCard = {
   imageUrl: string;
 };
 
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
+};
+
+interface PageProps extends DepartmentType {
+  viewingImg: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 const LimitGallery = 9;
 
-function GalleryDept({ ...dept }: DepartmentType) {
+function GalleryDept({ ...dept }: PageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [galleries, setGalleries] = useState<GalleryCard[]>([]);
@@ -76,11 +85,15 @@ function GalleryDept({ ...dept }: DepartmentType) {
 
   useEffect(() => {
     const isModalOpen = !!previewImage;
-    if (isModalOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => {
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return; // ini knp dah harus ada gk tau jg kalo gak ada error dia
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+      lenis.stop();
+    } else {
       document.body.style.overflow = "";
-    };
+      lenis.start();
+    }
   }, [previewImage]);
 
   if (loading) {
@@ -112,11 +125,12 @@ function GalleryDept({ ...dept }: DepartmentType) {
             <div
               className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"
               key={idx}
-              onClick={() =>
+              onClick={() => {
                 setPreviewImage({
                   url: g.imageUrl,
-                })
-              }
+                });
+                dept.viewingImg(true);
+              }}
             >
               <ImageFallback
                 isFill
@@ -155,7 +169,10 @@ function GalleryDept({ ...dept }: DepartmentType) {
       {previewImage && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
-          onClick={() => setPreviewImage(null)}
+          onClick={() => {
+            setPreviewImage(null);
+            dept.viewingImg(false);
+          }}
         >
           <div
             className="relative lg:max-w-[50vw] lg:max-h-[70vh] max-h-[80vh] max-w-[80vw] flex flex-col items-center gap-4"
@@ -170,7 +187,10 @@ function GalleryDept({ ...dept }: DepartmentType) {
               {previewImage.caption}
             </p>
             <button
-              onClick={() => setPreviewImage(null)}
+              onClick={() => {
+                setPreviewImage(null);
+                dept.viewingImg(false);
+              }}
               className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
             >
               ✕

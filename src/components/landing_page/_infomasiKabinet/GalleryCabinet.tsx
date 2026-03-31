@@ -6,10 +6,19 @@ import divideArray from "@/lib/divideArray"; // Pastikan path ini benar
 import { GetGalleryByCabinetId } from "@/services/landing_page/GeGalleryByCabinetId";
 import { GalleryType } from "@/types/data/GalleryType";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
+import Lenis from "@studio-freight/lenis/types";
 import { useCallback, useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-function GalleryCabinet({ ...cabinet }: CabinetInfo) {
+interface ModCabinetInfo extends CabinetInfo {
+  layout: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
+};
+
+function GalleryCabinet({ ...cabinet }: ModCabinetInfo) {
   const [loading, setLoading] = useState(true);
   const [galleries, setGalleries] = useState<GalleryType[]>([]);
   const [_hasNext, _setHasNext] = useState(false);
@@ -76,9 +85,21 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
 
   // Lock body scroll saat modal buka
   useEffect(() => {
-    document.body.style.overflow = previewImage ? "hidden" : "";
+    const lenis = (globalThis as LenisWindow).lenis;
+
+    if (previewImage) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis?.stop();
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "hidden";
+      lenis?.start();
+    }
+
     return () => {
       document.body.style.overflow = "";
+      lenis?.start(); // pastiin balik normal kalau unmount
     };
   }, [previewImage]);
 
@@ -178,35 +199,46 @@ function GalleryCabinet({ ...cabinet }: CabinetInfo) {
         </div>
       )}
 
-      {/* MODAL PREVIEW (Tetap dipertahankan karena fitur yang bagus) */}
-      {previewImage && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-          onClick={() => setPreviewImage(null)}
-        >
-          <div
-            className="relative max-w-4xl w-full flex flex-col items-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              src={previewImage.url}
-              alt="Preview"
-              className="max-h-[80vh] object-contain rounded-lg"
-            />
-            {previewImage.caption && (
-              <p className="mt-4 text-white bg-black/50 px-4 py-2 rounded-full text-sm">
-                {previewImage.caption}
-              </p>
-            )}
-            <button
-              onClick={() => setPreviewImage(null)}
-              className="absolute -top-10 right-0 text-white text-3xl hover:text-gray-300"
+      {previewImage &&
+        (() => {
+          cabinet.layout(false);
+          return (
+            <div
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+              onClick={() => {
+                setPreviewImage(null);
+                cabinet.layout(true);
+              }}
             >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
+              <div
+                className="relative max-w-4xl w-full flex flex-col items-center"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <img
+                  src={previewImage.url}
+                  alt="Preview"
+                  className="max-h-[80vh] object-contain rounded-lg"
+                />
+
+                {previewImage.caption && (
+                  <p className="mt-4 text-white bg-black/50 px-4 py-2 rounded-full text-sm">
+                    {previewImage.caption}
+                  </p>
+                )}
+
+                <button
+                  onClick={() => {
+                    setPreviewImage(null);
+                    cabinet.layout(true);
+                  }}
+                  className="absolute -top-10 right-0 text-white text-3xl hover:text-gray-300"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          );
+        })()}
     </div>
   );
 }

@@ -9,8 +9,9 @@ import { useRef } from "react";
 import { FaChevronLeft, FaSearch } from "react-icons/fa";
 import SkeletonPleaseWait from "../commons/skeletons/SkeletonPleaseWait";
 import ButtonLink from "../links/ButtonLink";
+import clsxm from "@/lib/clsxm";
 
-export default function NavbarDept() {
+export default function NavbarDept({ className }: { className?: string }) {
   const [deptName, setDeptName] = useState<DepartmentType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -80,7 +81,12 @@ export default function NavbarDept() {
     );
 
   return (
-    <nav className="sticky top-8 w-full bg-white/80 backdrop-blur-2xl shadow-md rounded-full ring-1 ring-primaryPink/50 z-[600]">
+    <nav
+      className={clsxm(
+        "sticky top-8 w-full bg-white/80 backdrop-blur-2xl shadow-md rounded-full ring-1 ring-primaryPink/50 z-[600]",
+        className,
+      )}
+    >
       <div className="flex items-center py-1 pr-1 pl-1 gap-2">
         {/* HOME BUTTON */}
         <ButtonLink

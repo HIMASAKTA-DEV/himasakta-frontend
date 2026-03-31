@@ -11,6 +11,7 @@ import ProgendaDept from "@/components/departments/ProgendaDept";
 import StrukturAnggota from "@/components/departments/StrukturAnggota";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
+import clsxm from "@/lib/clsxm";
 import { GetDeptBySlug } from "@/services/departments/[slug]/GetDepartmentBySlug";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { useParams } from "next/navigation";
@@ -21,6 +22,7 @@ export default function DepartmentClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [dept, setDept] = useState<DepartmentType | null>(null);
+  const [viewingImg, setViewingImg] = useState(false);
   const params = useParams();
   const { slug } = params;
   const fetchDeptsBySlug = async (slug: string) => {
@@ -48,9 +50,14 @@ export default function DepartmentClient() {
 
   return (
     <Layout withFooter withNavbar={false} transparentOnTop>
-      <div className="sticky top-0 left-0 w-full h-16 bg-gradient-to-b from-white/95 to-white pointer-events-none z-[500] backdrop-blur-sm" />
+      <div
+        className={clsxm(
+          "sticky top-0 left-0 w-full h-16 bg-gradient-to-b from-white/95 to-white pointer-events-none z-[500] backdrop-blur-sm",
+          viewingImg ? "hidden" : "",
+        )}
+      />
       <main className="min-h-screen px-4 flex flex-col lg:px-40 gap-4 mb-20 py-10 lg:py-16">
-        <NavbarDept />
+        <NavbarDept className={`${viewingImg ? "hidden" : ""}`} />
         <section className="bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.08)] mb-10 flex flex-col gap-8 p-5 lg:p-12 overflow-hidden ring-1 ring-primaryPink/50">
           {loading ? (
             <div className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8 cursor-wait">
@@ -65,9 +72,9 @@ export default function DepartmentClient() {
           ) : (
             <InformasiDepartment {...dept} />
           )}
-          <StrukturAnggota {...dept} />
+          <StrukturAnggota {...dept} viewingImg={setViewingImg} />
           <ProgendaDept {...dept} />
-          <GalleryDept {...dept} />
+          <GalleryDept {...dept} viewingImg={setViewingImg} />
         </section>
       </main>
     </Layout>

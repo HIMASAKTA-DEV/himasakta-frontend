@@ -9,22 +9,24 @@ import OrganigramSection from "@/components/landing_page/OrganigramSection";
 import ProfilHimpunan from "@/components/landing_page/ProfilHimpunan";
 import Layout from "@/layouts/Layout";
 import { trackVisit } from "@/lib/analytic";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function HomeClient() {
   useEffect(() => {
     trackVisit();
   }, []);
+
+  const [wLayout, setWithLayout] = useState(true);
   return (
     <>
-      <Layout withNavbar={true} withFooter={true} transparentOnTop={true}>
+      <Layout withNavbar={wLayout} withFooter={true} transparentOnTop={true}>
         <main className="flex flex-col items-center mb-24 lg:mb-32">
           <div className="w-full mt-[-115px]">
             <HeroSection />
           </div>
           <div className="max-w-full flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32">
             <ProfilHimpunan />
-            <InformasiKabinet />
+            <InformasiKabinet setLayout={setWithLayout} />
             <OrganigramSection />
             <GetToKnow />
             <DepartemenSection />
