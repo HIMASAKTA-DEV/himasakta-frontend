@@ -86,9 +86,7 @@ function GalleryCabinet({ ...cabinet }: ModCabinetInfo) {
   // Lock body scroll saat modal buka
   useEffect(() => {
     const lenis = (globalThis as LenisWindow).lenis;
-
     if (!lenis) return;
-
     if (previewImage) {
       document.body.style.overflow = "hidden";
       document.documentElement.style.overflow = "hidden";
