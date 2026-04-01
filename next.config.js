@@ -13,6 +13,12 @@ const nextConfig = {
         hostname: "via.placeholder.com",
         pathname: "/**",
       },
+      {
+        protocol: "http",
+        hostname: "76.13.19.118",
+        port: "8012",
+        pathname: "/**",
+      },
     ],
   },
 };
