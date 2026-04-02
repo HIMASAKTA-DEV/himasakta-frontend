@@ -46,6 +46,8 @@ export default function Sidebar({ active }: { active: string }) {
         w-20 lg:w-80
         h-screen
         max-lg:overflow-y-auto
+        overflow-x-hidden
+        no-scrollbar scroll-smooth
         bg-white/70 backdrop-blur-xl border-r
         p-3 lg:p-4
         flex flex-col justify-between items-center

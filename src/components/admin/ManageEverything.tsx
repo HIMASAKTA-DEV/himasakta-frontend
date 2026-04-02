@@ -49,6 +49,7 @@ import {
   ManageProgendaHelp,
 } from "./HelpModal";
 import WebStats from "./WebStats";
+import clsxm from "@/lib/clsxm";
 
 /* ================= REUSABLE DELETE MODAL ================= */
 interface DeleteConfirmModalProps {
@@ -280,7 +281,7 @@ export function ManageAnggota() {
 
                   {!loadingDd && !errDd && depts.length === 0 && (
                     <p className="px-3 py-2 text-sm text-gray-500">
-                      Tidak ditemukan
+                      👻Belum ada departemen👻
                     </p>
                   )}
                 </div>
@@ -790,7 +791,7 @@ export function ManageCabinet() {
 
         {activeCabinets.length === 0 && cabinets.length === 0 && !loadData && (
           <div className="w-full py-6 flex items-center justify-center text-gray-700">
-            👻 Daftar kabinet Kosong 👻
+            👻Daftar kabinet Kosong👻
           </div>
         )}
       </div>
@@ -1042,7 +1043,7 @@ export function ManageDepartment() {
                     colSpan={4}
                     className="px-6 py-12 text-center text-gray-500"
                   >
-                    Belum ada data departemen.
+                    👻Belum ada data departemen.👻
                   </td>
                 </tr>
               ) : (
@@ -1105,11 +1106,6 @@ export function ManageDepartment() {
         {loading && (
           <div className="w-full py-6 flex items-center justify-center">
             <SkeletonPleaseWait />
-          </div>
-        )}
-        {departments.length === 0 && !loading && (
-          <div className="w-full py-6 flex items-center justify-center text-gray-700">
-            Daftar Kegiatan Kosong
           </div>
         )}
       </div>
@@ -1472,7 +1468,8 @@ export function ManageGallery() {
           </Typography>
           <small className="mt-4 text-red-600 bg-red-200 px-2">
             ⚠️ WARNING: Ada data yang tidak dapat dihapus karena tertaut dengan
-            data lain.
+            data lain. Menghapus paksa membuat image di beberapa konten
+            menghilang.
           </small>
         </div>
         <div className="flex items-center gap-4">
@@ -1509,7 +1506,15 @@ export function ManageGallery() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-7xl mx-auto">
+      <div
+        className={clsxm(
+          "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-7xl mx-auto",
+          galleryData.length === 0
+            ? "flex flex-col items-center justify-center"
+            : "",
+        )}
+      >
+        {galleryData.length === 0 && <p>👻Belum ada data berita👻</p>}
         {galleryData.map((gallery) => (
           <div
             key={gallery.id}
@@ -1802,7 +1807,15 @@ export function ManageNews() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-7xl mx-auto">
+      <div
+        className={clsxm(
+          "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-7xl mx-auto",
+          newsData.length === 0
+            ? "flex flex-col items-center justify-center"
+            : "",
+        )}
+      >
+        {newsData.length === 0 && <p>👻Belum ada data berita👻</p>}
         {newsData.map((news) => (
           <div
             key={news.id}
@@ -2342,7 +2355,7 @@ export function ManageProgenda() {
                     colSpan={4}
                     className="px-6 py-12 text-center text-gray-500"
                   >
-                    Belum ada data Progenda.
+                    👻Belum ada data Progenda.👻
                   </td>
                 </tr>
               ) : (
@@ -2393,11 +2406,6 @@ export function ManageProgenda() {
         {loading && (
           <div className="w-full py-6 flex items-center justify-center">
             <SkeletonPleaseWait />
-          </div>
-        )}
-        {progendas.length === 0 && !loading && (
-          <div className="w-full py-6 flex items-center justify-center text-gray-700">
-            Daftar Progenda Kosong
           </div>
         )}
       </div>

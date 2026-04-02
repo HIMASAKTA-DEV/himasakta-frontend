@@ -76,7 +76,7 @@ export default function InteractiveImgViewerV2({
     clsx(
       "p-2 size-8 sm:size-10 lg:size-12 rounded-full transition-all",
       enabled
-        ? "hover:bg-slate-300 text-gray-800"
+        ? "hover:bg-primaryPink/25 text-gray-800"
         : "text-gray-400 opacity-40 cursor-not-allowed",
     );
 
@@ -95,13 +95,19 @@ export default function InteractiveImgViewerV2({
                   onClick={() => pan(-STEPPX, 0)}
                   disabled={!canScroll.left}
                 >
-                  <FaChevronLeft className={iconClass(canScroll.left)} />
+                  <FaChevronLeft
+                    className={iconClass(canScroll.left)}
+                    title="Left"
+                  />
                 </button>
                 <button
                   onClick={() => pan(STEPPX, 0)}
                   disabled={!canScroll.right}
                 >
-                  <FaChevronRight className={iconClass(canScroll.right)} />
+                  <FaChevronRight
+                    className={iconClass(canScroll.right)}
+                    title="Right"
+                  />
                 </button>
               </div>
               <div className="flex items-center">
@@ -109,16 +115,23 @@ export default function InteractiveImgViewerV2({
                   onClick={() => pan(0, -STEPPX)}
                   disabled={!canScroll.up}
                 >
-                  <FaChevronUp className={iconClass(canScroll.up)} />
+                  <FaChevronUp className={iconClass(canScroll.up)} title="Up" />
                 </button>
                 <button
                   onClick={() => pan(0, STEPPX)}
                   disabled={!canScroll.down}
                 >
-                  <FaChevronDown className={iconClass(canScroll.down)} />
+                  <FaChevronDown
+                    className={clsx(iconClass(canScroll.down))}
+                    title="Down"
+                  />
                 </button>
               </div>
             </div>
+
+            <small className="text-gray-500 max-lg:hidden">
+              Hold shift + scroll to scrolling horizontally
+            </small>
 
             <div className="flex items-center gap-2">
               {isMaxZoom || isMinZoom ? (
@@ -131,6 +144,7 @@ export default function InteractiveImgViewerV2({
                     "text-xs lg:text-base transition-opacity",
                     showZoom ? "opacity-100" : "opacity-0",
                   )}
+                  title="Scale"
                 >
                   Zoom: {scale.toFixed(2)}x
                 </p>
@@ -138,22 +152,24 @@ export default function InteractiveImgViewerV2({
 
               <button onClick={zoomIn} disabled={isMaxZoom}>
                 <FaSearchPlus
+                  title="Zoom-in"
                   className={clsx(
                     "p-2 size-8 sm:size-10 lg:size-12 rounded-full",
                     isMaxZoom
                       ? "text-gray-400 cursor-not-allowed"
-                      : "hover:bg-slate-300",
+                      : "hover:bg-primaryPink/25",
                   )}
                 />
               </button>
 
               <button onClick={zoomOut} disabled={isMinZoom}>
                 <FaSearchMinus
+                  title="Zoom-out"
                   className={clsx(
                     "p-2 size-8 sm:size-10 lg:size-12 rounded-full",
                     isMinZoom
                       ? "text-gray-400 cursor-not-allowed"
-                      : "hover:bg-slate-300",
+                      : "hover:bg-primaryPink/25",
                   )}
                 />
               </button>

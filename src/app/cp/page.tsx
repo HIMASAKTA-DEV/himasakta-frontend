@@ -168,7 +168,8 @@ export default function AdminPage() {
           data-lenis-prevent
         >
           {/* Sesuaikan ml sesuai ukuran sidebar */}
-          <div className="border-b px-4 py-4 fixed top-0 bg-white/70 backdrop-blur-md shadow-md z-40 w-[83vw]">
+          <div className="fixed px-4 py-10 max-lg:py-8 top-0 bg-white/60 backdrop-blur-3xl w-full shadow-md z-40" />
+          <div className="px-4 py-4 fixed top-0 z-50 w-[83vw]">
             <AdminTopBar usr={usr} onLogout={handleLogout} />
           </div>
           <div className="p-6 py-20">{renderContent()}</div>

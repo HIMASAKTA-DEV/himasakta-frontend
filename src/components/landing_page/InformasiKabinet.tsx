@@ -3,13 +3,17 @@
 import { getCurrentCabinetInfo } from "@/services/landing_page/InformasiKabinet";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderSection from "../commons/HeaderSection";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
 import GalleryCabinet from "./_infomasiKabinet/GalleryCabinet";
 import SkeletonInformasiKabinet from "./skeletons/SkeletonInfoKabinet";
 
-export default function InformasiKabinet() {
+export default function InformasiKabinet({
+  setLayout,
+}: {
+  setLayout: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   // Comment this after creating data fetching
   const [loading, setLoading] = useState(true);
   const [cabinet, setCabinet] = useState<CabinetInfo | null>(null);
@@ -34,7 +38,7 @@ export default function InformasiKabinet() {
     <>
       <SkeletonInformasiKabinet />
       <div>
-        <GalleryCabinet {...cabinet} />
+        <GalleryCabinet {...cabinet} layout={setLayout} />
       </div>
     </>
   ) : (
@@ -78,7 +82,7 @@ export default function InformasiKabinet() {
         </div>
       </section>
       <div>
-        <GalleryCabinet {...cabinet} />
+        <GalleryCabinet {...cabinet} layout={setLayout} />
       </div>
     </>
   );

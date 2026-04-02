@@ -8,7 +8,7 @@ interface TimelineCompProps {
 function MobileComp({ timeline }: TimelineCompProps) {
   if (!timeline || timeline.length === 0) {
     return (
-      <p className="text-center text-gray-500">
+      <p className="text-center text-gray-500 lg:hidden">
         Tidak ada timeline yang tersedia.
       </p>
     );

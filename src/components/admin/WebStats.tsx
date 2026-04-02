@@ -108,8 +108,10 @@ function WebStats() {
         {/* Graph */}
         <div className="bg-white p-6 rounded-3xl shadow-lg ring-1 ring-gray-200">
           <p className="text-gray-600 text-sm mb-4">Visitor Growth</p>
-
-          <div className="max-lg:overflow-x-auto">
+          <small className="text-gray-500 max-lg:text-[9px]">
+            Hold shift + scroll to scrolling horizontally
+          </small>
+          <div className="overflow-x-auto">
             <div className="min-w-[600px] h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={paddedGraph}>
