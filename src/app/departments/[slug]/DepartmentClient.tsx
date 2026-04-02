@@ -52,7 +52,7 @@ export default function DepartmentClient() {
     <Layout withFooter withNavbar={false} transparentOnTop>
       <div
         className={clsxm(
-          "sticky top-0 left-0 w-full h-16 bg-gradient-to-b from-white/95 to-white pointer-events-none z-[500] backdrop-blur-sm",
+          "sticky top-0 left-0 w-full h-20 bg-gradient-to-b from-white/95 to-white pointer-events-none z-[500] backdrop-blur-sm",
           viewingImg ? "hidden" : "",
         )}
       />

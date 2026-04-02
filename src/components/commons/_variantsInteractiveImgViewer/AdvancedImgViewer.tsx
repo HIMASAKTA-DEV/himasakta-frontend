@@ -129,6 +129,10 @@ export default function InteractiveImgViewerV2({
               </div>
             </div>
 
+            <small className="text-gray-500 max-lg:hidden">
+              Hold shift + scroll to scrolling horizontally
+            </small>
+
             <div className="flex items-center gap-2">
               {isMaxZoom || isMinZoom ? (
                 <p className="text-xs lg:text-base text-red-500">
