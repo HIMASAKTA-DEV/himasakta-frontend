@@ -418,7 +418,7 @@ function NewsPage() {
                 onChange={handleInputChange}
                 onFocus={() => setShowDd(true)}
                 placeholder="Cari berita..."
-                className="w-full shadow-lg p-2 lg:p-4 border border-gray-200 rounded-full bg-slate-50 pl-12 lg:pl-16"
+                className="w-full shadow-lg p-2 lg:p-4 border rounded-full bg-white/50 focus:bg-white transition-colors outline-none focus:ring-2 ring-primaryPink/50 pl-12 lg:pl-16"
                 onKeyDown={handleSearchKeyDown}
               />
             </div>
@@ -500,7 +500,7 @@ function NewsPage() {
             {showFilterDd && (
               <div
                 className={`
-                  absolute top-full right-0 w-[100%] bg-white/90 backdrop-blur-lg border border-gray-200 rounded-md mt-1 shadow-lg z-[1000] p-4
+                  absolute top-full right-0 w-[100%] bg-white backdrop-blur-lg border border-gray-200 rounded-md mt-1 shadow-lg z-[1000] p-4
                 `}
               >
                 <h1 className="px-4 py-2 font-semibold">

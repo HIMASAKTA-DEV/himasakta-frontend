@@ -136,7 +136,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
                   >
                     <Link
                       href={`/progenda/${progenda.progendaId}`}
-                      className="group relative aspect-square bg-gray-100 w-full lg:h-[460px] rounded-t-lg"
+                      className="group relative aspect-square bg-gray-100 w-full lg:h-[460px] overflow-clip rounded-t-lg"
                     >
                       {/* Overlay */}
                       <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />

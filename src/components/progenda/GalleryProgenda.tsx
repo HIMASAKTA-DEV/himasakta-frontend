@@ -8,6 +8,7 @@ import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
 import Lenis from "@studio-freight/lenis/types";
+import { ProgendaType } from "@/types/data/ProgendaType";
 
 type GalleryCard = {
   imageUrl: string;
@@ -17,13 +18,13 @@ type LenisWindow = typeof globalThis & {
   lenis?: Lenis;
 };
 
-interface PageProps extends DepartmentType {
+interface PageProps extends Partial<ProgendaType> {
   viewingImg: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const LimitGallery = 9;
 
-function GalleryDept({ ...dept }: PageProps) {
+function GalleryProgenda({ ...dept }: PageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [galleries, setGalleries] = useState<GalleryCard[]>([]);
@@ -114,10 +115,10 @@ function GalleryDept({ ...dept }: PageProps) {
 
   return (
     <div className="flex flex-col gap-8">
-      <HeaderSection title={"Galeri Departemen"} />
+      <HeaderSection title={"Galeri Progenda"} />
       {galleries.length <= 0 ? (
         <div className="w-full flex items-center">
-          <p>Departemen tidak memiliki galeri</p>
+          <p>Progenda tidak memiliki galeri</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
@@ -202,4 +203,4 @@ function GalleryDept({ ...dept }: PageProps) {
   );
 }
 
-export default GalleryDept;
+export default GalleryProgenda;
