@@ -2,7 +2,7 @@
 
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import divideArray from "@/lib/divideArray";
-import { getEventThisMonth } from "@/services/landing_page/GetToKnow";
+import { GetEventThisMonth } from "@/services/landing_page/GetToKnow";
 import { MonthlyEvent } from "@/types/data/GetToKnow";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -22,7 +22,7 @@ export default function GetToKnow() {
   useEffect(() => {
     const fetchEvThisMonth = async () => {
       try {
-        const data = await getEventThisMonth();
+        const data = await GetEventThisMonth();
         setEvents(data.data);
       } catch (err) {
         console.error("Failed to load event this month ", err);

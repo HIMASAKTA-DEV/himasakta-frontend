@@ -31,7 +31,7 @@ export default function ProgendaDetailClient() {
   const [progenda, setProgenda] = useState<ProgendaType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [viewingImg, setViewingImg] = useState(false);
+  const [_viewingImg, setViewingImg] = useState(false);
   const fetchProgendaInfo = async (id: string) => {
     setLoading(true);
     setError(false);

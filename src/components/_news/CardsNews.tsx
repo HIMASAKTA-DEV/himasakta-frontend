@@ -1,5 +1,6 @@
 "use client";
 
+import clsxm from "@/lib/clsxm";
 import { normalizeHashtags } from "@/lib/normalizeHashTags";
 import { NewsType } from "@/types/data/InformasiBerita";
 import Link from "next/link";
@@ -7,7 +8,6 @@ import { FaArrowRight } from "react-icons/fa6";
 import HashTags from "../commons/HashTags";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
-import clsxm from "@/lib/clsxm";
 
 export default function CardNews({
   idx = 0,

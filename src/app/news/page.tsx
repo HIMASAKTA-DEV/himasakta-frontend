@@ -6,12 +6,12 @@ import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
+import { baseURL } from "@/lib/axios";
 import clsxm from "@/lib/clsxm";
 import { GetAllNews } from "@/services/news/FetchAllNews";
 import { FetchTags, TagType } from "@/services/news/FetchTags";
 import { NewsType } from "@/types/data/InformasiBerita";
 import { useRouter, useSearchParams } from "next/navigation";
-import { baseURL } from "@/lib/axios";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import {
   FaCheck,

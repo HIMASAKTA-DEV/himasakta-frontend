@@ -26,7 +26,7 @@ export default function MediaSelector({
 
   // Upload State
   const [uploadFile, setUploadFile] = useState<File | null>(null);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [_isDragging, setIsDragging] = useState<boolean>(false);
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -122,7 +122,7 @@ export default function MediaSelector({
     setIsDragging(false);
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const _handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     handleFile(file);
   };

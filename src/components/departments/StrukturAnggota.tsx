@@ -3,12 +3,12 @@
 import { GetMemberByDeptId } from "@/services/departments/GetMemberByDeptId";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { MemberType } from "@/types/data/MemberType";
+import Lenis from "@studio-freight/lenis/types";
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
-import Lenis from "@studio-freight/lenis/types";
 
 type MemberCard = {
   name: string;

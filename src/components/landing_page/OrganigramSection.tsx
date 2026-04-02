@@ -3,7 +3,7 @@
 import HeaderSection from "@/components/commons/HeaderSection";
 import InteractiveImgViewer from "@/components/commons/InteractiveImgViewer";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
-import { getCurrentCabinetInfo } from "@/services/landing_page/InformasiKabinet";
+import { GetCurrentCabinet } from "@/services/landing_page/InformasiKabinet";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import { useEffect, useState } from "react";
 
@@ -15,8 +15,8 @@ export default function OrganigramSection() {
     // fetch data
     const fetchCabinetInfo = async () => {
       try {
-        const data = await getCurrentCabinetInfo();
-        setCabinet(data);
+        const data = await GetCurrentCabinet();
+        setCabinet(data.data);
       } catch (err) {
         console.error("Failed to fetch current cabinet info", err);
       } finally {

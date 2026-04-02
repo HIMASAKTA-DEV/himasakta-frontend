@@ -1,6 +1,6 @@
 "use client";
 
-import { getCurrentCabinetInfo } from "@/services/landing_page/InformasiKabinet";
+import { GetCurrentCabinet } from "@/services/landing_page/InformasiKabinet";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -22,8 +22,8 @@ export default function InformasiKabinet({
     // fetch data
     const fetchCabinetInfo = async () => {
       try {
-        const data = await getCurrentCabinetInfo();
-        setCabinet(data);
+        const data = await GetCurrentCabinet();
+        setCabinet(data.data);
       } catch (err) {
         console.error("Failed to fetch current cabinet info ", err);
       } finally {
@@ -34,14 +34,13 @@ export default function InformasiKabinet({
     fetchCabinetInfo();
   }, []);
 
-  return loading ? (
-    <>
-      <SkeletonInformasiKabinet />
-      <div>
-        <GalleryCabinet {...cabinet} layout={setLayout} />
-      </div>
-    </>
-  ) : (
+  if (!cabinet) return;
+
+  if (loading) {
+    return <SkeletonInformasiKabinet />;
+  }
+
+  return (
     <>
       <section
         className="w-full flex flex-col lg:flex-row lg:justify-between"
@@ -82,7 +81,9 @@ export default function InformasiKabinet({
         </div>
       </section>
       <div>
-        <GalleryCabinet {...cabinet} layout={setLayout} />
+        {cabinet && !loading && (
+          <GalleryCabinet {...cabinet} layout={setLayout} />
+        )}
       </div>
     </>
   );

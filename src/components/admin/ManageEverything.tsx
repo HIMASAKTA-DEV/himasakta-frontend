@@ -1,6 +1,7 @@
 "use client";
 
 import api from "@/lib/axios";
+import clsxm from "@/lib/clsxm";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { GetManageCabinet } from "@/services/admin/GetManageCabinets";
 import { GetManageEvents } from "@/services/admin/GetManageEvent";
@@ -49,7 +50,6 @@ import {
   ManageProgendaHelp,
 } from "./HelpModal";
 import WebStats from "./WebStats";
-import clsxm from "@/lib/clsxm";
 
 /* ================= REUSABLE DELETE MODAL ================= */
 interface DeleteConfirmModalProps {
@@ -424,7 +424,7 @@ export function ManageAnggota() {
           )}
           {members.length === 0 && !loadingMain && (
             <div className="w-full py-6 flex items-center justify-center text-gray-300">
-              👻 Daftar anggota kosong 👻
+              👻Daftar anggota kosong👻
             </div>
           )}
         </div>
@@ -1321,7 +1321,7 @@ export function ManageEvent() {
         )}
         {eventsData.length === 0 && !loadingData && (
           <div className="w-full py-6 flex items-center justify-center text-gray-700">
-            Daftar Kegiatan Kosong
+            👻Daftar Kegiatan Kosong👻
           </div>
         )}
       </div>
