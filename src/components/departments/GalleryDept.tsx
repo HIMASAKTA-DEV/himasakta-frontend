@@ -175,13 +175,13 @@ function GalleryDept({ ...dept }: PageProps) {
           }}
         >
           <div
-            className="relative lg:max-w-[50vw] lg:max-h-[70vh] max-h-[80vh] max-w-[80vw] flex flex-col items-center gap-4"
+            className="relative lg:max-w-[50vw] lg:max-h-[70vh] max-h-[80vh] max-w-[80vw] flex flex-col items-center gap-4 landscape:max-w-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={previewImage.url}
               alt={previewImage.caption}
-              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl landscape:max-h-[60vh]"
             />
             <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
               {previewImage.caption}

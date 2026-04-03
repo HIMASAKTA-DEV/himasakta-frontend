@@ -211,13 +211,13 @@ function GalleryCabinet({ ...cabinet }: ModCabinetInfo) {
               }}
             >
               <div
-                className="relative max-w-4xl w-full flex flex-col items-center"
+                className="relative max-w-4xl landscape:max-w-xl w-full flex flex-col items-center"
                 onClick={(e) => e.stopPropagation()}
               >
                 <img
                   src={previewImage.url}
                   alt="Preview"
-                  className="max-h-[80vh] object-contain rounded-lg"
+                  className="max-h-[80vh] landscape:max-h-[60vh] object-contain rounded-lg"
                 />
 
                 {previewImage.caption && (

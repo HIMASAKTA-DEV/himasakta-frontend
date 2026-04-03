@@ -25,7 +25,7 @@ export default function OrganigramSection() {
     };
 
     fetchCabinetInfo();
-  });
+  }, []);
 
   // useEffect(() => {
   //   const timer = setTimeout(() => {

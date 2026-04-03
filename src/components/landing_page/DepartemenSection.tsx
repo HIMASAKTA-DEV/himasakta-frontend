@@ -75,6 +75,14 @@ function DepartemenSection() {
               <DeptCard {...dept} key={dept.id || idx} />
             ))}
           </div>
+
+          {firstDepts.length === 0 && secDepts.length === 0 && (
+            <div className="mx-4 py-16 text-center bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 text-gray-400 w-full">
+              <p className="text-xl font-medium">
+                Belum ada departemen saat ini
+              </p>
+            </div>
+          )}
         </div>
       )}
     </section>

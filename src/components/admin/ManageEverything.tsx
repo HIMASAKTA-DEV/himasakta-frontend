@@ -1610,13 +1610,13 @@ export function ManageGallery() {
           onClick={() => setPreviewImage(null)}
         >
           <div
-            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4"
+            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4 landscape:max-w-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={previewImage.url}
               alt={previewImage.caption}
-              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl landscape:max-h-[60vh]"
             />
             <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
               {previewImage.caption}
@@ -2973,7 +2973,7 @@ export function GlobalSetting() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-10 py-2.5 bg-primaryPink text-white rounded-xl font-bold text-sm shadow-xl shadow-pink-100 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+                className="px-10 py-2.5 bg-primaryPink text-white rounded-xl font-bold text-sm shadow-xl shadow-pink-100 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 max-lg:w-full"
               >
                 {isSubmitting ? "Menyimpan..." : "Simpan Web Settings"}
               </button>

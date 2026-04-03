@@ -836,13 +836,13 @@ export default function AddCabinetPage() {
           onClick={() => setPreviewImage(null)}
         >
           <div
-            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4"
+            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4 landscape:max-w-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={previewImage.image_url}
               alt={previewImage.id}
-              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+              className="max-w-full max-h-[80vh] landscape:max-h-[60vh]  object-contain rounded-2xl shadow-2xl"
             />
             <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
               {previewImage.id}

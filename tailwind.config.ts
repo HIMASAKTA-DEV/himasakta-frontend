@@ -53,6 +53,11 @@ const config: Config = {
         blob: "blob 18s ease-in-out infinite",
         shimmer: "shimmer 8s ease-in-out infinite",
       },
+      // add screen orientation
+      screens: {
+        landscape: { raw: "(orientation: landscape)" },
+        portrait: { raw: "(orientation: portrait)" },
+      },
     },
   },
   plugins: [
