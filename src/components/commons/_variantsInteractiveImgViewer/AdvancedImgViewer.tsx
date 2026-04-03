@@ -129,7 +129,7 @@ export default function InteractiveImgViewerV2({
               </div>
             </div>
 
-            <small className="text-gray-500 max-lg:hidden">
+            <small className="text-gray-500 max-lg:hidden portrait:hidden">
               Hold shift + scroll to scrolling horizontally
             </small>
 
