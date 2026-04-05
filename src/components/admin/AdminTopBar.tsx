@@ -113,17 +113,18 @@ export default function TopBar({ usr, onLogout }: Props) {
   };
 
   return (
-    <div className="flex justify-between items-center sticky top-0 gap-4 w-full z-999 px-4 max-lg:h-6 lg:py-2">
-      {/* Make it marquee in mobile */}
-      <div className="lg:hidden relative flex-1 h-full overflow-hidden min-w-0">
-        <div className="absolute inset-y-0 left-0 flex items-center whitespace-nowrap max-lg:animate-marquee lg:animate-none">
-          {renderContent()}
+    <div className="flex justify-between items-center sticky top-0 gap-4 w-full z-[999] px-4 h-8 lg:py-2">
+      {/* Mobile View: Marquee Container */}
+      <div className="flex lg:hidden flex-1 overflow-hidden">
+        <div className="flex whitespace-nowrap animate-marquee">
+          <span className="inline-block px-4">{renderContent()}</span>
         </div>
       </div>
-      {/* Stop marquee in desktop */}
-      <div className="max-lg:hidden relative w-full max-w-[85%]">
+      {/* Desktop View: Static Content */}
+      <div className="hidden lg:block relative w-full max-w-[85%]">
         {renderContent()}
       </div>
+
       <div className="flex-shrink-0">
         <AccDropDown usr={usr} onLogout={onLogout} />
       </div>

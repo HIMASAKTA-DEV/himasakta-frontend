@@ -10,10 +10,15 @@ import { IconType } from "react-icons";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
 import { FiLink, FiLinkedin, FiYoutube } from "react-icons/fi";
 import { footerLink } from "./footerLinks";
+import Lenis from "@studio-freight/lenis/types";
 
 type ThisSocmed = {
   name: string;
   link: string;
+};
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
 };
 
 export default function MobileFooter() {
@@ -41,6 +46,25 @@ export default function MobileFooter() {
     tiktok: FaTiktok,
     linktree: FiLink,
   };
+
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
+
+    const target = e.currentTarget.getAttribute("href");
+    if (!target || !target.startsWith("#")) return;
+
+    e.preventDefault();
+
+    const el = document.querySelector<HTMLElement>(target);
+    if (!el) return;
+
+    lenis.scrollTo(el, {
+      offset: -140, // adjust kalau ada navbar fixed
+      duration: 0.5,
+    });
+  };
+
   return (
     <footer className="py-8 px-4 bg-black text-white flex flex-col items-center justify-center">
       {/* Logo */}
@@ -61,6 +85,7 @@ export default function MobileFooter() {
             key={item.label}
             href={item.href}
             className="mb-3 hover:text-neutral-50"
+            onClick={handleScroll}
           >
             {item.label}
           </Link>

@@ -1,6 +1,7 @@
 "use client";
 
 import NotFound from "@/app/not-found";
+import BackToTop from "@/components/commons/BackToTop";
 import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
 import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
@@ -71,6 +72,7 @@ export default function DepartmentClient() {
             ) : (
               <InformasiDepartment {...dept} />
             )}
+            <BackToTop />
             <StrukturAnggota {...dept} viewingImg={setViewingImg} />
             <ProgendaDept {...dept} />
             <GalleryDept {...dept} viewingImg={setViewingImg} />

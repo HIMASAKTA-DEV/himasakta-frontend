@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import clsxm from "@/lib/clsxm";
 
 type HeaderProps = {
   title?: string | null;
@@ -16,11 +16,11 @@ function HeaderSection({
   titleStyle = "font-averia",
 }: HeaderProps) {
   return (
-    <div className={clsx("flex flex-col gap-2", className)}>
-      <h1 className={clsx("font-bold text-4xl lg:text-5xl", titleStyle)}>
+    <div className={clsxm("flex flex-col gap-2", className)}>
+      <h1 className={clsxm("font-bold text-4xl lg:text-5xl", titleStyle)}>
         {title}
       </h1>
-      <p className={clsx("semibold text-2xl lg:text-3xl", subStyle)}>{sub}</p>
+      <p className={clsxm("semibold text-2xl lg:text-3xl", subStyle)}>{sub}</p>
     </div>
   );
 }

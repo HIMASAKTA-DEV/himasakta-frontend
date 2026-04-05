@@ -81,16 +81,16 @@ export default function NavbarDept({ className }: { className?: string }) {
     );
 
   return (
-    <div className="sticky top-8 w-full z-[600] flex flex-col justify-center items-center">
+    <div
+      className={clsxm(
+        "sticky top-8 w-full z-[600] flex flex-col justify-center items-center",
+        className,
+      )}
+    >
       <small className="text-gray-500">
         Hold shift + scroll to scrolling horizontally
       </small>
-      <nav
-        className={clsxm(
-          "sticky mt-2 w-full bg-white/80 backdrop-blur-2xl shadow-md rounded-full ring-1 ring-primaryPink/50 z-[600]",
-          className,
-        )}
-      >
+      <nav className="sticky mt-2 w-full bg-white/80 backdrop-blur-2xl shadow-md rounded-full ring-1 ring-primaryPink/50 z-[600]">
         <div className="flex items-center py-1 pr-1 pl-1 gap-2">
           {/* HOME BUTTON */}
           <ButtonLink

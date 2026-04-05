@@ -225,10 +225,10 @@ export function ManageAnggota() {
           <HeaderSection
             title={"Manage Anggota"}
             sub={"Atur struktur anggota pada tiap departemen"}
-            subStyle="text-black font-libertine"
+            subStyle="text-gray-600 mt-2 font-averia italic text-lg"
           />
         </div>
-        <div className="flex items-center justify-center gap-6 max-lg:flex-col">
+        <div className="flex items-center justify-center gap-6 portrait:flex-col">
           <div className="relative w-36 font-libertine">
             <button
               onClick={() => setShowDd((p) => !p)}
@@ -590,14 +590,14 @@ export function ManageCabinet() {
 
   return (
     <div className="flex min-h-screen w-full flex-col gap-8 p-4 lg:p-10">
-      <div className="flex w-full items-center justify-between gap-4 max-lg:flex-col">
+      <div className="flex w-full items-center justify-between gap-4 portrait:flex-col">
         {/* Header */}
         <HeaderSection
           title="Manage Kabinet"
           titleStyle="font-averia text-black max-lg:text-3xl"
           className="gap-0"
           sub="Atur informasi tiap kabinet"
-          subStyle="font-libertine text-black"
+          subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
 
         <div className="flex items-center gap-4">
@@ -970,7 +970,7 @@ export function ManageDepartment() {
           titleStyle="font-averia text-black"
           className="gap-0"
           sub={"Atur data departemen di website"}
-          subStyle="text-black font-libertine"
+          subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
         <div className="flex items-center gap-4">
           <div className="flex items-center max-lg:flex-col gap-2">
@@ -1209,11 +1209,11 @@ export function ManageEvent() {
 
   return (
     <main className="flex w-full min-h-screen gap-8 p-4 flex-col lg:p-10">
-      <div className="flex w-full items-center lg:justify-between max-lg:flex-col gap-4">
+      <div className="flex w-full items-center lg:justify-between portrait:flex-col gap-4">
         <HeaderSection
           title={"Manage Kegiatan"}
           sub={"Atur daftar kegiatan bulanan (What's On HIMASAKTA)"}
-          subStyle="text-black font-libertine"
+          subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
         <div className="flex items-center gap-4">
           <div className="flex items-center max-lg:flex-col gap-2">
@@ -1453,7 +1453,7 @@ export function ManageGallery() {
 
   return (
     <div className="p-4 lg:p-10 bg-white min-h-screen">
-      <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto max-lg:flex-col">
+      <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto portrait:flex-col">
         <div>
           <HeaderSection
             title="Manage Gallery"
@@ -1758,7 +1758,7 @@ export function ManageNews() {
   return (
     <div className="p-4 lg:p-10 bg-white min-h-screen">
       <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto">
-        <div className="flex items-center lg:justify-between gap-4 max-lg:flex-col w-full">
+        <div className="flex items-center lg:justify-between gap-4 portrait:flex-col w-full">
           <div>
             <HeaderSection
               title="Manage Posts"
@@ -2045,7 +2045,7 @@ export function ManageNrpWhitelist() {
 
   return (
     <main className="flex w-full min-h-screen gap-8 p-4 flex-col lg:p-10">
-      <div className="flex w-full items-center lg:justify-between max-lg:flex-col gap-4">
+      <div className="flex w-full items-center lg:justify-between portrait:flex-col gap-4">
         <div>
           <HeaderSection
             title="Manage Whitelist"
@@ -2292,7 +2292,7 @@ export function ManageProgenda() {
           titleStyle="font-averia text-black"
           className="gap-0"
           sub={"Atur data progenda tiap departemen"}
-          subStyle="text-black font-libertine"
+          subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
         <div className="flex items-center gap-4">
           <div className="flex items-center max-lg:flex-col gap-2">
@@ -2774,7 +2774,7 @@ export function GlobalSetting() {
               titleStyle="font-averia text-black max-lg:text-2xl"
               className="gap-0"
               sub="Konfigurasi informasi umum website"
-              subStyle="font-libertine text-black/60 max-lg:text-[14px] leading-tight"
+              subStyle="text-gray-600 mt-2 font-averia italic text-lg"
             />
             <IoIosHelpCircle
               className="w-7 h-7 text-blue-400 hover:text-blue-500 transition-all duration-300 hover:cursor-pointer"

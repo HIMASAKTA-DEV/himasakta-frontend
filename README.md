@@ -185,20 +185,24 @@ src/
 
 Clone & Install
 
-Bash
+```bash
 git clone https://github.com/HIMASAKTA-DEV/himasakta-frontend.git
 cd himasakta-frontend
 npm install
+```
+
 Environment Variables
 Buat file .env.local dan sesuaikan dengan API endpoint (jika ada):
 
-Cuplikan kode
+```bash
 NEXT_PUBLIC_API_URL=your_api_url
-Development Mode
+# Development Mode
+```
 
-Bash
+```bash
 npm run dev
-Aplikasi akan berjalan di http://localhost:3000.
+# Aplikasi akan berjalan di http://localhost:3000.
+```
 
 #### 🤝 Kontribusi
 

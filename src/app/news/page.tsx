@@ -2,6 +2,7 @@
 
 import CardNews from "@/components/_news/CardsNews";
 import RenderPagination from "@/components/_news/RenderPagination";
+import BackToTop from "@/components/commons/BackToTop";
 import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import ButtonLink from "@/components/links/ButtonLink";
@@ -408,7 +409,9 @@ function NewsPage() {
               <FaSearch
                 className={clsxm(
                   "absolute top-1/2 -translate-y-1/2 text-gray-400 z-[1000]",
-                  isSticky ? "lg:left-32 left-16" : "left-5",
+                  isSticky
+                    ? "landscape:left-[7.65rem] portrait:left-28"
+                    : "left-5",
                 )}
               />
               <input
@@ -627,6 +630,7 @@ function NewsPage() {
           </div>
         </div>
       </main>
+      <BackToTop />
     </Layout>
   );
 }
