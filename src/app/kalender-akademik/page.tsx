@@ -12,6 +12,7 @@ import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWai
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
 import api from "@/lib/axios";
+import BackToTop from "@/components/commons/BackToTop";
 
 type CalendarItem = {
   id: string;
@@ -510,6 +511,7 @@ export default function KalenderAkademikPage() {
           </div>
         </div>
       </main>
+      <BackToTop />
     </Layout>
   );
 }

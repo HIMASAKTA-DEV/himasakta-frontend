@@ -1,5 +1,6 @@
 "use client";
 
+import BackToTop from "@/components/commons/BackToTop";
 import DepartemenSection from "@/components/landing_page/DepartemenSection";
 import GetToKnow from "@/components/landing_page/GetToKnow";
 import HeroSection from "@/components/landing_page/HeroSection";
@@ -33,6 +34,7 @@ export default function HomeClient() {
             <InformasiBerita />
           </div>
         </main>
+        <BackToTop />
       </Layout>
     </>
   );

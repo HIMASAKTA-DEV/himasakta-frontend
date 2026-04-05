@@ -8,6 +8,7 @@ import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
+import BackToTop from "../commons/BackToTop";
 
 type GalleryCard = {
   imageUrl: string;
@@ -165,10 +166,11 @@ function GalleryProgenda({ ...dept }: PageProps) {
           />
         </div>
       </div>
+      <BackToTop />
       {/* Image preview modal */}
       {previewImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm "
           onClick={() => {
             setPreviewImage(null);
             dept.viewingImg(false);

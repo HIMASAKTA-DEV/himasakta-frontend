@@ -168,7 +168,7 @@ function GalleryDept({ ...dept }: PageProps) {
       {/* Image preview modal */}
       {previewImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
           onClick={() => {
             setPreviewImage(null);
             dept.viewingImg(false);

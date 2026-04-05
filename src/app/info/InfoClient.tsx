@@ -1,5 +1,6 @@
 "use client";
 
+import BackToTop from "@/components/commons/BackToTop";
 import About from "@/components/info/About";
 import Contact from "@/components/info/Contact";
 import HeroSection from "@/components/info/HeroSection";
@@ -63,6 +64,7 @@ export default function InfoClient() {
           </ButtonLink>
         </div>
       </main>
+      <BackToTop />
     </Layout>
   );
 }
