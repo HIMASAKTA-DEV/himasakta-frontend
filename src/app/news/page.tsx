@@ -377,7 +377,7 @@ function NewsPage() {
       <main className="min-h-screen flex flex-col gap-6">
         <HeaderSection
           title="Informasi Berita"
-          sub="Jangan lewatkan berita-berita penting dari HIMASAKTA"
+          sub="Jangan lewatkan berita-berita penting dari HIMASAKTA ITS"
           subStyle="font-libertine text-black"
           className="px-10 lg:px-20"
         />

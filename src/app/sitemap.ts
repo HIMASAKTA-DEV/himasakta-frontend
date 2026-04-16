@@ -1,7 +1,7 @@
 import { baseURL } from "@/lib/axios";
 import type { MetadataRoute } from "next";
 
-const SITE_URL = "https://himasakta.com";
+const SITE_URL = "https://himasakta-its.com";
 
 type ApiItem = { slug?: string; id?: string; updated_at?: string };
 

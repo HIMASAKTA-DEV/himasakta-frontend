@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Kalender Akademik | HIMASAKTA ITS",
     description: "Timeline kegiatan dan event bulanan HIMASAKTA ITS.",
-    url: "https://himasakta.com/kalender-akademik",
+    url: "https://himasakta-its.com/kalender-akademik",
     images: [{ url: "/images/ProfilHimpunan.png", alt: "HIMASAKTA ITS" }],
   },
   twitter: {
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     description: "Timeline kegiatan dan event bulanan HIMASAKTA ITS.",
     images: ["/images/ProfilHimpunan.png"],
   },
-  alternates: { canonical: "https://himasakta.com/kalender-akademik" },
+  alternates: { canonical: "https://himasakta-its.com/kalender-akademik" },
 };
 
 export default function KalenderLayout({

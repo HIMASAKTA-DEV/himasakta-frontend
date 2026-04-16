@@ -8,11 +8,11 @@ import {
 } from "react-icons/fa";
 import { HiCalendar, HiClock } from "react-icons/hi";
 
+import BackToTop from "@/components/commons/BackToTop";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
 import api from "@/lib/axios";
-import BackToTop from "@/components/commons/BackToTop";
 
 type CalendarItem = {
   id: string;
@@ -305,7 +305,7 @@ export default function KalenderAkademikPage() {
               Kalender Akademik
             </h1>
             <p className="text-white/80 text-lg lg:text-xl max-w-2xl mx-auto">
-              Timeline kegiatan dan event bulanan HIMASAKTA
+              Timeline kegiatan dan event bulanan HIMASAKTA ITS
             </p>
           </div>
         </div>

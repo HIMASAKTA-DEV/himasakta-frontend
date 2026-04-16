@@ -27,7 +27,7 @@ export default function HeroSection() {
             Selamat Datang
           </h1>
           <h1 className="text-white text-4xl lg:text-6xl font-bold">
-            di laman HIMASAKTA
+            di laman HIMASAKTA ITS
           </h1>
           <div className="flex items-center gap-4">
             {navBtnData.map((item) => (

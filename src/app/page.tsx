@@ -10,8 +10,8 @@ export default function Home() {
           "@type": "Organization",
           name: "HIMASAKTA ITS",
           alternateName: "Himpunan Mahasiswa Aktuaria ITS",
-          url: "https://himasakta.com",
-          logo: "https://himasakta.com/images/ProfilHimpunan.png",
+          url: "https://himasakta-its.com",
+          logo: "https://himasakta-its.com/images/ProfilHimpunan.png",
           description:
             "Himpunan Mahasiswa Aktuaria Institut Teknologi Sepuluh Nopember (ITS), Surabaya, Indonesia.",
           sameAs: [
@@ -27,10 +27,10 @@ export default function Home() {
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "HIMASAKTA ITS",
-          url: "https://himasakta.com",
+          url: "https://himasakta-its.com",
           potentialAction: {
             "@type": "SearchAction",
-            target: "https://himasakta.com/news?s={search_term_string}",
+            target: "https://himasakta-its.com/news?s={search_term_string}",
             "query-input": "required name=search_term_string",
           },
         }}

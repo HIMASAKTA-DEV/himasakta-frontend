@@ -4,13 +4,13 @@ import NextImage from "@/components/NextImage";
 import api from "@/lib/axios";
 import { SettingsWebType } from "@/types/SettingsWebType";
 import { ApiResponse } from "@/types/commons/apiResponse";
+import Lenis from "@studio-freight/lenis/types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IconType } from "react-icons";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
 import { FiLink, FiLinkedin, FiYoutube } from "react-icons/fi";
 import { footerLink } from "./footerLinks";
-import Lenis from "@studio-freight/lenis/types";
 
 type ThisSocmed = {
   name: string;
@@ -84,12 +84,12 @@ export default function DesktopFooter() {
             height={96}
             alt="Himasakta"
           />
-          <h1 className="font-averia text-[40px] font-bold">HIMASAKTA</h1>
+          <h1 className="font-averia text-[40px] font-bold">HIMASAKTA ITS</h1>
         </Link>
 
         {/* Links */}
         <div className="font-libertine text-[24px] flex flex-col">
-          <p className="mb-6">HIMASAKTA</p>
+          <p className="mb-6">HIMASAKTA ITS</p>
           {footerLink.map((item) => (
             <Link
               key={item.label}

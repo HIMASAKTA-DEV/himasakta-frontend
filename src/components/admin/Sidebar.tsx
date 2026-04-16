@@ -68,7 +68,7 @@ export default function Sidebar({ active }: { active: string }) {
               src={"/HimasaktaMain.png"}
               width={36}
               height={36}
-              alt="Himasakta"
+              alt="Himasakta ITS"
             />
             <h1
               className={clsx(
@@ -139,7 +139,7 @@ export default function Sidebar({ active }: { active: string }) {
           <p className="text-sm hidden lg:inline-block">Back to Landing Page</p>
         </ButtonLink>
         <small className="text-gray-400 font-medium mb-4 lg:inline-block hidden">
-          &copy; HIMASAKTA 2026 | Flexoo Academy
+          &copy; HIMASAKTA ITS 2026 | Flexoo Academy
         </small>
       </div>
     </aside>

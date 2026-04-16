@@ -61,7 +61,7 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
             isTransparent ? "text-white" : "text-black",
           )}
         >
-          HIMASAKTA
+          HIMASAKTA ITS
         </h1>
       </Link>
       {/* Navigasi */}

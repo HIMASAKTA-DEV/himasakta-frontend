@@ -89,7 +89,7 @@ export default function NewsDetailClient() {
                     hour12: false,
                   })
                 : ""}{" "}
-              &middot; By HIMASAKTA
+              &middot; By HIMASAKTA ITS
             </p>
 
             <div className="flex flex-col items-center justify-center mb-10">

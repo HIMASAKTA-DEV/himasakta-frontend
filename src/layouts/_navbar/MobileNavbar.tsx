@@ -2,12 +2,12 @@
 
 import NextImage from "@/components/NextImage";
 import ButtonLink from "@/components/links/ButtonLink";
+import Lenis from "@studio-freight/lenis/types";
 import clsx from "clsx";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { navigationBtn } from "./navigationBtn";
-import Lenis from "@studio-freight/lenis/types";
 
 type LenisWindow = typeof globalThis & {
   lenis?: Lenis;
@@ -88,7 +88,7 @@ export default function MobileNavbar({
                 alt="Himasakta"
               />
               <h1 className="font-averia text-black text-2xl font-bold">
-                HIMASAKTA
+                HIMASAKTA ITS
               </h1>
             </Link>
           </div>

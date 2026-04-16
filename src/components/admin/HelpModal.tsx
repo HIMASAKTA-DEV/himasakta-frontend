@@ -437,8 +437,8 @@ export function ManageGlobalSettingHelp() {
           dinamis.
         </li>
         <li>
-          <b>Social Links</b>: Update tautan media sosial HIMASAKTA yang muncul
-          di footer.
+          <b>Social Links</b>: Update tautan media sosial HIMASAKTA ITS yang
+          muncul di footer.
         </li>
       </ol>
     </div>

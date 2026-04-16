@@ -1,7 +1,7 @@
 import ButtonLink from "@/components/links/ButtonLink";
+import Lenis from "@studio-freight/lenis/types";
 import clsx from "clsx";
 import { navigationBtn } from "./navigationBtn";
-import Lenis from "@studio-freight/lenis/types";
 
 type LenisWindow = typeof globalThis & {
   lenis?: Lenis;

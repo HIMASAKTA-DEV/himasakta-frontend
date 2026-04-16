@@ -22,7 +22,9 @@ export default function HeroSection() {
 
       {/* Ini bagian Title */}
       <div className="relative z-499 flex h-full items-center px-12 lg:px-32 font-libertine justify-center text-white flex-col gap-6">
-        <h1 className="text-white text-4xl lg:text-7xl font-bold">HIMASAKTA</h1>
+        <h1 className="text-white text-4xl lg:text-7xl font-bold">
+          HIMASAKTA ITS
+        </h1>
         <p className="text-center text-xl lg:tetx-2xl">
           Actuarial Students Association of Sepuluh Nopember Institute of
           Technology (ITS).

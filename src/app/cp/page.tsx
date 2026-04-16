@@ -211,7 +211,7 @@ export default function AdminPage() {
                         src={"/HimasaktaMainWhite.png"}
                         width={108}
                         height={108}
-                        alt="Himasakta"
+                        alt="HIMASAKTA ITS"
                       />
                       <h1
                         className={clsx(
@@ -258,7 +258,7 @@ export default function AdminPage() {
               "
             >
               <h1 className="text-3xl font-bold text-center">
-                Login Admin HIMASAKTA
+                Login Admin HIMASAKTA ITS
               </h1>
               <div className="w-[70%] relative aspect-video rounded-lg shadow-md">
                 <ImageFallback
@@ -314,7 +314,7 @@ export default function AdminPage() {
               </button>
 
               <small className="text-gray-400 font-medium mt-4 landscape:mb-10">
-                &copy; HIMASAKTA 2026 | Flexoo Academy
+                &copy; HIMASAKTA ITS 2026 | Flexoo Academy
               </small>
             </form>
           </div>

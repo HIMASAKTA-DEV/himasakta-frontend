@@ -3,7 +3,7 @@ import { baseURL } from "@/lib/axios";
 import type { Metadata } from "next";
 import ProgendaDetailClient from "./ProgendaDetailClient";
 
-const SITE_URL = "https://himasakta.com";
+const SITE_URL = "https://himasakta-its.com";
 
 type Props = { params: Promise<{ id: string }> };
 
