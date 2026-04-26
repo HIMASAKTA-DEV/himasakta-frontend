@@ -4,6 +4,7 @@ import NextImage from "@/components/NextImage";
 import api from "@/lib/axios";
 import { SettingsWebType } from "@/types/SettingsWebType";
 import { ApiResponse } from "@/types/commons/apiResponse";
+import Lenis from "@studio-freight/lenis/types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IconType } from "react-icons";
@@ -14,6 +15,10 @@ import { footerLink } from "./footerLinks";
 type ThisSocmed = {
   name: string;
   link: string;
+};
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
 };
 
 export default function DesktopFooter() {
@@ -41,6 +46,25 @@ export default function DesktopFooter() {
     tiktok: FaTiktok,
     linktree: FiLink,
   };
+
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
+
+    const target = e.currentTarget.getAttribute("href");
+    if (!target || !target.startsWith("#")) return;
+
+    e.preventDefault();
+
+    const el = document.querySelector<HTMLElement>(target);
+    if (!el) return;
+
+    lenis.scrollTo(el, {
+      offset: -140, // adjust kalau ada navbar fixed
+      duration: 0.5,
+    });
+  };
+
   return (
     <footer
       className="
@@ -60,12 +84,12 @@ export default function DesktopFooter() {
             height={96}
             alt="Himasakta"
           />
-          <h1 className="font-averia text-[40px] font-bold">HIMASAKTA</h1>
+          <h1 className="font-averia text-[40px] font-bold">HIMASAKTA ITS</h1>
         </Link>
 
         {/* Links */}
         <div className="font-libertine text-[24px] flex flex-col">
-          <p className="mb-6">HIMASAKTA</p>
+          <p className="mb-6">HIMASAKTA ITS</p>
           {footerLink.map((item) => (
             <Link
               key={item.label}
@@ -77,6 +101,7 @@ export default function DesktopFooter() {
                 dark:hover:text-neutral-300
                 hover:translate-x-1
               "
+              onClick={handleScroll}
             >
               {item.label}
             </Link>

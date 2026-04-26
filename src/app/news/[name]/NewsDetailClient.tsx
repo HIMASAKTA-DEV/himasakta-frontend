@@ -2,6 +2,7 @@
 
 import NotFound from "@/app/not-found";
 import AdvanceHashTags from "@/components/commons/AdvanceHastags";
+import BackToTop from "@/components/commons/BackToTop";
 import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
@@ -88,7 +89,7 @@ export default function NewsDetailClient() {
                     hour12: false,
                   })
                 : ""}{" "}
-              &middot; By HIMASAKTA
+              &middot; By HIMASAKTA ITS
             </p>
 
             <div className="flex flex-col items-center justify-center mb-10">
@@ -107,6 +108,7 @@ export default function NewsDetailClient() {
           </>
         )}
       </main>
+      <BackToTop />
     </Layout>
   );
 }

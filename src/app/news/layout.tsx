@@ -23,7 +23,9 @@ export const metadata: Metadata = {
 
 export default function NewsLayout({
   children,
-}: { children: React.ReactNode }) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       <JsonLd

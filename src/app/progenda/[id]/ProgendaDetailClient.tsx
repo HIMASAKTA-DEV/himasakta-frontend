@@ -7,6 +7,7 @@ import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeader
 import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
 import ButtonLink from "@/components/links/ButtonLink";
+import GalleryProgenda from "@/components/progenda/GalleryProgenda";
 import TimelineComp from "@/components/progenda/TimelineComp";
 import Layout from "@/layouts/Layout";
 import { GetProgendaById } from "@/services/progenda/GetProgendaById";
@@ -30,7 +31,7 @@ export default function ProgendaDetailClient() {
   const [progenda, setProgenda] = useState<ProgendaType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-
+  const [_viewingImg, setViewingImg] = useState(false);
   const fetchProgendaInfo = async (id: string) => {
     setLoading(true);
     setError(false);
@@ -163,6 +164,7 @@ export default function ProgendaDetailClient() {
           </div>
         </div>
 
+        <GalleryProgenda {...progenda} viewingImg={setViewingImg} />
         <div className="w-full flex flex-col gap-4">
           <TimelineComp timeline={progenda?.timelines} />
         </div>

@@ -8,14 +8,14 @@ interface TimelineCompProps {
 function DesktopComp({ timeline }: TimelineCompProps) {
   if (!timeline || timeline.length === 0) {
     return (
-      <p className="text-center text-gray-500">
+      <p className="text-center text-gray-500 max-lg:hidden">
         Tidak ada timeline yang tersedia.
       </p>
     );
   }
 
   return (
-    <div className="max-lg:hidden relative flex justify-between items-start w-full">
+    <div className="[@media(max-width:1023px)_and_(orientation:landscape)]:hidden portrait:hidden relative flex justify-between items-start w-full">
       {/* The Line: Adjusted to start/end at 50% of the first/last column width */}
       <div
         className={`absolute top-6 h-1 bg-gray-200 z-0 ${timeline.length > 4 ? "lg:right-0 lg:left-0" : "lg:right-[12%] lg:left-[12%]"}`}
@@ -42,7 +42,7 @@ function DesktopComp({ timeline }: TimelineCompProps) {
                 <Link
                   href={item.link}
                   target="_blank"
-                  className="text-primaryPink-600 hover:underline mt-1 text-xs"
+                  className="text-primaryPink hover:underline mt-1 text-xs"
                 >
                   Open
                 </Link>

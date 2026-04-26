@@ -33,7 +33,7 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
   return (
     <nav
       className={clsx(
-        "flex items-center justify-between h-[115px] px-12 sticky top-0 z-[499] transition-all duration-300",
+        "flex items-center justify-between h-[115px] px-12 sticky top-0 z-[9999] transition-all duration-300",
         isTransparent ? "text-white" : "text-black",
       )}
     >
@@ -61,7 +61,7 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
             isTransparent ? "text-white" : "text-black",
           )}
         >
-          HIMASAKTA
+          HIMASAKTA ITS
         </h1>
       </Link>
       {/* Navigasi */}

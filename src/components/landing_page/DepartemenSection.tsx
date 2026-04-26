@@ -1,6 +1,7 @@
 "use client";
 
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
+import clsxm from "@/lib/clsxm";
 import { getDepartmentInfo } from "@/services/landing_page/DepartementSection";
 import { DepartmentInfo } from "@/types/data/DepartmentSection";
 import { useEffect, useState } from "react";
@@ -39,6 +40,8 @@ function DepartemenSection() {
 
   const firstDepts = depts.slice(0, Math.ceil(depts.length / 2));
   const secDepts = depts.slice(Math.ceil(depts.length / 2), depts.length);
+  // const firstDepts: DepartmentType[] = [];
+  // const secDepts: DepartmentType[] = [];
 
   return (
     <section
@@ -61,7 +64,12 @@ function DepartemenSection() {
         />
       ) : (
         // Guys propsnya jg di-spread kalo setting componentnya di-spread juga
-        <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 justify-center">
+        <div
+          className={clsxm(
+            "flex flex-col lg:flex-row w-full gap-4 lg:gap-8 justify-center",
+            secDepts.length + firstDepts.length === 0 ? "items-center" : "",
+          )}
+        >
           {/* Kolom kiri */}
           <div className="flex flex-col gap-4 lg:w-1/2">
             {firstDepts.map((dept, idx) => (
@@ -75,6 +83,14 @@ function DepartemenSection() {
               <DeptCard {...dept} key={dept.id || idx} />
             ))}
           </div>
+
+          {firstDepts.length + secDepts.length === 0 && (
+            <div className="mx-4 py-16 text-center bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 text-gray-400 w-full">
+              <p className="text-xl font-medium">
+                Belum ada departemen saat ini
+              </p>
+            </div>
+          )}
         </div>
       )}
     </section>

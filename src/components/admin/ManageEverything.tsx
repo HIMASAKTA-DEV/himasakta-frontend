@@ -1,6 +1,7 @@
 "use client";
 
 import api from "@/lib/axios";
+import clsxm from "@/lib/clsxm";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { GetManageCabinet } from "@/services/admin/GetManageCabinets";
 import { GetManageEvents } from "@/services/admin/GetManageEvent";
@@ -224,10 +225,10 @@ export function ManageAnggota() {
           <HeaderSection
             title={"Manage Anggota"}
             sub={"Atur struktur anggota pada tiap departemen"}
-            subStyle="text-black font-libertine"
+            subStyle="text-gray-600 mt-2 font-averia italic text-lg"
           />
         </div>
-        <div className="flex items-center justify-center gap-6 max-lg:flex-col">
+        <div className="flex items-center justify-center gap-6 portrait:flex-col">
           <div className="relative w-36 font-libertine">
             <button
               onClick={() => setShowDd((p) => !p)}
@@ -280,7 +281,7 @@ export function ManageAnggota() {
 
                   {!loadingDd && !errDd && depts.length === 0 && (
                     <p className="px-3 py-2 text-sm text-gray-500">
-                      Tidak ditemukan
+                      👻Belum ada departemen👻
                     </p>
                   )}
                 </div>
@@ -423,7 +424,7 @@ export function ManageAnggota() {
           )}
           {members.length === 0 && !loadingMain && (
             <div className="w-full py-6 flex items-center justify-center text-gray-300">
-              👻 Daftar anggota kosong 👻
+              👻Daftar anggota kosong👻
             </div>
           )}
         </div>
@@ -589,14 +590,14 @@ export function ManageCabinet() {
 
   return (
     <div className="flex min-h-screen w-full flex-col gap-8 p-4 lg:p-10">
-      <div className="flex w-full items-center justify-between gap-4 max-lg:flex-col">
+      <div className="flex w-full items-center justify-between gap-4 portrait:flex-col">
         {/* Header */}
         <HeaderSection
           title="Manage Kabinet"
           titleStyle="font-averia text-black max-lg:text-3xl"
           className="gap-0"
           sub="Atur informasi tiap kabinet"
-          subStyle="font-libertine text-black"
+          subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
 
         <div className="flex items-center gap-4">
@@ -790,7 +791,7 @@ export function ManageCabinet() {
 
         {activeCabinets.length === 0 && cabinets.length === 0 && !loadData && (
           <div className="w-full py-6 flex items-center justify-center text-gray-700">
-            👻 Daftar kabinet Kosong 👻
+            👻Daftar kabinet Kosong👻
           </div>
         )}
       </div>
@@ -969,7 +970,7 @@ export function ManageDepartment() {
           titleStyle="font-averia text-black"
           className="gap-0"
           sub={"Atur data departemen di website"}
-          subStyle="text-black font-libertine"
+          subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
         <div className="flex items-center gap-4">
           <div className="flex items-center max-lg:flex-col gap-2">
@@ -1042,7 +1043,7 @@ export function ManageDepartment() {
                     colSpan={4}
                     className="px-6 py-12 text-center text-gray-500"
                   >
-                    Belum ada data departemen.
+                    👻Belum ada data departemen.👻
                   </td>
                 </tr>
               ) : (
@@ -1105,11 +1106,6 @@ export function ManageDepartment() {
         {loading && (
           <div className="w-full py-6 flex items-center justify-center">
             <SkeletonPleaseWait />
-          </div>
-        )}
-        {departments.length === 0 && !loading && (
-          <div className="w-full py-6 flex items-center justify-center text-gray-700">
-            Daftar Kegiatan Kosong
           </div>
         )}
       </div>
@@ -1213,11 +1209,11 @@ export function ManageEvent() {
 
   return (
     <main className="flex w-full min-h-screen gap-8 p-4 flex-col lg:p-10">
-      <div className="flex w-full items-center lg:justify-between max-lg:flex-col gap-4">
+      <div className="flex w-full items-center lg:justify-between portrait:flex-col gap-4">
         <HeaderSection
           title={"Manage Kegiatan"}
           sub={"Atur daftar kegiatan bulanan (What's On HIMASAKTA)"}
-          subStyle="text-black font-libertine"
+          subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
         <div className="flex items-center gap-4">
           <div className="flex items-center max-lg:flex-col gap-2">
@@ -1325,7 +1321,7 @@ export function ManageEvent() {
         )}
         {eventsData.length === 0 && !loadingData && (
           <div className="w-full py-6 flex items-center justify-center text-gray-700">
-            Daftar Kegiatan Kosong
+            👻Daftar Kegiatan Kosong👻
           </div>
         )}
       </div>
@@ -1457,7 +1453,7 @@ export function ManageGallery() {
 
   return (
     <div className="p-4 lg:p-10 bg-white min-h-screen">
-      <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto max-lg:flex-col">
+      <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto portrait:flex-col">
         <div>
           <HeaderSection
             title="Manage Gallery"
@@ -1472,7 +1468,8 @@ export function ManageGallery() {
           </Typography>
           <small className="mt-4 text-red-600 bg-red-200 px-2">
             ⚠️ WARNING: Ada data yang tidak dapat dihapus karena tertaut dengan
-            data lain.
+            data lain. Menghapus paksa membuat image di beberapa konten
+            menghilang.
           </small>
         </div>
         <div className="flex items-center gap-4">
@@ -1509,7 +1506,15 @@ export function ManageGallery() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-7xl mx-auto">
+      <div
+        className={clsxm(
+          "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-7xl mx-auto",
+          galleryData.length === 0
+            ? "flex flex-col items-center justify-center"
+            : "",
+        )}
+      >
+        {galleryData.length === 0 && <p>👻Belum ada data berita👻</p>}
         {galleryData.map((gallery) => (
           <div
             key={gallery.id}
@@ -1605,13 +1610,13 @@ export function ManageGallery() {
           onClick={() => setPreviewImage(null)}
         >
           <div
-            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4"
+            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4 landscape:max-w-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={previewImage.url}
               alt={previewImage.caption}
-              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl landscape:max-h-[60vh]"
             />
             <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
               {previewImage.caption}
@@ -1753,7 +1758,7 @@ export function ManageNews() {
   return (
     <div className="p-4 lg:p-10 bg-white min-h-screen">
       <div className="flex items-center justify-between gap-4 mb-10 max-w-7xl mx-auto">
-        <div className="flex items-center lg:justify-between gap-4 max-lg:flex-col w-full">
+        <div className="flex items-center lg:justify-between gap-4 portrait:flex-col w-full">
           <div>
             <HeaderSection
               title="Manage Posts"
@@ -1802,7 +1807,15 @@ export function ManageNews() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-7xl mx-auto">
+      <div
+        className={clsxm(
+          "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 max-w-7xl mx-auto",
+          newsData.length === 0
+            ? "flex flex-col items-center justify-center"
+            : "",
+        )}
+      >
+        {newsData.length === 0 && <p>👻Belum ada data berita👻</p>}
         {newsData.map((news) => (
           <div
             key={news.id}
@@ -2032,7 +2045,7 @@ export function ManageNrpWhitelist() {
 
   return (
     <main className="flex w-full min-h-screen gap-8 p-4 flex-col lg:p-10">
-      <div className="flex w-full items-center lg:justify-between max-lg:flex-col gap-4">
+      <div className="flex w-full items-center lg:justify-between portrait:flex-col gap-4">
         <div>
           <HeaderSection
             title="Manage Whitelist"
@@ -2279,7 +2292,7 @@ export function ManageProgenda() {
           titleStyle="font-averia text-black"
           className="gap-0"
           sub={"Atur data progenda tiap departemen"}
-          subStyle="text-black font-libertine"
+          subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
         <div className="flex items-center gap-4">
           <div className="flex items-center max-lg:flex-col gap-2">
@@ -2342,7 +2355,7 @@ export function ManageProgenda() {
                     colSpan={4}
                     className="px-6 py-12 text-center text-gray-500"
                   >
-                    Belum ada data Progenda.
+                    👻Belum ada data Progenda.👻
                   </td>
                 </tr>
               ) : (
@@ -2393,11 +2406,6 @@ export function ManageProgenda() {
         {loading && (
           <div className="w-full py-6 flex items-center justify-center">
             <SkeletonPleaseWait />
-          </div>
-        )}
-        {progendas.length === 0 && !loading && (
-          <div className="w-full py-6 flex items-center justify-center text-gray-700">
-            Daftar Progenda Kosong
           </div>
         )}
       </div>
@@ -2766,7 +2774,7 @@ export function GlobalSetting() {
               titleStyle="font-averia text-black max-lg:text-2xl"
               className="gap-0"
               sub="Konfigurasi informasi umum website"
-              subStyle="font-libertine text-black/60 max-lg:text-[14px] leading-tight"
+              subStyle="text-gray-600 mt-2 font-averia italic text-lg"
             />
             <IoIosHelpCircle
               className="w-7 h-7 text-blue-400 hover:text-blue-500 transition-all duration-300 hover:cursor-pointer"
@@ -2965,7 +2973,7 @@ export function GlobalSetting() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-10 py-2.5 bg-primaryPink text-white rounded-xl font-bold text-sm shadow-xl shadow-pink-100 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+                className="px-10 py-2.5 bg-primaryPink text-white rounded-xl font-bold text-sm shadow-xl shadow-pink-100 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 max-lg:w-full"
               >
                 {isSubmitting ? "Menyimpan..." : "Simpan Web Settings"}
               </button>

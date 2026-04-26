@@ -2,11 +2,16 @@
 
 import NextImage from "@/components/NextImage";
 import ButtonLink from "@/components/links/ButtonLink";
+import Lenis from "@studio-freight/lenis/types";
 import clsx from "clsx";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { navigationBtn } from "./navigationBtn";
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
+};
 
 export default function MobileNavbar({
   isTransparent,
@@ -36,10 +41,15 @@ export default function MobileNavbar({
 
   // lock scroll
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
+    if (open) {
+      document.body.style.overflow = open ? "hidden" : "";
+      lenis?.stop();
+    } else {
       document.body.style.overflow = "";
-    };
+      lenis?.start();
+    }
   }, [open]);
 
   return (
@@ -78,12 +88,12 @@ export default function MobileNavbar({
                 alt="Himasakta"
               />
               <h1 className="font-averia text-black text-2xl font-bold">
-                HIMASAKTA
+                HIMASAKTA ITS
               </h1>
             </Link>
           </div>
-
-          <nav className="flex-1 flex flex-col items-center justify-center gap-8">
+          {/* There's enough space to add other thing later */}
+          <nav className="portrait:flex-1 portrait:flex portrait:flex-col landscape:grid landscape:grid-cols-3 landscape:gap-4 landscape:text-center landscape:mt-4  portrait:items-center portrait:justify-center portrait:gap-8">
             {navigationBtn.map((item, index) => (
               <div
                 key={item.label}

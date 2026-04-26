@@ -3,6 +3,7 @@
 import { GetMemberByDeptId } from "@/services/departments/GetMemberByDeptId";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { MemberType } from "@/types/data/MemberType";
+import Lenis from "@studio-freight/lenis/types";
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import HeaderSection from "../commons/HeaderSection";
@@ -16,7 +17,15 @@ type MemberCard = {
   photoUrl?: string;
 };
 
-export default function StrukturAnggota({ ...dept }: DepartmentType) {
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
+};
+
+interface PageProps extends DepartmentType {
+  viewingImg: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function StrukturAnggota({ ...dept }: PageProps) {
   const [memberCards, setMemberCards] = useState<MemberCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -29,8 +38,16 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
 
   useEffect(() => {
     const isModalOpen = !!previewImage;
-    if (isModalOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
+    const lenis = (globalThis as LenisWindow).lenis;
+
+    if (!lenis) return;
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+      lenis.stop();
+    } else {
+      document.body.style.overflow = "";
+      lenis.start();
+    }
     return () => {
       document.body.style.overflow = "";
     };
@@ -137,11 +154,12 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
                   <div key={i} className="w-full flex-col flex max-lg:pb-10">
                     <div
                       className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"
-                      onClick={() =>
+                      onClick={() => {
                         setPreviewImage({
                           url: member.photoUrl ?? "",
-                        })
-                      }
+                        });
+                        dept.viewingImg(true);
+                      }}
                     >
                       <ImageFallback
                         isFill
@@ -203,23 +221,29 @@ export default function StrukturAnggota({ ...dept }: DepartmentType) {
       {/* Image preview modal */}
       {previewImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
-          onClick={() => setPreviewImage(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          onClick={() => {
+            setPreviewImage(null);
+            dept.viewingImg(false);
+          }}
         >
           <div
-            className="relative lg:max-w-[50vw] lg:max-h-[70vh] max-h-[80vh] max-w-[80vw] flex flex-col items-center gap-4"
+            className="relative lg:max-w-[50vw] lg:max-h-[70vh] max-h-[80vh] max-w-[80vw] flex flex-col items-center gap-4 landscape:max-w-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={previewImage.url}
               alt={previewImage.caption}
-              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl landscape:max-h-[60vh]"
             />
             <p className="text-white text-center text-sm font-medium bg-black/40 px-4 py-2 rounded-lg">
               {previewImage.caption}
             </p>
             <button
-              onClick={() => setPreviewImage(null)}
+              onClick={() => {
+                setPreviewImage(null);
+                dept.viewingImg(false);
+              }}
               className="absolute -top-3 -right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all text-gray-700 font-bold"
             >
               ✕

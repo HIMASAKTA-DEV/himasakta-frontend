@@ -3,6 +3,10 @@
 import Lenis from "@studio-freight/lenis";
 import { useEffect } from "react";
 
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
+};
+
 const useLenis = () => {
   useEffect(() => {
     const lenis = new Lenis({
@@ -26,6 +30,8 @@ const useLenis = () => {
       infinite: false,
     });
 
+    (globalThis as LenisWindow).lenis = lenis;
+
     const raf = (time: number) => {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -35,6 +41,7 @@ const useLenis = () => {
 
     return () => {
       lenis.destroy();
+      (globalThis as LenisWindow).lenis = undefined;
     };
   }, []);
 };

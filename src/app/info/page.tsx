@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import InfoClient from "./InfoClient";
 
 export const metadata: Metadata = {
-  title: "Tentang HIMASAKTA",
+  title: "Tentang HIMASAKTA ITS",
   description:
     "Informasi lengkap tentang HIMASAKTA ITS, media partner, dan kontak resmi Himpunan Mahasiswa Aktuaria Institut Teknologi Sepuluh Nopember.",
   keywords: [
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "Aktuaria",
   ],
   openGraph: {
-    title: "Tentang HIMASAKTA | HIMASAKTA ITS",
+    title: "Tentang HIMASAKTA ITS",
     description:
       "Informasi lengkap tentang HIMASAKTA ITS, media partner, dan kontak resmi.",
     url: "https://himasakta-its.com/info",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tentang HIMASAKTA | HIMASAKTA ITS",
+    title: "Tentang HIMASAKTA ITS",
     description:
       "Informasi lengkap tentang HIMASAKTA ITS, media partner, dan kontak resmi.",
     images: ["/images/ProfilHimpunan.png"],

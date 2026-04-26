@@ -85,7 +85,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
   if (loading) {
     return (
       <div className="flex flex-col gap-8 items-center w-full">
-        <HeaderSection title="Struktur Anggota" />
+        <HeaderSection title="Progenda" />
         <div className="w-full gap-4">
           <EventSkeleton
             count={cntItems}
@@ -115,7 +115,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
           <p>Departemen tidak memiliki progenda</p>
         </div>
       ) : (
-        <div className="relative overflow-hidden lg:h-[60vh] w-full">
+        <div className="relative overflow-hidden lg:h-[60vh] w-full rounded-xl">
           {/* Slider */}
           <div
             className="flex transition-all duration-500 ease-in-out"
@@ -128,12 +128,12 @@ function ProgendaDept({ ...dept }: DepartmentType) {
               >
                 {slide.map((progenda, i) => (
                   <div
-                    className="w-full flex-col flex bg-primaryPinkLight"
+                    className="w-full flex flex-col bg-primaryPinkLight rounded-xl overflow-hidden lg:h-[60vh]"
                     key={i}
                   >
                     <Link
                       href={`/progenda/${progenda.progendaId}`}
-                      className="group relative aspect-square overflow-hidden bg-gray-100 w-full lg:h-[460px] rounded-t-lg"
+                      className="group relative aspect-square bg-gray-100 w-full lg:h-[460px] overflow-clip rounded-t-lg"
                     >
                       {/* Overlay */}
                       <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />
@@ -156,10 +156,10 @@ function ProgendaDept({ ...dept }: DepartmentType) {
                           target="_blank"
                           className="group relative lg:aspect-square overflow-hidden flex flex-col lg:gap-2 pb-8"
                         >
-                          <h1 className="font-bold font-libertine hover:underline">
+                          <h1 className="font-bold font-libertine hover:underline ml-4 mt-4">
                             {progenda.name}
                           </h1>
-                          <div className="relative group text-sm text-gray-600 h-[30px] lg:h-[50px] overflow-hidden">
+                          <div className="relative group text-sm text-gray-600 h-[30px] lg:h-[50px] overflow-hidden ml-4">
                             <MarkdownRenderer>{progenda.desc}</MarkdownRenderer>
                             <div className="pointer-events-none absolute bottom-0 left-0 w-full h-5 group-hover:h-10 bg-gradient-to-t from-primaryPinkLight to-transparent transition-all duration-300 flex items-end justify-center">
                               <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-2">

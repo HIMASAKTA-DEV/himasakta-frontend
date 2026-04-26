@@ -106,3 +106,112 @@ Nb: Tidak wajib melengkapi semua gambar tetapi sebaiknya dilengkapi.
   <img src="public/docs/InfoBeritaKosong.png" alt="info-kabinet-besar" />
   <p>Jika kosong</p>
 </div>
+
+## Deskripsi
+
+### 🛠 Arsitektur Teknis
+
+1. Desain Sistem & Styling
+   Modern Color Space: Menggunakan HEX config di tailwind config dan modern oklch inline styling.
+   Responsive Design: Implementasi orientasi perangkat menggunakan custom variants (landscape: dan portrait:) untuk memastikan pengalaman optimal di perangkat mobile.
+
+2. Standar Pengembangan
+   Strict TypeScript: Penggunaan interface dan type yang ketat untuk data departemen, berita, dan struktur kabinet guna meminimalisir runtime error.
+
+Code Style: Menggunakan 2-space indentation untuk keterbacaan yang lebih bersih.
+Component-Driven Development: Memisahkan komponen modular di src/components untuk reusability. Dilakukan sekitar 60%, dapat dikembangkan lebih lanjut.
+
+### 🚀 Fitur Utama, Modul, dan Teknologi
+
+| Kategori     | Teknologi                       | Keterangan                              |
+| ------------ | ------------------------------- | --------------------------------------- |
+| Framework    | Next.js                         | React framework untuk fullstack SSR/CSR |
+| Library UI   | React, Lenis, Markdown Renderer | Core library frontend                   |
+| Language     | TypeScript / JavaScript         | Type safety & scripting                 |
+| Styling      | Tailwind CSS / CSS              | Utility-first styling                   |
+| Icons        | Lucide React Icons              | UI icons                                |
+| State Mgmt   | React Hooks                     | Manage state                            |
+| API Handling | Fetch / Axios                   | HTTP requests (JSON)                    |
+| Routing      | Next.js Router (src/ based)     | File-based routing                      |
+| Build Tool   | Turbopack / Webpack             | Bundler bawaan Next                     |
+| Linting      | ESLint / Biome                  | Code quality control                    |
+| Formatting   | Prettier                        | Code formatting                         |
+| Deployment   | Vercel                          | Hosting testing frontend                |
+| Container    | Docker                          | CI/CD and environtment conrol           |
+
+Keterangan versi lebih lanjut di: [sini](./package.json)
+
+#### 📰 News & Article Engine
+
+Dynamic Filtering: Pengguna dapat menyaring berita berdasarkan tag (#event, #pengumuman) secara instan.
+
+Search & Sort: Algoritma pencarian berbasis judul dan pengurutan data berdasarkan tanggal rilis.
+
+Interactive Slider: Homepage dilengkapi dengan slider berita yang mendukung auto-play, navigasi dotted, dan responsivitas tinggi.
+
+#### 🏛 Department & Academic Hub
+
+Department Navigator: Komponen navigasi khusus yang mendukung horizontal scrolling untuk daftar departemen yang panjang.
+
+Resource Library: Integrasi link ke direktori akademik seperti:
+
+Bank Soal & Referensi
+
+Silabus Mata Kuliah
+
+Bank Referensi Organisasi
+
+#### 👔 Cabinet Profile
+
+Information Hub: Menampilkan narasi Visi & Misi, tagline kabinet, serta galeri foto kegiatan.
+Organigram: Menampilkan struktur organisasi dari pengurus inti hingga anggota departemen.
+Galeri: Menampilkan dokumentasi kabinet.
+
+#### 📂 Struktur Proyek
+
+```
+src/
+├── app/ # Next.js App Router (Pages & Layouts)
+├── components/ # UI Components (Atomic Design)
+│ ├── common/ # Button, Input, Badges
+│ ├── layout/ # Navbar, Footer, Sidebar
+│ └── shared/ # NewsCard, DeptCard, Slider
+├── hooks/ # Custom React Hooks (e.g. useOrientation)
+├── lib/ # Utils, Fetchers, Constant Data
+└── types/ # TypeScript Interfaces & Types
+```
+
+#### 💻 Panduan Instalasi
+
+Clone & Install
+
+```bash
+git clone https://github.com/HIMASAKTA-DEV/himasakta-frontend.git
+cd himasakta-frontend
+npm install
+```
+
+Environment Variables
+Buat file .env.local dan sesuaikan dengan API endpoint (jika ada):
+
+```bash
+NEXT_PUBLIC_API_URL=your_api_url
+# Development Mode
+```
+
+```bash
+npm run dev
+# Aplikasi akan berjalan di http://localhost:3000.
+```
+
+#### 🤝 Kontribusi
+
+Kami sangat menghargai kontribusi dari anggota HIMASAKTA. Harap perhatikan hal berikut sebelum melakukan Pull Request:
+
+Pastikan kode menggunakan 2-space indentation.
+
+Gunakan TypeScript untuk setiap file baru.
+
+Gunakan variabel warna dari config Tailwind (hindari hardcoded HEX).
+
+**Note:** Repo ini masih dalam tahap pengembangan aktif untuk modul CMS dan integrasi Dashboard Admin.

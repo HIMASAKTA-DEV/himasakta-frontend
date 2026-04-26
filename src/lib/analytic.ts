@@ -1,5 +1,5 @@
-import axios from "axios";
 import { baseURL } from "@/lib/axios";
+import axios from "axios";
 
 const getVisitorId = () => {
   const STORAGE_KEY = "v_uuid";

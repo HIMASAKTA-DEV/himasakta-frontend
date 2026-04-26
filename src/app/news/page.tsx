@@ -2,16 +2,17 @@
 
 import CardNews from "@/components/_news/CardsNews";
 import RenderPagination from "@/components/_news/RenderPagination";
+import BackToTop from "@/components/commons/BackToTop";
 import HeaderSection from "@/components/commons/HeaderSection";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
+import { baseURL } from "@/lib/axios";
 import clsxm from "@/lib/clsxm";
 import { GetAllNews } from "@/services/news/FetchAllNews";
 import { FetchTags, TagType } from "@/services/news/FetchTags";
 import { NewsType } from "@/types/data/InformasiBerita";
 import { useRouter, useSearchParams } from "next/navigation";
-import { baseURL } from "@/lib/axios";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import {
   FaCheck,
@@ -376,7 +377,7 @@ function NewsPage() {
       <main className="min-h-screen flex flex-col gap-6">
         <HeaderSection
           title="Informasi Berita"
-          sub="Jangan lewatkan berita-berita penting dari HIMASAKTA"
+          sub="Jangan lewatkan berita-berita penting dari HIMASAKTA ITS"
           subStyle="font-libertine text-black"
           className="px-10 lg:px-20"
         />
@@ -408,7 +409,9 @@ function NewsPage() {
               <FaSearch
                 className={clsxm(
                   "absolute top-1/2 -translate-y-1/2 text-gray-400 z-[1000]",
-                  isSticky ? "lg:left-32 left-16" : "left-5",
+                  isSticky
+                    ? "landscape:left-[7.65rem] portrait:left-28"
+                    : "left-5",
                 )}
               />
               <input
@@ -418,7 +421,7 @@ function NewsPage() {
                 onChange={handleInputChange}
                 onFocus={() => setShowDd(true)}
                 placeholder="Cari berita..."
-                className="w-full shadow-lg p-2 lg:p-4 border border-gray-200 rounded-full bg-slate-50 pl-12 lg:pl-16"
+                className="w-full shadow-lg p-2 lg:p-4 border rounded-full bg-white/50 focus:bg-white transition-colors outline-none focus:ring-2 ring-primaryPink/50 pl-12 lg:pl-16"
                 onKeyDown={handleSearchKeyDown}
               />
             </div>
@@ -500,7 +503,7 @@ function NewsPage() {
             {showFilterDd && (
               <div
                 className={`
-                  absolute top-full right-0 w-[100%] bg-white/90 backdrop-blur-lg border border-gray-200 rounded-md mt-1 shadow-lg z-[1000] p-4
+                  absolute top-full right-0 w-[100%] bg-white backdrop-blur-lg border border-gray-200 rounded-md mt-1 shadow-lg z-[1000] p-4
                 `}
               >
                 <h1 className="px-4 py-2 font-semibold">
@@ -627,6 +630,7 @@ function NewsPage() {
           </div>
         </div>
       </main>
+      <BackToTop />
     </Layout>
   );
 }

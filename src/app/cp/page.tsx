@@ -168,7 +168,8 @@ export default function AdminPage() {
           data-lenis-prevent
         >
           {/* Sesuaikan ml sesuai ukuran sidebar */}
-          <div className="border-b px-4 py-4 fixed top-0 bg-white/70 backdrop-blur-md shadow-md z-40 w-[83vw]">
+          <div className="fixed px-4 py-8 max-lg:py-8 top-0 bg-white/60 backdrop-blur-3xl w-full shadow-md z-40" />
+          <div className="px-4 py-4 fixed top-0 z-50 w-[83vw]">
             <AdminTopBar usr={usr} onLogout={handleLogout} />
           </div>
           <div className="p-6 py-20">{renderContent()}</div>
@@ -180,8 +181,8 @@ export default function AdminPage() {
   // login page
   return (
     <div className="relative min-h-screen w-full overflow-hidden flex flex-col">
-      <main className="w-full min-h-screen items-center justify-center flex">
-        <div className="w-full items-center justify-center bg-primaryPink min-h-screen max-lg:hidden relative">
+      <main className="w-full min-h-screen items-center justify-center flex overflow-hidden">
+        <div className="w-full items-center justify-center bg-primaryPink min-h-screen [@media((max-width:1023px)_or_(orientation:portrait))]:hidden [@media((min-width:1023px)_and_(orientation:landscape)]:flex relative">
           <section className="relative w-full min-h-screen overflow-hidden">
             <Image
               src="/images/HeroLogin.jpg"
@@ -210,7 +211,7 @@ export default function AdminPage() {
                         src={"/HimasaktaMainWhite.png"}
                         width={108}
                         height={108}
-                        alt="Himasakta"
+                        alt="HIMASAKTA ITS"
                       />
                       <h1
                         className={clsx(
@@ -257,7 +258,7 @@ export default function AdminPage() {
               "
             >
               <h1 className="text-3xl font-bold text-center">
-                Login Admin HIMASAKTA
+                Login Admin HIMASAKTA ITS
               </h1>
               <div className="w-[70%] relative aspect-video rounded-lg shadow-md">
                 <ImageFallback
@@ -312,8 +313,8 @@ export default function AdminPage() {
                 {isSubmitting ? "Logging in..." : "Login"}
               </button>
 
-              <small className="text-gray-400 font-medium mt-4">
-                &copy; HIMASAKTA 2026 | Flexoo Academy
+              <small className="text-gray-400 font-medium mt-4 landscape:mb-10">
+                &copy; HIMASAKTA ITS 2026 | Flexoo Academy
               </small>
             </form>
           </div>

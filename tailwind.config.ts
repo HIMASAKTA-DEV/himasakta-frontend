@@ -48,10 +48,20 @@ const config: Config = {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
       },
       animation: {
         blob: "blob 18s ease-in-out infinite",
         shimmer: "shimmer 8s ease-in-out infinite",
+        marquee: "marquee 10s linear infinite",
+      },
+      // add screen orientation
+      screens: {
+        landscape: { raw: "(orientation: landscape)" },
+        portrait: { raw: "(orientation: portrait)" },
       },
     },
   },

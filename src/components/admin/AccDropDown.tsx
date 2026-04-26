@@ -40,7 +40,7 @@ function AccDropDown({ usr, onLogout }: Props) {
       </button>
 
       {openDd && (
-        <div className="absolute right-1 mt-2 w-36 lg:w-full bg-slate-200 rounded-lg shadow-lg border z-50 p-4">
+        <div className="absolute right-0 mt-2 w-36 lg:w-full bg-slate-200 rounded-lg shadow-lg border z-50 p-4">
           <div className="px-4 py-3">
             <p className="text-sm font-medium">{usr}</p>
             <p className="text-xs text-gray-700">Administrator</p>

@@ -1,12 +1,13 @@
 "use client";
 
+import BackToTop from "@/components/commons/BackToTop";
 import About from "@/components/info/About";
 import Contact from "@/components/info/Contact";
 import HeroSection from "@/components/info/HeroSection";
 import MediaPartner from "@/components/info/MediaPartner";
 import ButtonLink from "@/components/links/ButtonLink";
 import Layout from "@/layouts/Layout";
-import { getCurrentCabinetInfo } from "@/services/landing_page/InformasiKabinet";
+import { GetCurrentCabinet } from "@/services/landing_page/InformasiKabinet";
 import { getWebSettings } from "@/services/landing_page/WebSettings";
 import { GlobalSettings } from "@/types/data/GlobalSettings";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
@@ -23,10 +24,10 @@ export default function InfoClient() {
       try {
         const [settings, cabinet] = await Promise.all([
           getWebSettings(),
-          getCurrentCabinetInfo(),
+          GetCurrentCabinet(),
         ]);
         setWebData(settings);
-        setCabinetData(cabinet);
+        setCabinetData(cabinet.data);
       } catch (err) {
         console.error("Failed to fetch info page data ", err);
       } finally {
@@ -63,6 +64,7 @@ export default function InfoClient() {
           </ButtonLink>
         </div>
       </main>
+      <BackToTop />
     </Layout>
   );
 }
