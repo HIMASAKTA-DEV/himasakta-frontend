@@ -49,6 +49,7 @@ import {
   ManageNewsHelp,
   ManageProgendaHelp,
 } from "./HelpModal";
+import MediaSelector from "./MediaSelector";
 import WebStats from "./WebStats";
 
 /* ================= REUSABLE DELETE MODAL ================= */
@@ -2639,6 +2640,7 @@ export function GlobalSetting() {
   const [initVal, setInitVal] = useState<FormValues | null>(null);
   const [isMaintenance, setIsMaintenance] = useState(false);
   const [openHelp, setOpenHelp] = useState(false);
+  const [openMedia, setOpenMedia] = useState(false);
   const {
     register,
     reset,
@@ -2845,11 +2847,23 @@ export function GlobalSetting() {
                     (URL path dari repositori)
                   </span>
                 </label>
-                <input
-                  {...register("FotoHimpunan")}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/30 px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/20 focus:border-primaryPink/40"
-                  placeholder="/images/..."
-                />
+                <div className="flex items-center gap-3 w-full">
+                  <input
+                    {...register("FotoHimpunan")}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50/30 px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/20 focus:border-primaryPink/40"
+                    placeholder="/images/(...).png"
+                  />
+                  <span className="text-gray-500 font-medium italic text-sm whitespace-nowrap">
+                    atau
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setOpenMedia(true)}
+                    className="whitespace-nowrap px-4 py-3 bg-primaryPink text-white font-bold text-sm rounded-xl hover:opacity-90 active:scale-95 transition-all"
+                  >
+                    Upload File
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -2975,7 +2989,7 @@ export function GlobalSetting() {
                 disabled={isSubmitting}
                 className="px-10 py-2.5 bg-primaryPink text-white rounded-xl font-bold text-sm shadow-xl shadow-pink-100 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 max-lg:w-full"
               >
-                {isSubmitting ? "Menyimpan..." : "Simpan Web Settings"}
+                {isSubmitting ? "Menyimpan..." : "Simpan"}
               </button>
             </div>
           </div>
@@ -3052,7 +3066,7 @@ export function GlobalSetting() {
               disabled={authLoading}
               className="px-10 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm shadow-xl shadow-slate-100 transition-all hover:bg-slate-900 active:scale-95 disabled:opacity-50"
             >
-              {authLoading ? "Memperbarui..." : "Update Credentials"}
+              {authLoading ? "Memperbarui..." : "Simpan"}
             </button>
           </div>
         </form>
@@ -3062,6 +3076,16 @@ export function GlobalSetting() {
         <HelpModal onClose={setOpenHelp}>
           <ManageGlobalSettingHelp />
         </HelpModal>
+      )}
+
+      {openMedia && (
+        <MediaSelector
+          onClose={() => setOpenMedia(false)}
+          onSelect={(photo) => {
+            reset({ ...control._formValues, FotoHimpunan: photo.image_url });
+            setOpenMedia(false);
+          }}
+        />
       )}
     </div>
   );

@@ -433,12 +433,16 @@ export function ManageGlobalSettingHelp() {
           website untuk publik saat sedang dalam perbaikan.
         </li>
         <li>
-          <b>Assets & Branding</b>: Ganti logo website dan logo kabinet secara
-          dinamis.
+          <b>Assets & Branding</b>: Ganti foto himpunan. Anda bisa memasukkan
+          URL dari repositori, atau klik tombol <b>Upload File</b> untuk memilih
+          foto dari galeri/mengupload foto baru.
+        </li>
+        <li>
+          <b>SOP Links</b>: Update tautan untuk SOP Internal dan Eksternal.
         </li>
         <li>
           <b>Social Links</b>: Update tautan media sosial HIMASAKTA ITS yang
-          muncul di footer.
+          muncul di footer dan halaman About.
         </li>
       </ol>
     </div>
