@@ -319,15 +319,15 @@ function page() {
   };
 
   const applyFormat2 = (before: string, after = before) => {
-    if (!descRef.current) return;
-    const el = descRef.current;
+    if (!goalRef.current) return;
+    const el = goalRef.current;
     const start = el.selectionStart;
     const end = el.selectionEnd;
-    const selected = descVal.slice(start, end);
+    const selected = goalVal.slice(start, end);
     const newValue =
-      descVal.slice(0, start) + before + selected + after + descVal.slice(end);
-    setDescVal(newValue);
-    setValue("description", newValue);
+      goalVal.slice(0, start) + before + selected + after + goalVal.slice(end);
+    setGoalVal(newValue);
+    setValue("goal", newValue);
     setTimeout(() => {
       el.focus();
       el.setSelectionRange(
