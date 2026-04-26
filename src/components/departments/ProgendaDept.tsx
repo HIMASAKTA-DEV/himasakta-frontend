@@ -105,11 +105,8 @@ function ProgendaDept({ ...dept }: DepartmentType) {
     <div className="w-full flex-col gap-8">
       <HeaderSection title={"Progenda"} />
       <p className="mb-8">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore aliqua. Lorem ipsum dolor sit
-        amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore aliqua. Lorem ipsum dolor sit amet, consectetur
-        adipiscing elit, sed do eiusmod tempor incididunt ut
+        Daftar program kerja dan agenda departemen yang telah dan akan
+        dilaksanakan. Klik untuk melihat detail setiap progenda.
       </p>
 
       {/* Slide progenda */}

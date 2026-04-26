@@ -3,6 +3,7 @@ import {
   FaInstagram,
   FaLink,
   FaLinkedin,
+  FaTiktok,
   FaTwitter,
   FaYoutube,
 } from "react-icons/fa";
@@ -22,6 +23,11 @@ export const socmedLinks = [
     key: "linkedin_link",
     baseUrl: "",
     Icon: FaLinkedin,
+  },
+  {
+    key: "tiktok_link",
+    baseUrl: "",
+    Icon: FaTiktok,
   },
   {
     key: "youtube_link",

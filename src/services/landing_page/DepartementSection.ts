@@ -5,8 +5,8 @@ import { DepartmentInfo } from "@/types/data/DepartmentSection";
 
 import { baseURL } from "@/lib/axios";
 
-export const getDepartmentInfo = async () => {
-  const resp = await fetch(`${baseURL}/department`);
+export const getDepartmentInfo = async (limit: number = 20) => {
+  const resp = await fetch(`${baseURL}/department?limit=${limit}`);
 
   if (!resp.ok) {
     throw new Error("Failed to load department info");

@@ -80,7 +80,7 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
         </div>
         <div className="w-full lg:w-[55%] flex flex-col items-start justify-start lg:mt-4 gap-6">
           <HeaderSection
-            title={`Departemen ${dept?.name ?? ""}`}
+            title={`${dept?.name ?? ""}`}
             sub={"Informasi Department"}
             subStyle="font-libertine text-slate-500 text-lg font-medium"
             titleStyle="text-3xl lg:text-4xl font-averia"
@@ -91,47 +91,57 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
             <ReactMarkdown>{dept?.description ?? ""}</ReactMarkdown>
           </div>
 
-          <div className="gap-4 flex flex-col w-full mt-2 bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
-            <h1 className="font-libertine font-bold text-xl text-gray-900 border-b pb-2">
-              Links Akademik
-            </h1>
-            <ul className="flex flex-col gap-3">
-              <li className="flex items-center group">
-                <div className="w-1.5 h-1.5 rounded-full bg-primaryPink mr-3 group-hover:scale-150 transition-all" />
-                <Link
-                  href={dept?.bank_soal_link ?? "/"}
-                  className="text-md font-libertine text-gray-700 hover:text-primaryPink transition-all duration-300 font-medium"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Bank Soal Department
-                </Link>
-              </li>
-              <li className="flex items-center group">
-                <div className="w-1.5 h-1.5 rounded-full bg-primaryPink mr-3 group-hover:scale-150 transition-all" />
-                <Link
-                  href={dept?.silabus_link ?? "/"}
-                  className="text-md font-libertine text-gray-700 hover:text-primaryPink transition-all duration-300 font-medium"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Silabus
-                </Link>
-              </li>
-              <li className="flex items-center group">
-                <div className="w-1.5 h-1.5 rounded-full bg-primaryPink mr-3 group-hover:scale-150 transition-all" />
-                <button
-                  onClick={handleBankRefClick}
-                  className="text-md font-libertine text-gray-700 hover:text-primaryPink transition-all duration-300 font-medium flex items-center gap-2"
-                >
-                  Bank Referensi{" "}
-                  <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full border border-red-200">
-                    Restricted
-                  </span>
-                </button>
-              </li>
-            </ul>
-          </div>
+          {(dept?.bank_soal_link ||
+            dept?.silabus_link ||
+            dept?.bank_ref_link) && (
+            <div className="gap-4 flex flex-col w-full mt-2 bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+              <h1 className="font-libertine font-bold text-xl text-gray-900 border-b pb-2">
+                Links Akademik
+              </h1>
+              <ul className="flex flex-col gap-3">
+                {dept?.bank_soal_link && (
+                  <li className="flex items-center group">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primaryPink mr-3 group-hover:scale-150 transition-all" />
+                    <Link
+                      href={dept.bank_soal_link}
+                      className="text-md font-libertine text-gray-700 hover:text-primaryPink transition-all duration-300 font-medium"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Bank Soal Department
+                    </Link>
+                  </li>
+                )}
+                {dept?.silabus_link && (
+                  <li className="flex items-center group">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primaryPink mr-3 group-hover:scale-150 transition-all" />
+                    <Link
+                      href={dept.silabus_link}
+                      className="text-md font-libertine text-gray-700 hover:text-primaryPink transition-all duration-300 font-medium"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Silabus
+                    </Link>
+                  </li>
+                )}
+                {dept?.bank_ref_link && (
+                  <li className="flex items-center group">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primaryPink mr-3 group-hover:scale-150 transition-all" />
+                    <button
+                      onClick={handleBankRefClick}
+                      className="text-md font-libertine text-gray-700 hover:text-primaryPink transition-all duration-300 font-medium flex items-center gap-2"
+                    >
+                      Bank Referensi{" "}
+                      <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full border border-red-200">
+                        Restricted
+                      </span>
+                    </button>
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
 
           <SocmedCard {...dept} />
         </div>
