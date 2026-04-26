@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "Tentang HIMASAKTA | HIMASAKTA ITS",
     description:
       "Informasi lengkap tentang HIMASAKTA ITS, media partner, dan kontak resmi.",
-    url: "https://himasakta.com/info",
+    url: "https://himasakta-its.com/info",
     images: [{ url: "/images/ProfilHimpunan.png", alt: "HIMASAKTA ITS" }],
   },
   twitter: {
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
       "Informasi lengkap tentang HIMASAKTA ITS, media partner, dan kontak resmi.",
     images: ["/images/ProfilHimpunan.png"],
   },
-  alternates: { canonical: "https://himasakta.com/info" },
+  alternates: { canonical: "https://himasakta-its.com/info" },
 };
 
 export default function Page() {

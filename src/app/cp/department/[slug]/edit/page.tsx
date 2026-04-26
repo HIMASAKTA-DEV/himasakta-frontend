@@ -28,6 +28,8 @@ type DepartmentLinkType =
   | "instagram_link"
   | "youtube_link"
   | "twitter_link"
+  | "linkedin_link"
+  | "tiktok_link"
   | "silabus_link"
   | "bank_soal_link"
   | "bank_ref_link";
@@ -47,6 +49,8 @@ type FormValues = {
   instagram_link: string;
   youtube_link: string;
   twitter_link: string;
+  linkedin_link: string;
+  tiktok_link: string;
   bank_soal_link: string;
   silabus_link: string;
   bank_ref_link: string;
@@ -206,6 +210,8 @@ export default function EditDepartmentPage() {
           instagram_link: data.instagram_link || "",
           youtube_link: data.youtube_link || "",
           twitter_link: data.twitter_link || "",
+          linkedin_link: data.linkedin_link || "",
+          tiktok_link: data.tiktok_link || "",
           bank_soal_link: data.bank_soal_link || "",
           bank_ref_link: data.bank_ref_link || "",
           silabus_link: data.silabus_link || "",
@@ -251,6 +257,22 @@ export default function EditDepartmentPage() {
             type: "twitter_link",
             label: "Twitter",
             url: data.twitter_link,
+          });
+        }
+        if (data.linkedin_link) {
+          mappedLinks.push({
+            id: crypto.randomUUID(),
+            type: "linkedin_link",
+            label: "LinkedIn",
+            url: data.linkedin_link,
+          });
+        }
+        if (data.tiktok_link) {
+          mappedLinks.push({
+            id: crypto.randomUUID(),
+            type: "tiktok_link",
+            label: "TikTok",
+            url: data.tiktok_link,
           });
         }
         if (data.silabus_link) {
@@ -316,6 +338,8 @@ export default function EditDepartmentPage() {
     { type: "instagram_link", label: "Instagram" },
     { type: "youtube_link", label: "Youtube" },
     { type: "twitter_link", label: "Twitter" },
+    { type: "linkedin_link", label: "LinkedIn" },
+    { type: "tiktok_link", label: "TikTok" },
     { type: "silabus_link", label: "Silabus" },
     { type: "bank_soal_link", label: "Bank Soal" },
     { type: "bank_ref_link", label: "Bank Referensi" },
@@ -357,6 +381,8 @@ export default function EditDepartmentPage() {
       instagram_link: initVal.instagram_link || "",
       youtube_link: initVal.youtube_link || "",
       twitter_link: initVal.twitter_link || "",
+      linkedin_link: initVal.linkedin_link || "",
+      tiktok_link: initVal.tiktok_link || "",
       bank_soal_link: initVal.bank_soal_link || "",
       bank_ref_link: initVal.bank_ref_link || "",
       silabus_link: initVal.silabus_link || "",
@@ -396,6 +422,22 @@ export default function EditDepartmentPage() {
         url: initVal.twitter_link,
       });
     }
+    if (initVal.linkedin_link) {
+      mappedLinks.push({
+        id: crypto.randomUUID(),
+        type: "linkedin_link",
+        label: "LinkedIn",
+        url: initVal.linkedin_link,
+      });
+    }
+    if (initVal.tiktok_link) {
+      mappedLinks.push({
+        id: crypto.randomUUID(),
+        type: "tiktok_link",
+        label: "TikTok",
+        url: initVal.tiktok_link,
+      });
+    }
     if (initVal.silabus_link) {
       mappedLinks.push({
         id: crypto.randomUUID(),
@@ -431,6 +473,8 @@ export default function EditDepartmentPage() {
           links.find((l) => l.type === "instagram_link")?.url || "",
         youtube_link: links.find((l) => l.type === "youtube_link")?.url || "",
         twitter_link: links.find((l) => l.type === "twitter_link")?.url || "",
+        linkedin_link: links.find((l) => l.type === "linkedin_link")?.url || "",
+        tiktok_link: links.find((l) => l.type === "tiktok_link")?.url || "",
         silabus_link: links.find((l) => l.type === "silabus_link")?.url || "",
         bank_soal_link:
           links.find((l) => l.type === "bank_soal_link")?.url || "",

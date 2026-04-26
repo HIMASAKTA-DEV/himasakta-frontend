@@ -1,7 +1,7 @@
 export const dummyListData = [
   {
     name: "list-1",
-    data: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+    data: "Contoh data list untuk testing komponen informasi kabinet",
   },
   {
     name: "list-2",

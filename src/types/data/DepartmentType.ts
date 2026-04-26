@@ -18,6 +18,8 @@ export type DepartmentType = {
   instagram_link?: string;
   youtube_link?: string;
   twitter_link?: string;
+  linkedin_link?: string;
+  tiktok_link?: string;
   silabus_link?: string;
   bank_soal_link?: string;
   bank_ref_link?: string;

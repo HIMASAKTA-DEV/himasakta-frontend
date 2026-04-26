@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Informasi Berita | HIMASAKTA ITS",
     description: "Kumpulan berita dan informasi terbaru dari HIMASAKTA ITS.",
-    url: "https://himasakta.com/news",
+    url: "https://himasakta-its.com/news",
     images: [{ url: "/images/ProfilHimpunan.png", alt: "HIMASAKTA ITS" }],
   },
   twitter: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: "Kumpulan berita dan informasi terbaru dari HIMASAKTA ITS.",
     images: ["/images/ProfilHimpunan.png"],
   },
-  alternates: { canonical: "https://himasakta.com/news" },
+  alternates: { canonical: "https://himasakta-its.com/news" },
 };
 
 export default function NewsLayout({
@@ -33,11 +33,11 @@ export default function NewsLayout({
           name: "Informasi Berita HIMASAKTA ITS",
           description:
             "Kumpulan berita dan informasi terbaru dari HIMASAKTA ITS.",
-          url: "https://himasakta.com/news",
+          url: "https://himasakta-its.com/news",
           isPartOf: {
             "@type": "WebSite",
             name: "HIMASAKTA ITS",
-            url: "https://himasakta.com",
+            url: "https://himasakta-its.com",
           },
         }}
       />
