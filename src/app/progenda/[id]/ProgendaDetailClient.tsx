@@ -142,9 +142,6 @@ export default function ProgendaDetailClient() {
             imgStyle="object-cover rounded-lg"
           />
         </div>
-        <div className="font-libertine text-md" id="deskripsi">
-          <ReactMarkdown>{progenda?.description}</ReactMarkdown>
-        </div>
         <div className="flex w-full gap-4 justify-center">
           {progenda?.instagram_link && (
             <Link
