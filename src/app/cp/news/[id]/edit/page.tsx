@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Lenis from "@studio-freight/lenis/types";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type FormValues = {
   title: string;
@@ -227,6 +228,32 @@ export default function EditNewsPage() {
     };
   }, [openUpload]);
 
+  const handleOrderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatOrderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
+  const handleUnorderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatUnorderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
   if (!isReady) {
     return (
       <LoadingFullScreen
@@ -383,7 +410,7 @@ export default function EditNewsPage() {
                         type="button"
                         onMouseDown={(e) => {
                           e.preventDefault();
-                          applyFormat("\n- ", "");
+                          handleUnorderedList();
                         }}
                       >
                         <AiOutlineUnorderedList />
@@ -392,7 +419,7 @@ export default function EditNewsPage() {
                         type="button"
                         onMouseDown={(e) => {
                           e.preventDefault();
-                          applyFormat("\n1. ", "");
+                          handleOrderedList();
                         }}
                       >
                         <AiOutlineOrderedList />

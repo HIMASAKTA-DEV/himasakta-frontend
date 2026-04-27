@@ -28,6 +28,7 @@ import {
 } from "react-icons/hi";
 import Select, { StylesConfig } from "react-select";
 import Lenis from "@studio-freight/lenis/types";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type _FormTimeline = Omit<Timelines, "progenda_id">;
 type FormTimeline = Omit<_FormTimeline, "id">;
@@ -459,6 +460,58 @@ function page() {
     };
   }, [previewImage, openMedia, openTimelineModal, editingFeeds, isSubmitting]);
 
+  const handleOrderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatOrderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
+  const handleUnorderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatUnorderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
+  const handleOrderedList2 = () => {
+    const textarea = goalRef.current;
+    if (!textarea) return;
+
+    const newText = formatOrderedList(
+      goalVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setGoalVal(newText);
+  };
+
+  const handleUnorderedList2 = () => {
+    const textarea = goalRef.current;
+    if (!textarea) return;
+
+    const newText = formatUnorderedList(
+      goalVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setGoalVal(newText);
+  };
+
   const { jwtToken, ready } = useAdminAuth();
   if (!ready) return <SkeletonPleaseWait />;
   if (!jwtToken) return <Unauthorized_404 />;
@@ -561,7 +614,7 @@ function page() {
                         type="button"
                         onMouseDown={(e) => {
                           e.preventDefault();
-                          applyFormat("\n  - ", "");
+                          handleUnorderedList();
                         }}
                       >
                         <AiOutlineUnorderedList size={18} />
@@ -569,8 +622,8 @@ function page() {
                       <button
                         type="button"
                         onMouseDown={(e) => {
-                          applyFormat("\n  1. ", "");
                           e.preventDefault();
+                          handleOrderedList();
                         }}
                       >
                         <AiOutlineOrderedList size={18} />
@@ -670,7 +723,7 @@ function page() {
                         type="button"
                         onMouseDown={(e) => {
                           e.preventDefault();
-                          applyFormat2("\n  - ", "");
+                          handleUnorderedList2();
                         }}
                       >
                         <AiOutlineUnorderedList size={18} />
@@ -678,8 +731,8 @@ function page() {
                       <button
                         type="button"
                         onMouseDown={(e) => {
-                          applyFormat2("\n  1. ", "");
                           e.preventDefault();
+                          handleOrderedList2();
                         }}
                       >
                         <AiOutlineOrderedList size={18} />

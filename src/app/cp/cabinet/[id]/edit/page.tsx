@@ -22,6 +22,7 @@ import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
 import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 import Lenis from "@studio-freight/lenis/types";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
   is_active: string;
@@ -315,6 +316,32 @@ export default function EditCabinetPage() {
     };
   }, [previewImage, openUpload, openUploadOrganigram, editingGallery]);
 
+  const handleOrderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatOrderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
+  const handleUnorderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatUnorderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
   if (isFetching) {
     return (
       <LoadingFullScreen
@@ -447,7 +474,7 @@ export default function EditCabinetPage() {
                       type="button"
                       onMouseDown={(e) => {
                         e.preventDefault();
-                        applyFormat("\n  - ", "");
+                        handleUnorderedList();
                       }}
                     >
                       <AiOutlineUnorderedList size={18} />
@@ -456,8 +483,8 @@ export default function EditCabinetPage() {
                     <button
                       type="button"
                       onMouseDown={(e) => {
-                        applyFormat("\n  1. ", "");
                         e.preventDefault();
+                        handleOrderedList();
                       }}
                     >
                       <AiOutlineOrderedList size={18} />
@@ -467,8 +494,8 @@ export default function EditCabinetPage() {
                       type="button"
                       className="ml-auto text-sm text-primaryPink"
                       onMouseDown={(e) => {
-                        setPreview((p) => !p);
                         e.preventDefault();
+                        setPreview((p) => !p);
                       }}
                     ></button>
                   </div>

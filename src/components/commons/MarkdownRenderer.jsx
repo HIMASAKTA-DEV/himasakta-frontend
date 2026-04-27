@@ -1,6 +1,6 @@
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
@@ -16,7 +16,7 @@ export default function MarkdownRenderer({ children }) {
 
             return !inline && match ? (
               <SyntaxHighlighter
-                style={dracula}
+                style={vscDarkPlus}
                 PreTag="div"
                 language={match[1]}
                 {...props}

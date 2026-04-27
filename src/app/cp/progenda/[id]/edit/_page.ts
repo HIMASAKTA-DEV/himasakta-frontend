@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormValues, LinkProps, PhotoData, linkOpts } from "./type";
 import Lenis from "@studio-freight/lenis/types";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type LenisWindow = typeof globalThis & {
   lenis?: Lenis;
@@ -453,6 +454,32 @@ export default function useProgendaEdit() {
     };
   }, [previewImage, openMedia, openTimelineModal, editingFeeds, isSubmitting]);
 
+  const handleOrderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatOrderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
+  const handleUnorderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatUnorderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
   return {
     state: {
       id,
@@ -523,6 +550,8 @@ export default function useProgendaEdit() {
       applyFormat,
       applyFormat2,
       onSubmit,
+      handleOrderedList,
+      handleUnorderedList,
     },
 
     forms: {
