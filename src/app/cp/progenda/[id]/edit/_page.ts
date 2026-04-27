@@ -2,18 +2,18 @@
 import toast from "react-hot-toast";
 
 import { UUID } from "crypto";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { GetAllDepts } from "@/services/departments/GetAllDepts";
 import { ApiResponse } from "@/types/api";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { ProgendaType, Timelines } from "@/types/data/ProgendaType";
+import Lenis from "@studio-freight/lenis/types";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormValues, LinkProps, PhotoData, linkOpts } from "./type";
-import Lenis from "@studio-freight/lenis/types";
-import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type LenisWindow = typeof globalThis & {
   lenis?: Lenis;

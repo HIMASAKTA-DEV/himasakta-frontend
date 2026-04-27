@@ -3,11 +3,12 @@ import toast from "react-hot-toast";
 
 import Typography from "@/components/Typography";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
+import MarkdownEditor from "@/components/admin/MarkdownEditor";
 import MediaSelector from "@/components/admin/MediaSelector";
 import Unauthorized_404 from "@/components/admin/Unauthorized_404";
 import VerifToken from "@/components/admin/VerifToken";
-import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { useAdminAuth } from "@/services/admin/useAdminAuth";
@@ -15,11 +16,10 @@ import { GetAllDepts } from "@/services/departments/GetAllDepts";
 import { ApiResponse } from "@/types/api";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { ProgendaType, Timelines } from "@/types/data/ProgendaType";
+import Lenis from "@studio-freight/lenis/types";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
-import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
 import { FaChevronLeft } from "react-icons/fa";
 import {
   HiOutlinePencilAlt,
@@ -27,8 +27,6 @@ import {
   HiOutlineUpload,
 } from "react-icons/hi";
 import Select, { StylesConfig } from "react-select";
-import Lenis from "@studio-freight/lenis/types";
-import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type _FormTimeline = Omit<Timelines, "progenda_id">;
 type FormTimeline = Omit<_FormTimeline, "id">;
@@ -142,9 +140,9 @@ function page() {
     },
   });
   const [descVal, setDescVal] = useState("");
-  const [descMode, setDescMode] = useState<"edit" | "preview">("edit");
+  const [_descMode, _setDescMode] = useState<"edit" | "preview">("edit");
   const [goalVal, setGoalVal] = useState("");
-  const [goalMode, setGoalMode] = useState<"edit" | "preview">("edit");
+  const [_goalMode, _setGoalMode] = useState<"edit" | "preview">("edit");
   const descRef = useRef<HTMLTextAreaElement | null>(null);
   const goalRef = useRef<HTMLTextAreaElement | null>(null);
   const [openMedia, setOpenMedia] = useState(false);
@@ -305,7 +303,7 @@ function page() {
     }
   };
 
-  const applyFormat = (before: string, after = before) => {
+  const _applyFormat = (before: string, after = before) => {
     if (!descRef.current) return;
     const el = descRef.current;
     const start = el.selectionStart;
@@ -324,7 +322,7 @@ function page() {
     }, 0);
   };
 
-  const applyFormat2 = (before: string, after = before) => {
+  const _applyFormat2 = (before: string, after = before) => {
     if (!goalRef.current) return;
     const el = goalRef.current;
     const start = el.selectionStart;
@@ -460,7 +458,7 @@ function page() {
     };
   }, [previewImage, openMedia, openTimelineModal, editingFeeds, isSubmitting]);
 
-  const handleOrderedList = () => {
+  const _handleOrderedList = () => {
     const textarea = descRef.current;
     if (!textarea) return;
 
@@ -473,7 +471,7 @@ function page() {
     setDescVal(newText);
   };
 
-  const handleUnorderedList = () => {
+  const _handleUnorderedList = () => {
     const textarea = descRef.current;
     if (!textarea) return;
 
@@ -486,7 +484,7 @@ function page() {
     setDescVal(newText);
   };
 
-  const handleOrderedList2 = () => {
+  const _handleOrderedList2 = () => {
     const textarea = goalRef.current;
     if (!textarea) return;
 
@@ -499,7 +497,7 @@ function page() {
     setGoalVal(newText);
   };
 
-  const handleUnorderedList2 = () => {
+  const _handleUnorderedList2 = () => {
     const textarea = goalRef.current;
     if (!textarea) return;
 
@@ -555,108 +553,19 @@ function page() {
               <label className="mb-2 block text-[15px] font-semibold text-black">
                 Deskripsi
               </label>
-              <div className="flex w-44 rounded-lg border overflow-hidden text-sm my-2">
-                <button
-                  type="button"
-                  onClick={() => setDescMode("edit")}
-                  className={`px-4 py-1.5 font-medium transition ${
-                    descMode === "edit"
-                      ? "bg-primaryPink text-white"
-                      : "bg-white text-gray-500 hover:bg-gray-100"
-                  }`}
-                >
-                  Markdown
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDescMode("preview")}
-                  className={`px-4 py-1.5 font-medium transition ${
-                    descMode === "preview"
-                      ? "bg-primaryPink text-white"
-                      : "bg-white text-gray-500 hover:bg-gray-100"
-                  }`}
-                >
-                  Preview
-                </button>
-              </div>
-              <div className="overflow-hidden rounded-xl border border-gray-200 bg-[#f8fafc]">
-                {descMode === "edit" && (
-                  <>
-                    <div className="flex items-center gap-2 border-b px-3 py-2">
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          applyFormat("**");
-                          e.preventDefault();
-                        }}
-                      >
-                        <BiBold size={18} />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          applyFormat("*");
-                          e.preventDefault();
-                        }}
-                      >
-                        <BiItalic size={18} />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          applyFormat("<u>", "</u>");
-                        }}
-                      >
-                        <BiUnderline size={18} />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          handleUnorderedList();
-                        }}
-                      >
-                        <AiOutlineUnorderedList size={18} />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          handleOrderedList();
-                        }}
-                      >
-                        <AiOutlineOrderedList size={18} />
-                      </button>
-                    </div>
-                    <Controller
-                      name="description"
-                      control={control}
-                      render={({ field }) => (
-                        <textarea
-                          {...field}
-                          ref={(el) => {
-                            field.ref(el);
-                            descRef.current = el;
-                          }}
-                          value={descVal}
-                          onChange={(e) => {
-                            setDescVal(e.target.value);
-                            field.onChange(e.target.value);
-                          }}
-                          className="w-full min-h-[200px] bg-[#f8fafc] p-4 text-gray-800 font-medium focus:outline-none"
-                          placeholder="Tulis markdown di sini..."
-                        />
-                      )}
-                    />
-                  </>
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <MarkdownEditor
+                    value={descVal}
+                    onChange={(val) => {
+                      setDescVal(val);
+                      field.onChange(val);
+                    }}
+                  />
                 )}
-                {descMode === "preview" && (
-                  <div className="w-full min-h-[200px] bg-[#f8fafc] p-4">
-                    <MarkdownRenderer>{descVal}</MarkdownRenderer>
-                  </div>
-                )}
-              </div>
+              />
             </div>
 
             {/* GOAL */}
@@ -664,108 +573,19 @@ function page() {
               <label className="mb-2 block text-[15px] font-semibold text-black">
                 Tujuan
               </label>
-              <div className="flex w-44 rounded-lg border overflow-hidden text-sm my-2">
-                <button
-                  type="button"
-                  onClick={() => setGoalMode("edit")}
-                  className={`px-4 py-1.5 font-medium transition ${
-                    goalMode === "edit"
-                      ? "bg-primaryPink text-white"
-                      : "bg-white text-gray-500 hover:bg-gray-100"
-                  }`}
-                >
-                  Markdown
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setGoalMode("preview")}
-                  className={`px-4 py-1.5 font-medium transition ${
-                    goalMode === "preview"
-                      ? "bg-primaryPink text-white"
-                      : "bg-white text-gray-500 hover:bg-gray-100"
-                  }`}
-                >
-                  Preview
-                </button>
-              </div>
-              <div className="overflow-hidden rounded-xl border border-gray-200 bg-[#f8fafc]">
-                {goalMode === "edit" && (
-                  <>
-                    <div className="flex items-center gap-2 border-b px-3 py-2">
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          applyFormat2("**");
-                          e.preventDefault();
-                        }}
-                      >
-                        <BiBold size={18} />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          applyFormat2("*");
-                          e.preventDefault();
-                        }}
-                      >
-                        <BiItalic size={18} />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          applyFormat2("<u>", "</u>");
-                        }}
-                      >
-                        <BiUnderline size={18} />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          handleUnorderedList2();
-                        }}
-                      >
-                        <AiOutlineUnorderedList size={18} />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          handleOrderedList2();
-                        }}
-                      >
-                        <AiOutlineOrderedList size={18} />
-                      </button>
-                    </div>
-                    <Controller
-                      name="goal"
-                      control={control}
-                      render={({ field }) => (
-                        <textarea
-                          {...field}
-                          ref={(el) => {
-                            field.ref(el);
-                            goalRef.current = el;
-                          }}
-                          value={goalVal}
-                          onChange={(e) => {
-                            setGoalVal(e.target.value);
-                            field.onChange(e.target.value);
-                          }}
-                          className="w-full min-h-[200px] bg-[#f8fafc] p-4 text-gray-800 font-medium focus:outline-none"
-                          placeholder="Tulis markdown di sini..."
-                        />
-                      )}
-                    />
-                  </>
+              <Controller
+                name="goal"
+                control={control}
+                render={({ field }) => (
+                  <MarkdownEditor
+                    value={goalVal}
+                    onChange={(val) => {
+                      setGoalVal(val);
+                      field.onChange(val);
+                    }}
+                  />
                 )}
-                {goalMode === "preview" && (
-                  <div className="w-full min-h-[200px] bg-[#f8fafc] p-4">
-                    <MarkdownRenderer>{goalVal}</MarkdownRenderer>
-                  </div>
-                )}
-              </div>
+              />
             </div>
             <div>
               <label className="mb-3 block text-[15px] font-semibold text-black">

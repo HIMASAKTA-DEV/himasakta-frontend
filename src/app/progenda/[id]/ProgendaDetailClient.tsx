@@ -192,6 +192,12 @@ export default function ProgendaDetailClient() {
             </Link>
           )}
         </div>
+        <div className="flex flex-col gap-2 w-full" id="deskripsi">
+          <HeaderSection title={"Deskripsi"} />
+          <div className="font-libertine text-md">
+            <ReactMarkdown>{progenda?.description}</ReactMarkdown>
+          </div>
+        </div>
         <div className="flex flex-col gap-2 w-full" id="tujuan">
           <HeaderSection title={"Tujuan"} />
           <div className="font-libertine text-md">

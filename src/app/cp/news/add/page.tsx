@@ -1,9 +1,8 @@
 "use client";
 import toast from "react-hot-toast";
 
+import MarkdownEditor from "@/components/admin/MarkdownEditor";
 import Link from "next/link";
-import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
-import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
 import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
@@ -13,14 +12,13 @@ import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
 import TagInput from "@/components/admin/TagInput";
 import VerifToken from "@/components/admin/VerifToken";
-import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
+import Lenis from "@studio-freight/lenis/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import Lenis from "@studio-freight/lenis/types";
-import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type FormValues = {
   title: string;
@@ -62,7 +60,7 @@ export default function AddNewsPage() {
   });
 
   const descRef = useRef<HTMLTextAreaElement | null>(null);
-  const [descMode, setDescMode] = useState<"edit" | "preview">("edit");
+  const [_descMode, _setDescMode] = useState<"edit" | "preview">("edit");
   const [descVal, setDescVal] = useState("");
   const [logo, setLogo] = useState<PhotoData | null>(null);
   const [openUpload, setOpenUpload] = useState(false);
@@ -70,7 +68,7 @@ export default function AddNewsPage() {
   const [isRestored, setIsRestored] = useState(false);
 
   /* ================= MARKDOWN FORMAT ================= */
-  const applyFormat = (before: string, after = before) => {
+  const _applyFormat = (before: string, after = before) => {
     if (!descRef.current) return;
 
     const el = descRef.current;
@@ -176,7 +174,7 @@ export default function AddNewsPage() {
     };
   }, [openUpload]);
 
-  const handleOrderedList = () => {
+  const _handleOrderedList = () => {
     const textarea = descRef.current;
     if (!textarea) return;
 
@@ -189,7 +187,7 @@ export default function AddNewsPage() {
     setDescVal(newText);
   };
 
-  const handleUnorderedList = () => {
+  const _handleUnorderedList = () => {
     const textarea = descRef.current;
     if (!textarea) return;
 
@@ -299,112 +297,26 @@ export default function AddNewsPage() {
             {/* CONTENT */}
             <div>
               <label className="block font-semibold mb-2">Content</label>
-
-              {/* TOGGLE */}
-              <div className="flex w-44 rounded-lg border overflow-hidden text-sm mb-2">
-                <button
-                  type="button"
-                  onClick={() => setDescMode("edit")}
-                  className={`flex-1 py-1 ${
-                    descMode === "edit" ? "bg-primaryPink text-white" : ""
-                  }`}
-                >
-                  Markdown
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDescMode("preview")}
-                  className={`flex-1 py-1 ${
-                    descMode === "preview" ? "bg-primaryPink text-white" : ""
-                  }`}
-                >
-                  Preview
-                </button>
-              </div>
-
-              <div className="rounded-xl border bg-[#f8fafc]">
-                {descMode === "edit" && (
+              <Controller
+                name="content"
+                control={control}
+                rules={{ required: "Content tidak boleh kosong" }}
+                render={({ field, fieldState }) => (
                   <>
-                    {/* TOOLBAR */}
-                    <div className="flex gap-2 border-b p-2">
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          applyFormat("**");
-                        }}
-                      >
-                        <BiBold />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          applyFormat("*");
-                        }}
-                      >
-                        <BiItalic />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          applyFormat("<u>", "</u>");
-                        }}
-                      >
-                        <BiUnderline />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          handleUnorderedList();
-                        }}
-                      >
-                        <AiOutlineUnorderedList />
-                      </button>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          handleOrderedList();
-                        }}
-                      >
-                        <AiOutlineOrderedList />
-                      </button>
-                    </div>
-
-                    <textarea
-                      ref={descRef}
+                    <MarkdownEditor
                       value={descVal}
-                      onChange={(e) => {
-                        setDescVal(e.target.value);
-                        setValue("content", e.target.value, {
-                          shouldDirty: true,
-                        });
+                      onChange={(val) => {
+                        setDescVal(val);
+                        field.onChange(val);
                       }}
-                      rows={6}
-                      placeholder="Cotent goes here..."
-                      className="w-full bg-[#f8fafc] rounded-xl px-4 py-3 placeholder:text-[#9BA5B7] placeholder:italic text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-medium"
                     />
+                    {fieldState.error && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
                   </>
                 )}
-
-                {descMode === "preview" && (
-                  <div className="prose px-4 py-3">
-                    <MarkdownRenderer>
-                      {descVal || "_Tidak ada konten_"}
-                    </MarkdownRenderer>
-                  </div>
-                )}
-              </div>
-
-              {/* hidden field for RHF */}
-              <input
-                type="hidden"
-                {...register("content", {
-                  required: "Content tidak boleh kosong",
-                })}
               />
             </div>
 
