@@ -227,6 +227,7 @@ export default function AddGalleryPage() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="p-10 bg-white min-h-screen"
+      data-lenis-prevent
     >
       <div className="max-w-7xl mx-auto">
         <Typography

@@ -140,7 +140,7 @@ function page() {
 
   /* ================= RENDER ================= */
   return (
-    <main>
+    <main data-lenis-prevent>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="min-h-screen bg-white p-10"

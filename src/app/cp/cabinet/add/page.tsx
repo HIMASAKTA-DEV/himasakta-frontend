@@ -294,6 +294,7 @@ export default function AddCabinetPage() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="min-h-screen bg-white p-10"
+      data-lenis-prevent
     >
       <div className="mx-auto max-w-7xl">
         <Typography

@@ -175,6 +175,7 @@ export default function AddNewsPage() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="p-10 bg-white min-h-screen"
+      data-lenis-prevent
     >
       <VerifToken />
       <div className="max-w-7xl mx-auto">
