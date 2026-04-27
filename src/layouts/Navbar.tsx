@@ -33,18 +33,18 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
   return (
     <nav
       className={clsx(
-        "flex items-center justify-between h-[115px] px-12 sticky top-0 z-[9999] transition-all duration-300",
-        isTransparent ? "text-white" : "text-black",
+        "flex items-center justify-between h-[115px] px-6 lg:px-12 sticky top-0 z-[9999] transition-all duration-500",
+        isTransparent ? "text-white" : "text-black lg:mx-12 lg:top-8",
       )}
     >
       <div
         className={clsx(
-          "absolute inset-0 -z-10 transition-all duration-300 transform-gpu shadow-md",
+          "absolute inset-0 -z-10 transition-all duration-300 transform-gpu shadow-md lg:ring-2 lg:ring-primaryPinkLight",
           isTransparent
             ? "bg-transparent opacity-0"
             : open
               ? "bg-white opacity-100"
-              : "bg-white/70 backdrop-blur-3xl opacity-100",
+              : "bg-white/80 backdrop-blur-md opacity-100 lg:rounded-2xl",
         )}
       />
       {/* Logo */}
@@ -57,7 +57,7 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
         />
         <h1
           className={clsx(
-            "font-averia text-2xl lg:text-[32px] font-bold transition-colors duration-300",
+            "font-averia text-xl lg:text-[32px] font-bold transition-colors duration-300",
             isTransparent ? "text-white" : "text-black",
           )}
         >
