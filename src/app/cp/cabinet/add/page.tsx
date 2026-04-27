@@ -20,6 +20,7 @@ import MediaSelector from "@/components/admin/MediaSelector";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ApiResponse } from "@/types/commons/apiResponse";
 import { DepartmentType } from "@/types/data/DepartmentType";
+import Lenis from "@studio-freight/lenis/types";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
   is_active: string;
@@ -27,6 +28,10 @@ type FormValues = Omit<CreateCabinetType, "is_active"> & {
 type PhotoData = {
   id: string;
   image_url: string;
+};
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
 };
 
 export default function AddCabinetPage() {
@@ -245,21 +250,6 @@ export default function AddCabinetPage() {
     setIsRestored(true);
   }, [reset]);
 
-  // prevent scrolling when modal opened
-  useEffect(() => {
-    const isModalOpen = openUpload || openUploadOrganigram;
-
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [openUpload, openUploadOrganigram]);
-
   const [gallery, setGallery] = useState<PhotoData[]>([]);
   const [editingGallery, setEditingGallery] = useState(false);
   const [previewImage, setPreviewImage] = useState<PhotoData | null>(null);
@@ -281,6 +271,31 @@ export default function AddCabinetPage() {
   const removeGallery = (id: string) => {
     setGallery((p) => p.filter((photo) => photo.id !== id));
   };
+
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
+
+    const isAnyModalOpen =
+      previewImage || openUpload || openUploadOrganigram || editingGallery;
+
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis.stop();
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    };
+  }, [previewImage, openUpload, openUploadOrganigram, editingGallery]);
 
   if (!isRestored) {
     return (
@@ -841,7 +856,7 @@ export default function AddCabinetPage() {
       {/* Image preview modal */}
       {previewImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm "
           onClick={() => setPreviewImage(null)}
         >
           <div

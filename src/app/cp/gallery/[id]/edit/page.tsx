@@ -19,6 +19,7 @@ import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
 import { ApiResponse } from "@/types/commons/apiResponse";
+import Lenis from "@studio-freight/lenis/types";
 
 type PhotoData = {
   id: string;
@@ -38,6 +39,10 @@ type ProgendaDD = {
 type CabinetDD = {
   id: string;
   tagline: string;
+};
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
 };
 
 type OptionType = { label?: string; value?: string };
@@ -205,6 +210,30 @@ export default function EditGalleryPage() {
     setOpenMedia(false);
     localStorage.removeItem(LOCAL_KEY);
   };
+
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
+
+    const isAnyModalOpen = openMedia;
+
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis.stop();
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    };
+  }, [openMedia]);
 
   if (!isRestored) {
     return (

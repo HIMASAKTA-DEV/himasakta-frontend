@@ -12,6 +12,11 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormValues, LinkProps, PhotoData, linkOpts } from "./type";
+import Lenis from "@studio-freight/lenis/types";
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
+};
 
 export default function useProgendaEdit() {
   // STATE
@@ -421,18 +426,32 @@ export default function useProgendaEdit() {
 
   // prevent scrolling when modal opened
   useEffect(() => {
-    const isModalOpen = isSubmitting;
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
 
-    if (isModalOpen) {
+    const isAnyModalOpen =
+      previewImage ||
+      openMedia ||
+      openTimelineModal ||
+      editingFeeds ||
+      isSubmitting;
+
+    if (isAnyModalOpen) {
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis.stop();
     } else {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
     }
 
     return () => {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
     };
-  }, [isSubmitting]);
+  }, [previewImage, openMedia, openTimelineModal, editingFeeds, isSubmitting]);
 
   return {
     state: {

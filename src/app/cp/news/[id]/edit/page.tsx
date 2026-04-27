@@ -21,6 +21,7 @@ import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import Lenis from "@studio-freight/lenis/types";
 
 type FormValues = {
   title: string;
@@ -34,6 +35,10 @@ type FormValues = {
 type PhotoData = {
   id: UUID | string;
   image_url: string;
+};
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
 };
 
 export default function EditNewsPage() {
@@ -196,22 +201,31 @@ export default function EditNewsPage() {
     setIsStorageRestored(true);
   }, [reset]);
 
+  const isReady = isApiLoaded && isStorageRestored;
+
   // prevent scrolling when modal opened
   useEffect(() => {
-    const isModalOpen = openUpload;
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
 
-    if (isModalOpen) {
+    const isAnyModalOpen = openUpload;
+
+    if (isAnyModalOpen) {
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis.stop();
     } else {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
     }
 
     return () => {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
     };
   }, [openUpload]);
-
-  const isReady = isApiLoaded && isStorageRestored;
 
   if (!isReady) {
     return (
