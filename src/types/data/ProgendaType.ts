@@ -13,7 +13,7 @@ export interface Timelines extends BaseEntity {
   progenda_id: UUID | string;
   date: string;
   info: string;
-  link: string;
+  link?: string;
 }
 
 export interface ProgendaType extends BaseEntity {

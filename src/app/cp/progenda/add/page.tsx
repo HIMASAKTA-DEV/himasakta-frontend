@@ -262,8 +262,6 @@ function page() {
         thumbnail_id: thumbnail?.id ?? null,
         timelines: timelines.map((t) => ({
           ...t,
-          created_at: new Date(t.created_at).toISOString(),
-          updated_at: new Date(t.updated_at).toISOString(),
           date: new Date(t.date).toISOString(),
         })),
         website_link: links.find((l) => l.type === "website_link")?.url ?? "",

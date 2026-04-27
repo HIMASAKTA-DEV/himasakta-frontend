@@ -444,7 +444,7 @@ function page() {
                             setters.setTimelineForm({
                               date: t.date.slice(0, 10),
                               info: t.info,
-                              link: t.link,
+                              link: t.link || "",
                             });
                           }}
                           className="text-blue-500 hover:opacity-60 transition"
