@@ -288,7 +288,7 @@ function page() {
                         type="button"
                         onMouseDown={(e) => {
                           e.preventDefault();
-                          actions.applyFormat2("\n  - ", "");
+                          actions.handleUnorderedList();
                         }}
                       >
                         <AiOutlineUnorderedList size={18} />
@@ -296,8 +296,8 @@ function page() {
                       <button
                         type="button"
                         onMouseDown={(e) => {
-                          actions.applyFormat2("\n  1. ", "");
                           e.preventDefault();
+                          actions.handleOrderedList();
                         }}
                       >
                         <AiOutlineOrderedList size={18} />

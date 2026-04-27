@@ -541,9 +541,9 @@ export default function Page() {
                     >
                       <span className="text-sm font-medium pointer-events-none">
                         {role.name}{" "}
-                        <span className="text-xs text-gray-400">
+                        {/* <span className="text-xs text-gray-400">
                           (Lv. {role.level})
-                        </span>
+                        </span> */}
                       </span>
                       <div className="flex gap-2">
                         <button

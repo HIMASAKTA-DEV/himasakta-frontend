@@ -23,6 +23,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import Lenis from "@studio-freight/lenis/types";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type DepartmentLinkType =
   | "social_media_link"
@@ -314,6 +315,33 @@ export default function AddDepartmentPage() {
     };
   }, [previewImage, openMedia, editingGallery]);
 
+  // text editor helper
+  const handleOrderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatOrderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
+  const handleUnorderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatUnorderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
   if (!isRestored) {
     return (
       <LoadingFullScreen
@@ -412,7 +440,7 @@ export default function AddDepartmentPage() {
                         type="button"
                         onMouseDown={(e) => {
                           e.preventDefault();
-                          applyFormat("\n  - ", "");
+                          handleUnorderedList();
                         }}
                       >
                         <AiOutlineUnorderedList size={18} />
@@ -420,8 +448,8 @@ export default function AddDepartmentPage() {
                       <button
                         type="button"
                         onMouseDown={(e) => {
-                          applyFormat("\n  1. ", "");
                           e.preventDefault();
+                          handleOrderedList();
                         }}
                       >
                         <AiOutlineOrderedList size={18} />

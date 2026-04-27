@@ -21,6 +21,7 @@ import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ApiResponse } from "@/types/commons/apiResponse";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import Lenis from "@studio-freight/lenis/types";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
   is_active: string;
@@ -297,6 +298,32 @@ export default function AddCabinetPage() {
     };
   }, [previewImage, openUpload, openUploadOrganigram, editingGallery]);
 
+  const handleOrderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatOrderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
+  const handleUnorderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatUnorderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
   if (!isRestored) {
     return (
       <div className=" flex items-center justify-center p-10 min-h-screen w-full">
@@ -451,7 +478,7 @@ export default function AddCabinetPage() {
                       type="button"
                       onMouseDown={(e) => {
                         e.preventDefault();
-                        applyFormat("\n  - ", "");
+                        handleUnorderedList();
                       }}
                       className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
                     >
@@ -461,8 +488,8 @@ export default function AddCabinetPage() {
                     <button
                       type="button"
                       onMouseDown={(e) => {
-                        applyFormat("\n  1. ", "");
                         e.preventDefault();
+                        handleOrderedList();
                       }}
                       className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
                     >

@@ -22,6 +22,7 @@ import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { MonthlyEvent } from "@/types/data/GetToKnow";
 import Lenis from "@studio-freight/lenis/types";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type FormValues = {
   title: string;
@@ -157,6 +158,32 @@ function page() {
     };
   }, [openMedia]);
 
+  const handleOrderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatOrderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
+  const handleUnorderedList = () => {
+    const textarea = descRef.current;
+    if (!textarea) return;
+
+    const newText = formatUnorderedList(
+      descVal,
+      textarea.selectionStart,
+      textarea.selectionEnd,
+    );
+
+    setDescVal(newText);
+  };
+
   if (loading) {
     return (
       <LoadingFullScreen
@@ -288,7 +315,7 @@ function page() {
                           type="button"
                           onMouseDown={(e) => {
                             e.preventDefault();
-                            applyFormat("\n- ", "");
+                            handleUnorderedList();
                           }}
                         >
                           <AiOutlineUnorderedList />
@@ -297,7 +324,7 @@ function page() {
                           type="button"
                           onMouseDown={(e) => {
                             e.preventDefault();
-                            applyFormat("\n1. ", "");
+                            handleOrderedList();
                           }}
                         >
                           <AiOutlineOrderedList />
