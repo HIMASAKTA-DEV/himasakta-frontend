@@ -30,9 +30,7 @@ function DesktopComp({ timeline }: TimelineCompProps) {
               {/* Node */}
               <div className="w-12 h-12 rounded-full bg-gray-300 mb-2 z-20" />
               <span className="text-sm text-gray-600 mb-1">
-                {item.created_at
-                  ? new Date(item.created_at).toLocaleDateString()
-                  : ""}
+                {item.date ? new Date(item.date).toLocaleDateString() : ""}
               </span>
               {/* Info */}
               <span className="text-sm font-medium">{item.info}</span>
