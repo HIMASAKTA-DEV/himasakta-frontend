@@ -21,6 +21,7 @@ import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { MonthlyEvent } from "@/types/data/GetToKnow";
+import Lenis from "@studio-freight/lenis/types";
 
 type FormValues = {
   title: string;
@@ -33,6 +34,10 @@ type FormValues = {
 type PhotoData = {
   id: string;
   image_url: string;
+};
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
 };
 
 function page() {
@@ -128,6 +133,30 @@ function page() {
     setValue("thumbnail_id", "");
   };
 
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
+
+    const isAnyModalOpen = openMedia;
+
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis.stop();
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    };
+  }, [openMedia]);
+
   if (loading) {
     return (
       <LoadingFullScreen
@@ -140,7 +169,7 @@ function page() {
 
   /* ================= RENDER ================= */
   return (
-    <main>
+    <main data-lenis-prevent>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="min-h-screen bg-white p-10"

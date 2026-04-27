@@ -131,7 +131,7 @@ export default function StrukturAnggota({ ...dept }: PageProps) {
   if (error) return <p>&#9940; Gagal memuat data :&#40;</p>;
 
   return (
-    <div className="flex flex-col gap-8 items-center">
+    <div className="flex flex-col gap-8 items-center" id="struktur">
       <HeaderSection title="Struktur Anggota" />
 
       <div className="relative overflow-hidden w-full pb-10">

@@ -21,6 +21,7 @@ import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
 import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
+import Lenis from "@studio-freight/lenis/types";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
   is_active: string;
@@ -29,6 +30,10 @@ type FormValues = Omit<CreateCabinetType, "is_active"> & {
 type PhotoData = {
   id: string;
   image_url: string;
+};
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
 };
 
 export default function EditCabinetPage() {
@@ -259,21 +264,6 @@ export default function EditCabinetPage() {
     }, 0);
   };
 
-  // prevent scrolling when modal opened
-  useEffect(() => {
-    const isModalOpen = openUpload || openUploadOrganigram || isSubmitting;
-
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [openUpload, openUploadOrganigram, isSubmitting]);
-
   const [gallery, setGallery] = useState<PhotoData[]>([]);
   const [editingGallery, setEditingGallery] = useState(false);
   const [previewImage, setPreviewImage] = useState<PhotoData | null>(null);
@@ -300,6 +290,31 @@ export default function EditCabinetPage() {
     setDelGallery((d) => [...d, photo]);
   };
 
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
+
+    const isAnyModalOpen =
+      previewImage || openUpload || openUploadOrganigram || editingGallery;
+
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis.stop();
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    };
+  }, [previewImage, openUpload, openUploadOrganigram, editingGallery]);
+
   if (isFetching) {
     return (
       <LoadingFullScreen
@@ -314,6 +329,7 @@ export default function EditCabinetPage() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="min-h-screen bg-white p-10"
+      data-lenis-prevent
     >
       <div className="mx-auto max-w-7xl">
         <Typography
@@ -348,6 +364,7 @@ export default function EditCabinetPage() {
               <textarea
                 {...register("visi", { required: "Visi wajib diisi" })}
                 className="w-full min-h-[100px] rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                data-lenis-prevent
               />
             </div>
 
@@ -358,6 +375,7 @@ export default function EditCabinetPage() {
               <textarea
                 {...register("misi", { required: "Misi wajib diisi" })}
                 className="w-full min-h-[100px] rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                data-lenis-prevent
               />
             </div>
 
@@ -472,12 +490,16 @@ export default function EditCabinetPage() {
                           field.onChange(e.target.value);
                         }}
                         className="w-full min-h-[200px] bg-[#f8fafc] p-4"
+                        data-lenis-prevent
                       />
                     )}
                   />
                 )}
                 {descMode === "preview" && (
-                  <div className="w-full min-h-[200px] bg-[#f8fafc] p-4">
+                  <div
+                    className="w-full min-h-[200px] bg-[#f8fafc] p-4"
+                    data-lenis-prevent
+                  >
                     <MarkdownRenderer>{descVal}</MarkdownRenderer>
                   </div>
                 )}
@@ -782,7 +804,7 @@ export default function EditCabinetPage() {
       {/* Image preview modal */}
       {previewImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm "
           onClick={() => setPreviewImage(null)}
         >
           <div

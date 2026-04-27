@@ -22,6 +22,7 @@ import { DepartmentType } from "@/types/data/DepartmentType";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
+import Lenis from "@studio-freight/lenis/types";
 
 type DepartmentLinkType =
   | "social_media_link"
@@ -49,6 +50,10 @@ type FormValues = {
 type PhotoData = {
   id: string;
   image_url: string;
+};
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
 };
 
 export default function AddDepartmentPage() {
@@ -285,6 +290,30 @@ export default function AddDepartmentPage() {
     setIsRestored(true);
   }, [reset]);
 
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
+
+    const isAnyModalOpen = previewImage || openMedia || editingGallery;
+
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis.stop();
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    };
+  }, [previewImage, openMedia, editingGallery]);
+
   if (!isRestored) {
     return (
       <LoadingFullScreen
@@ -296,7 +325,7 @@ export default function AddDepartmentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white p-4 lg:p-10">
+    <div className="min-h-screen bg-white p-4 lg:p-10" data-lenis-prevent>
       <form className="mx-auto max-w-7xl" onSubmit={handleSubmit(onSubmit)}>
         <Typography
           variant="h1"

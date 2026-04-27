@@ -27,6 +27,7 @@ import {
   HiOutlineUpload,
 } from "react-icons/hi";
 import Select, { StylesConfig } from "react-select";
+import Lenis from "@studio-freight/lenis/types";
 
 type _FormTimeline = Omit<Timelines, "progenda_id">;
 type FormTimeline = Omit<_FormTimeline, "id">;
@@ -63,6 +64,10 @@ type PhotoData = {
 };
 
 type OptionType = { label?: string; value?: string };
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
+};
 
 function Field({
   label,
@@ -427,18 +432,32 @@ function page() {
 
   // prevent scrolling when modal opened
   useEffect(() => {
-    const isModalOpen = isSubmitting;
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
 
-    if (isModalOpen) {
+    const isAnyModalOpen =
+      previewImage ||
+      openMedia ||
+      openTimelineModal ||
+      editingFeeds ||
+      isSubmitting;
+
+    if (isAnyModalOpen) {
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis.stop();
     } else {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
     }
 
     return () => {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
     };
-  }, [isSubmitting]);
+  }, [previewImage, openMedia, openTimelineModal, editingFeeds, isSubmitting]);
 
   const { jwtToken, ready } = useAdminAuth();
   if (!ready) return <SkeletonPleaseWait />;
@@ -455,7 +474,7 @@ function page() {
   }
 
   return (
-    <div className="min-h-screen bg-white p-4 lg:p-10">
+    <div className="min-h-screen bg-white p-4 lg:p-10" data-lenis-prevent>
       <form className="mx-auto max-w-7xl" onSubmit={handleSubmit(onSubmit)}>
         <VerifToken />
         <Typography
@@ -997,7 +1016,7 @@ function page() {
           {/* MANAGE TIMELINE MODAL */}
           {openTimelineModal && (
             <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-              <div className="bg-white w-[90vw] rounded-xl p-6 space-y-4">
+              <div className="bg-white lg:w-[50vw] w-[90vw] rounded-xl p-6 space-y-4">
                 <h2 className="text-xl font-bold">Manage Timeline</h2>
 
                 {/* LIST */}

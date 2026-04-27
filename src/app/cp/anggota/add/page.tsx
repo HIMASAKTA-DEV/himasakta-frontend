@@ -402,7 +402,10 @@ export default function Page() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primaryPink/20 via-white to-primaryGreen/20">
+    <main
+      className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primaryPink/20 via-white to-primaryGreen/20"
+      data-lenis-prevent
+    >
       <div className="w-full max-w-xl bg-white/70 backdrop-blur-xl p-8 rounded-2xl shadow border">
         <HeaderSection title="Tambah Anggota" />
 

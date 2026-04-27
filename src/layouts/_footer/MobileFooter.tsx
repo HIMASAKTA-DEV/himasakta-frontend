@@ -21,7 +21,16 @@ type LenisWindow = typeof globalThis & {
   lenis?: Lenis;
 };
 
-export default function MobileFooter() {
+type FooterLinkType = {
+  label: string;
+  href: string;
+};
+
+export default function MobileFooter({
+  footerLinks,
+}: {
+  footerLinks?: FooterLinkType[];
+}) {
   const [links, setLinks] = useState<ThisSocmed[]>([]);
 
   useEffect(() => {
@@ -65,6 +74,8 @@ export default function MobileFooter() {
     });
   };
 
+  const footerNav = footerLinks || footerLink;
+
   return (
     <footer className="py-8 px-4 bg-black text-white flex flex-col items-center justify-center">
       {/* Logo */}
@@ -80,7 +91,7 @@ export default function MobileFooter() {
 
       {/* Links */}
       <div className="font-libertine text-lg flex flex-col mb-6 w-full">
-        {footerLink.map((item) => (
+        {footerNav.map((item) => (
           <Link
             key={item.label}
             href={item.href}

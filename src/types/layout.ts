@@ -5,4 +5,8 @@ export type LayoutProps = {
   withNavbar: boolean;
   withFooter: boolean;
   transparentOnTop: boolean;
+  footerLinksData?: {
+    label: string;
+    href: string;
+  }[];
 };

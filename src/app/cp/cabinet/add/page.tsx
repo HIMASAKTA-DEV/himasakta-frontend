@@ -20,6 +20,7 @@ import MediaSelector from "@/components/admin/MediaSelector";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ApiResponse } from "@/types/commons/apiResponse";
 import { DepartmentType } from "@/types/data/DepartmentType";
+import Lenis from "@studio-freight/lenis/types";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
   is_active: string;
@@ -27,6 +28,10 @@ type FormValues = Omit<CreateCabinetType, "is_active"> & {
 type PhotoData = {
   id: string;
   image_url: string;
+};
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
 };
 
 export default function AddCabinetPage() {
@@ -245,21 +250,6 @@ export default function AddCabinetPage() {
     setIsRestored(true);
   }, [reset]);
 
-  // prevent scrolling when modal opened
-  useEffect(() => {
-    const isModalOpen = openUpload || openUploadOrganigram;
-
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [openUpload, openUploadOrganigram]);
-
   const [gallery, setGallery] = useState<PhotoData[]>([]);
   const [editingGallery, setEditingGallery] = useState(false);
   const [previewImage, setPreviewImage] = useState<PhotoData | null>(null);
@@ -282,6 +272,31 @@ export default function AddCabinetPage() {
     setGallery((p) => p.filter((photo) => photo.id !== id));
   };
 
+  // prevent scrolling when modal opened
+  useEffect(() => {
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
+
+    const isAnyModalOpen =
+      previewImage || openUpload || openUploadOrganigram || editingGallery;
+
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis.stop();
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
+    };
+  }, [previewImage, openUpload, openUploadOrganigram, editingGallery]);
+
   if (!isRestored) {
     return (
       <div className=" flex items-center justify-center p-10 min-h-screen w-full">
@@ -294,6 +309,7 @@ export default function AddCabinetPage() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="min-h-screen bg-white p-10"
+      data-lenis-prevent
     >
       <div className="mx-auto max-w-7xl">
         <Typography
@@ -336,6 +352,7 @@ export default function AddCabinetPage() {
                 })}
                 className="w-full min-h-[100px] rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
                 placeholder="Enter some text"
+                data-lenis-prevent
               />
               {errors.visi && (
                 <p className="mt-1 text-sm text-red-500">
@@ -355,6 +372,7 @@ export default function AddCabinetPage() {
                 })}
                 className="w-full min-h-[100px] rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
                 placeholder="Enter some text"
+                data-lenis-prevent
               />
               {errors.misi && (
                 <p className="mt-1 text-sm text-red-500">
@@ -479,15 +497,21 @@ export default function AddCabinetPage() {
                         }}
                         className="w-full min-h-[200px] bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 focus:outline-none"
                         placeholder="Tulis markdown di sini..."
+                        data-lenis-prevent
                       />
                     )}
                   />
                 )}
                 {/* PREVIEW MODE */}
                 {descMode === "preview" && (
-                  <div className="w-full min-h-[200px] bg-[#f8fafc] p-4">
+                  <div
+                    className="w-full min-h-[200px] bg-[#f8fafc] p-4"
+                    data-lenis-prevent
+                  >
                     {descVal ? (
-                      <MarkdownRenderer>{descVal}</MarkdownRenderer>
+                      <MarkdownRenderer data-lenis-prevent>
+                        {descVal}
+                      </MarkdownRenderer>
                     ) : (
                       <p className="italic text-gray-400">Tidak ada konten</p>
                     )}
@@ -832,7 +856,7 @@ export default function AddCabinetPage() {
       {/* Image preview modal */}
       {previewImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-pointer"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm "
           onClick={() => setPreviewImage(null)}
         >
           <div

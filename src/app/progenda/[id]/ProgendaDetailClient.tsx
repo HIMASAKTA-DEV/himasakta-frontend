@@ -51,6 +51,33 @@ export default function ProgendaDetailClient() {
     fetchProgendaInfo(inp);
   }, [id]);
 
+  const footerNav = [
+    {
+      label: "Back",
+      href: `/departments/${progenda?.department?.slug}`,
+    },
+    {
+      label: "Deskripsi Progenda",
+      href: `/progenda/${id}#deskripsi`,
+    },
+    {
+      label: "Headline",
+      href: `/progenda/${id}#headline`,
+    },
+    {
+      label: "Tujuan Progenda",
+      href: `/progenda/${id}#tujuan`,
+    },
+    {
+      label: "Galeri Progenda",
+      href: `/progenda/${id}#galeri`,
+    },
+    {
+      label: "Timeline Progenda",
+      href: `/progenda/${id}#timeline`,
+    },
+  ];
+
   if (error) {
     return <NotFound />;
   }
@@ -80,7 +107,12 @@ export default function ProgendaDetailClient() {
   }
 
   return (
-    <Layout withFooter withNavbar={false} transparentOnTop={false}>
+    <Layout
+      withFooter
+      withNavbar={false}
+      transparentOnTop={false}
+      footerLinksData={footerNav}
+    >
       <ButtonLink
         href={`/departments/${progenda?.department?.slug}`}
         className="w-28 flex gap-4 items-center m-8"
@@ -90,7 +122,10 @@ export default function ProgendaDetailClient() {
         <p>Back</p>
       </ButtonLink>
 
-      <main className="min-h-screen px-10 flex flex-col lg:px-40 gap-6 mb-20">
+      <main
+        className="min-h-screen px-10 flex flex-col lg:px-40 gap-6 mb-20"
+        id="headline"
+      >
         <HeaderSection
           title={progenda?.name}
           sub={
@@ -106,7 +141,7 @@ export default function ProgendaDetailClient() {
             isFill
             imgStyle="object-cover rounded-lg"
           />
-          <div className="font-libertine text-md">
+          <div className="font-libertine text-md" id="deskripsi">
             <ReactMarkdown>{progenda?.description}</ReactMarkdown>
           </div>
         </div>
@@ -157,7 +192,7 @@ export default function ProgendaDetailClient() {
             </Link>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full">
+        <div className="flex flex-col gap-2 w-full" id="tujuan">
           <HeaderSection title={"Tujuan"} />
           <div className="font-libertine text-md">
             <ReactMarkdown>{progenda?.goal}</ReactMarkdown>
@@ -165,7 +200,7 @@ export default function ProgendaDetailClient() {
         </div>
 
         <GalleryProgenda {...progenda} viewingImg={setViewingImg} />
-        <div className="w-full flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-4" id="timeline">
           <TimelineComp timeline={progenda?.timelines} />
         </div>
       </main>

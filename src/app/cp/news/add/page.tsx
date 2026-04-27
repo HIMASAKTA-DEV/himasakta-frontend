@@ -19,6 +19,7 @@ import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import Lenis from "@studio-freight/lenis/types";
 
 type FormValues = {
   title: string;
@@ -32,6 +33,10 @@ type FormValues = {
 type PhotoData = {
   id: UUID | string;
   image_url: string;
+};
+
+type LenisWindow = typeof globalThis & {
+  lenis?: Lenis;
 };
 
 export default function AddNewsPage() {
@@ -148,16 +153,25 @@ export default function AddNewsPage() {
 
   // prevent scrolling when modal opened
   useEffect(() => {
-    const isModalOpen = openUpload;
+    const lenis = (globalThis as LenisWindow).lenis;
+    if (!lenis) return;
 
-    if (isModalOpen) {
+    const isAnyModalOpen = openUpload;
+
+    if (isAnyModalOpen) {
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      lenis.stop();
     } else {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
     }
 
     return () => {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      lenis.start();
     };
   }, [openUpload]);
 
@@ -175,6 +189,7 @@ export default function AddNewsPage() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="p-10 bg-white min-h-screen"
+      data-lenis-prevent
     >
       <VerifToken />
       <div className="max-w-7xl mx-auto">

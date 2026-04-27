@@ -72,7 +72,10 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
 
   return (
     <>
-      <div className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8">
+      <div
+        className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8"
+        id="informasi-departemen"
+      >
         <div className="lg:w-[40%] w-full max-w-sm mx-auto lg:max-w-none">
           <div className="w-full aspect-[9/11] rounded-2xl relative shadow-lg overflow-hidden group">
             <ImagesSlideshow images={logoImages} />

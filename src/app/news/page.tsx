@@ -364,8 +364,24 @@ function NewsPage() {
     };
   }, []);
 
+  const footerNav = [
+    {
+      label: "Home",
+      href: "/",
+    },
+    {
+      label: "Cari Berita",
+      href: "/news#cari",
+    },
+  ];
+
   return (
-    <Layout withFooter withNavbar={false} transparentOnTop>
+    <Layout
+      withFooter
+      withNavbar={false}
+      transparentOnTop
+      footerLinksData={footerNav}
+    >
       <ButtonLink
         href="/"
         className="w-28 flex gap-4 items-center m-8"
@@ -383,7 +399,7 @@ function NewsPage() {
         />
 
         {/* Search with autocomplete */}
-        <div className="w-full h-1 -mb-6" ref={navRef} />
+        <div className="w-full h-1 -mb-6" ref={navRef} id="cari" />
         <div
           className={clsxm(
             "w-full flex flex-col lg:flex-row items-center gap-6 lg:justify-between sticky top-0 z-[999] bg-white/80 backdrop-blur-2xl py-8 px-10 lg:px-20",

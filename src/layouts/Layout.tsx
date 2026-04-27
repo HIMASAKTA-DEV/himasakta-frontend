@@ -8,13 +8,14 @@ export default function Layout({
   withFooter,
   withNavbar,
   transparentOnTop,
+  footerLinksData,
 }: LayoutProps) {
   return (
     <>
       <MaintenanceNotifier />
       {withNavbar && <Navbar transparentOnTop={transparentOnTop} />}
       {children}
-      {withFooter && <Footer />}
+      {withFooter && <Footer footerLinksData={footerLinksData} />}
     </>
   );
 }

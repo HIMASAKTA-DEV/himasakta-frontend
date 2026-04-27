@@ -21,7 +21,16 @@ type LenisWindow = typeof globalThis & {
   lenis?: Lenis;
 };
 
-export default function DesktopFooter() {
+type FooterLinkType = {
+  label: string;
+  href: string;
+};
+
+export default function DesktopFooter({
+  footerLinks,
+}: {
+  footerLinks?: FooterLinkType[];
+}) {
   const [links, setLinks] = useState<ThisSocmed[]>([]);
 
   useEffect(() => {
@@ -65,11 +74,13 @@ export default function DesktopFooter() {
     });
   };
 
+  const footerNav: FooterLinkType[] = footerLinks || footerLink;
+
   return (
     <footer
       className="
-        w-full h-[500px]
-        px-[120px] py-[32px]
+        w-full
+        px-[120px] py-[40px]
         bg-white text-black
         dark:bg-black dark:text-white
       "
@@ -90,10 +101,11 @@ export default function DesktopFooter() {
         {/* Links */}
         <div className="font-libertine text-[24px] flex flex-col">
           <p className="mb-6">HIMASAKTA ITS</p>
-          {footerLink.map((item) => (
-            <Link
+          {footerNav.map((item) => (
+            <a
               key={item.label}
               href={item.href}
+              onClick={handleScroll}
               className="
                 mb-3
                 transition-all
@@ -101,10 +113,9 @@ export default function DesktopFooter() {
                 dark:hover:text-neutral-300
                 hover:translate-x-1
               "
-              onClick={handleScroll}
             >
               {item.label}
-            </Link>
+            </a>
           ))}
         </div>
       </div>

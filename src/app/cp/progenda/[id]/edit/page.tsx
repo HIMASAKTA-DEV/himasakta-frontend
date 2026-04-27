@@ -89,7 +89,7 @@ function page() {
   }
 
   return (
-    <div className="min-h-screen bg-white p-4 lg:p-10">
+    <div className="min-h-screen bg-white p-4 lg:p-10" data-lenis-prevent>
       <form
         className="mx-auto max-w-7xl"
         onSubmit={forms.handleSubmit(actions.onSubmit)}
