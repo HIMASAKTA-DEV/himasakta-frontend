@@ -5,4 +5,5 @@ export type ManageEventsType = {
   title: string;
   created_at: string; // published at
   link: string;
+  month: string;
 };

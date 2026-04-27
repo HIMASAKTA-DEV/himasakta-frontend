@@ -74,8 +74,7 @@ export default function GetToKnow() {
           Get to Know: What&apos;s on HIMASAKTA
         </h1>
         <p className="font-libertine lg:text-xl text-gray-600 max-w-2xl mx-auto">
-          Berbagai acara pada satu bulan terakhir yang diadakan di HIMASAKTA
-          ITS.
+          Berbagai acara yang di adakan di HIMASAKTA ITS.
         </p>
       </div>
 

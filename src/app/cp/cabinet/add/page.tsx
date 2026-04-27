@@ -2,7 +2,7 @@
 import toast from "react-hot-toast";
 
 import Typography from "@/components/Typography";
-import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
+import MarkdownEditor from "@/components/admin/MarkdownEditor";
 import SkeletonPleaseWait from "@/components/commons/skeletons/SkeletonPleaseWait";
 import api from "@/lib/axios";
 import { CreateCabinetType } from "@/types/admin/CreateCabinet";
@@ -10,18 +10,16 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
-import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
 import { FaChevronLeft } from "react-icons/fa";
 import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ApiResponse } from "@/types/commons/apiResponse";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import Lenis from "@studio-freight/lenis/types";
-import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type FormValues = Omit<CreateCabinetType, "is_active"> & {
   is_active: string;
@@ -187,10 +185,10 @@ export default function AddCabinetPage() {
   };
 
   // handle markdown desc edit
-  const [descMode, setDescMode] = useState<"edit" | "preview">("edit");
+  const [_descMode, _setDescMode] = useState<"edit" | "preview">("edit");
   const [descVal, setDescVal] = useState("");
-  const [_preview, setPreview] = useState(false);
-  const applyFormat = (before: string, after = before) => {
+  const [_preview, _setPreview] = useState(false);
+  const _applyFormat = (before: string, after = before) => {
     if (!descRef.current) return;
 
     const el = descRef.current;
@@ -298,7 +296,7 @@ export default function AddCabinetPage() {
     };
   }, [previewImage, openUpload, openUploadOrganigram, editingGallery]);
 
-  const handleOrderedList = () => {
+  const _handleOrderedList = () => {
     const textarea = descRef.current;
     if (!textarea) return;
 
@@ -311,7 +309,7 @@ export default function AddCabinetPage() {
     setDescVal(newText);
   };
 
-  const handleUnorderedList = () => {
+  const _handleUnorderedList = () => {
     const textarea = descRef.current;
     if (!textarea) return;
 
@@ -413,138 +411,20 @@ export default function AddCabinetPage() {
               <label className="mb-2 block text-[15px] font-semibold text-black">
                 Deskripsi
               </label>
-              <div className="flex w-44 rounded-lg border overflow-hidden text-sm my-2">
-                <button
-                  type="button"
-                  onClick={() => setDescMode("edit")}
-                  className={`px-4 py-1.5 font-medium transition ${
-                    descMode === "edit"
-                      ? "bg-primaryPink text-white"
-                      : "bg-white text-gray-500 hover:bg-gray-100"
-                  }`}
-                >
-                  Markdown
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDescMode("preview")}
-                  className={`px-4 py-1.5 font-medium transition ${
-                    descMode === "preview"
-                      ? "bg-primaryPink text-white"
-                      : "bg-white text-gray-500 hover:bg-gray-100"
-                  }`}
-                >
-                  Preview
-                </button>
-              </div>
-              <div className="overflow-hidden rounded-xl border border-gray-200 bg-[#f8fafc]">
-                {/* TOOLBAR — cuma muncul di edit */}
-                {descMode === "edit" && (
-                  <div className="flex items-center gap-2 border-b px-3 py-2">
-                    <button
-                      type="button"
-                      onMouseDown={(e) => {
-                        applyFormat("**");
-                        e.preventDefault();
-                      }}
-                      className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
-                    >
-                      <BiBold size={18} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onMouseDown={(e) => {
-                        applyFormat("*");
-                        e.preventDefault();
-                      }}
-                      className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
-                    >
-                      <BiItalic size={18} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        applyFormat("<u>", "</u>");
-                      }}
-                      className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
-                    >
-                      <BiUnderline size={18} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        handleUnorderedList();
-                      }}
-                      className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
-                    >
-                      <AiOutlineUnorderedList size={18} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        handleOrderedList();
-                      }}
-                      className="p-1 rounded-md hover:bg-gray-300 transition-all duration-300"
-                    >
-                      <AiOutlineOrderedList size={18} />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="ml-auto text-sm text-primaryPink"
-                      onMouseDown={(e) => {
-                        setPreview((p) => !p);
-                        e.preventDefault();
-                      }}
-                    ></button>
-                  </div>
-                )}
-                {descMode === "edit" && (
-                  <Controller
-                    name="description"
-                    control={control}
-                    rules={{ required: "Content wajib diisi" }}
-                    render={({ field }) => (
-                      <textarea
-                        ref={(el) => {
-                          field.ref(el);
-                          descRef.current = el;
-                        }}
-                        value={descVal}
-                        onChange={(e) => {
-                          setDescVal(e.target.value);
-                          field.onChange(e.target.value);
-                        }}
-                        className="w-full min-h-[200px] bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 focus:outline-none"
-                        placeholder="Tulis markdown di sini..."
-                        data-lenis-prevent
-                      />
-                    )}
+              <Controller
+                name="description"
+                control={control}
+                rules={{ required: "Content wajib diisi" }}
+                render={({ field }) => (
+                  <MarkdownEditor
+                    value={descVal}
+                    onChange={(val) => {
+                      setDescVal(val);
+                      field.onChange(val);
+                    }}
                   />
                 )}
-                {/* PREVIEW MODE */}
-                {descMode === "preview" && (
-                  <div
-                    className="w-full min-h-[200px] bg-[#f8fafc] p-4"
-                    data-lenis-prevent
-                  >
-                    {descVal ? (
-                      <MarkdownRenderer data-lenis-prevent>
-                        {descVal}
-                      </MarkdownRenderer>
-                    ) : (
-                      <p className="italic text-gray-400">Tidak ada konten</p>
-                    )}
-                  </div>
-                )}
-              </div>
+              />
               {errors.description && (
                 <p className="mt-1 text-sm text-red-500">
                   {errors.description.message}

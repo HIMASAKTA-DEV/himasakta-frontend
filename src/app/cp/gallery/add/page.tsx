@@ -15,10 +15,10 @@ import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { ManageGalleryType } from "@/types/admin/ManageGallery";
 import { ApiResponse } from "@/types/commons/apiResponse";
+import Lenis from "@studio-freight/lenis/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import Lenis from "@studio-freight/lenis/types";
 
 type PhotoData = {
   id: string;

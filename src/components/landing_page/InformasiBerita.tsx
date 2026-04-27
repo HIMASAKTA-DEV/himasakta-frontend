@@ -90,7 +90,7 @@ export default function InformasiBerita() {
       <div className="flex items-end justify-between">
         <HeaderSection
           title="Informasi Berita"
-          sub="Berita terbaru dari HIMASAKTA."
+          sub="Berita terbaru dari HIMASAKTA ITS."
         />
 
         <ButtonLink

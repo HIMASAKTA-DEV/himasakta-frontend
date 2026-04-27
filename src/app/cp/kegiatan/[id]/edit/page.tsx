@@ -1,12 +1,11 @@
 "use client";
 import toast from "react-hot-toast";
 
+import MarkdownEditor from "@/components/admin/MarkdownEditor";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
-import { BiBold, BiItalic, BiUnderline } from "react-icons/bi";
 import { FaChevronLeft } from "react-icons/fa";
 import {
   HiOutlinePencilAlt,
@@ -17,12 +16,11 @@ import {
 import Typography from "@/components/Typography";
 import LoadingFullScreen from "@/components/admin/LoadingFullScreen";
 import MediaSelector from "@/components/admin/MediaSelector";
-import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
+import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 import api from "@/lib/axios";
 import { getApiErrorMessage } from "@/services/GetApiErrMessage";
 import { MonthlyEvent } from "@/types/data/GetToKnow";
 import Lenis from "@studio-freight/lenis/types";
-import { formatOrderedList, formatUnorderedList } from "@/lib/TextEditorHelper";
 
 type FormValues = {
   title: string;
@@ -55,7 +53,7 @@ function page() {
   } = useForm<FormValues>();
 
   const [loading, setLoading] = useState(true);
-  const [descMode, setDescMode] = useState<"edit" | "preview">("edit");
+  const [_descMode, _setDescMode] = useState<"edit" | "preview">("edit");
   const [descVal, setDescVal] = useState("");
   const [logo, setLogo] = useState<PhotoData | null>(null);
   const [openMedia, setOpenMedia] = useState(false);
@@ -91,7 +89,7 @@ function page() {
   }, [id, reset]);
 
   /* ================= MARKDOWN FORMAT ================= */
-  const applyFormat = (before: string, after = before) => {
+  const _applyFormat = (before: string, after = before) => {
     if (!descRef.current) return;
 
     const el = descRef.current;
@@ -158,7 +156,7 @@ function page() {
     };
   }, [openMedia]);
 
-  const handleOrderedList = () => {
+  const _handleOrderedList = () => {
     const textarea = descRef.current;
     if (!textarea) return;
 
@@ -171,7 +169,7 @@ function page() {
     setDescVal(newText);
   };
 
-  const handleUnorderedList = () => {
+  const _handleUnorderedList = () => {
     const textarea = descRef.current;
     if (!textarea) return;
 
@@ -255,113 +253,24 @@ function page() {
                 />
               </div>
 
-              {/* DESCRIPTION */}
               <div>
-                <label className="mb-2 block font-semibold">Deskripsi</label>
-
-                <div className="flex w-44 rounded-lg border overflow-hidden text-sm my-2">
-                  <button
-                    type="button"
-                    onClick={() => setDescMode("edit")}
-                    className={`flex-1 py-1 ${
-                      descMode === "edit" ? "bg-primaryPink text-white" : ""
-                    }`}
-                  >
-                    Markdown
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setDescMode("preview")}
-                    className={`flex-1 py-1 ${
-                      descMode === "preview" ? "bg-primaryPink text-white" : ""
-                    }`}
-                  >
-                    Preview
-                  </button>
-                </div>
-
-                <div className="rounded-xl border bg-[#f8fafc]">
-                  {descMode === "edit" && (
-                    <>
-                      <div className="flex gap-2 border-b p-2">
-                        <button
-                          type="button"
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            applyFormat("**");
-                          }}
-                        >
-                          <BiBold />
-                        </button>
-                        <button
-                          type="button"
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            applyFormat("*");
-                          }}
-                        >
-                          <BiItalic />
-                        </button>
-                        <button
-                          type="button"
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            applyFormat("<u>", "</u>");
-                          }}
-                        >
-                          <BiUnderline />
-                        </button>
-                        <button
-                          type="button"
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            handleUnorderedList();
-                          }}
-                        >
-                          <AiOutlineUnorderedList />
-                        </button>
-                        <button
-                          type="button"
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            handleOrderedList();
-                          }}
-                        >
-                          <AiOutlineOrderedList />
-                        </button>
-                      </div>
-
-                      <Controller
-                        name="description"
-                        control={control}
-                        rules={{ required: "Deskripsi wajib diisi" }}
-                        render={({ field }) => (
-                          <textarea
-                            ref={(el) => {
-                              field.ref(el);
-                              descRef.current = el;
-                            }}
-                            value={descVal}
-                            onChange={(e) => {
-                              setDescVal(e.target.value);
-                              field.onChange(e.target.value);
-                            }}
-                            rows={6}
-                            className="w-full px-4 py-3 bg-transparent"
-                          />
-                        )}
-                      />
-                    </>
+                <label className="mb-2 block font-semibold">
+                  Deskripsi Singkat
+                </label>
+                <Controller
+                  name="description"
+                  control={control}
+                  rules={{ required: "Deskripsi wajib diisi" }}
+                  render={({ field }) => (
+                    <MarkdownEditor
+                      value={descVal}
+                      onChange={(val) => {
+                        setDescVal(val);
+                        field.onChange(val);
+                      }}
+                    />
                   )}
-
-                  {descMode === "preview" && (
-                    <div className="prose px-4 py-3">
-                      <MarkdownRenderer>
-                        {descVal || "_Tidak ada konten_"}
-                      </MarkdownRenderer>
-                    </div>
-                  )}
-                </div>
+                />
               </div>
               <div className="mt-8">
                 <Link

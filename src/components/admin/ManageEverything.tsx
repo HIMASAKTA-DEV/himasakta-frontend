@@ -1264,6 +1264,7 @@ export function ManageEvent() {
             <tr>
               <th className="px-4 py-3 text-left">NAMA KEGIATAN</th>
               <th className="px-4 py-3 text-left">PUBLISHED</th>
+              <th className="px-4 py-3 text-left">DATE</th>
               <th className="px-4 py-3 text-left">ACTIONS</th>
             </tr>
           </thead>
@@ -1275,6 +1276,9 @@ export function ManageEvent() {
                   <td className="px-4 py-3">{e.title}</td>
                   <td className="px-4 py-3">
                     {new Date(e.created_at).toLocaleDateString("id-ID")}
+                  </td>
+                  <td className="px-4 py-3">
+                    {new Date(e.month).toLocaleDateString("id-ID")}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-start gap-2 -translate-x-2">

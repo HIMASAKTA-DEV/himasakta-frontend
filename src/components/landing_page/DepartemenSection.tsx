@@ -53,7 +53,7 @@ function DepartemenSection() {
           12 Departemen
         </h1>
         <p className="font-libertine font-semibold text-2xl lg:text-3xl">
-          Jelajahi departemen yang ada di HIMASAKTA
+          Jelajahi departemen yang ada di HIMASAKTA ITS
         </p>
       </div>
       {loading ? (
