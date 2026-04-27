@@ -337,6 +337,7 @@ export default function AddCabinetPage() {
                 })}
                 className="w-full min-h-[100px] rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
                 placeholder="Enter some text"
+                data-lenis-prevent
               />
               {errors.visi && (
                 <p className="mt-1 text-sm text-red-500">
@@ -356,6 +357,7 @@ export default function AddCabinetPage() {
                 })}
                 className="w-full min-h-[100px] rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-[#9BA5B7] transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
                 placeholder="Enter some text"
+                data-lenis-prevent
               />
               {errors.misi && (
                 <p className="mt-1 text-sm text-red-500">
@@ -480,15 +482,21 @@ export default function AddCabinetPage() {
                         }}
                         className="w-full min-h-[200px] bg-[#f8fafc] px-4 py-3 font-medium text-gray-800 focus:outline-none"
                         placeholder="Tulis markdown di sini..."
+                        data-lenis-prevent
                       />
                     )}
                   />
                 )}
                 {/* PREVIEW MODE */}
                 {descMode === "preview" && (
-                  <div className="w-full min-h-[200px] bg-[#f8fafc] p-4">
+                  <div
+                    className="w-full min-h-[200px] bg-[#f8fafc] p-4"
+                    data-lenis-prevent
+                  >
                     {descVal ? (
-                      <MarkdownRenderer>{descVal}</MarkdownRenderer>
+                      <MarkdownRenderer data-lenis-prevent>
+                        {descVal}
+                      </MarkdownRenderer>
                     ) : (
                       <p className="italic text-gray-400">Tidak ada konten</p>
                     )}

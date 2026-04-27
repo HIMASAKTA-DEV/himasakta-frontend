@@ -114,7 +114,7 @@ function GalleryProgenda({ ...dept }: PageProps) {
   if (error) return <p>&#9940; Gagal memuat data :&#40;</p>;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8" id="galeri">
       <HeaderSection title={"Galeri Progenda"} />
       {galleries.length <= 0 ? (
         <div className="w-full flex items-center">

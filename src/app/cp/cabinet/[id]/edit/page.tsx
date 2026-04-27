@@ -349,6 +349,7 @@ export default function EditCabinetPage() {
               <textarea
                 {...register("visi", { required: "Visi wajib diisi" })}
                 className="w-full min-h-[100px] rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                data-lenis-prevent
               />
             </div>
 
@@ -359,6 +360,7 @@ export default function EditCabinetPage() {
               <textarea
                 {...register("misi", { required: "Misi wajib diisi" })}
                 className="w-full min-h-[100px] rounded-xl border border-gray-200 bg-[#f8fafc] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primaryPink/50"
+                data-lenis-prevent
               />
             </div>
 
@@ -473,12 +475,16 @@ export default function EditCabinetPage() {
                           field.onChange(e.target.value);
                         }}
                         className="w-full min-h-[200px] bg-[#f8fafc] p-4"
+                        data-lenis-prevent
                       />
                     )}
                   />
                 )}
                 {descMode === "preview" && (
-                  <div className="w-full min-h-[200px] bg-[#f8fafc] p-4">
+                  <div
+                    className="w-full min-h-[200px] bg-[#f8fafc] p-4"
+                    data-lenis-prevent
+                  >
                     <MarkdownRenderer>{descVal}</MarkdownRenderer>
                   </div>
                 )}

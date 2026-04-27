@@ -38,8 +38,28 @@ export default function InfoClient() {
     fetchData();
   }, []);
 
+  const footerNav = [
+    {
+      label: "Media partner",
+      href: "/info#work",
+    },
+    {
+      label: "About",
+      href: "/info#about",
+    },
+    {
+      label: "Contact",
+      href: "/info#contact",
+    },
+  ];
+
   return (
-    <Layout withFooter={true} withNavbar={false} transparentOnTop={false}>
+    <Layout
+      withFooter={true}
+      withNavbar={false}
+      transparentOnTop={false}
+      footerLinksData={footerNav}
+    >
       <main>
         <div className="mb-20">
           <HeroSection />

@@ -102,7 +102,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
     );
 
   return (
-    <div className="w-full flex-col gap-8">
+    <div className="w-full flex-col gap-8" id="progenda">
       <HeaderSection title={"Progenda"} />
       <p className="mb-8">
         Daftar program kerja dan agenda departemen yang telah dan akan

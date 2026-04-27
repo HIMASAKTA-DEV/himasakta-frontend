@@ -47,8 +47,32 @@ export default function DepartmentClient() {
     return <NotFound />;
   }
 
+  const footerNav = [
+    {
+      label: `Informasi Departemen`,
+      href: `/departments/${slug}#informasi-departemen`,
+    },
+    {
+      label: `Struktur Anggota Departemen`,
+      href: `/departments/${slug}#struktur`,
+    },
+    {
+      label: `Progenda Departemen`,
+      href: `/departments/${slug}#progenda`,
+    },
+    {
+      label: `Galeri Departemen`,
+      href: `/departments/${slug}#galeri`,
+    },
+  ];
+
   return (
-    <Layout withFooter withNavbar={false} transparentOnTop>
+    <Layout
+      withFooter
+      withNavbar={false}
+      transparentOnTop
+      footerLinksData={footerNav}
+    >
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div
           className={clsxm(

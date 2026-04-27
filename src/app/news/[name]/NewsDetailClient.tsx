@@ -51,8 +51,28 @@ export default function NewsDetailClient() {
   }
 
   const tags = normalizeHashtags(news?.tags || news?.hashtags);
+
+  const footerNav = [
+    {
+      label: "Back",
+      href: "/news",
+    },
+    {
+      label: "Headline",
+      href: `/news/${name}#headline`,
+    },
+    {
+      label: "Content",
+      href: `/news/${name}#content`,
+    },
+  ];
   return (
-    <Layout withFooter withNavbar={false} transparentOnTop>
+    <Layout
+      withFooter
+      withNavbar={false}
+      transparentOnTop
+      footerLinksData={footerNav}
+    >
       <ButtonLink
         href="/news"
         className="w-28 flex gap-4 items-center m-8"
@@ -70,7 +90,7 @@ export default function NewsDetailClient() {
             <SkeletonParagraph />
           </>
         ) : (
-          <>
+          <div id="headline">
             <HeaderSection
               title={news?.title}
               sub={news?.tagline}
@@ -101,11 +121,13 @@ export default function NewsDetailClient() {
                 />
               </div>
             </div>
-            {(news?.content ?? "").split("\n\n").map((p, idx) => (
-              <MarkdownRenderer key={idx}>{p}</MarkdownRenderer>
-            ))}
+            <div id="content">
+              {(news?.content ?? "").split("\n\n").map((p, idx) => (
+                <MarkdownRenderer key={idx}>{p}</MarkdownRenderer>
+              ))}
+            </div>
             <AdvanceHashTags tags={tags} />
-          </>
+          </div>
         )}
       </main>
       <BackToTop />
