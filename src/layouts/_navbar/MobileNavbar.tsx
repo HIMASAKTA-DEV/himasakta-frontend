@@ -57,7 +57,7 @@ export default function MobileNavbar({
       {/* Hamburger Button */}
       <button
         className={clsx(
-          "fixed top-8 right-12 z-[1000] lg:hidden text-3xl",
+          "fixed top-8 right-8 z-[1000] lg:hidden text-3xl",
           iconBtnStyle,
         )}
         onClick={() => setOpen(!open)}
@@ -87,7 +87,7 @@ export default function MobileNavbar({
                 height={46}
                 alt="Himasakta"
               />
-              <h1 className="font-averia text-black text-2xl font-bold">
+              <h1 className="font-averia text-black text-xl font-bold">
                 HIMASAKTA ITS
               </h1>
             </Link>
