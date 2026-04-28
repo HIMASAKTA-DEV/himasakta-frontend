@@ -3,6 +3,7 @@
 import NotFound from "@/app/not-found";
 import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
+import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
 import SkeletonHeaderSection from "@/components/commons/skeletons/SkeletonHeaderSection";
 import SkeletonParagraph from "@/components/commons/skeletons/SkeletonParagraph";
 import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
@@ -23,7 +24,6 @@ import {
   FaTwitter,
   FaYoutube,
 } from "react-icons/fa";
-import ReactMarkdown from "react-markdown";
 
 export default function ProgendaDetailClient() {
   const params = useParams();
@@ -192,13 +192,13 @@ export default function ProgendaDetailClient() {
         <div className="flex flex-col gap-2 w-full" id="deskripsi">
           <HeaderSection title={"Deskripsi"} />
           <div className="font-libertine text-md">
-            <ReactMarkdown>{progenda?.description}</ReactMarkdown>
+            <MarkdownRenderer>{progenda?.description}</MarkdownRenderer>
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full" id="tujuan">
           <HeaderSection title={"Tujuan"} />
           <div className="font-libertine text-md">
-            <ReactMarkdown>{progenda?.goal}</ReactMarkdown>
+            <MarkdownRenderer>{progenda?.goal}</MarkdownRenderer>
           </div>
         </div>
 
