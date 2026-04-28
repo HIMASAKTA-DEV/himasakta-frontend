@@ -5,9 +5,10 @@ import { ApiResponse } from "@/types/commons/apiResponse";
 export const GetManageEvents = async (
   currPg: number,
   lim: number,
+  search?: string,
 ): Promise<ApiResponse<ManageEventsType[]>> => {
   const resp = await api.get<ApiResponse<ManageEventsType[]>>(
-    `/monthly-event?page=${currPg}&limit=${lim}`,
+    `/monthly-event?page=${currPg}&limit=${lim}${search ? `&search=${search}` : ""}`,
   );
 
   return resp.data;

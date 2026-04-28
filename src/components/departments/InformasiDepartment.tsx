@@ -7,8 +7,8 @@ import { isAxiosError } from "axios";
 import Link from "next/link";
 import { useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
-import ReactMarkdown from "react-markdown";
 import HeaderSection from "../commons/HeaderSection";
+import MarkdownRenderer from "../commons/MarkdownRenderer";
 import SocmedCard from "./_socmedCard";
 import ImagesSlideshow from "./slideShowImages.tsx/ImagesSlideshow";
 
@@ -91,7 +91,7 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
           />
 
           <div className="text-md font-libertine text-gray-700 leading-relaxed prose prose-p:my-2">
-            <ReactMarkdown>{dept?.description ?? ""}</ReactMarkdown>
+            <MarkdownRenderer>{dept?.description ?? ""}</MarkdownRenderer>
           </div>
 
           {(dept?.bank_soal_link ||

@@ -7,7 +7,7 @@ export const GetEventThisMonth = async (
   limit: number = 20,
 ): Promise<ApiResponse<MonthlyEvent[]>> => {
   const resp = await api.get<ApiResponse<MonthlyEvent[]>>(
-    `/monthly-event?limit=${limit}`,
+    `/monthly-event/this-month?limit=${limit}`,
   );
 
   return resp.data;

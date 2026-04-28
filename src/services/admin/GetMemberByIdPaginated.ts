@@ -6,9 +6,10 @@ export const GetMemberByDeptIdPaginated = async (
   currPage: number,
   limit: number,
   deptId: string,
+  search?: string,
 ): Promise<ApiResponse<MemberType[]>> => {
   const resp = await api.get<ApiResponse<MemberType[]>>(
-    `/member?filter_by=department_id&filter=${deptId}&page=${currPage}&limit=${limit}`,
+    `/member?filter_by=department_id&filter=${deptId}&page=${currPage}&limit=${limit}${search ? `&search=${search}` : ""}`,
   );
 
   return resp.data;

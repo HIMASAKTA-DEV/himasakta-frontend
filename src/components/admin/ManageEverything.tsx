@@ -165,6 +165,7 @@ export function ManageAnggota() {
   const [members, setMembers] = useState<MemberType[]>([]);
   const [showDd, setShowDd] = useState(false);
   const [openHelp, setOpenHelp] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const fetchAnggotaByDept = async () => {
     setLoadingMain(true);
     setErrMain(false);
@@ -173,6 +174,7 @@ export function ManageAnggota() {
         currMemberPg,
         limitMembers,
         selectedDept,
+        searchQuery,
       );
       setMembers(json.data);
       setTotalMemberPage(json.meta.total_page ?? 1);
@@ -187,7 +189,7 @@ export function ManageAnggota() {
 
   useEffect(() => {
     fetchAnggotaByDept();
-  }, [currMemberPg, selectedDept, limitMembers]);
+  }, [currMemberPg, selectedDept, limitMembers, searchQuery]);
 
   // handle delete anggota
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -338,6 +340,13 @@ export function ManageAnggota() {
             >
               + Add Member
             </Link>
+            <input
+              type="text"
+              placeholder="Cari..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+            />
             <IoIosHelpCircle
               className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
               title="help"
@@ -485,6 +494,7 @@ export function ManageCabinet() {
   const [loadData, setLoadData] = useState(true);
   const [totPage, setTotPg] = useState(1);
   const [openHelp, setOpenHelp] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // handle preview
   const [selectedPreviewId, setSelectedPreviewId] = useState<string | null>(
@@ -493,9 +503,8 @@ export function ManageCabinet() {
 
   const fetchAllCabinets = async () => {
     setLoadData(true);
-    setErrData(false);
     try {
-      const json = await GetManageCabinet(currPg, limCabinets);
+      const json = await GetManageCabinet(currPg, limCabinets, searchQuery);
 
       // Custom Sorting Logic:
       // 1. is_active (true first)
@@ -540,7 +549,7 @@ export function ManageCabinet() {
 
   useEffect(() => {
     fetchAllCabinets();
-  }, [currPg, limCabinets]);
+  }, [currPg, limCabinets, searchQuery]);
 
   // TODO: handle delete
   // handle delete anggota
@@ -625,6 +634,13 @@ export function ManageCabinet() {
           <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
             <Link href={"/cp/cabinet/add"}>+ Add Cabinet</Link>
           </button>
+          <input
+            type="text"
+            placeholder="Cari..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+          />
 
           {/* Info */}
           <IoIosHelpCircle
@@ -875,12 +891,13 @@ export function ManageDepartment() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [openHelp, setOpenHelp] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchDepartments = async () => {
     setLoading(true);
     setError(false);
     try {
-      const json = await GetAllDepts(currPage, limitDept);
+      const json = await GetAllDepts(currPage, limitDept, searchQuery);
 
       // Sorting: Newest first (created_at) then by name
       const sorted = [...json.data].sort((a, b) => {
@@ -923,7 +940,7 @@ export function ManageDepartment() {
 
   useEffect(() => {
     fetchDepartments();
-  }, [currPage, limitDept]);
+  }, [currPage, limitDept, searchQuery]);
 
   // HANDLE DELETE MODAL
   const handleDelete = async () => {
@@ -996,6 +1013,13 @@ export function ManageDepartment() {
           <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
             <Link href={"/cp/department/add"}>+ Add Department</Link>
           </button>
+          <input
+            type="text"
+            placeholder="Cari..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+          />
           {/* Info */}
           <IoIosHelpCircle
             className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
@@ -1158,11 +1182,12 @@ export function ManageEvent() {
   const [totPg, setTotPg] = useState(1);
   const [limData, setLimData] = useState(5);
   const [openHelp, setOpenHelp] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const fetchAllEvents = async () => {
     setLoadingData(true);
     setErrMainData(false);
     try {
-      const json = await GetManageEvents(currPg, limData);
+      const json = await GetManageEvents(currPg, limData, searchQuery);
       setTotData(json.meta.total_data ?? 1);
       setTotPg(json.meta.total_page ?? 1);
       setEventsData(json.data);
@@ -1176,7 +1201,7 @@ export function ManageEvent() {
 
   useEffect(() => {
     fetchAllEvents();
-  }, [currPg, limData]);
+  }, [currPg, limData, searchQuery]);
 
   // handle delete event
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -1242,6 +1267,13 @@ export function ManageEvent() {
           >
             + Add Event
           </Link>
+          <input
+            type="text"
+            placeholder="Cari..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+          />
           <IoIosHelpCircle
             className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
             title="help"
@@ -1683,12 +1715,13 @@ export function ManageNews() {
   } | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [openHelp, setOpenHelp] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchManageNews = async () => {
       setLoadData(true);
       try {
-        const json = await GetManageNews(currPg, limNews);
+        const json = await GetManageNews(currPg, limNews, searchQuery);
         setNewsData(json.data);
         setTotData(json.meta.total_data ?? 1);
         setTotPage(json.meta.total_page ?? 1);
@@ -1700,7 +1733,7 @@ export function ManageNews() {
       }
     };
     fetchManageNews();
-  }, [currPg, limNews]);
+  }, [currPg, limNews, searchQuery]);
 
   const handleDelete = async () => {
     if (!selectedNewsId) return;
@@ -1710,7 +1743,7 @@ export function ManageNews() {
       await api.delete(`/news/${selectedNewsId}`);
       setShowDeleteModal(false);
       setSelectedNewsId(null);
-      const json = await GetManageNews(currPg, limNews);
+      const json = await GetManageNews(currPg, limNews, searchQuery);
       setNewsData(json.data);
       setTotData(json.meta.total_data ?? 1);
       setTotPage(json.meta.total_page ?? 1);
@@ -1803,6 +1836,13 @@ export function ManageNews() {
             >
               + Add Post
             </Link>
+            <input
+              type="text"
+              placeholder="Cari..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+            />
             <IoIosHelpCircle
               className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
               title="help"
@@ -2221,13 +2261,14 @@ export function ManageProgenda() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [openHelp, setOpenHelp] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchProgendaTable = async () => {
     setLoading(true);
     setError(false);
     try {
       const json = await api.get<ApiResponse<ProgendasTable[]>>(
-        `/progenda?page=${currPage}&limit=${limitProgenda}`,
+        `/progenda?page=${currPage}&limit=${limitProgenda}${searchQuery ? `&search=${searchQuery}` : ""}`,
       );
       setProgendas(json.data.data);
       setTotalPage(json.data.meta.total_page ?? 1);
@@ -2243,7 +2284,7 @@ export function ManageProgenda() {
 
   useEffect(() => {
     fetchProgendaTable();
-  }, [currPage, limitProgenda]);
+  }, [currPage, limitProgenda, searchQuery]);
 
   const handlePreview = async (id: string) => {
     setErrorPreview(false);
@@ -2322,6 +2363,13 @@ export function ManageProgenda() {
           <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
             <Link href={"/cp/progenda/add"}>+ Add Progenda</Link>
           </button>
+          <input
+            type="text"
+            placeholder="Cari..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+          />
           <IoIosHelpCircle
             className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
             title="help"
