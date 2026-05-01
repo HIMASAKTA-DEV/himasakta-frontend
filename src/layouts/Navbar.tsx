@@ -36,7 +36,7 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
         "flex items-center justify-between py-8 px-6 lg:px-12 sticky top-0 z-[9999] transition-all duration-500",
         isTransparent
           ? "text-white"
-          : "text-black xl:mx-12 xl:top-8 xl:shadow-[0_0_100px_rgba(0,0,0,0.25)] xl:",
+          : "text-black xl:mx-12 xl:top-8 xl:shadow-[0_0_20px_rgba(0,0,0,0.25)] xl:rounded-2xl xl:py-6",
       )}
     >
       <div
@@ -46,7 +46,7 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
             ? "bg-transparent opacity-0"
             : open
               ? "bg-white opacity-100"
-              : "bg-white/80 backdrop-blur-md opacity-100 xl:rounded-2xl",
+              : "bg-white/75 backdrop-blur-lg opacity-100 xl:rounded-2xl",
         )}
       />
       {/* Logo */}
