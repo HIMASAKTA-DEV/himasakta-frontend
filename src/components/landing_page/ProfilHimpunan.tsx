@@ -44,8 +44,10 @@ export default function ProfilHimpunan() {
           title="Profil Himpunan"
           className="w-[75vw] lg:max-w-7xl mx-auto"
         />
-        <div className="w-[75vw] lg:max-w-7xl mx-auto font-libertine lg:text-xl">
-          <MarkdownRenderer>{data?.DeskripsiHimpunan ?? ""}</MarkdownRenderer>
+        <div className="w-[75vw] lg:max-w-7xl mx-auto font-libertine lg:text-xl text-justify">
+          <MarkdownRenderer className="text-justify">
+            {data?.DeskripsiHimpunan ?? ""}
+          </MarkdownRenderer>
         </div>
       </div>
     </section>

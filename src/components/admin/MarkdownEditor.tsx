@@ -209,7 +209,9 @@ export default function MarkdownEditor({
             className={`prose min-h-[${minHeight}] w-full max-w-none bg-[#f8fafc] p-4`}
             style={{ minHeight }}
           >
-            <MarkdownRenderer>{value || "_Tidak ada konten_"}</MarkdownRenderer>
+            <MarkdownRenderer className="text-justify">
+              {value || "_Tidak ada konten_"}
+            </MarkdownRenderer>
           </div>
         )}
       </div>

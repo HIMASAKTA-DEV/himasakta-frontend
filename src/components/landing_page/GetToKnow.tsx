@@ -14,7 +14,7 @@ import MarkdownRenderer from "../commons/MarkdownRenderer";
 export default function GetToKnow() {
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<MonthlyEvent[]>([]);
-  const [cntEv, setCntEv] = useState(3);
+  const [cntEv, setCntEv] = useState(4);
   const [slides, setSlides] = useState<MonthlyEvent[][]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -37,7 +37,8 @@ export default function GetToKnow() {
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      if (width > 1024) setCntEv(4);
+      if (width > 1280) setCntEv(4);
+      else if (width > 1024) setCntEv(3);
       else if (width > 768) setCntEv(2);
       else setCntEv(1);
     };
@@ -96,7 +97,7 @@ export default function GetToKnow() {
             {slides.map((slide, idx) => (
               <div
                 key={idx}
-                className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4 lg:px-12"
+                className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4 lg:px-12 grid-rows-1"
               >
                 {slide.map((event) => (
                   <div

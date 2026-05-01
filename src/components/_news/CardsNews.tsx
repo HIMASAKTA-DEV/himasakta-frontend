@@ -80,7 +80,9 @@ export default function CardNews({
 
           <Link href={`/news/${news.slug}`}>
             <div className="relative group text-sm text-gray-600 h-[72px] lg:h-[96px] overflow-hidden">
-              <MarkdownRenderer>{news.content}</MarkdownRenderer>
+              <MarkdownRenderer className="text-justify">
+                {news.content}
+              </MarkdownRenderer>
               <div
                 className={clsxm(
                   "pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-24 bg-gradient-to-t transition-all duration-300 flex items-end justify-center",

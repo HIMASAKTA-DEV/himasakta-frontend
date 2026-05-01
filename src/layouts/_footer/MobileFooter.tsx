@@ -60,16 +60,19 @@ export default function MobileFooter({
     const lenis = (globalThis as LenisWindow).lenis;
     if (!lenis) return;
 
-    const target = e.currentTarget.getAttribute("href");
-    if (!target || !target.startsWith("#")) return;
+    const href = e.currentTarget.getAttribute("href");
+    if (!href) return;
+
+    const hash = href.includes("#") ? href.substring(href.indexOf("#")) : null;
+    if (!hash) return;
 
     e.preventDefault();
 
-    const el = document.querySelector<HTMLElement>(target);
+    const el = document.querySelector<HTMLElement>(hash);
     if (!el) return;
 
     lenis.scrollTo(el, {
-      offset: -140, // adjust kalau ada navbar fixed
+      offset: -170,
       duration: 0.5,
     });
   };

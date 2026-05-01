@@ -57,7 +57,7 @@ export default function MobileNavbar({
       {/* Hamburger Button */}
       <button
         className={clsx(
-          "fixed top-8 right-8 z-[1000] lg:hidden text-3xl",
+          "fixed top-8 right-8 z-[1000] xl:hidden text-3xl",
           iconBtnStyle,
         )}
         onClick={() => setOpen(!open)}
@@ -68,14 +68,14 @@ export default function MobileNavbar({
 
       <div
         className={clsx(
-          "fixed inset-0 z-[999] lg:hidden transition-all duration-500 ease-in-out",
+          "fixed inset-0 z-[999] xl:hidden transition-all duration-500 ease-in-out",
           open ? "opacity-100" : "opacity-0 pointer-events-none",
         )}
       >
         <div className="fixed inset-0 bg-white" />
 
         <div className="inset-0 fixed z-10 flex flex-col h-full">
-          <div className="flex items-center px-12 h-[115px] border-b border-neutral-100">
+          <div className="flex items-center px-6 h-[115px] border-b border-neutral-100">
             <Link
               href="/"
               className="flex items-center gap-6"
@@ -87,7 +87,7 @@ export default function MobileNavbar({
                 height={46}
                 alt="Himasakta"
               />
-              <h1 className="font-averia text-black text-xl font-bold">
+              <h1 className="font-averia text-black text-2xl font-bold">
                 HIMASAKTA ITS
               </h1>
             </Link>

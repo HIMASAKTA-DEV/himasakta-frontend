@@ -33,13 +33,13 @@ export default function DesktopNavbar({
     if (!el) return;
 
     lenis.scrollTo(el, {
-      offset: -140, // adjust kalau ada navbar fixed
+      offset: -170, // adjust kalau ada navbar fixed
       duration: 0.5,
     });
   };
 
   return (
-    <div className="hidden lg:flex gap-8">
+    <div className="hidden xl:flex gap-8">
       {navigationBtn.map((item) => (
         <ButtonLink
           key={item.label}

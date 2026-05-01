@@ -91,7 +91,9 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
           />
 
           <div className="text-md font-libertine text-gray-700 leading-relaxed prose prose-p:my-2">
-            <MarkdownRenderer>{dept?.description ?? ""}</MarkdownRenderer>
+            <MarkdownRenderer className="text-justify">
+              {dept?.description ?? ""}
+            </MarkdownRenderer>
           </div>
 
           {(dept?.bank_soal_link ||
@@ -194,7 +196,9 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
 
               {nrpError && (
                 <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100 flex items-start gap-2">
-                  <span className="text-base leading-none block pt-0.5">⚠️</span>
+                  <span className="text-base leading-none block pt-0.5">
+                    ⚠️
+                  </span>
                   <p className="font-medium">{nrpError}</p>
                 </div>
               )}

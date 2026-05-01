@@ -55,7 +55,8 @@ export default function InformasiBerita() {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width > 1024) setCntNw(4);
-      else if (width > 768) setCntNw(2);
+      else if (width > 768) setCntNw(3);
+      else if (width > 640) setCntNw(2);
       else setCntNw(1);
     };
 
@@ -133,7 +134,7 @@ export default function InformasiBerita() {
             {slides.map((slide, idx) => (
               <div
                 key={idx}
-                className="min-w-full grid grid-cols-1 lg:grid-cols-4 gap-6"
+                className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
               >
                 {slide.map((news) => (
                   <NewsComps key={news.id} {...news} />

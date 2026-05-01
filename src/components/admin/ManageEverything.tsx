@@ -1975,7 +1975,9 @@ export function ManageNews() {
                       )}
                     </p>
                     <div className="prose prose-sm max-w-none">
-                      <MarkdownRenderer>{previewData.content}</MarkdownRenderer>
+                      <MarkdownRenderer className="text-justify">
+                        {previewData.content}
+                      </MarkdownRenderer>
                     </div>
                   </div>
                 </>
@@ -2514,13 +2516,15 @@ export function ManageProgenda() {
                     </p>
                     <div className="prose prose-sm max-w-none mb-4">
                       <HeaderSection title={viewProgenda.name} />
-                      <MarkdownRenderer>
+                      <MarkdownRenderer className="text-justify">
                         {viewProgenda.description}
                       </MarkdownRenderer>
                     </div>
                     <div className="prose prose-sm max-w-none">
                       <HeaderSection title={"Tujuan"} />
-                      <MarkdownRenderer>{viewProgenda.goal}</MarkdownRenderer>
+                      <MarkdownRenderer className="text-justify">
+                        {viewProgenda.goal}
+                      </MarkdownRenderer>
                     </div>
                     {/* Gallery Section di dalam Modal Preview */}
                     <div className="mt-8">

@@ -1,12 +1,13 @@
+import clsxm from "@/lib/clsxm";
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
-export default function MarkdownRenderer({ children }) {
+export default function MarkdownRenderer({ children, className = "" }) {
   return (
-    <div className="markdown-content">
+    <div className={clsxm("markdown-content", className)}>
       <Markdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw]}

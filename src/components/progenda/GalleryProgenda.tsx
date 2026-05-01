@@ -114,14 +114,14 @@ function GalleryProgenda({ ...dept }: PageProps) {
   if (error) return <p>&#9940; Gagal memuat data :&#40;</p>;
 
   return (
-    <div className="flex flex-col gap-8" id="galeri">
+    <div className="flex flex-col gap-8 w-full" id="galeri">
       <HeaderSection title={"Galeri Progenda"} />
       {galleries.length <= 0 ? (
         <div className="w-full flex items-center">
           <p>Progenda tidak memiliki galeri</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
           {paginatedGalleries.map((g, idx) => (
             <div
               className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"

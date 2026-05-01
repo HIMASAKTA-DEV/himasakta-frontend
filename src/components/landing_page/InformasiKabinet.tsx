@@ -52,16 +52,22 @@ export default function InformasiKabinet({
             sub={cabinet?.tagline}
             className="max-lg:mt-4"
           />
-          <MarkdownRenderer>{cabinet?.description}</MarkdownRenderer>
+          <MarkdownRenderer className="text-justify">
+            {cabinet?.description}
+          </MarkdownRenderer>
           <div>
             <h1 className="font-libertine font-bold lg:text-3xl text-2xl mb-2">
               Visi:
             </h1>
-            <MarkdownRenderer>{cabinet?.visi}</MarkdownRenderer>
+            <MarkdownRenderer className="text-justify">
+              {cabinet?.visi}
+            </MarkdownRenderer>
             <h1 className="font-libertine font-bold lg:text-3xl text-2xl mt-6 mb-2">
               Misi:
             </h1>
-            <MarkdownRenderer>{cabinet?.misi}</MarkdownRenderer>
+            <MarkdownRenderer className="text-justify">
+              {cabinet?.misi}
+            </MarkdownRenderer>
           </div>
         </div>
         <Image
@@ -71,13 +77,15 @@ export default function InformasiKabinet({
           height={400}
           className="order-1 lg:order-2 rounded-3xl hidden lg:inline-block aspect-square object-contain"
         />
-        <div className="lg:hidden w-full relative aspect-[16/12]">
-          <Image
-            src={cabinet?.logo?.image_url ?? "/images/InformasiKabinet.png"}
-            alt="profil-himpunan"
-            fill
-            className="order-1 lg:order-2 rounded-3xl object-cover object-center"
-          />
+        <div className="lg:hidden w-full flex items-center justify-center">
+          <div className="w-[75%] relative aspect-square">
+            <Image
+              src={cabinet?.logo?.image_url ?? "/images/InformasiKabinet.png"}
+              alt="profil-himpunan"
+              fill
+              className="order-1 lg:order-2 rounded-3xl object-cover object-center"
+            />
+          </div>
         </div>
       </section>
       <div>
