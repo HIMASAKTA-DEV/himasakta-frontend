@@ -28,8 +28,8 @@ body {
 
 /* Make sure the browser is scrolling? */
 html {
-  scroll-padding-top: 130px;
-  /* misal navbar 130px lebihi dari h-nav lah */
+  scroll-padding-top: 150px;
+  /* misal navbar 150px lebihi dari h-nav lah */
 }
 
 .dot-anim span {
@@ -50,6 +50,32 @@ html {
   background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+@layer base {
+  /* Chrome, Edge, Safari */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent; /* transparan */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d58a94; /* pink (Tailwind pink-500) */
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #e298a2; /* pink-600 biar ada hover */
+  }
+
+  /* Firefox */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #d58a94 transparent;
+  }
 }
 
 @keyframes marquee {

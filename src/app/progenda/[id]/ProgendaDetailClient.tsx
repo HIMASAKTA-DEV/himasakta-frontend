@@ -123,7 +123,7 @@ export default function ProgendaDetailClient() {
       </ButtonLink>
 
       <main
-        className="min-h-screen px-10 flex flex-col lg:px-40 gap-6 mb-20"
+        className="min-h-screen px-10 flex flex-col lg:px-40 gap-6 mb-20 items-center min-w-full"
         id="headline"
       >
         <HeaderSection
@@ -135,7 +135,7 @@ export default function ProgendaDetailClient() {
           }
           subStyle="font-libertine text-gray-500"
         />
-        <div className="relative w-full aspect-[21/9] rounded-lg flex flex-col gap-4">
+        <div className="relative w-full lg:w-[50%] aspect-video rounded-lg flex flex-col gap-4 shadow-md hover:-translate-y-1 transition-all duration-300">
           <ImageFallback
             src={progenda?.thumbnail?.image_url}
             isFill
@@ -192,13 +192,17 @@ export default function ProgendaDetailClient() {
         <div className="flex flex-col gap-2 w-full" id="deskripsi">
           <HeaderSection title={"Deskripsi"} />
           <div className="font-libertine text-md">
-            <MarkdownRenderer>{progenda?.description}</MarkdownRenderer>
+            <MarkdownRenderer className="text-justify">
+              {progenda?.description}
+            </MarkdownRenderer>
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full" id="tujuan">
           <HeaderSection title={"Tujuan"} />
           <div className="font-libertine text-md">
-            <MarkdownRenderer>{progenda?.goal}</MarkdownRenderer>
+            <MarkdownRenderer className="text-justify">
+              {progenda?.goal}
+            </MarkdownRenderer>
           </div>
         </div>
 

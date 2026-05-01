@@ -17,7 +17,7 @@ function About({ webData, cabinetData }: AboutProps) {
           titleStyle="text-primaryPink font-averia"
         />
         <div className="text-lg font-libertine">
-          <MarkdownRenderer>
+          <MarkdownRenderer className="text-justify">
             {webData?.DeskripsiHimpunan ?? ""}
           </MarkdownRenderer>
         </div>
@@ -28,7 +28,9 @@ function About({ webData, cabinetData }: AboutProps) {
           Vision:
         </p>
         <div className="text-xl font-libertine italic border-l-4 border-primaryPink/20 pl-6 py-2">
-          <MarkdownRenderer>{cabinetData?.visi ?? ""}</MarkdownRenderer>
+          <MarkdownRenderer className="text-justify">
+            {cabinetData?.visi ?? ""}
+          </MarkdownRenderer>
         </div>
       </div>
 
@@ -37,7 +39,9 @@ function About({ webData, cabinetData }: AboutProps) {
           Mission:
         </p>
         <div className="text-lg font-libertine prose-li:my-2">
-          <MarkdownRenderer>{cabinetData?.misi ?? ""}</MarkdownRenderer>
+          <MarkdownRenderer className="text-justify">
+            {cabinetData?.misi ?? ""}
+          </MarkdownRenderer>
         </div>
       </div>
     </section>

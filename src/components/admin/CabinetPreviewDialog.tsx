@@ -165,7 +165,9 @@ export default function CabinetPreviewDialog({
                 Visi
               </h3>
               <div className="prose prose-sm max-w-none text-gray-700 bg-gray-50/50 p-4 rounded-xl border border-gray-100 italic">
-                <MarkdownRenderer>{cabinet.visi}</MarkdownRenderer>
+                <MarkdownRenderer className="text-justify">
+                  {cabinet.visi}
+                </MarkdownRenderer>
               </div>
             </div>
 
@@ -175,7 +177,9 @@ export default function CabinetPreviewDialog({
                 Misi
               </h3>
               <div className="prose prose-sm max-w-none text-gray-700 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
-                <MarkdownRenderer>{cabinet.misi}</MarkdownRenderer>
+                <MarkdownRenderer className="text-justify">
+                  {cabinet.misi}
+                </MarkdownRenderer>
               </div>
             </div>
           </div>
@@ -186,7 +190,7 @@ export default function CabinetPreviewDialog({
               Deskripsi
             </h3>
             <div className="prose max-w-none text-gray-700 bg-gray-50/30 p-6 rounded-2xl border border-gray-100">
-              <MarkdownRenderer>
+              <MarkdownRenderer className="text-justify">
                 {cabinet.description || "Tidak ada deskripsi."}
               </MarkdownRenderer>
             </div>

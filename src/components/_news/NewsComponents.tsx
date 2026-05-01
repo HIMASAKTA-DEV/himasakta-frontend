@@ -73,7 +73,9 @@ export default function NewsComps({ ...news }: NewsType) {
 
           <Link href={`/news/${news.slug}`}>
             <div className="relative group text-sm text-gray-600 h-[50px] lg:h-[80px] overflow-hidden">
-              <MarkdownRenderer>{news.content}</MarkdownRenderer>
+              <MarkdownRenderer className="text-justify">
+                {news.content}
+              </MarkdownRenderer>
               <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-24 bg-gradient-to-t from-white to-transparent transition-all duration-300 flex items-end justify-center">
                 <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-2">
                   Baca selengkapnya

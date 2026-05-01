@@ -80,9 +80,9 @@ export default function DepartmentClient() {
             viewingImg ? "hidden" : "",
           )}
         />
-        <main className="min-h-screen w-[95vw] px-4 flex flex-col lg:px-40 gap-4 mb-10 py-6 lg:py-10 relative">
+        <main className="min-h-screen w-[95vw] px-4 flex flex-col xl:px-40 gap-4 mb-10 py-6 lg:py-10 relative">
           <NavbarDept className={`${viewingImg ? "hidden" : ""}`} />
-          <section className="bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.08)] mb-10 flex flex-col gap-8 p-5 lg:p-12 overflow-hidden ring-1 ring-primaryPink/50">
+          <section className="bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.08)] mb-10 flex flex-col gap-8 p-5 xl:p-12 overflow-hidden ring-1 ring-primaryPink/50">
             {loading ? (
               <div className="flex items-center lg:items-start lg:justify-between lg:flex-row flex-col gap-8 cursor-wait">
                 <div className="md:w-[40%] w-full">

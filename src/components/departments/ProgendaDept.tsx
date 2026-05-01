@@ -25,8 +25,11 @@ function ProgendaDept({ ...dept }: DepartmentType) {
 
   const [cntItems, setCntItems] = useState(3);
   const handleResize = () => {
-    if (window.innerWidth < 1024) {
+    const w = window.innerWidth;
+    if (w < 768) {
       setCntItems(1); // mobile & tablet
+    } else if (w >= 768 && w < 1024) {
+      setCntItems(2);
     } else {
       setCntItems(3); // desktop
     }
@@ -123,7 +126,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
           >
             {slides.map((slide, idx) => (
               <div
-                className="min-w-full grid grid-cols-1 grid-rows-1 lg:grid-cols-3 lg:grid-rows-1 lg:gap-4"
+                className="min-w-full grid grid-cols-1 grid-rows-1 lg:grid-cols-3 lg:grid-rows-1 lg:gap-4 md:gap-2 md:grid-cols-2 md:grid-rows-1"
                 key={idx}
               >
                 {slide.map((progenda, i) => (
@@ -160,7 +163,9 @@ function ProgendaDept({ ...dept }: DepartmentType) {
                             {progenda.name}
                           </h1>
                           <div className="relative group text-sm text-gray-600 h-[30px] lg:h-[50px] overflow-hidden ml-4">
-                            <MarkdownRenderer>{progenda.desc}</MarkdownRenderer>
+                            <MarkdownRenderer className="text-justify">
+                              {progenda.desc}
+                            </MarkdownRenderer>
                             <div className="pointer-events-none absolute bottom-0 left-0 w-full h-5 group-hover:h-10 bg-gradient-to-t from-primaryPinkLight to-transparent transition-all duration-300 flex items-end justify-center">
                               <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-2">
                                 Baca selengkapnya

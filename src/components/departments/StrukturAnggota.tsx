@@ -54,8 +54,11 @@ export default function StrukturAnggota({ ...dept }: PageProps) {
   }, [previewImage]);
 
   const handleResize = () => {
-    if (window.innerWidth < 1024) {
-      setItemsPerSlide(1); // mobile & tablet
+    const w = window.innerWidth;
+    if (w < 1024 && w >= 768) {
+      setItemsPerSlide(2); // mobile & tablet
+    } else if (w < 768) {
+      setItemsPerSlide(1);
     } else {
       setItemsPerSlide(3); // desktop
     }
@@ -148,7 +151,7 @@ export default function StrukturAnggota({ ...dept }: PageProps) {
             {slides.map((slide, idx) => (
               <div
                 key={idx}
-                className="min-w-full grid grid-cols-1 grid-rows-1 lg:grid-cols-3 lg:grid-rows-1 lg:gap-4"
+                className="min-w-full grid grid-cols-1 grid-rows-1 md:grid-cols-2 md:grid-rows-1 lg:grid-cols-3 lg:grid-rows-1 md:gap-2 lg:gap-4"
               >
                 {slide.map((member, i) => (
                   <div key={i} className="w-full flex-col flex max-lg:pb-10">

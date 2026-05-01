@@ -123,7 +123,9 @@ export default function NewsDetailClient() {
             </div>
             <div id="content">
               {(news?.content ?? "").split("\n\n").map((p, idx) => (
-                <MarkdownRenderer key={idx}>{p}</MarkdownRenderer>
+                <MarkdownRenderer className="text-justify" key={idx}>
+                  {p}
+                </MarkdownRenderer>
               ))}
             </div>
             <AdvanceHashTags tags={tags} />

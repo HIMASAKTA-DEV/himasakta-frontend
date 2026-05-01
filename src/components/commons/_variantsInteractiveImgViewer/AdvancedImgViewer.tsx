@@ -83,7 +83,7 @@ export default function InteractiveImgViewerV2({
   return (
     <div className="flex items-center justify-center w-full">
       <div
-        className="w-[85vw] lg:w-[95vw] aspect-[9/12] lg:aspect-video max-w-[1200px] bg-neutral-200 rounded-md shadow-lg overflow-hidden"
+        className="w-[85vw] lg:w-[95vw] aspect-[9/12] md:aspect-video max-w-[1200px] bg-neutral-200 rounded-md shadow-lg overflow-hidden"
         data-lenis-prevent
       >
         <div className="grid grid-rows-[auto_1fr] w-full h-full">
