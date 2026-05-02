@@ -446,12 +446,12 @@ export default function EditCabinetPage() {
 
             <div
               className="flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] max-w-full"
-              style={{ aspectRatio: "3/2" }}
+              style={{ aspectRatio: "1/1" }}
             >
               <div
                 onClick={() => setOpenUpload(true)}
                 className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full"
-                style={{ aspectRatio: "3/2" }}
+                style={{ aspectRatio: "1/1" }}
               >
                 {logo ? (
                   <img
@@ -497,7 +497,7 @@ export default function EditCabinetPage() {
             <div
               onClick={() => setOpenUploadOrganigram(true)}
               className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full max-w-full"
-              style={{ aspectRatio: "3/2" }}
+              style={{ aspectRatio: "16/9" }}
             >
               {organigram ? (
                 <img
@@ -507,7 +507,7 @@ export default function EditCabinetPage() {
                 />
               ) : (
                 <p className="italic text-[#9BA5B7] text-center">
-                  No organigram uploaded (Recommended 16:9 &gt;4000px
+                  No organigram uploaded (Recommended 16:9 &gt;4000px)
                 </p>
               )}
 
@@ -539,7 +539,7 @@ export default function EditCabinetPage() {
 
             <div className="flex flex-col gap-4 mt-8 w-full">
               {/* MANAGE gallery */}
-              <div className="w-full flex flex-row lg:justify-between lg:items-center mb-0 max-lg:flex-col">
+              <div className="w-full flex flex-row gap-4 justify-between lg:items-center mb-0 max-lg:flex-col">
                 <label className="font-semibold text-black">Feeds/Galeri</label>
                 <div className="text-sm italic text-gray-500">
                   Upload maksimum 20 gambar. Tidak disimpan sementara

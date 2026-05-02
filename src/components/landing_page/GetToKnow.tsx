@@ -91,18 +91,18 @@ export default function GetToKnow() {
         <div className="relative w-full overflow-hidden px-1 flex items-center justify-center flex-col">
           {/* SLIDER CONTAINER */}
           <div
-            className="flex transition-transform duration-500 ease-out"
+            className="flex transition-transform duration-500 ease-out w-full"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {slides.map((slide, idx) => (
               <div
                 key={idx}
-                className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4 lg:px-12 grid-rows-1"
+                className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4 lg:px-12"
               >
                 {slide.map((event) => (
                   <div
                     key={event.id}
-                    className=" flex flex-col gap-3 w-full lg:min-w-[280px] lg:max-w-full bg-primaryPinkLight p-4 rounded-lg"
+                    className=" flex flex-col gap-3 min-w-full bg-primaryPinkLight p-4 rounded-lg"
                   >
                     <Link
                       href={event.link}
