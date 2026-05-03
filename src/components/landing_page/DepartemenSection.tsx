@@ -6,6 +6,7 @@ import { getDepartmentInfo } from "@/services/landing_page/DepartementSection";
 import { DepartmentInfo } from "@/types/data/DepartmentSection";
 import { useEffect, useState } from "react";
 import DeptCard from "./_departemenSection/DeptCard";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 function DepartemenSection() {
   // Comment this after creating data fetching
@@ -48,14 +49,16 @@ function DepartemenSection() {
       className="w-full flex flex-col items-center gap-8 px-4"
       id="departemen-list-utama"
     >
-      <div className="flex items-center flex-col gap-2">
-        <h1 className="font-averia text-4xl lg:text-6xl font-bold">
-          12 Departemen
-        </h1>
-        <p className="font-libertine font-semibold text-2xl lg:text-3xl">
-          Jelajahi departemen yang ada di HIMASAKTA ITS
-        </p>
-      </div>
+      <FramerMotionWrapper variant="fadeDown">
+        <div className="flex items-center flex-col gap-2">
+          <h1 className="font-averia text-4xl lg:text-6xl font-bold">
+            12 Departemen
+          </h1>
+          <p className="font-libertine font-semibold text-2xl lg:text-3xl">
+            Jelajahi departemen yang ada di HIMASAKTA ITS
+          </p>
+        </div>
+      </FramerMotionWrapper>
       {loading ? (
         <SkeletonGrid
           count={12}
@@ -73,14 +76,18 @@ function DepartemenSection() {
           {/* Kolom kiri */}
           <div className="flex flex-col gap-4 lg:w-1/2">
             {firstDepts.map((dept, idx) => (
-              <DeptCard {...dept} key={dept.id || idx} />
+              <FramerMotionWrapper variant="fadeLeft">
+                <DeptCard {...dept} key={dept.id || idx} />
+              </FramerMotionWrapper>
             ))}
           </div>
 
           {/* Kolom kanan */}
           <div className="flex flex-col gap-4 lg:w-1/2">
             {secDepts.map((dept, idx) => (
-              <DeptCard {...dept} key={dept.id || idx} />
+              <FramerMotionWrapper variant="fadeRight">
+                <DeptCard {...dept} key={dept.id || idx} />
+              </FramerMotionWrapper>
             ))}
           </div>
 

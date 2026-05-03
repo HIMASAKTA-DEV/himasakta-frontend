@@ -9,6 +9,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import NewsComps from "../_news/NewsComponents";
 import HeaderSection from "../commons/HeaderSection";
 import ButtonLink from "../links/ButtonLink";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 const MIN_LOADING_TIME = 1000;
 
@@ -126,7 +127,7 @@ export default function InformasiBerita() {
           <p className="text-sm">Silakan cek kembali nanti.</p>
         </div>
       ) : (
-        <div className="relative overflow-hidden">
+        <FramerMotionWrapper className="relative overflow-hidden">
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -174,7 +175,7 @@ export default function InformasiBerita() {
               </div>
             </>
           )}
-        </div>
+        </FramerMotionWrapper>
       )}
     </section>
   );

@@ -11,6 +11,7 @@ import HeaderSection from "../commons/HeaderSection";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
 import SocmedCard from "./_socmedCard";
 import ImagesSlideshow from "./slideShowImages.tsx/ImagesSlideshow";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 function InformasiDepartment({ ...dept }: DepartmentType) {
   const logoImages = mediaToImages(dept?.logo);
@@ -77,9 +78,12 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
         id="informasi-departemen"
       >
         <div className="lg:w-[40%] w-full max-w-sm mx-auto lg:max-w-none">
-          <div className="w-full aspect-[9/11] rounded-2xl relative shadow-lg overflow-hidden group">
+          <FramerMotionWrapper
+            variant="blurIn"
+            className="w-full aspect-[9/11] rounded-2xl relative shadow-lg overflow-hidden group"
+          >
             <ImagesSlideshow images={logoImages} />
-          </div>
+          </FramerMotionWrapper>
         </div>
         <div className="w-full lg:w-[55%] flex flex-col items-start justify-start lg:mt-4 gap-6">
           <HeaderSection
@@ -196,9 +200,7 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
 
               {nrpError && (
                 <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100 flex items-start gap-2">
-                  <span className="text-base leading-none block pt-0.5">
-                    ⚠️
-                  </span>
+                  <span className="text-base leading-none block pt-0.5">⚠️</span>
                   <p className="font-medium">{nrpError}</p>
                 </div>
               )}

@@ -8,6 +8,7 @@ import { FaArrowRight } from "react-icons/fa6";
 import HashTags from "../commons/HashTags";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 export default function CardNews({
   idx = 0,
@@ -17,7 +18,7 @@ export default function CardNews({
   const tags = normalizeHashtags(news.tags || news.hashtags);
 
   return (
-    <div
+    <FramerMotionWrapper
       className={`
         flex flex-col gap-3 group/card rounded-xl shadow-md hover:shadow-lg 
         transition-all duration-300 p-3
@@ -99,6 +100,6 @@ export default function CardNews({
           </Link>
         </div>
       </div>
-    </div>
+    </FramerMotionWrapper>
   );
 }

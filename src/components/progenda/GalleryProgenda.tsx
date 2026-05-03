@@ -9,6 +9,7 @@ import BackToTop from "../commons/BackToTop";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 type GalleryCard = {
   imageUrl: string;
@@ -100,7 +101,12 @@ function GalleryProgenda({ ...dept }: PageProps) {
   if (loading) {
     return (
       <div className="flex flex-col gap-8 items-center">
-        <HeaderSection title={"Galeri Departemen"} />
+        <FramerMotionWrapper
+          className="flex items-center justify-start"
+          variant="fadeDown"
+        >
+          <HeaderSection title={"Galeri Progenda"} />
+        </FramerMotionWrapper>
         <div className="w-full">
           <EventSkeleton
             className="grid grid-cols-3 grid-rows-3"
@@ -115,33 +121,45 @@ function GalleryProgenda({ ...dept }: PageProps) {
 
   return (
     <div className="flex flex-col gap-8 w-full" id="galeri">
-      <HeaderSection title={"Galeri Progenda"} />
+      <FramerMotionWrapper
+        className="flex items-center justify-start"
+        variant="fadeDown"
+      >
+        <HeaderSection title={"Galeri Progenda"} />
+      </FramerMotionWrapper>
       {galleries.length <= 0 ? (
-        <div className="w-full flex items-center">
+        <FramerMotionWrapper
+          variant="fadeDown"
+          className="w-full flex items-center"
+        >
           <p>Progenda tidak memiliki galeri</p>
-        </div>
+        </FramerMotionWrapper>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
           {paginatedGalleries.map((g, idx) => (
-            <div
+            <FramerMotionWrapper
               className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"
-              key={idx}
-              onClick={() => {
-                setPreviewImage({
-                  url: g.imageUrl,
-                });
-                dept.viewingImg(true);
-              }}
+              variant="fadeDown"
             >
-              <ImageFallback
-                isFill
-                src={g.imageUrl}
-                imgStyle="rounded-lg object-cover group-hover/item:scale-110 duration-500"
-              />
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/item:opacity-100 flex items-center justify-center text-white font-medium transition-all duration-500">
-                Lihat Foto
+              <div
+                key={idx}
+                onClick={() => {
+                  setPreviewImage({
+                    url: g.imageUrl,
+                  });
+                  dept.viewingImg(true);
+                }}
+              >
+                <ImageFallback
+                  isFill
+                  src={g.imageUrl}
+                  imgStyle="rounded-lg object-cover group-hover/item:scale-110 duration-500"
+                />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/item:opacity-100 flex items-center justify-center text-white font-medium transition-all duration-500">
+                  Lihat Foto
+                </div>
               </div>
-            </div>
+            </FramerMotionWrapper>
           ))}
         </div>
       )}
