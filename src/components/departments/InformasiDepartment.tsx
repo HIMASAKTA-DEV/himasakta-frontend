@@ -12,9 +12,10 @@ import MarkdownRenderer from "../commons/MarkdownRenderer";
 import SocmedCard from "./_socmedCard";
 import ImagesSlideshow from "./slideShowImages.tsx/ImagesSlideshow";
 import FramerMotionWrapper from "../commons/FramerMotionWrapper";
+import ImageFallback from "../commons/ImageFallback";
 
 function InformasiDepartment({ ...dept }: DepartmentType) {
-  const logoImages = mediaToImages(dept?.logo);
+  const logoImages = dept?.logo?.image_url;
 
   const [showNrpModal, setShowNrpModal] = useState(false);
   const [nrpInput, setNrpInput] = useState("");
@@ -82,7 +83,11 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
             variant="blurIn"
             className="w-full aspect-[9/11] rounded-2xl relative shadow-lg overflow-hidden group"
           >
-            <ImagesSlideshow images={logoImages} />
+            <ImageFallback
+              src={logoImages}
+              isFill
+              imgStyle="group-hover:scale-105"
+            ></ImageFallback>
           </FramerMotionWrapper>
         </div>
         <div className="w-full lg:w-[55%] flex flex-col items-start justify-start lg:mt-4 gap-6">
