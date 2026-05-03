@@ -9,6 +9,9 @@ import { FaCloudUploadAlt, FaImages, FaTimes } from "react-icons/fa";
 import RenderPagination from "../_news/RenderPagination";
 import ImageFallback from "../commons/ImageFallback";
 
+import ReactCrop, { Crop, makeAspectCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
+
 interface MediaSelectorProps {
   onClose: () => void;
   onSelect: (image: { id: string; image_url: string }) => void;
@@ -24,13 +27,17 @@ export default function MediaSelector({
 }: MediaSelectorProps) {
   const [activeTab, setActiveTab] = useState<"upload" | "gallery">("upload");
 
-  // Upload State
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [_isDragging, setIsDragging] = useState<boolean>(false);
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Gallery State
+  const MIN_DIMENSION = 150;
+  const [aspectRatio, setAspectRatio] = useState(1);
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<Crop | null>(null);
+  const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
+
   const [galleryData, setGalleryData] = useState<ManageGalleryType[]>([]);
   const [selectedGalleryImage, setSelectedGalleryImage] =
     useState<ManageGalleryType | null>(null);
@@ -43,7 +50,11 @@ export default function MediaSelector({
     setIsLoadingGallery(true);
     try {
       const resp = await api.get<ApiResponse<ManageGalleryType[]>>(
-        `/gallery?${onFilter ? `filter_by=${onFilter}&filter=null&page=${currentPage}&limit=${LIMIT}` : `page=${currentPage}&limit=${LIMIT}`}`,
+        `/gallery?${
+          onFilter
+            ? `filter_by=${onFilter}&filter=null&page=${currentPage}&limit=${LIMIT}`
+            : `page=${currentPage}&limit=${LIMIT}`
+        }`,
       );
       setGalleryData(resp.data.data);
       setTotalPages(resp.data.meta.total_page ?? 1);
@@ -60,19 +71,130 @@ export default function MediaSelector({
     }
   }, [activeTab, currentPage]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setUploadFile(file);
       setUploadPreview(URL.createObjectURL(file));
+      setCrop(undefined);
+      setCompletedCrop(null);
     }
+  };
+
+  const handleFile = (file: File | null) => {
+    if (!file) return;
+    setUploadFile(file);
+    setUploadPreview(URL.createObjectURL(file));
+    setCrop(undefined);
+    setCompletedCrop(null);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    handleFile(e.dataTransfer.files?.[0] || null);
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const _handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleFile(e.target.files?.[0] || null);
+  };
+
+  const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    setImageRef(img);
+
+    const { naturalWidth, naturalHeight } = img;
+
+    const initialCrop = makeAspectCrop(
+      { unit: "%", width: 50 },
+      aspectRatio,
+      naturalWidth,
+      naturalHeight,
+    );
+
+    setCrop(initialCrop);
+  };
+
+  const getCroppedBlob = async (): Promise<Blob | null> => {
+    if (!imageRef || !completedCrop) return null;
+
+    const canvas = document.createElement("canvas");
+
+    const scaleX = imageRef.naturalWidth / imageRef.width;
+    const scaleY = imageRef.naturalHeight / imageRef.height;
+
+    const cropPx = {
+      x: completedCrop.x! * scaleX,
+      y: completedCrop.y! * scaleY,
+      width: completedCrop.width! * scaleX,
+      height: completedCrop.height! * scaleY,
+    };
+
+    canvas.width = cropPx.width;
+    canvas.height = cropPx.height;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    ctx.drawImage(
+      imageRef,
+      cropPx.x,
+      cropPx.y,
+      cropPx.width,
+      cropPx.height,
+      0,
+      0,
+      cropPx.width,
+      cropPx.height,
+    );
+
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.95);
+    });
+  };
+
+  const changeAspect = (ratio: number) => {
+    setAspectRatio(ratio);
+
+    if (!imageRef) return;
+
+    const { naturalWidth, naturalHeight } = imageRef;
+
+    const newCrop = makeAspectCrop(
+      {
+        unit: "%",
+        width: 80,
+      },
+      ratio,
+      naturalWidth,
+      naturalHeight,
+    );
+
+    setCrop(newCrop);
+    setCompletedCrop(null);
   };
 
   const handleUploadSubmit = async () => {
     if (!uploadFile) return;
 
+    const croppedBlob = await getCroppedBlob();
+
+    if (!croppedBlob) {
+      toast.error("Crop image first");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("image", uploadFile);
+    formData.append("image", croppedBlob, "cropped.jpg");
 
     setIsUploading(true);
     try {
@@ -80,7 +202,11 @@ export default function MediaSelector({
         headers: { "Content-Type": "multipart/form-data" },
       });
       const uploaded = resp.data.data;
-      onSelect({ id: uploaded.id, image_url: uploaded.image_url });
+
+      onSelect({
+        id: uploaded.id,
+        image_url: uploaded.image_url,
+      });
     } catch (err) {
       console.error("Upload failed:", err);
       toast.error("Failed to upload image");
@@ -98,39 +224,9 @@ export default function MediaSelector({
     }
   };
 
-  const handleFile = (file: File | null) => {
-    if (!file) return;
-
-    setUploadFile(file);
-    setUploadPreview(URL.createObjectURL(file));
-  };
-
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const file = e.dataTransfer.files?.[0] || null;
-    handleFile(file);
-  };
-
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const _handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    handleFile(file);
-  };
-
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-white w-full max-w-4xl rounded-2xl flex flex-col max-h-[90vh] shadow-2xl overflow-hidden">
-        {/* Header */}
         <div className="flex items-center justify-between p-5 border-b">
           <h2 className="text-xl font-bold font-averia text-black">{title}</h2>
           <button
@@ -142,7 +238,6 @@ export default function MediaSelector({
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="flex border-b">
           <button
             type="button"
@@ -170,27 +265,53 @@ export default function MediaSelector({
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 min-h-[300px]">
           {activeTab === "upload" ? (
             <div className="flex flex-col items-center justify-center h-full gap-6">
               <div
-                onClick={() => document.getElementById("media-upload")?.click()}
+                onClick={() =>
+                  !uploadPreview &&
+                  document.getElementById("media-upload")?.click()
+                }
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`w-full max-w-lg aspect-video border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-4 transition-all overflow-hidden ${
+                className={`w-full max-w-lg border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-4 transition-all ${
                   uploadPreview
-                    ? "border-primaryPink bg-pink-50/20"
-                    : "border-gray-200 hover:border-primaryPink hover:bg-pink-50/10 cursor-pointer"
+                    ? "border-primaryPink bg-pink-50/20 p-4"
+                    : "border-gray-200 hover:border-primaryPink hover:bg-pink-50/10 cursor-pointer aspect-video overflow-hidden"
                 }`}
               >
                 {uploadPreview ? (
-                  <img
-                    src={uploadPreview}
-                    alt="Preview"
-                    className="w-full h-full object-contain"
-                  />
+                  <div
+                    className="w-full flex flex-col items-center justify-center bg-gray-100/50 rounded-xl overflow-hidden"
+                    // Container ini tidak boleh punya fixed aspect-ratio
+                    style={{ minHeight: "300px" }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="relative w-full flex items-center justify-center p-2">
+                      <ReactCrop
+                        crop={crop}
+                        onChange={(_pixelCrop, percentCrop) =>
+                          setCrop(percentCrop)
+                        }
+                        onComplete={(c) => setCompletedCrop(c)}
+                        aspect={aspectRatio || undefined}
+                        minWidth={MIN_DIMENSION}
+                        // Penting: Memastikan container crop tidak meluber
+                        style={{ maxWidth: "100%", maxHeight: "60vh" }}
+                      >
+                        <img
+                          src={uploadPreview}
+                          alt="Preview"
+                          onLoad={onImageLoad}
+                          // Kuncinya di sini: max-h harus lebih kecil dari container modal
+                          // agar header & footer modal tetap terlihat
+                          className="block w-auto h-auto max-w-full max-h-[50vh] object-contain"
+                        />
+                      </ReactCrop>
+                    </div>
+                  </div>
                 ) : (
                   <>
                     <div className="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center text-primaryPink">
@@ -206,6 +327,10 @@ export default function MediaSelector({
                     </div>
                   </>
                 )}
+                {/* 
+                <>
+                    
+                  </> */}
                 <input
                   id="media-upload"
                   type="file"
@@ -214,18 +339,86 @@ export default function MediaSelector({
                   onChange={handleFileChange}
                 />
               </div>
-
               {uploadPreview && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setUploadFile(null);
-                    setUploadPreview(null);
-                  }}
-                  className="text-sm text-red-500 hover:underline"
-                >
-                  Remove Selection
-                </button>
+                <div className="flex flex-col items-center justify-center gap-2 lg:gap-4">
+                  <div className="flex gap-2 lg:gap-4 items-center justify-center">
+                    <button
+                      className={
+                        aspectRatio === 1 ? "text-primaryPink font-bold" : ""
+                      }
+                      onClick={() => changeAspect(1)}
+                      type="button"
+                    >
+                      1:1
+                    </button>
+                    <button
+                      className={
+                        aspectRatio === 16 / 9
+                          ? "text-primaryPink font-bold"
+                          : ""
+                      }
+                      onClick={() => changeAspect(16 / 9)}
+                      type="button"
+                    >
+                      16:9
+                    </button>
+                    <button
+                      className={
+                        aspectRatio === 9 / 16
+                          ? "text-primaryPink font-bold"
+                          : ""
+                      }
+                      onClick={() => changeAspect(9 / 16)}
+                      type="button"
+                    >
+                      9:16
+                    </button>
+                    <button
+                      className={
+                        aspectRatio === 4 / 3
+                          ? "text-primaryPink font-bold"
+                          : ""
+                      }
+                      onClick={() => changeAspect(4 / 3)}
+                      type="button"
+                    >
+                      4:3
+                    </button>
+                    <button
+                      className={
+                        aspectRatio === 3 / 4
+                          ? "text-primaryPink font-bold"
+                          : ""
+                      }
+                      onClick={() => changeAspect(3 / 4)}
+                      type="button"
+                    >
+                      3:4
+                    </button>
+                    <button
+                      className={
+                        aspectRatio === 0 ? "text-primaryPink font-bold" : ""
+                      }
+                      onClick={() => changeAspect(0)}
+                      type="button"
+                    >
+                      Free
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUploadFile(null);
+                      setUploadPreview(null);
+                      setCrop(undefined);
+                      setCompletedCrop(null);
+                      setImageRef(null);
+                    }}
+                    className="text-sm text-red-500 hover:underline"
+                  >
+                    Remove Selection
+                  </button>
+                </div>
               )}
             </div>
           ) : (
@@ -294,7 +487,6 @@ export default function MediaSelector({
           )}
         </div>
 
-        {/* Footer */}
         <div className="p-5 border-t bg-gray-50 flex justify-end gap-3">
           <button
             type="button"
