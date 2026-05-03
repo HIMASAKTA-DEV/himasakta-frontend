@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import HeaderSection from "../commons/HeaderSection";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
 import SkeletonProfilHimpunan from "./skeletons/SkeletonProfilHimpunan";
+import FramerMotionSection from "../commons/FramerMotionWrapper";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 export default function ProfilHimpunan() {
   const [loading, setLoading] = useState(true);
@@ -30,26 +32,31 @@ export default function ProfilHimpunan() {
   return loading ? (
     <SkeletonProfilHimpunan />
   ) : (
-    <section className="flex flex-col items-center gap-8" id="profil-himpunan">
-      <div className=" w-[75vw] lg:max-w-7xl relative aspect-[16/9] lg:aspect-[16/5]">
-        <Image
-          src={data?.FotoHimpunan ?? "/images/ProfilHimpunan.png"}
-          alt="profil-himpunan"
-          fill
-          className="object-cover rounded-3xl"
-        />
-      </div>
-      <div className="flex flex-col items-center gap-4">
-        <HeaderSection
-          title="Profil Himpunan"
-          className="w-[75vw] lg:max-w-7xl mx-auto"
-        />
-        <div className="w-[75vw] lg:max-w-7xl mx-auto font-libertine lg:text-xl text-justify">
-          <MarkdownRenderer className="text-justify">
-            {data?.DeskripsiHimpunan ?? ""}
-          </MarkdownRenderer>
+    <>
+      <section
+        className="flex flex-col items-center gap-8"
+        id="profil-himpunan"
+      >
+        <div className=" w-[75vw] lg:max-w-7xl relative aspect-[16/9] lg:aspect-[16/5]">
+          <Image
+            src={data?.FotoHimpunan ?? "/images/ProfilHimpunan.png"}
+            alt="profil-himpunan"
+            fill
+            className="object-cover rounded-3xl"
+          />
         </div>
-      </div>
-    </section>
+        <div className="flex flex-col items-center gap-4">
+          <HeaderSection
+            title="Profil Himpunan"
+            className="w-[75vw] lg:max-w-7xl mx-auto"
+          />
+          <div className="w-[75vw] lg:max-w-7xl mx-auto font-libertine lg:text-xl text-justify">
+            <MarkdownRenderer className="text-justify">
+              {data?.DeskripsiHimpunan ?? ""}
+            </MarkdownRenderer>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

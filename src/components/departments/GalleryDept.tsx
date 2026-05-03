@@ -8,6 +8,7 @@ import RenderPagination from "../_news/RenderPagination";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 type GalleryCard = {
   imageUrl: string;
@@ -113,34 +114,39 @@ function GalleryDept({ ...dept }: PageProps) {
   if (error) return <p>&#9940; Gagal memuat data :&#40;</p>;
 
   return (
-    <div className="flex flex-col gap-8" id="galeri">
-      <HeaderSection title={"Galeri Departemen"} />
+    <div className="flex flex-col gap-8 mt-12" id="galeri">
+      <FramerMotionWrapper className="flex items-center justify-center">
+        <HeaderSection title={"Galeri Departemen"} />
+      </FramerMotionWrapper>
       {galleries.length <= 0 ? (
-        <div className="w-full flex items-center">
-          <p>Departemen tidak memiliki galeri</p>
-        </div>
+        <FramerMotionWrapper className="flex items-center justify-center">
+          <div className="w-full flex items-center">
+            <p>Departemen tidak memiliki galeri</p>
+          </div>
+        </FramerMotionWrapper>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           {paginatedGalleries.map((g, idx) => (
-            <div
-              className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"
-              key={idx}
-              onClick={() => {
-                setPreviewImage({
-                  url: g.imageUrl,
-                });
-                dept.viewingImg(true);
-              }}
-            >
-              <ImageFallback
-                isFill
-                src={g.imageUrl}
-                imgStyle="rounded-lg object-cover group-hover/item:scale-110 duration-500"
-              />
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/item:opacity-100 flex items-center justify-center text-white font-medium transition-all duration-500">
-                Lihat Foto
+            <FramerMotionWrapper className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item">
+              <div
+                key={idx}
+                onClick={() => {
+                  setPreviewImage({
+                    url: g.imageUrl,
+                  });
+                  dept.viewingImg(true);
+                }}
+              >
+                <ImageFallback
+                  isFill
+                  src={g.imageUrl}
+                  imgStyle="rounded-lg object-cover group-hover/item:scale-110 duration-500"
+                />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/item:opacity-100 flex items-center justify-center text-white font-medium transition-all duration-500">
+                  Lihat Foto
+                </div>
               </div>
-            </div>
+            </FramerMotionWrapper>
           ))}
         </div>
       )}

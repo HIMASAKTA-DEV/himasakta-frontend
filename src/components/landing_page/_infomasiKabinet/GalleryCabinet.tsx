@@ -1,5 +1,6 @@
 "use client";
 
+import FramerMotionWrapper from "@/components/commons/FramerMotionWrapper";
 import ImageFallback from "@/components/commons/ImageFallback";
 import SkeletonGrid from "@/components/commons/skeletons/SkeletonGrid";
 import divideArray from "@/lib/divideArray"; // Pastikan path ini benar
@@ -110,94 +111,98 @@ function GalleryCabinet({ ...cabinet }: ModCabinetInfo) {
 
   return (
     <div className="flex flex-col gap-8 px-4 w-full py-10">
-      <div className="text-center">
-        <h1 className="text-3xl lg:text-5xl font-libertine font-semibold">
-          Galeri Kabinet
-        </h1>
-      </div>
-
-      {loading && (
-        <SkeletonGrid
-          className={`grid-cols-1 grid-rows-1 lg:grid-rows-1 lg:grid-cols-3 gap-6`}
-          count={limitGallery}
-        />
-      )}
-
-      {galleries.length <= 0 && !loading ? (
-        <div className="w-full flex items-center justify-center py-20 bg-gray-50 rounded-xl border-2 border-dashed">
-          <p className="text-gray-400">Departemen belum memiliki dokumentasi</p>
+      <FramerMotionWrapper variant="blurIn">
+        <div className="text-center">
+          <h1 className="text-3xl lg:text-5xl font-libertine font-semibold">
+            Galeri Kabinet
+          </h1>
         </div>
-      ) : (
-        <div className="relative w-full overflow-hidden group">
-          {/* SLIDER CONTAINER */}
-          <div
-            className="flex transition-transform duration-500 ease-out"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
-            {slides.map((slide, idx) => (
-              <div
-                key={idx}
-                className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 lg:px-12"
-              >
-                {slide.map((g, gIdx) => (
-                  <div
-                    key={gIdx}
-                    className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"
-                    onClick={() =>
-                      setPreviewImage({
-                        url: g.image_url,
-                        caption: g.caption || g.id,
-                      })
-                    }
-                  >
-                    <ImageFallback
-                      isFill
-                      src={g.image_url}
-                      imgStyle="rounded-lg object-cover group-hover/item:scale-110 duration-500"
-                    />
-                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center text-white font-medium">
-                      Lihat Foto
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))}
+
+        {loading && (
+          <SkeletonGrid
+            className={`grid-cols-1 grid-rows-1 lg:grid-rows-1 lg:grid-cols-3 gap-6`}
+            count={limitGallery}
+          />
+        )}
+
+        {galleries.length <= 0 && !loading ? (
+          <div className="w-full flex items-center justify-center py-20 bg-gray-50 rounded-xl border-2 border-dashed">
+            <p className="text-gray-400">
+              Departemen belum memiliki dokumentasi
+            </p>
           </div>
+        ) : (
+          <div className="relative w-full overflow-hidden group">
+            {/* SLIDER CONTAINER */}
+            <div
+              className="flex transition-transform duration-500 ease-out"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {slides.map((slide, idx) => (
+                <div
+                  key={idx}
+                  className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 lg:px-12"
+                >
+                  {slide.map((g, gIdx) => (
+                    <div
+                      key={gIdx}
+                      className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"
+                      onClick={() =>
+                        setPreviewImage({
+                          url: g.image_url,
+                          caption: g.caption || g.id,
+                        })
+                      }
+                    >
+                      <ImageFallback
+                        isFill
+                        src={g.image_url}
+                        imgStyle="rounded-lg object-cover group-hover/item:scale-110 duration-500"
+                      />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center text-white font-medium">
+                        Lihat Foto
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
 
-          {/* CONTROLS (Hanya muncul jika slide > 1) */}
-          {slides.length > 1 && (
-            <>
-              <button
-                onClick={prevSlide}
-                className="absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-all"
-              >
-                <FaChevronLeft size={20} />
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-all"
-              >
-                <FaChevronRight size={20} />
-              </button>
+            {/* CONTROLS (Hanya muncul jika slide > 1) */}
+            {slides.length > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-all"
+                >
+                  <FaChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-all"
+                >
+                  <FaChevronRight size={20} />
+                </button>
 
-              {/* DOTS INDICATOR */}
-              <div className="mt-8 flex justify-center gap-2">
-                {slides.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentSlide(idx)}
-                    className={`h-2 rounded-full transition-all duration-300 max-lg:hidden ${
-                      idx === currentSlide
-                        ? "bg-primaryPink w-8"
-                        : "bg-gray-300 w-2"
-                    }`}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
+                {/* DOTS INDICATOR */}
+                <div className="mt-8 flex justify-center gap-2">
+                  {slides.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentSlide(idx)}
+                      className={`h-2 rounded-full transition-all duration-300 max-lg:hidden ${
+                        idx === currentSlide
+                          ? "bg-primaryPink w-8"
+                          : "bg-gray-300 w-2"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </FramerMotionWrapper>
 
       {previewImage &&
         (() => {

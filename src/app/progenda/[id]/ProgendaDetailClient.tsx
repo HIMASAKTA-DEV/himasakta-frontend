@@ -1,6 +1,7 @@
 "use client";
 
 import NotFound from "@/app/not-found";
+import FramerMotionWrapper from "@/components/commons/FramerMotionWrapper";
 import HeaderSection from "@/components/commons/HeaderSection";
 import ImageFallback from "@/components/commons/ImageFallback";
 import MarkdownRenderer from "@/components/commons/MarkdownRenderer";
@@ -123,7 +124,7 @@ export default function ProgendaDetailClient() {
       </ButtonLink>
 
       <main
-        className="min-h-screen px-10 flex flex-col lg:px-40 gap-6 mb-20 items-center min-w-full"
+        className="min-h-screen px-10 flex flex-col lg:px-40 gap-12 mb-20 items-center min-w-full"
         id="headline"
       >
         <HeaderSection
@@ -135,7 +136,7 @@ export default function ProgendaDetailClient() {
           }
           subStyle="font-libertine text-gray-500"
         />
-        <div className="relative w-full lg:w-[50%] aspect-video rounded-lg flex flex-col gap-4 shadow-md hover:-translate-y-1 transition-all duration-300">
+        <div className="relative w-full lg:w-[50%] aspect-video rounded-lg flex flex-col gap-4 shadow-md hover:-translate-y-1 transition-transform duration-300">
           <ImageFallback
             src={progenda?.thumbnail?.image_url}
             isFill
@@ -197,14 +198,18 @@ export default function ProgendaDetailClient() {
             </MarkdownRenderer>
           </div>
         </div>
-        <div className="flex flex-col gap-2 w-full" id="tujuan">
+        <FramerMotionWrapper
+          className="flex flex-col gap-2 w-full"
+          id="tujuan"
+          variant="fadeLeft"
+        >
           <HeaderSection title={"Tujuan"} />
           <div className="font-libertine text-md">
             <MarkdownRenderer className="text-justify">
               {progenda?.goal}
             </MarkdownRenderer>
           </div>
-        </div>
+        </FramerMotionWrapper>
 
         <GalleryProgenda {...progenda} viewingImg={setViewingImg} />
         <div className="w-full flex flex-col gap-4" id="timeline">

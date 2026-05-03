@@ -336,7 +336,7 @@ export default function AddNewsPage() {
 
             <div
               className="flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc]"
-              style={{ aspectRatio: "4/3" }}
+              style={{ aspectRatio: "16/9" }}
             >
               <div
                 className="group relative h-full w-full overflow-hidden rounded-2xl"
@@ -345,7 +345,7 @@ export default function AddNewsPage() {
                 {logo ? (
                   <img
                     src={logo.image_url}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover object-center"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center italic text-gray-400">

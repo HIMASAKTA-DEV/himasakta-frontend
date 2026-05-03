@@ -6,6 +6,7 @@ import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
 import { GetCurrentCabinet } from "@/services/landing_page/InformasiKabinet";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import { useEffect, useState } from "react";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 export default function OrganigramSection() {
   const [loading, setLoading] = useState(true);
@@ -35,24 +36,28 @@ export default function OrganigramSection() {
   // }, []);
 
   return (
-    <section className="w-full flex flex-col gap-6 px-4">
-      <HeaderSection
-        title="Struktur Organisasi HIMASAKTA ITS"
-        sub="Organigram kepengurusan HIMASAKTA ITS"
-      />
-      {loading ? (
-        <SkeletonSection />
-      ) : (
-        <div className="w-full flex items-center">
-          <InteractiveImgViewer
-            src={
-              cabinet?.organigram?.image_url ??
-              "images/OrganigramSementara.jpeg"
-            }
-            variant="advanced"
+    <>
+      <FramerMotionWrapper variant="fade">
+        <section className="w-full flex flex-col gap-6 px-4">
+          <HeaderSection
+            title="Struktur Organisasi HIMASAKTA ITS"
+            sub="Organigram kepengurusan HIMASAKTA ITS"
           />
-        </div>
-      )}
-    </section>
+          {loading ? (
+            <SkeletonSection />
+          ) : (
+            <div className="w-full flex items-center">
+              <InteractiveImgViewer
+                src={
+                  cabinet?.organigram?.image_url ??
+                  "images/OrganigramSementara.jpeg"
+                }
+                variant="advanced"
+              />
+            </div>
+          )}
+        </section>
+      </FramerMotionWrapper>
+    </>
   );
 }

@@ -10,6 +10,7 @@ import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 type ProgendaCard = {
   name: string;
@@ -114,9 +115,12 @@ function ProgendaDept({ ...dept }: DepartmentType) {
 
       {/* Slide progenda */}
       {slides.length <= 0 ? (
-        <div className="w-full flex items-center">
+        <FramerMotionWrapper
+          variant="fadeDown"
+          className="w-full flex items-center"
+        >
           <p>Departemen tidak memiliki progenda</p>
-        </div>
+        </FramerMotionWrapper>
       ) : (
         <div className="relative overflow-hidden lg:h-[60vh] w-full rounded-xl">
           {/* Slider */}
@@ -130,9 +134,10 @@ function ProgendaDept({ ...dept }: DepartmentType) {
                 key={idx}
               >
                 {slide.map((progenda, i) => (
-                  <div
+                  <FramerMotionWrapper
                     className="w-full flex flex-col bg-primaryPinkLight rounded-xl overflow-hidden lg:h-[60vh]"
                     key={i}
+                    variant="fadeDown"
                   >
                     <Link
                       href={`/progenda/${progenda.progendaId}`}
@@ -175,7 +180,7 @@ function ProgendaDept({ ...dept }: DepartmentType) {
                         </Link>
                       </div>
                     </div>
-                  </div>
+                  </FramerMotionWrapper>
                 ))}
               </div>
             ))}

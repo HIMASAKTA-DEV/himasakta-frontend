@@ -290,7 +290,7 @@ function page() {
                 </label>
                 <div
                   onClick={() => setOpenMedia(true)}
-                  className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 transition-all hover:border-primaryPink hover:bg-pink-50"
+                  className="group relative aspect-[16/9] cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 transition-all hover:border-primaryPink hover:bg-pink-50"
                 >
                   {logo ? (
                     <img

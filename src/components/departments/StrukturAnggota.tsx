@@ -9,6 +9,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 type MemberCard = {
   name: string;
@@ -135,14 +136,16 @@ export default function StrukturAnggota({ ...dept }: PageProps) {
 
   return (
     <div className="flex flex-col gap-8 items-center" id="struktur">
-      <HeaderSection title="Struktur Anggota" />
+      <FramerMotionWrapper className="flex items-center justify-center">
+        <HeaderSection title="Struktur Anggota" />
+      </FramerMotionWrapper>
 
       <div className="relative overflow-hidden w-full pb-10">
         {/* Slider */}
         {slides.length <= 0 ? (
-          <div className="w-full flex items-center">
+          <FramerMotionWrapper className="w-full flex items-center">
             <p>Data struktur anggota tidak ada :&#40;</p>
-          </div>
+          </FramerMotionWrapper>
         ) : (
           <div
             className="flex transition-transform duration-500 ease-in-out"
@@ -154,7 +157,10 @@ export default function StrukturAnggota({ ...dept }: PageProps) {
                 className="min-w-full grid grid-cols-1 grid-rows-1 md:grid-cols-2 md:grid-rows-1 lg:grid-cols-3 lg:grid-rows-1 md:gap-2 lg:gap-4"
               >
                 {slide.map((member, i) => (
-                  <div key={i} className="w-full flex-col flex max-lg:pb-10">
+                  <FramerMotionWrapper
+                    key={i}
+                    className="w-full flex-col flex max-lg:pb-10"
+                  >
                     <div
                       className="relative aspect-square overflow-hidden bg-gray-100 rounded-lg cursor-pointer group/item"
                       onClick={() => {
@@ -175,14 +181,12 @@ export default function StrukturAnggota({ ...dept }: PageProps) {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                      <p className="font-semibold text-center">
-                        Nama: {member.name}
-                      </p>
+                      <p className="font-semibold text-center">{member.name}</p>
                       <p className="text-sm text-gray-600 text-center">
-                        Jabatan: {member.role}
+                        {member.role}
                       </p>
                     </div>
-                  </div>
+                  </FramerMotionWrapper>
                 ))}
               </div>
             ))}

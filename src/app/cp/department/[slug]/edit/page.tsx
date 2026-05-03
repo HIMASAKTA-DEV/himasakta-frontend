@@ -726,7 +726,7 @@ export default function EditDepartmentPage() {
           {/* RIGHT */}
           <div className="flex-1 flex flex-col">
             <label className="mb-2 font-semibold text-black">Logo</label>
-            <div className="relative overflow-hidden rounded-xl border bg-gray-50 aspect-square">
+            <div className="relative overflow-hidden rounded-xl border bg-gray-50 aspect-[9/11]">
               {logo ? (
                 <img
                   src={logo.image_url}

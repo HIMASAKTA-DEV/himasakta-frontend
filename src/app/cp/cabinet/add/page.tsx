@@ -534,12 +534,12 @@ export default function AddCabinetPage() {
 
             <div
               className="flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] max-w-full"
-              style={{ aspectRatio: "3/2" }}
+              style={{ aspectRatio: "1/1" }}
             >
               <div
                 onClick={() => setOpenUpload(true)}
                 className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full"
-                style={{ aspectRatio: "3/2" }}
+                style={{ aspectRatio: "1/1" }}
               >
                 {logo ? (
                   <img
@@ -548,7 +548,7 @@ export default function AddCabinetPage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <p className="italic text-[#9BA5B7]">
+                  <p className="italic text-[#9BA5B7] text-center">
                     No image uploaded (recommended 1:1)
                   </p>
                 )}
@@ -585,7 +585,7 @@ export default function AddCabinetPage() {
             <div
               onClick={() => setOpenUploadOrganigram(true)}
               className="group relative flex items-center justify-center rounded-2xl border border-gray-200 bg-[#f8fafc] cursor-pointer overflow-hidden w-full max-w-full"
-              style={{ aspectRatio: "3/2" }}
+              style={{ aspectRatio: "16/9" }}
             >
               {organigram ? (
                 <img
@@ -627,7 +627,7 @@ export default function AddCabinetPage() {
 
             <div className="flex flex-col gap-4 mt-8 w-full">
               {/* MANAGE gallery */}
-              <div className="w-full flex flex-row lg:justify-between lg:items-center mb-0 max-lg:flex-col">
+              <div className="w-full flex flex-row gap-4 justify-between lg:items-center mb-0 max-lg:flex-col">
                 <label className="font-semibold text-black">Feeds/Galeri</label>
                 <div className="text-sm italic text-gray-500">
                   Upload maksimum 20 gambar. Tidak disimpan sementara

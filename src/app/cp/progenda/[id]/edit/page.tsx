@@ -271,7 +271,7 @@ function page() {
           <div className="flex-1 flex-col justify-center gap-8">
             <div className="flex flex-col gap-4">
               <label className="mb-2 font-semibold text-black">Logo</label>
-              <div className="relative overflow-hidden rounded-xl border bg-gray-50 aspect-square">
+              <div className="relative overflow-hidden rounded-xl border bg-gray-50 aspect-[16/9]">
                 {state.thumbnail ? (
                   <img
                     src={state.thumbnail.image_url}
@@ -279,7 +279,7 @@ function page() {
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center italic text-gray-400">
-                    No image (Recommended 1:1)
+                    No image (Recommended 16:9)
                   </div>
                 )}
                 <div

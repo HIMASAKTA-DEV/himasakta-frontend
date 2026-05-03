@@ -387,13 +387,13 @@ export default function EditNewsPage() {
 
             <div
               className="group relative overflow-hidden rounded-xl border"
-              style={{ aspectRatio: "4/3" }}
+              style={{ aspectRatio: "16/9" }}
               onClick={() => setOpenUpload(true)}
             >
               {logo ? (
                 <img
                   src={logo.image_url}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover object-center"
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center italic text-gray-400">

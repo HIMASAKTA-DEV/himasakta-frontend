@@ -95,11 +95,11 @@ export default function NavbarDept({ className }: { className?: string }) {
           {/* HOME BUTTON */}
           <ButtonLink
             href="/"
-            className="flex items-center gap-2 lg:px-4 py-2 rounded-full shrink-0"
+            className="flex items-center gap-2 px-[0.65rem] lg:px-4 py-2 rounded-full shrink-0"
             variant="black"
           >
             <FaChevronLeft />
-            <span className="text-sm max-lg:hidden">Home</span>
+            <span className="text-sm hidden lg:flex">Home</span>
           </ButtonLink>
 
           {/* SCROLLABLE NAV */}
@@ -149,14 +149,14 @@ export default function NavbarDept({ className }: { className?: string }) {
             </button>
 
             {showSearch && (
-              <div className="absolute right-0 top-full mt-3 w-64 p-2 bg-white/75 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 z-[900]">
+              <div className="absolute right-0 top-full mt-3 w-64 p-2 bg-white/75 rounded-2xl shadow-xl border border-gray-100 z-[900]">
                 <input
                   autoFocus
                   type="text"
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   placeholder="Cari..."
-                  className="w-full px-4 py-2 text-sm border-none bg-gray-50/75 backdrop-blur-sm rounded-xl ring-2 ring-gray-400 focus:ring-2 focus:ring-primaryPink outline-none"
+                  className="w-full px-4 py-2 text-sm border-none bg-gray-50/75 backdrop-blur-lg rounded-xl ring-2 ring-gray-400 focus:ring-2 focus:ring-primaryPink outline-none"
                 />
               </div>
             )}
