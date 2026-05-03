@@ -276,33 +276,41 @@ export default function MediaSelector({
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`w-full max-w-lg aspect-video border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-4 transition-all overflow-hidden ${
+                className={`w-full max-w-lg border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-4 transition-all ${
                   uploadPreview
-                    ? "border-primaryPink bg-pink-50/20"
-                    : "border-gray-200 hover:border-primaryPink hover:bg-pink-50/10 cursor-pointer"
+                    ? "border-primaryPink bg-pink-50/20 p-4"
+                    : "border-gray-200 hover:border-primaryPink hover:bg-pink-50/10 cursor-pointer aspect-video overflow-hidden"
                 }`}
               >
                 {uploadPreview ? (
                   <div
-                    className="w-full h-full"
+                    className="w-full flex flex-col items-center justify-center bg-gray-100/50 rounded-xl overflow-hidden"
+                    // Container ini tidak boleh punya fixed aspect-ratio
+                    style={{ minHeight: "300px" }}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <ReactCrop
-                      crop={crop}
-                      onChange={(_pixelCrop, percentCrop) =>
-                        setCrop(percentCrop)
-                      }
-                      onComplete={(c) => setCompletedCrop(c)}
-                      aspect={aspectRatio || undefined}
-                      minWidth={MIN_DIMENSION}
-                    >
-                      <img
-                        src={uploadPreview}
-                        alt="Preview"
-                        className="w-full h-full object-contain"
-                        onLoad={onImageLoad}
-                      />
-                    </ReactCrop>
+                    <div className="relative w-full flex items-center justify-center p-2">
+                      <ReactCrop
+                        crop={crop}
+                        onChange={(_pixelCrop, percentCrop) =>
+                          setCrop(percentCrop)
+                        }
+                        onComplete={(c) => setCompletedCrop(c)}
+                        aspect={aspectRatio || undefined}
+                        minWidth={MIN_DIMENSION}
+                        // Penting: Memastikan container crop tidak meluber
+                        style={{ maxWidth: "100%", maxHeight: "60vh" }}
+                      >
+                        <img
+                          src={uploadPreview}
+                          alt="Preview"
+                          onLoad={onImageLoad}
+                          // Kuncinya di sini: max-h harus lebih kecil dari container modal
+                          // agar header & footer modal tetap terlihat
+                          className="block w-auto h-auto max-w-full max-h-[50vh] object-contain"
+                        />
+                      </ReactCrop>
+                    </div>
                   </div>
                 ) : (
                   <>
@@ -319,6 +327,10 @@ export default function MediaSelector({
                     </div>
                   </>
                 )}
+                {/* 
+                <>
+                    
+                  </> */}
                 <input
                   id="media-upload"
                   type="file"
@@ -327,7 +339,6 @@ export default function MediaSelector({
                   onChange={handleFileChange}
                 />
               </div>
-
               {uploadPreview && (
                 <div className="flex flex-col items-center justify-center gap-2 lg:gap-4">
                   <div className="flex gap-2 lg:gap-4 items-center justify-center">
