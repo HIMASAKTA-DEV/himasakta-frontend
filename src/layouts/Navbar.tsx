@@ -35,7 +35,7 @@ export default function Navbar({ transparentOnTop = false }: NavbarProps) {
       className={clsx(
         "flex items-center justify-between py-8 xl:py-6 xl:mt-2 px-6 lg:px-12 sticky top-0 z-[9999] transition-all duration-500",
         isTransparent
-          ? "text-white"
+          ? "text-white absolute"
           : "text-black xl:mx-12 xl:top-8 xl:shadow-[0_0_20px_rgba(0,0,0,0.25)] xl:rounded-2xl",
       )}
     >

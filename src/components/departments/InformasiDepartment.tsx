@@ -1,7 +1,6 @@
 "use client";
 
 import api from "@/lib/axios";
-import { mediaToImages } from "@/lib/mediaToImages";
 import { DepartmentType } from "@/types/data/DepartmentType";
 import { isAxiosError } from "axios";
 import Link from "next/link";
@@ -10,9 +9,8 @@ import { ImSpinner2 } from "react-icons/im";
 import HeaderSection from "../commons/HeaderSection";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
 import SocmedCard from "./_socmedCard";
-import ImagesSlideshow from "./slideShowImages.tsx/ImagesSlideshow";
 import FramerMotionWrapper from "../commons/FramerMotionWrapper";
-import ImageFallback from "../commons/ImageFallback";
+import NoImage from "../commons/NoImg";
 
 function InformasiDepartment({ ...dept }: DepartmentType) {
   const logoImages = dept?.logo?.image_url;
@@ -83,11 +81,11 @@ function InformasiDepartment({ ...dept }: DepartmentType) {
             variant="blurIn"
             className="w-full aspect-[9/11] rounded-2xl relative shadow-lg overflow-hidden group"
           >
-            <ImageFallback
-              src={logoImages}
-              isFill
-              imgStyle="group-hover:scale-105"
-            ></ImageFallback>
+            {logoImages ? (
+              <img src={logoImages} className="h-full w-full object-cover" />
+            ) : (
+              <NoImage className="w-full h-full" text="No Image" />
+            )}
           </FramerMotionWrapper>
         </div>
         <div className="w-full lg:w-[55%] flex flex-col items-start justify-start lg:mt-4 gap-6">

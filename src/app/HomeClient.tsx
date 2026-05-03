@@ -21,8 +21,8 @@ export default function HomeClient() {
   return (
     <>
       <Layout withNavbar={wLayout} withFooter={true} transparentOnTop={true}>
-        <main className="flex flex-col items-center mb-24 lg:mb-32">
-          <div className="w-full mt-[-115px]">
+        <main className="flex flex-col items-center mb-24 lg:mb-32 overflow-x-hidden overflow-y-hidden -mt-32">
+          <div className="w-full">
             <HeroSection />
           </div>
           <div className="max-w-full flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32">
