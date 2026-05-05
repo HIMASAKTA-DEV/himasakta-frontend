@@ -7,9 +7,9 @@ import { NewsType } from "@/types/data/InformasiBerita";
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import NewsComps from "../_news/NewsComponents";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import HeaderSection from "../commons/HeaderSection";
 import ButtonLink from "../links/ButtonLink";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 const MIN_LOADING_TIME = 1000;
 

@@ -6,11 +6,11 @@ import { ProgendaType } from "@/types/data/ProgendaType";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaArrowRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 type ProgendaCard = {
   name: string;

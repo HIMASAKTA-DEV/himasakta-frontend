@@ -63,7 +63,6 @@ export default function FramerMotionWrapper({
   variant = "fadeUp",
   duration = 0.6,
   delay = 0,
-  once = false,
   amount = 0.2,
   className = "",
   id,
@@ -76,7 +75,7 @@ export default function FramerMotionWrapper({
       whileInView="show"
       variants={selected}
       transition={{ duration, delay, ease: "easeOut" }}
-      viewport={{ once, amount }}
+      viewport={{ once: true, amount }}
       className={className}
       id={id}
     >

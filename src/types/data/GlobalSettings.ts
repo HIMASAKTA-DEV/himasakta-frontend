@@ -8,6 +8,9 @@ export type GlobalSettings = {
   InternalSOPLink: string;
   DeskripsiHimpunan: string;
   FotoHimpunan: string;
+  VisiHimpunan: string;
+  MisiHimpunan: string;
+  FotoSejarahHimpunan: string;
   SocialMedia: SocialMediaDTO[];
   InMaintenance: boolean;
 };

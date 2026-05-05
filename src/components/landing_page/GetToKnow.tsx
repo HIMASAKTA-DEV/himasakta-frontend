@@ -8,9 +8,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 export default function GetToKnow() {
   const [loading, setLoading] = useState(true);
@@ -67,133 +67,131 @@ export default function GetToKnow() {
 
   return (
     <>
-      <FramerMotionWrapper>
-        <section
-          className="w-full flex flex-col gap-10 py-10"
-          id="kegiatan-section"
-        >
-          {/* HEADER */}
-          <div className="space-y-3 text-center px-4">
-            <h1 className="font-averia text-4xl lg:text-6xl text-gray-900">
-              Get to Know: What&apos;s on HIMASAKTA
-            </h1>
-            <p className="font-libertine lg:text-xl text-gray-600 max-w-2xl mx-auto">
-              Berbagai acara yang di adakan di HIMASAKTA ITS.
-            </p>
-          </div>
+      <section
+        className="w-full flex flex-col gap-10 py-10"
+        id="kegiatan-section"
+      >
+        {/* HEADER */}
+        <div className="space-y-3 text-center px-4">
+          <h1 className="font-averia text-4xl lg:text-6xl text-gray-900">
+            Get to Know: What&apos;s on HIMASAKTA
+          </h1>
+          <p className="font-libertine lg:text-xl text-gray-600 max-w-2xl mx-auto">
+            Berbagai acara yang di adakan di HIMASAKTA ITS.
+          </p>
+        </div>
 
-          {loading ? (
-            <div className="px-4 cursor-wait">
-              <SkeletonGrid
-                className="grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-                count={4}
-                withDesc
-              />
-            </div>
-          ) : events.length > 0 ? (
-            <div className="relative w-full overflow-hidden px-1 flex items-center justify-center flex-col">
-              {/* SLIDER CONTAINER */}
-              <div
-                className="flex transition-transform duration-500 ease-out w-full"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {slides.map((slide, idx) => (
-                  <div
-                    key={idx}
-                    className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4 lg:px-12"
-                  >
-                    {slide.map((event) => (
-                      <FramerMotionWrapper
-                        key={event.id}
-                        className=" flex flex-col gap-3 min-w-full bg-primaryPinkLight p-4 rounded-lg"
+        {loading ? (
+          <div className="px-4 cursor-wait">
+            <SkeletonGrid
+              className="grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+              count={4}
+              withDesc
+            />
+          </div>
+        ) : events.length > 0 ? (
+          <div className="relative w-full overflow-hidden px-1 flex items-center justify-center flex-col">
+            {/* SLIDER CONTAINER */}
+            <div
+              className="flex transition-transform duration-500 ease-out w-full"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {slides.map((slide, idx) => (
+                <div
+                  key={idx}
+                  className="min-w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-4 lg:px-12"
+                >
+                  {slide.map((event) => (
+                    <FramerMotionWrapper
+                      key={event.id}
+                      className=" flex flex-col gap-3 min-w-full bg-primaryPinkLight p-4 rounded-lg"
+                    >
+                      <Link
+                        href={event.link}
+                        target="_blank"
+                        className="group relative w-full aspect-square overflow-hidden rounded-xl bg-gray-100"
                       >
-                        <Link
-                          href={event.link}
-                          target="_blank"
-                          className="group relative w-full aspect-square overflow-hidden rounded-xl bg-gray-100"
-                        >
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />
-                          <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                            <div className="flex items-center gap-2 text-white font-inter font-bold hover:text-[#4ade80]">
-                              <span>View detail</span>
-                              <FiExternalLink className="w-5 h-5" />
+                        <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />
+                        <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                          <div className="flex items-center gap-2 text-white font-inter font-bold hover:text-[#4ade80]">
+                            <span>View detail</span>
+                            <FiExternalLink className="w-5 h-5" />
+                          </div>
+                        </div>
+
+                        <ImageFallback
+                          isFill
+                          src={event.thumbnail?.image_url}
+                          alt={event.title}
+                          // Tambahkan efek zoom sedikit agar lebih cantik
+                          imgStyle="object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </Link>
+
+                      <div className="group space-y-1">
+                        <Link href={event.link} target="_blank">
+                          <h2 className="font-libertine text-lg font-bold hover:text-primaryGreen line-clamp-2 transition-colors">
+                            {event.title}
+                          </h2>
+                        </Link>
+                        <Link href={event.link} target="_blank">
+                          <div className="relative text-sm text-gray-600 h-[50px] lg:h-[80px] overflow-hidden">
+                            <MarkdownRenderer>
+                              {event.description}
+                            </MarkdownRenderer>
+                            {/* Baca Selengkapnya Overlay */}
+                            <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-20 bg-gradient-to-t from-primaryPinkLight/100 via-primaryPinkLight/80 to-transparent transition-all duration-300 flex items-end justify-center">
+                              <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-1">
+                                Baca selengkapnya
+                              </p>
                             </div>
                           </div>
-
-                          <ImageFallback
-                            isFill
-                            src={event.thumbnail?.image_url}
-                            alt={event.title}
-                            // Tambahkan efek zoom sedikit agar lebih cantik
-                            imgStyle="object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
                         </Link>
-
-                        <div className="group space-y-1">
-                          <Link href={event.link} target="_blank">
-                            <h2 className="font-libertine text-lg font-bold hover:text-primaryGreen line-clamp-2 transition-colors">
-                              {event.title}
-                            </h2>
-                          </Link>
-                          <Link href={event.link} target="_blank">
-                            <div className="relative text-sm text-gray-600 h-[50px] lg:h-[80px] overflow-hidden">
-                              <MarkdownRenderer>
-                                {event.description}
-                              </MarkdownRenderer>
-                              {/* Baca Selengkapnya Overlay */}
-                              <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 group-hover:h-20 bg-gradient-to-t from-primaryPinkLight/100 via-primaryPinkLight/80 to-transparent transition-all duration-300 flex items-end justify-center">
-                                <p className="pointer-events-auto text-sm font-semibold text-gray-600 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 mb-1">
-                                  Baca selengkapnya
-                                </p>
-                              </div>
-                            </div>
-                          </Link>
-                        </div>
-                      </FramerMotionWrapper>
-                    ))}
-                  </div>
-                ))}
-              </div>
-
-              {/* CONTROLS */}
-              {slides.length > 1 && (
-                <>
-                  <button
-                    onClick={prevSlide}
-                    className="absolute left-4 lg:top-1/3 top-1/2 -translate-y-1/2 z-20 bg-white/70 hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 lg:group-hover:opacity-100"
-                  >
-                    <FaChevronLeft />
-                  </button>
-                  <button
-                    onClick={nextSlide}
-                    className="absolute right-4 top-1/2 lg:top-1/3 -translate-y-1/2 z-20 bg-white/70 hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 lg:group-hover:opacity-100"
-                  >
-                    <FaChevronRight />
-                  </button>
-
-                  <div className="mt-10 flex justify-center gap-2 max-lg:hidden">
-                    {slides.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setCurrentSlide(idx)}
-                        className={`h-2 transition-all duration-300 rounded-full ${
-                          idx === currentSlide
-                            ? "bg-primaryPink w-8"
-                            : "bg-gray-300 w-2"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
+                      </div>
+                    </FramerMotionWrapper>
+                  ))}
+                </div>
+              ))}
             </div>
-          ) : (
-            <div className="mx-4 py-16 text-center bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 text-gray-400">
-              <p className="text-xl font-medium">Belum ada acara bulan ini</p>
-            </div>
-          )}
-        </section>
-      </FramerMotionWrapper>
+
+            {/* CONTROLS */}
+            {slides.length > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-4 lg:top-1/3 top-1/2 -translate-y-1/2 z-20 bg-white/70 hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 lg:group-hover:opacity-100"
+                >
+                  <FaChevronLeft />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-4 top-1/2 lg:top-1/3 -translate-y-1/2 z-20 bg-white/70 hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 lg:group-hover:opacity-100"
+                >
+                  <FaChevronRight />
+                </button>
+
+                <div className="mt-10 flex justify-center gap-2 max-lg:hidden">
+                  {slides.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentSlide(idx)}
+                      className={`h-2 transition-all duration-300 rounded-full ${
+                        idx === currentSlide
+                          ? "bg-primaryPink w-8"
+                          : "bg-gray-300 w-2"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="mx-4 py-16 text-center bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 text-gray-400">
+            <p className="text-xl font-medium">Belum ada acara bulan ini</p>
+          </div>
+        )}
+      </section>
     </>
   );
 }
