@@ -5,10 +5,10 @@ import { DepartmentType } from "@/types/data/DepartmentType";
 import Lenis from "@studio-freight/lenis/types";
 import { useEffect, useMemo, useState } from "react";
 import RenderPagination from "../_news/RenderPagination";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import HeaderSection from "../commons/HeaderSection";
 import ImageFallback from "../commons/ImageFallback";
 import EventSkeleton from "../commons/skeletons/SkeletonGrid";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 type GalleryCard = {
   imageUrl: string;

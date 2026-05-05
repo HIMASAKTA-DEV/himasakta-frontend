@@ -5,8 +5,8 @@ import clsxm from "@/lib/clsxm";
 import { getDepartmentInfo } from "@/services/landing_page/DepartementSection";
 import { DepartmentInfo } from "@/types/data/DepartmentSection";
 import { useEffect, useState } from "react";
-import DeptCard from "./_departemenSection/DeptCard";
 import FramerMotionWrapper from "../commons/FramerMotionWrapper";
+import DeptCard from "./_departemenSection/DeptCard";
 
 function DepartemenSection() {
   // Comment this after creating data fetching

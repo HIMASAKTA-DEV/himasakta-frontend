@@ -8,9 +8,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 export default function GetToKnow() {
   const [loading, setLoading] = useState(true);

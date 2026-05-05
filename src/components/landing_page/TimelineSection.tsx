@@ -1,5 +1,5 @@
-import HeaderSection from "../commons/HeaderSection";
 import Image from "next/image";
+import HeaderSection from "../commons/HeaderSection";
 
 const TimelineSection = () => {
   return (

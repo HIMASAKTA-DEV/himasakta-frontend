@@ -6,7 +6,6 @@ import SkeletonSection from "@/components/commons/skeletons/SkeletonSection";
 import { GetCurrentCabinet } from "@/services/landing_page/InformasiKabinet";
 import { CabinetInfo } from "@/types/data/InformasiKabinet";
 import { useEffect, useState } from "react";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 export default function OrganigramSection() {
   const [loading, setLoading] = useState(true);

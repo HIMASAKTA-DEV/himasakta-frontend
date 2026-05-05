@@ -8,7 +8,6 @@ import HeaderSection from "../commons/HeaderSection";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
 import GalleryCabinet from "./_infomasiKabinet/GalleryCabinet";
 import SkeletonInformasiKabinet from "./skeletons/SkeletonInfoKabinet";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 export default function InformasiKabinet({
   setLayout,

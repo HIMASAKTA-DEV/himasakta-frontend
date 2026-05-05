@@ -6,11 +6,11 @@ import { isAxiosError } from "axios";
 import Link from "next/link";
 import { useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import HeaderSection from "../commons/HeaderSection";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
-import SocmedCard from "./_socmedCard";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import NoImage from "../commons/NoImg";
+import SocmedCard from "./_socmedCard";
 
 function InformasiDepartment({ ...dept }: DepartmentType) {
   const logoImages = dept?.logo?.image_url;

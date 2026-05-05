@@ -5,10 +5,10 @@ import { normalizeHashtags } from "@/lib/normalizeHashTags";
 import { NewsType } from "@/types/data/InformasiBerita";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import HashTags from "../commons/HashTags";
 import ImageFallback from "../commons/ImageFallback";
 import MarkdownRenderer from "../commons/MarkdownRenderer";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 export default function CardNews({
   idx = 0,

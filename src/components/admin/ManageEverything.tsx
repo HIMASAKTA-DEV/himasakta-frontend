@@ -49,6 +49,7 @@ import {
   ManageNewsHelp,
   ManageProgendaHelp,
 } from "./HelpModal";
+import MarkdownEditor from "./MarkdownEditor";
 import MediaSelector from "./MediaSelector";
 import WebStats from "./WebStats";
 
@@ -2725,10 +2726,13 @@ export function GlobalSetting() {
   const [_data, setData] = useState<GlobalSettings | null>(null);
   const [loading, setLoading] = useState(false);
   const [descVal, setDescVal] = useState("");
+  const [visiVal, setVisiVal] = useState("");
+  const [misiVal, setMisiVal] = useState("");
   const [initVal, setInitVal] = useState<FormValues | null>(null);
   const [isMaintenance, setIsMaintenance] = useState(false);
   const [openHelp, setOpenHelp] = useState(false);
   const [openMedia, setOpenMedia] = useState(false);
+  const [openMediaSejarah, setOpenMediaSejarah] = useState(false);
   const {
     register,
     reset,
@@ -2741,6 +2745,9 @@ export function GlobalSetting() {
       InternalSOPLink: "",
       DeskripsiHimpunan: "",
       FotoHimpunan: "",
+      VisiHimpunan: "",
+      MisiHimpunan: "",
+      FotoSejarahHimpunan: "",
       SocialMedia: [],
       InMaintenance: false,
     },
@@ -2764,6 +2771,9 @@ export function GlobalSetting() {
           InternalSOPLink: data.InternalSOPLink || "",
           DeskripsiHimpunan: data.DeskripsiHimpunan || "",
           FotoHimpunan: data.FotoHimpunan || "",
+          VisiHimpunan: data.VisiHimpunan || "",
+          MisiHimpunan: data.MisiHimpunan || "",
+          FotoSejarahHimpunan: data.FotoSejarahHimpunan || "",
           InMaintenance: data.InMaintenance,
           SocialMedia: data.SocialMedia || [],
         };
@@ -2772,6 +2782,8 @@ export function GlobalSetting() {
         reset(format);
         setIsMaintenance(data.InMaintenance);
         setDescVal(data.DeskripsiHimpunan);
+        setVisiVal(data.VisiHimpunan || "");
+        setMisiVal(data.MisiHimpunan || "");
       } catch (err) {
         toast.error(`Gagal mengambil data: ${getApiErrorMessage(err)}`);
       } finally {
@@ -2786,6 +2798,8 @@ export function GlobalSetting() {
     if (!initVal) return;
     reset(initVal);
     setDescVal(initVal.DeskripsiHimpunan);
+    setVisiVal(initVal.VisiHimpunan);
+    setMisiVal(initVal.MisiHimpunan);
     setIsMaintenance(initVal.InMaintenance);
   };
 
@@ -2795,12 +2809,17 @@ export function GlobalSetting() {
       InternalSOPLink: "",
       DeskripsiHimpunan: "",
       FotoHimpunan: "",
+      VisiHimpunan: "",
+      MisiHimpunan: "",
+      FotoSejarahHimpunan: "",
       InMaintenance: true,
       SocialMedia: [],
     };
 
     reset(emptyValues);
     setDescVal("");
+    setVisiVal("");
+    setMisiVal("");
     setIsMaintenance(true);
   };
 
@@ -2886,24 +2905,65 @@ export function GlobalSetting() {
                 <label className="mb-2 block text-sm font-bold text-gray-700 uppercase tracking-wider">
                   Deskripsi Himpunan
                 </label>
-                <div className="overflow-hidden rounded-2xl border border-gray-200 bg-gray-50/30 transition-all focus-within:ring-2 focus-within:ring-primaryPink/20 focus-within:border-primaryPink/40">
-                  <Controller
-                    name="DeskripsiHimpunan"
-                    control={control}
-                    render={({ field }) => (
-                      <textarea
-                        {...field}
-                        value={descVal}
-                        onChange={(e) => {
-                          setDescVal(e.target.value);
-                          field.onChange(e.target.value);
-                        }}
-                        className="w-full min-h-[160px] bg-transparent px-4 py-3 font-medium text-gray-800 focus:outline-none resize-y"
-                        placeholder="Tulis deskripsi himpunan di sini..."
-                      />
-                    )}
-                  />
-                </div>
+                <Controller
+                  name="DeskripsiHimpunan"
+                  control={control}
+                  render={({ field }) => (
+                    <MarkdownEditor
+                      value={descVal}
+                      onChange={(val) => {
+                        setDescVal(val);
+                        field.onChange(val);
+                      }}
+                      placeholder="Tulis deskripsi himpunan di sini..."
+                      minHeight="160px"
+                    />
+                  )}
+                />
+              </div>
+
+              {/* Visi Himpunan */}
+              <div className="lg:col-span-2">
+                <label className="mb-2 block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                  Visi Himpunan
+                </label>
+                <Controller
+                  name="VisiHimpunan"
+                  control={control}
+                  render={({ field }) => (
+                    <MarkdownEditor
+                      value={visiVal}
+                      onChange={(val) => {
+                        setVisiVal(val);
+                        field.onChange(val);
+                      }}
+                      placeholder="Tulis visi himpunan di sini..."
+                      minHeight="120px"
+                    />
+                  )}
+                />
+              </div>
+
+              {/* Misi Himpunan */}
+              <div className="lg:col-span-2">
+                <label className="mb-2 block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                  Misi Himpunan
+                </label>
+                <Controller
+                  name="MisiHimpunan"
+                  control={control}
+                  render={({ field }) => (
+                    <MarkdownEditor
+                      value={misiVal}
+                      onChange={(val) => {
+                        setMisiVal(val);
+                        field.onChange(val);
+                      }}
+                      placeholder="Tulis misi himpunan di sini..."
+                      minHeight="160px"
+                    />
+                  )}
+                />
               </div>
 
               <div className="space-y-2">
@@ -2947,6 +3007,33 @@ export function GlobalSetting() {
                   <button
                     type="button"
                     onClick={() => setOpenMedia(true)}
+                    className="whitespace-nowrap px-4 py-3 bg-primaryPink text-white font-bold text-sm rounded-xl hover:opacity-90 active:scale-95 transition-all"
+                  >
+                    Upload File
+                  </button>
+                </div>
+              </div>
+
+              {/* Foto Sejarah Himpunan */}
+              <div className="lg:col-span-2 space-y-2">
+                <label className="block text-sm font-bold text-gray-700 uppercase tracking-wider">
+                  Foto Sejarah Himpunan{" "}
+                  <span className="text-xs font-normal lowercase opacity-60">
+                    (URL path dari repositori)
+                  </span>
+                </label>
+                <div className="flex items-center gap-3 w-full">
+                  <input
+                    {...register("FotoSejarahHimpunan")}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50/30 px-4 py-3 font-medium text-gray-800 placeholder:italic placeholder:text-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-primaryPink/20 focus:border-primaryPink/40"
+                    placeholder="/images/(...).png"
+                  />
+                  <span className="text-gray-500 font-medium italic text-sm whitespace-nowrap">
+                    atau
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setOpenMediaSejarah(true)}
                     className="whitespace-nowrap px-4 py-3 bg-primaryPink text-white font-bold text-sm rounded-xl hover:opacity-90 active:scale-95 transition-all"
                   >
                     Upload File
@@ -3172,6 +3259,19 @@ export function GlobalSetting() {
           onSelect={(photo) => {
             reset({ ...control._formValues, FotoHimpunan: photo.image_url });
             setOpenMedia(false);
+          }}
+        />
+      )}
+
+      {openMediaSejarah && (
+        <MediaSelector
+          onClose={() => setOpenMediaSejarah(false)}
+          onSelect={(photo) => {
+            reset({
+              ...control._formValues,
+              FotoSejarahHimpunan: photo.image_url,
+            });
+            setOpenMediaSejarah(false);
           }}
         />
       )}

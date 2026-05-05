@@ -1,8 +1,8 @@
 import { ProgendaType } from "@/types/data/ProgendaType";
+import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import HeaderSection from "../commons/HeaderSection";
 import DesktopComp from "./_timelineComp/DesktopComp";
 import MobileComp from "./_timelineComp/MobileComp";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 
 interface TimelineCompProps {
   timeline: ProgendaType["timelines"];
