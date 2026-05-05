@@ -1,6 +1,7 @@
 "use client";
 
 import BackToTop from "@/components/commons/BackToTop";
+import FramerMotionWrapper from "@/components/commons/FramerMotionWrapper";
 import DepartemenSection from "@/components/landing_page/DepartemenSection";
 import GetToKnow from "@/components/landing_page/GetToKnow";
 import HeroSection from "@/components/landing_page/HeroSection";
@@ -27,9 +28,15 @@ export default function HomeClient() {
           </div>
           <div className="max-w-full flex flex-col gap-24 lg:gap-32 mt-24 lg:mt-32 px-6 lg:px-32">
             <ProfilHimpunan />
-            <InformasiKabinet setLayout={setWithLayout} />
-            <OrganigramSection />
-            <GetToKnow />
+            <FramerMotionWrapper variant="fadeRight">
+              <InformasiKabinet setLayout={setWithLayout} />
+            </FramerMotionWrapper>
+            <FramerMotionWrapper variant="fade">
+              <OrganigramSection />
+            </FramerMotionWrapper>
+            <FramerMotionWrapper>
+              <GetToKnow />
+            </FramerMotionWrapper>
             <DepartemenSection />
             <InformasiBerita />
           </div>

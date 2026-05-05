@@ -37,27 +37,25 @@ export default function OrganigramSection() {
 
   return (
     <>
-      <FramerMotionWrapper variant="fade">
-        <section className="w-full flex flex-col gap-6 px-4">
-          <HeaderSection
-            title="Struktur Organisasi HIMASAKTA ITS"
-            sub="Organigram kepengurusan HIMASAKTA ITS"
-          />
-          {loading ? (
-            <SkeletonSection />
-          ) : (
-            <div className="w-full flex items-center">
-              <InteractiveImgViewer
-                src={
-                  cabinet?.organigram?.image_url ??
-                  "images/OrganigramSementara.jpeg"
-                }
-                variant="advanced"
-              />
-            </div>
-          )}
-        </section>
-      </FramerMotionWrapper>
+      <section className="w-full flex flex-col gap-6 px-4">
+        <HeaderSection
+          title="Struktur Organisasi HIMASAKTA ITS"
+          sub="Organigram kepengurusan HIMASAKTA ITS"
+        />
+        {loading ? (
+          <SkeletonSection />
+        ) : (
+          <div className="w-full flex items-center">
+            <InteractiveImgViewer
+              src={
+                cabinet?.organigram?.image_url ??
+                "images/OrganigramSementara.jpeg"
+              }
+              variant="advanced"
+            />
+          </div>
+        )}
+      </section>
     </>
   );
 }

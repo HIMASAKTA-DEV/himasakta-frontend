@@ -10,6 +10,7 @@ import SkeletonProfilHimpunan from "./skeletons/SkeletonProfilHimpunan";
 import FramerMotionSection from "../commons/FramerMotionWrapper";
 import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import TimelineSection from "./TimelineSection";
+import { landingPageInfo } from "../../../config";
 
 export default function ProfilHimpunan() {
   const [loading, setLoading] = useState(true);
@@ -33,9 +34,9 @@ export default function ProfilHimpunan() {
   return loading ? (
     <SkeletonProfilHimpunan />
   ) : (
-    <>
+    <div className="flex flex-col w-full items-start justify-center gap-8">
       <section
-        className="flex flex-col items-center gap-8"
+        className="flex flex-col items-center gap-8 w-full"
         id="profil-himpunan"
       >
         <div className=" w-[75vw] lg:max-w-7xl relative aspect-[16/9] lg:aspect-[16/5]">
@@ -58,7 +59,21 @@ export default function ProfilHimpunan() {
           </div>
         </div>
       </section>
+      <div>
+        <h1 className="font-libertine font-bold lg:text-3xl text-2xl mb-2">
+          Visi:
+        </h1>
+        <MarkdownRenderer className="text-justify">
+          {landingPageInfo.visi}
+        </MarkdownRenderer>
+        <h1 className="font-libertine font-bold lg:text-3xl text-2xl mt-6 mb-2">
+          Misi:
+        </h1>
+        {landingPageInfo.misi.map((m, idx) => (
+          <p className="font-libertine text-lg text-justify">{`${idx + 1}. ${m}`}</p>
+        ))}
+      </div>
       <TimelineSection />
-    </>
+    </div>
   );
 }
