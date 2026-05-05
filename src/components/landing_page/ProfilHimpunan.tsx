@@ -52,27 +52,27 @@ export default function ProfilHimpunan() {
             title="Profil Himpunan"
             className="w-[75vw] lg:max-w-7xl mx-auto"
           />
-          <div className="w-[75vw] lg:max-w-7xl mx-auto font-libertine lg:text-xl text-justify">
+          <div className="w-[75vw] lg:max-w-7xl mx-auto font-libertine lg:text-xl text-justify gap-4 flex flex-col">
             <MarkdownRenderer className="text-justify">
               {data?.DeskripsiHimpunan ?? ""}
             </MarkdownRenderer>
+            <div>
+              <h1 className="font-libertine font-bold lg:text-3xl text-2xl mb-2">
+                Visi:
+              </h1>
+              <MarkdownRenderer className="text-justify">
+                {landingPageInfo.visi}
+              </MarkdownRenderer>
+              <h1 className="font-libertine font-bold lg:text-3xl text-2xl mt-6 mb-2">
+                Misi:
+              </h1>
+              {landingPageInfo.misi.map((m, idx) => (
+                <p className="font-libertine text-lg text-justify">{`${idx + 1}. ${m}`}</p>
+              ))}
+            </div>
           </div>
         </div>
       </section>
-      <div>
-        <h1 className="font-libertine font-bold lg:text-3xl text-2xl mb-2">
-          Visi:
-        </h1>
-        <MarkdownRenderer className="text-justify">
-          {landingPageInfo.visi}
-        </MarkdownRenderer>
-        <h1 className="font-libertine font-bold lg:text-3xl text-2xl mt-6 mb-2">
-          Misi:
-        </h1>
-        {landingPageInfo.misi.map((m, idx) => (
-          <p className="font-libertine text-lg text-justify">{`${idx + 1}. ${m}`}</p>
-        ))}
-      </div>
       <TimelineSection />
     </div>
   );

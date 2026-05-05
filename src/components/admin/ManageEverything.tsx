@@ -284,7 +284,7 @@ export function ManageAnggota() {
 
                   {!loadingDd && !errDd && depts.length === 0 && (
                     <p className="px-3 py-2 text-sm text-gray-500">
-                      👻Belum ada departemen👻
+                      👻Belum ada anggota👻
                     </p>
                   )}
                 </div>
@@ -314,44 +314,47 @@ export function ManageAnggota() {
               </div>
             )}
           </div>
-          <div className="flex items-center justify-center gap-2">
-            <div className="flex items-center max-lg:flex-col gap-2">
-              <label className="text-sm font-medium text-gray-700 font-libertine">
-                Show
-              </label>
-              <select
-                value={limitMembers}
-                onChange={(e) => {
-                  setLimitMembers(Number(e.target.value));
-                  setCurrMemberPg(1);
-                }}
-                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
-              >
-                {[5, 10, 15, 20].map((v) => (
-                  <option key={v} value={v}>
-                    {v}
-                  </option>
-                ))}
-              </select>
+          <div className="flex items-center gap-4 flex-col lg:flex-row">
+            <div className="flex items-center flex-row gap-2 order-1 lg:order-2 w-full">
+              <div className="flex w-full items-center gap-2 lg:w-auto">
+                <label className="text-sm font-medium text-gray-700 font-libertine">
+                  Show
+                </label>
+                <select
+                  value={limitMembers}
+                  onChange={(e) => {
+                    setLimitMembers(Number(e.target.value));
+                    setCurrPg(1); // reset to first page
+                  }}
+                  className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+                >
+                  {[5, 10, 15, 20].map((val) => (
+                    <option key={val} value={val}>
+                      {val}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm w-full">
+                <Link href={"/cp/anggota/add"}>+ Add Anggota</Link>
+              </button>
             </div>
-            <Link
-              href="/cp/anggota/add"
-              className="px-4 py-4 lg:py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
-            >
-              + Add Member
-            </Link>
             <input
               type="text"
               placeholder="Cari..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine order-2 lg:order-1"
             />
-            <IoIosHelpCircle
-              className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
-              title="help"
-              onClick={() => setOpenHelp(true)}
-            />
+
+            {/* Info */}
+            <div className="flex items-center justify-end w-full lg:w-auto">
+              <IoIosHelpCircle
+                className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+                title="help"
+                onClick={() => setOpenHelp(true)}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -610,44 +613,47 @@ export function ManageCabinet() {
           subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
 
-        <div className="flex items-center gap-4">
-          <div className="flex items-center max-lg:flex-col gap-2">
-            <label className="text-sm font-medium text-gray-700 font-libertine">
-              Show
-            </label>
-            <select
-              value={limCabinets}
-              onChange={(e) => {
-                setLimCabinets(Number(e.target.value));
-                setCurrPg(1); // reset to first page
-              }}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
-            >
-              {[5, 10, 15, 20].map((val) => (
-                <option key={val} value={val}>
-                  {val}
-                </option>
-              ))}
-            </select>
+        <div className="flex items-center gap-4 flex-col lg:flex-row">
+          <div className="flex items-center flex-row gap-2 order-1 lg:order-2 w-full">
+            <div className="flex w-full items-center gap-2 lg:w-auto">
+              <label className="text-sm font-medium text-gray-700 font-libertine">
+                Show
+              </label>
+              <select
+                value={limCabinets}
+                onChange={(e) => {
+                  setLimCabinets(Number(e.target.value));
+                  setCurrPg(1); // reset to first page
+                }}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+              >
+                {[5, 10, 15, 20].map((val) => (
+                  <option key={val} value={val}>
+                    {val}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm w-full">
+              <Link href={"/cp/cabinet/add"}>+ Add Cabinet</Link>
+            </button>
           </div>
-
-          <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
-            <Link href={"/cp/cabinet/add"}>+ Add Cabinet</Link>
-          </button>
           <input
             type="text"
             placeholder="Cari..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine order-2 lg:order-1"
           />
 
           {/* Info */}
-          <IoIosHelpCircle
-            className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
-            title="help"
-            onClick={() => setOpenHelp(true)}
-          />
+          <div className="flex items-center justify-end w-full lg:w-auto">
+            <IoIosHelpCircle
+              className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+              title="help"
+              onClick={() => setOpenHelp(true)}
+            />
+          </div>
         </div>
       </div>
       {_errData && !loadData && (
@@ -990,42 +996,47 @@ export function ManageDepartment() {
           sub={"Atur data departemen di website"}
           subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
-        <div className="flex items-center gap-4">
-          <div className="flex items-center max-lg:flex-col gap-2">
-            <label className="text-sm font-medium text-gray-700 font-libertine">
-              Show
-            </label>
-            <select
-              value={limitDept}
-              onChange={(e) => {
-                setLimitDept(Number(e.target.value));
-                setCurrPage(1);
-              }}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer font-libertine"
-            >
-              {[5, 10, 15, 20].map((val) => (
-                <option key={val} value={val}>
-                  {val}
-                </option>
-              ))}
-            </select>
+        <div className="flex items-center gap-4 flex-col lg:flex-row">
+          <div className="flex items-center flex-row gap-2 order-1 lg:order-2 w-full">
+            <div className="flex w-full items-center gap-2 lg:w-auto">
+              <label className="text-sm font-medium text-gray-700 font-libertine">
+                Show
+              </label>
+              <select
+                value={limitDept}
+                onChange={(e) => {
+                  setLimitDept(Number(e.target.value));
+                  setCurrPage(1); // reset to first page
+                }}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+              >
+                {[5, 10, 15, 20].map((val) => (
+                  <option key={val} value={val}>
+                    {val}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm w-full">
+              <Link href={"/cp/department/add"}>+ Add Department</Link>
+            </button>
           </div>
-          <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
-            <Link href={"/cp/department/add"}>+ Add Department</Link>
-          </button>
           <input
             type="text"
             placeholder="Cari..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine order-2 lg:order-1"
           />
+
           {/* Info */}
-          <IoIosHelpCircle
-            className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
-            title="help"
-            onClick={() => setOpenHelp(true)}
-          />
+          <div className="flex items-center justify-end w-full lg:w-auto">
+            <IoIosHelpCircle
+              className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+              title="help"
+              onClick={() => setOpenHelp(true)}
+            />
+          </div>
         </div>
       </div>
       <small className="mt-4 text-yellow-700 bg-yellow-200 px-2">
@@ -1241,51 +1252,54 @@ export function ManageEvent() {
           sub={"Atur daftar kegiatan bulanan (What's On HIMASAKTA)"}
           subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
-        <div className="flex items-center gap-4">
-          <div className="flex items-center max-lg:flex-col gap-2">
-            <label className="text-sm font-medium text-gray-700 font-libertine">
-              Show
-            </label>
-            <select
-              value={limData}
-              onChange={(e) => {
-                setLimData(Number(e.target.value));
-                setCurrPg(1);
-              }}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
-            >
-              {[5, 10, 15, 20].map((v) => (
-                <option key={v} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
+        <div className="flex items-center gap-4 flex-col lg:flex-row">
+          <div className="flex items-center flex-row gap-2 order-1 lg:order-2 w-full">
+            <div className="flex w-full items-center gap-2 lg:w-auto">
+              <label className="text-sm font-medium text-gray-700 font-libertine">
+                Show
+              </label>
+              <select
+                value={limData}
+                onChange={(e) => {
+                  setLimData(Number(e.target.value));
+                  setCurrPg(1); // reset to first page
+                }}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+              >
+                {[5, 10, 15, 20].map((val) => (
+                  <option key={val} value={val}>
+                    {val}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm w-full">
+              <Link href={"/cp/kegiatan/add"}>+ Add Event</Link>
+            </button>
           </div>
-          <Link
-            href="/cp/kegiatan/add"
-            className="px-4 py-4 lg:py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
-          >
-            + Add Event
-          </Link>
           <input
             type="text"
             placeholder="Cari..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine order-2 lg:order-1"
           />
-          <IoIosHelpCircle
-            className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
-            title="help"
-            onClick={() => setOpenHelp(true)}
-          />
+
+          {/* Info */}
+          <div className="flex items-center justify-end w-full lg:w-auto">
+            <IoIosHelpCircle
+              className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+              title="help"
+              onClick={() => setOpenHelp(true)}
+            />
+          </div>
         </div>
       </div>
 
       {_errMainData && !loadingData && (
         <div className="flex w-full items-center justify-center py-20">
           <p className="text-red-500">
-            Gagal memuat data departemen. Silakan coba lagi.
+            Gagal memuat data kegiatan. Silakan coba lagi.
           </p>
         </div>
       )}
@@ -1551,7 +1565,7 @@ export function ManageGallery() {
             : "",
         )}
       >
-        {galleryData.length === 0 && <p>👻Belum ada data berita👻</p>}
+        {galleryData.length === 0 && <p>👻Belum ada data galeri👻</p>}
         {galleryData.map((gallery) => (
           <div
             key={gallery.id}
@@ -1810,44 +1824,47 @@ export function ManageNews() {
               Atur publikasi berita di website
             </Typography>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center max-lg:flex-col gap-2">
-              <label className="text-sm font-medium text-gray-700 font-libertine">
-                Show
-              </label>
-              <select
-                value={limNews}
-                onChange={(e) => {
-                  setLimNews(Number(e.target.value));
-                  setCurrPg(1);
-                }}
-                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
-              >
-                {[5, 10, 15, 20].map((v) => (
-                  <option key={v} value={v}>
-                    {v}
-                  </option>
-                ))}
-              </select>
+          <div className="flex items-center gap-4 flex-col lg:flex-row">
+            <div className="flex items-center flex-row gap-2 order-1 lg:order-2 w-full">
+              <div className="flex w-full items-center gap-2 lg:w-auto">
+                <label className="text-sm font-medium text-gray-700 font-libertine">
+                  Show
+                </label>
+                <select
+                  value={limNews}
+                  onChange={(e) => {
+                    setLimNews(Number(e.target.value));
+                    setCurrPg(1); // reset to first page
+                  }}
+                  className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+                >
+                  {[5, 10, 15, 20].map((val) => (
+                    <option key={val} value={val}>
+                      {val}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm w-full">
+                <Link href={"/cp/news/add"}>+ Add News</Link>
+              </button>
             </div>
-            <Link
-              href="/cp/news/add"
-              className="px-4 py-2 max-lg:py-4 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm"
-            >
-              + Add Post
-            </Link>
             <input
               type="text"
               placeholder="Cari..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine order-2 lg:order-1"
             />
-            <IoIosHelpCircle
-              className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
-              title="help"
-              onClick={() => setOpenHelp(true)}
-            />
+
+            {/* Info */}
+            <div className="flex items-center justify-end w-full lg:w-auto">
+              <IoIosHelpCircle
+                className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+                title="help"
+                onClick={() => setOpenHelp(true)}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -2342,47 +2359,53 @@ export function ManageProgenda() {
           sub={"Atur data progenda tiap departemen"}
           subStyle="text-gray-600 mt-2 font-averia italic text-lg"
         />
-        <div className="flex items-center gap-4">
-          <div className="flex items-center max-lg:flex-col gap-2">
-            <label className="text-sm font-medium text-gray-700 font-libertine">
-              Show
-            </label>
-            <select
-              value={limitProgenda}
-              onChange={(e) => {
-                setLimitProgenda(Number(e.target.value));
-                setCurrPage(1);
-              }}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer font-libertine"
-            >
-              {[5, 10, 15, 20].map((val) => (
-                <option key={val} value={val}>
-                  {val}
-                </option>
-              ))}
-            </select>
+        <div className="flex items-center gap-4 flex-col lg:flex-row">
+          <div className="flex items-center flex-row gap-2 order-1 lg:order-2 w-full">
+            <div className="flex w-full items-center gap-2 lg:w-auto">
+              <label className="text-sm font-medium text-gray-700 font-libertine">
+                Show
+              </label>
+              <select
+                value={limitProgenda}
+                onChange={(e) => {
+                  setLimitProgenda(Number(e.target.value));
+                  setCurrPage(1); // reset to first page
+                }}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all cursor-pointer"
+              >
+                {[5, 10, 15, 20].map((val) => (
+                  <option key={val} value={val}>
+                    {val}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm w-full">
+              <Link href={"/cp/progenda/add"}>+ Add Progenda</Link>
+            </button>
           </div>
-          <button className="px-4 py-2 bg-primaryPink text-white font-libertine rounded-lg hover:opacity-90 active:opacity-80 duration-300 transition-all max-lg:text-sm">
-            <Link href={"/cp/progenda/add"}>+ Add Progenda</Link>
-          </button>
           <input
             type="text"
             placeholder="Cari..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine"
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primaryPink/50 transition-all font-libertine order-2 lg:order-1"
           />
-          <IoIosHelpCircle
-            className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
-            title="help"
-            onClick={() => setOpenHelp(true)}
-          />
+
+          {/* Info */}
+          <div className="flex items-center justify-end w-full lg:w-auto">
+            <IoIosHelpCircle
+              className="w-6 h-6 text-blue-400 hover:opacity-80 transition-all duration-300 hover:cursor-pointer"
+              title="help"
+              onClick={() => setOpenHelp(true)}
+            />
+          </div>
         </div>
       </div>
       {error && !loading && (
         <div className="flex w-full items-center justify-center py-20">
           <p className="text-red-500">
-            Gagal memuat data departemen. Silakan coba lagi.
+            Gagal memuat data progenda. Silakan coba lagi.
           </p>
         </div>
       )}
@@ -2678,6 +2701,15 @@ export function DashboardAdmin({ usr }: Props) {
               <h1 className="font-inter font-bold text-3xl">How to logout?</h1>
             </div>
             <p>You can log out in many different ways</p>
+          </li>
+          <li className="flex flex-col gap-4 items-start">
+            <div className="flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-black"></span>
+              <h1 className="font-inter font-bold text-3xl">
+                Documentation of this website
+              </h1>
+            </div>
+            <p>Coming soon</p>
           </li>
         </ul>
       </main>
