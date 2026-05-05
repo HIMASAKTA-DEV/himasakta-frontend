@@ -75,19 +75,8 @@ export default function ProfilHimpunan() {
             )}
           </div>
         </div>
-
-        {data?.FotoSejarahHimpunan && (
-          <div className="w-[75vw] lg:max-w-7xl relative aspect-[16/9] lg:aspect-[16/5]">
-            <Image
-              src={data.FotoSejarahHimpunan}
-              alt="sejarah-himpunan"
-              fill
-              className="object-cover rounded-3xl"
-            />
-          </div>
-        )}
       </section>
-      <TimelineSection />
+      <TimelineSection fotoSejarah={data?.FotoSejarahHimpunan} />
     </div>
   );
 }
