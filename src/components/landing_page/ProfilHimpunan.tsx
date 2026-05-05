@@ -9,6 +9,7 @@ import MarkdownRenderer from "../commons/MarkdownRenderer";
 import SkeletonProfilHimpunan from "./skeletons/SkeletonProfilHimpunan";
 import FramerMotionSection from "../commons/FramerMotionWrapper";
 import FramerMotionWrapper from "../commons/FramerMotionWrapper";
+import TimelineSection from "./TimelineSection";
 
 export default function ProfilHimpunan() {
   const [loading, setLoading] = useState(true);
@@ -57,6 +58,7 @@ export default function ProfilHimpunan() {
           </div>
         </div>
       </section>
+      <TimelineSection />
     </>
   );
 }

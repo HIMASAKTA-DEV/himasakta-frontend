@@ -52,3 +52,10 @@ export const configuration = {
     },
   ] as const,
 };
+
+export const landingPageInfo = {
+  visi: `
+  Lorem ipsum dolor sit amet 
+  `,
+  misi: [`Misi 1`, `Misi 2`, `Misi 3`],
+};
