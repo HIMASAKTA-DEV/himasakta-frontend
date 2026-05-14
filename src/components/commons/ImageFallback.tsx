@@ -10,12 +10,14 @@ export default function ImageFallback({
   isFill = false,
   imgStyle = "group-hover:scale-110",
   fallback, // New optional prop
+  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
 }: {
   src?: string;
   alt?: string;
   isFill?: boolean;
   imgStyle?: string;
   fallback?: ReactNode;
+  sizes?: string;
 }) {
   const [error, setError] = useState(false);
 
@@ -33,6 +35,7 @@ export default function ImageFallback({
       src={src}
       alt={alt}
       fill={isFill}
+      sizes={isFill ? sizes : undefined}
       className={`object-cover transition-transform duration-500 ${imgStyle}`}
       onError={() => setError(true)}
     />

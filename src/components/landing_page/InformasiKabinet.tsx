@@ -83,6 +83,7 @@ export default function InformasiKabinet({
               src={cabinet?.logo?.image_url ?? "/images/InformasiKabinet.png"}
               alt="profil-himpunan"
               fill
+              sizes="(max-width: 1024px) 80vw, 50vw"
               className="order-1 lg:order-2 rounded-3xl object-cover object-center"
             />
           </div>

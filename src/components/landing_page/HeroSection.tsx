@@ -10,6 +10,7 @@ export default function HeroSection() {
         src="/images/HeroImage.png"
         alt="hero-image"
         fill
+        sizes="100vw"
         priority
         className="
           object-cover

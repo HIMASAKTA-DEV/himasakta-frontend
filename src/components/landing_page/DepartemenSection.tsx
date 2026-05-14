@@ -5,7 +5,6 @@ import clsxm from "@/lib/clsxm";
 import { getDepartmentInfo } from "@/services/landing_page/DepartementSection";
 import { DepartmentInfo } from "@/types/data/DepartmentSection";
 import { useEffect, useState } from "react";
-import FramerMotionWrapper from "../commons/FramerMotionWrapper";
 import DeptCard from "./_departemenSection/DeptCard";
 
 function DepartemenSection() {
@@ -49,21 +48,19 @@ function DepartemenSection() {
       className="w-full flex flex-col items-center gap-8 px-4"
       id="departemen-list-utama"
     >
-      <FramerMotionWrapper variant="fadeDown">
-        <div className="flex items-center flex-col gap-2">
-          <h1 className="font-averia text-4xl lg:text-6xl font-bold">
-            12 Departemen
-          </h1>
-          <p className="font-libertine font-semibold text-2xl lg:text-3xl">
-            Jelajahi departemen yang ada di HIMASAKTA ITS
-          </p>
-        </div>
-      </FramerMotionWrapper>
+      <div className="flex items-center flex-col gap-2">
+        <h1 className="font-averia text-4xl lg:text-6xl font-bold">
+          12 Departemen
+        </h1>
+        <p className="font-libertine font-semibold text-2xl lg:text-3xl text-center">
+          Jelajahi departemen yang ada di HIMASAKTA ITS
+        </p>
+      </div>
       {loading ? (
         <SkeletonGrid
           count={12}
           className="grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8"
-          styleBox="aspect-[8/1]"
+          styleBox="h-[100px]"
         />
       ) : (
         // Guys propsnya jg di-spread kalo setting componentnya di-spread juga

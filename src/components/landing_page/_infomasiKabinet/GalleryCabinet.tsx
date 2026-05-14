@@ -173,12 +173,14 @@ function GalleryCabinet({ ...cabinet }: ModCabinetInfo) {
               <>
                 <button
                   onClick={prevSlide}
+                  aria-label="Previous slide"
                   className="absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-all"
                 >
                   <FaChevronLeft size={20} />
                 </button>
                 <button
                   onClick={nextSlide}
+                  aria-label="Next slide"
                   className="absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-all"
                 >
                   <FaChevronRight size={20} />
@@ -190,6 +192,7 @@ function GalleryCabinet({ ...cabinet }: ModCabinetInfo) {
                     <button
                       key={idx}
                       onClick={() => setCurrentSlide(idx)}
+                      aria-label={`Go to slide ${idx + 1}`}
                       className={`h-2 rounded-full transition-all duration-300 max-lg:hidden ${
                         idx === currentSlide
                           ? "bg-primaryPink w-8"
@@ -236,6 +239,7 @@ function GalleryCabinet({ ...cabinet }: ModCabinetInfo) {
                     setPreviewImage(null);
                     cabinet.layout(true);
                   }}
+                  aria-label="Close preview"
                   className="absolute -top-10 right-0 text-white text-3xl hover:text-gray-300"
                 >
                   ✕
