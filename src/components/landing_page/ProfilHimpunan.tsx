@@ -41,6 +41,7 @@ export default function ProfilHimpunan() {
             src={data?.FotoHimpunan ?? "/images/ProfilHimpunan.png"}
             alt="profil-himpunan"
             fill
+            sizes="(max-width: 1024px) 100vw, 80vw"
             className="object-cover rounded-3xl"
           />
         </div>

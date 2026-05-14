@@ -109,6 +109,7 @@ export default function GetToKnow() {
                       <Link
                         href={event.link}
                         target="_blank"
+                        aria-label={`View details for ${event.title}`}
                         className="group relative w-full aspect-square overflow-hidden rounded-xl bg-gray-100"
                       >
                         <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10" />
@@ -129,12 +130,20 @@ export default function GetToKnow() {
                       </Link>
 
                       <div className="group space-y-1">
-                        <Link href={event.link} target="_blank">
+                        <Link
+                          href={event.link}
+                          target="_blank"
+                          aria-label={`View details for ${event.title}`}
+                        >
                           <h2 className="font-libertine text-lg font-bold hover:text-primaryGreen line-clamp-2 transition-colors">
                             {event.title}
                           </h2>
                         </Link>
-                        <Link href={event.link} target="_blank">
+                        <Link
+                          href={event.link}
+                          target="_blank"
+                          aria-label={`View details for ${event.title}`}
+                        >
                           <div className="relative text-sm text-gray-600 h-[50px] lg:h-[80px] overflow-hidden">
                             <MarkdownRenderer>
                               {event.description}
@@ -159,12 +168,14 @@ export default function GetToKnow() {
               <>
                 <button
                   onClick={prevSlide}
+                  aria-label="Previous slide"
                   className="absolute left-4 lg:top-1/3 top-1/2 -translate-y-1/2 z-20 bg-white/70 hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 lg:group-hover:opacity-100"
                 >
                   <FaChevronLeft />
                 </button>
                 <button
                   onClick={nextSlide}
+                  aria-label="Next slide"
                   className="absolute right-4 top-1/2 lg:top-1/3 -translate-y-1/2 z-20 bg-white/70 hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 lg:group-hover:opacity-100"
                 >
                   <FaChevronRight />
@@ -175,6 +186,7 @@ export default function GetToKnow() {
                     <button
                       key={idx}
                       onClick={() => setCurrentSlide(idx)}
+                      aria-label={`Go to slide ${idx + 1}`}
                       className={`h-2 transition-all duration-300 rounded-full ${
                         idx === currentSlide
                           ? "bg-primaryPink w-8"
