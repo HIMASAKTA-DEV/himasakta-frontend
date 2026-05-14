@@ -73,21 +73,15 @@ function DepartemenSection() {
             secDepts.length + firstDepts.length === 0 ? "items-center" : "",
           )}
         >
-          {/* Kolom kiri */}
           <div className="flex flex-col gap-4 lg:w-1/2">
             {firstDepts.map((dept, idx) => (
-              <FramerMotionWrapper variant="fadeLeft">
-                <DeptCard {...dept} key={dept.id || idx} />
-              </FramerMotionWrapper>
+              <DeptCard {...dept} key={dept.id || idx} />
             ))}
           </div>
 
-          {/* Kolom kanan */}
           <div className="flex flex-col gap-4 lg:w-1/2">
             {secDepts.map((dept, idx) => (
-              <FramerMotionWrapper variant="fadeRight">
-                <DeptCard {...dept} key={dept.id || idx} />
-              </FramerMotionWrapper>
+              <DeptCard {...dept} key={dept.id || idx} />
             ))}
           </div>
 

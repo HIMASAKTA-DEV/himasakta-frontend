@@ -14,6 +14,11 @@ const nextConfig = {
         pathname: "/**",
       },
       {
+        protocol: "https",
+        hostname: "api.himasakta-its.com",
+        pathname: "/**",
+      },
+      {
         protocol: "http",
         hostname: "76.13.19.118",
         port: "8012",
