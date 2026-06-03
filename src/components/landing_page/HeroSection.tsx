@@ -7,7 +7,7 @@ export default function HeroSection() {
   return (
     <section className="relative w-full h-[550px] lg:h-[750px] overflow-hidden">
       <Image
-        src="/images/HeroImage.png"
+        src="/images/HeroImage2.jpeg"
         alt="hero-image"
         fill
         sizes="100vw"
@@ -19,7 +19,7 @@ export default function HeroSection() {
           [-webkit-mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]
         "
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-primaryPink/100 via-primaryPink/60 to-transparent backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-primaryPink/100 via-primaryPink/60 to-transparent backdrop-blur-[5px]" />
 
       {/* Ini bagian Title */}
       <div className="relative z-499 flex h-full items-center px-12 lg:px-32 font-libertine">
